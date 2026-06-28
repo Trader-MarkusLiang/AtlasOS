@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.5 Alpha - 2026-06-29
+
+- Seeded the first Atlas Living Database in `02_Databases/AI_Shovel_100.md`.
+- Added Priority S portfolio/core holdings records for 泰金新能, 罗博特科, 东山精密, 德福科技, DRAM ETF, and Micron.
+- Added Priority A core research records across Memory, Equipment, Materials, and Bandwidth.
+- Added Priority B watch-pool records.
+- Added Company Score records using `Unverified` where public or repository evidence is not yet recorded.
+- Upgraded Order Book, Alpha Radar, Risk Radar, and Price Transmission with living seed ledgers.
+- Added `99_Verification/Audit_Report_v0.5_Alpha.md`.
+- Kept scope limited to Markdown database seeding: no new framework, directory, dashboard, agent, program, or core-principle change.
+
 ## v0.4 Alpha - 2026-06-29
 
 - Added company-level scoring fields to AI Shovel 100.

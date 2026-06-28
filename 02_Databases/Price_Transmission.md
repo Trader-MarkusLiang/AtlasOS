@@ -18,6 +18,21 @@ Use this table to connect a chain-level transmission thesis to company-level fin
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | YYYY-MM-DD | Company name | Ticker or chain | Memory / Equipment / Materials / Bandwidth | Supply tightness, order growth, capacity expansion, or adoption | Volume, ASP, mix, backlog conversion, or new customer | Pricing power, yield, utilization, or cost pass-through | CapEx burden, FCF improvement, or FCF pressure | ASP, contract, channel, or company commentary | Customer, segment, or chain exposure | Revenue, gross margin, operating margin, FCF, backlog, capex | Source link or internal note | Watch / Confirmed / Rejected |
 
+## Living Company Transmission Chains
+
+| Date | Chain | Company | Revenue | Gross Margin | FCF | Capital | Trading | Evidence | Status |
+|---|---|---|---|---|---|---|---|---|---|
+| 2026-06-29 | Memory | Micron（MU） | DRAM / HBM demand may transmit through volume, ASP, and mix | Unknown | Unknown | Memory S+ supports capital attention if ROI path holds | Hold / research; Priority S first review | `04_Current_State/Bottleneck_Map_v1.md`; `02_Databases/AI_Shovel_100.md` | Watch |
+| 2026-06-29 | Memory | SK Hynix | DRAM / HBM demand may transmit through volume, ASP, and mix | Unknown | Unknown | Memory S+ supports Priority A research | Watch; score after evidence | `02_Databases/AI_Shovel_100.md` | Watch |
+| 2026-06-29 | Equipment | LRCX | Memory/fab capex may transmit through orders and backlog | Unknown | Unknown | Equipment S+ supports relay attention if orders confirm | Watch; score after order evidence | `01_Framework/Capital_Relay.md`; `02_Databases/Order_Book.md` | Watch |
+| 2026-06-29 | Equipment | AMAT | Memory/fab capex may transmit through orders and backlog | Unknown | Unknown | Equipment S+ supports relay attention if orders confirm | Watch; score after order evidence | `01_Framework/Capital_Relay.md`; `02_Databases/Order_Book.md` | Watch |
+| 2026-06-29 | Materials | 安集科技 | Process intensity may transmit through materials volume and pricing | Unknown | Unknown | Materials S supports research pool attention | Watch; score after qualification/margin evidence | `04_Current_State/Bottleneck_Map_v1.md`; `02_Databases/AI_Shovel_100.md` | Watch |
+| 2026-06-29 | Materials | 江丰电子 | Materials demand may transmit through customer qualification and volume | Unknown | Unknown | Materials S supports research pool attention | Watch; score after qualification/margin evidence | `02_Databases/AI_Shovel_100.md` | Watch |
+| 2026-06-29 | Materials | 鼎龙股份 | Materials demand may transmit through customer qualification and volume | Unknown | Unknown | Materials S supports research pool attention | Watch; score after qualification/margin evidence | `02_Databases/AI_Shovel_100.md` | Watch |
+| 2026-06-29 | Bandwidth | Corning | AI interconnect demand may transmit through optical/fiber revenue | Unknown | Unknown | Bandwidth S supports research pool attention | Watch; avoid chasing until evidence and valuation align | `05_Cases/Corning_Bandwidth.md` | Watch |
+| 2026-06-29 | Bandwidth | 中际旭创 | Optical module demand may transmit through customer orders, ASP, and mix | Unknown | Unknown | Bandwidth S supports domestic beneficiary research | Watch; score after customer/order evidence | `02_Databases/AI_Shovel_100.md` | Watch |
+| 2026-06-29 | Bandwidth | 新易盛 | Optical module demand may transmit through customer orders, ASP, and mix | Unknown | Unknown | Bandwidth S supports domestic beneficiary research | Watch; score after customer/order evidence | `02_Databases/AI_Shovel_100.md` | Watch |
+
 ## Transmission Rule
 
 Do not treat upstream tightness as earnings impact until the path reaches at least one of:

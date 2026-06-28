@@ -28,3 +28,7 @@
 | v0.4 company/financial mapping fields added | Done |
 | v0.4 risk trigger thresholds added | Done |
 | v0.4 repository/snapshot version semantics clarified | Done |
+| v0.5 Priority S living records seeded | Done |
+| v0.5 Priority A living records seeded | Done |
+| v0.5 Priority B watch records seeded | Done |
+| v0.5 living evidence ledgers seeded | Done |

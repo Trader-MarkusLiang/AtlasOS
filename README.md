@@ -25,7 +25,17 @@ software architecture.
 
 ## Version
 
-Current version: v0.4 Alpha.
+Current version: v0.5 Alpha.
+
+## Living Database
+
+Starting in v0.5 Alpha, Atlas tracks companies as living research records:
+
+- Priority S: current portfolio and core capital exposure, reviewed first.
+- Priority A: Atlas core research pool, updated after Priority S.
+- Priority B: watch pool, promoted only after evidence improves.
+
+Unknown or unsupported data must be recorded as `Unknown` or `Unverified`.
 
 See `VERSION.md` and `CHANGELOG.md`.
 

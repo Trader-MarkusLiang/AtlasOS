@@ -13,9 +13,25 @@ Order Book tracks confirmed order, capacity, and backlog evidence.
 Use this table for actual order, capacity, delivery, backlog, shipment, utilization, or customer
 qualification records. Do not mix thesis-only notes with confirmed evidence.
 
-| Date | Company | Customer / Counterparty | Evidence Type | Evidence Detail | Capacity / Volume | Delivery Window | Backlog / Utilization | Bottleneck | Financial Read-through | Confidence | Source | Next Check |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| YYYY-MM-DD | Company name | Customer, supplier, or chain | Order / Capacity / Delivery / Backlog / Shipment / Utilization / Qualification | Specific evidence summary | Units, value, capacity, or qualitative size | Quarter, half-year, or date | Backlog, utilization, or conversion signal | Memory / Equipment / Materials / Bandwidth / Power / Workflow / Industry AI | Revenue, margin, capex, FCF, or capital-flow implication | Low / Medium / High | Source link or internal note | Date or event |
+| Date | Company | Customer | Evidence | Order | Capacity | Shipment | Utilization | Qualification | Revenue Impact | Source | Confidence |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| YYYY-MM-DD | Company name | Customer, supplier, or chain | Order / Capacity / Delivery / Backlog / Shipment / Utilization / Qualification | Confirmed order value/volume or Unknown | Capacity value or Unknown | Shipment status or Unknown | Utilization/backlog or Unknown | Qualification status or Unknown | Revenue, margin, capex, FCF, or Unknown | Source link or internal note | Low / Medium / High |
+
+## Living Evidence Seed
+
+These are watch records, not confirmed order records. Missing public evidence is marked `Unknown`.
+
+| Date | Company | Customer | Evidence | Order | Capacity | Shipment | Utilization | Qualification | Revenue Impact | Source | Confidence |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 2026-06-29 | Micron（MU） | Unknown | Priority S Memory holding; order evidence not yet recorded | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `02_Databases/AI_Shovel_100.md` | Low |
+| 2026-06-29 | SK Hynix | Unknown | Priority A Memory research record; order evidence not yet recorded | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `02_Databases/AI_Shovel_100.md` | Low |
+| 2026-06-29 | LRCX | Unknown | Priority A Equipment research record; order/backlog evidence required | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `02_Databases/AI_Shovel_100.md` | Low |
+| 2026-06-29 | AMAT | Unknown | Priority A Equipment research record; order/backlog evidence required | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `02_Databases/AI_Shovel_100.md` | Low |
+| 2026-06-29 | 拓荆科技 | Unknown | Domestic Equipment research record; customer/order evidence required | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `02_Databases/AI_Shovel_100.md` | Low |
+| 2026-06-29 | 北方华创 | Unknown | Domestic Equipment research record; customer/order evidence required | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `02_Databases/AI_Shovel_100.md` | Low |
+| 2026-06-29 | 中微公司 | Unknown | Domestic Equipment research record; customer/order evidence required | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `02_Databases/AI_Shovel_100.md` | Low |
+| 2026-06-29 | 盛美上海 | Unknown | Domestic Equipment research record; customer/order evidence required | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `02_Databases/AI_Shovel_100.md` | Low |
+| 2026-06-29 | Corning | Unknown | Priority A Bandwidth research record; customer adoption evidence required | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | `05_Cases/Corning_Bandwidth.md` | Low |
 
 ## Evidence Standard
 
