@@ -6,7 +6,7 @@ This repository stores the core Atlas framework in Git so the principles, reason
 market maps, trading discipline, and verification cases can be versioned and reused by Codex,
 ChatGPT, and future agents.
 
-Current stage: Codex-routed Knowledge Repository / Core Framework Migration.
+Current stage: Decision Operating System Alpha.
 
 This stage does not build a dashboard, API, database, crawler, agent automation, or complex
 software architecture.
@@ -22,12 +22,13 @@ software architecture.
 | `04_Current_State/` | Current maps, holdings strategy, and growth-curve state |
 | `05_Cases/` | Case notes used by the framework |
 | `06_Portfolio/` | Portfolio layer for capital, execution, and review governance |
+| `07_Decision_Engine/` | Decision lifecycle, gates, review, and state-machine operating mechanism |
 | `99_Verification/` | Migration checklist, regression tests, and acceptance criteria |
 | `.agents/skills/` | Repo-scoped Codex workflow routing skills |
 
 ## Version
 
-Current version: v0.6 Alpha.
+Current version: v0.7 Alpha.
 
 ## Codex Routing
 
@@ -47,6 +48,41 @@ without repeating a long prompt.
 
 All user-provided market information starts as a Signal. Research must pass through Seven Layer
 Reasoning before it can affect trading or portfolio action.
+
+## Decision Engine
+
+v0.7 Alpha adds the Atlas Decision Engine as an operating mechanism, not a new investment
+framework.
+
+Atlas now runs market information through a complete decision lifecycle:
+
+```text
+Market Signal
+ ↓
+Signal Classification
+ ↓
+Evidence Collection
+ ↓
+Seven Layer Reasoning
+ ↓
+Confidence Scoring
+ ↓
+Research Conclusion
+ ↓
+Trading Decision
+ ↓
+Portfolio Action
+ ↓
+Execution Review
+ ↓
+Knowledge Update
+ ↓
+Archive
+```
+
+Decision Engine connects Research, Trading OS, Portfolio, Review, Repository, Daily, and
+Architecture into one closed loop. It does not change Atlas Principles, Seven Layer Reasoning,
+Trading Discipline, Portfolio Rules, or the Living Database structure.
 
 ## Living Database
 

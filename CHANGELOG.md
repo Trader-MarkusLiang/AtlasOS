@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.7 Alpha - 2026-06-29
+
+- Added `07_Decision_Engine/` as the Atlas Decision Engine operating mechanism.
+- Added `Decision_State_Machine.md` with the full decision state flow from Market Signal to Archive.
+- Added `Decision_Gate.md` with required gates for evidence, seven-layer reasoning, counter
+  argument, risk/reward, portfolio impact, and execution review.
+- Added `Decision_Review.md` with the mandatory post-decision review template.
+- Added `Decision_Lifecycle.md` assigning state ownership across Research, Trading OS, Portfolio,
+  Repository, Daily, and Architecture.
+- Documented Decision Engine in `README.md`.
+- Updated `VERSION.md` to v0.7 Alpha.
+- Added `99_Verification/Audit_Report_v0.7_Alpha.md`.
+- Kept scope limited to operating mechanism: no new framework, no changes to Core, Trading OS,
+  Portfolio Rules, Living Database structure, software, scripts, or agents.
+
 ## v0.6 Alpha - 2026-06-29
 
 - Added root `AGENTS.md` with Atlas hard rules and Codex routing rules.
