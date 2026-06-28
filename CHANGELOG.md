@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.6 Alpha - 2026-06-29
+
+- Added root `AGENTS.md` with Atlas hard rules and Codex routing rules.
+- Added repo-scoped Codex skills under `.agents/skills/`:
+  - `atlas-research`
+  - `atlas-daily`
+  - `atlas-portfolio`
+  - `atlas-repository`
+  - `atlas-architecture`
+- Documented Codex routing in `README.md`.
+- Updated `VERSION.md` to v0.6 Alpha.
+- Added `99_Verification/Audit_Report_v0.6_Alpha.md`.
+- Kept scope limited to project-level Codex instructions and skill routing: no dashboard, crawler,
+  API, database program, automation, or trading bot.
+
 ## Portfolio OS Alpha - 2026-06-29
 
 - Added `06_Portfolio/` as the Portfolio Layer.

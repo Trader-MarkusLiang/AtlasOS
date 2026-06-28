@@ -1,10 +1,10 @@
 # Version
 
-Current version: Portfolio OS Alpha
+Current version: v0.6 Alpha
 
-Date: 2026-06-28
+Date: 2026-06-29
 
-Stage: Portfolio Operating System Alpha
+Stage: Codex Project Routing Alpha
 
 Scope:
 
@@ -15,6 +15,10 @@ Scope:
 - Add minimum record fields for company scoring, evidence, external signals, financial mapping, and risk thresholds.
 - Seed the first Priority S/A/B living company database for long-term research tracking.
 - Establish Portfolio Layer for capital, execution, and review governance.
+- Establish root `AGENTS.md` hard rules and routing rules for Codex conversations.
+- Add repo-scoped Atlas skills for Research, Daily, Portfolio, Repository, and Architecture
+  workflows.
+- Keep routing lightweight: no dashboard, crawler, API, database program, automation, or trading bot.
 - Keep the project simple and avoid premature software development.
 
 ## Version Semantics

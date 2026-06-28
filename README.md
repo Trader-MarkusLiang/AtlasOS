@@ -6,7 +6,7 @@ This repository stores the core Atlas framework in Git so the principles, reason
 market maps, trading discipline, and verification cases can be versioned and reused by Codex,
 ChatGPT, and future agents.
 
-Current stage: Knowledge Repository / Core Framework Migration.
+Current stage: Codex-routed Knowledge Repository / Core Framework Migration.
 
 This stage does not build a dashboard, API, database, crawler, agent automation, or complex
 software architecture.
@@ -23,10 +23,30 @@ software architecture.
 | `05_Cases/` | Case notes used by the framework |
 | `06_Portfolio/` | Portfolio layer for capital, execution, and review governance |
 | `99_Verification/` | Migration checklist, regression tests, and acceptance criteria |
+| `.agents/skills/` | Repo-scoped Codex workflow routing skills |
 
 ## Version
 
-Current version: Portfolio OS Alpha.
+Current version: v0.6 Alpha.
+
+## Codex Routing
+
+Atlas OS uses Codex project-level routing so new conversations can inherit core operating rules
+without repeating a long prompt.
+
+- `AGENTS.md` is the root project instruction file. It stores only hard rules and routing rules.
+- `.agents/skills/atlas-research/` handles research, signal judgment, seven-layer reasoning, and
+  Living Database update suggestions.
+- `.agents/skills/atlas-daily/` handles daily Atlas reports and daily signal triage.
+- `.agents/skills/atlas-portfolio/` handles portfolio, position, allocation, and Execution Log
+  workflows.
+- `.agents/skills/atlas-repository/` handles Git, Markdown maintenance, audit reports, commits,
+  tags, and version work.
+- `.agents/skills/atlas-architecture/` handles framework review, module boundaries, audit package
+  design, and release gate checks.
+
+All user-provided market information starts as a Signal. Research must pass through Seven Layer
+Reasoning before it can affect trading or portfolio action.
 
 ## Living Database
 
