@@ -5,6 +5,9 @@ Authority: current ranking snapshot.
 This file records the current bottleneck ranking using the classification system defined in
 `01_Framework/AI_Bottleneck_Index.md`.
 
+Version semantics: repository releases use `v0.x Alpha`; `v1` identifies this ranking snapshot.
+The snapshot can remain stable across repository releases until the bottleneck ranking changes.
+
 | Bottleneck | Current State | Notes |
 |---|---|---|
 | Memory | S+ | DRAM / HBM pressure remains central |

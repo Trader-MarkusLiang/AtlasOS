@@ -5,6 +5,10 @@ Authority: classification system.
 This file defines the bottleneck taxonomy. Current rankings belong in
 `04_Current_State/Bottleneck_Map_v1.md`.
 
+Version semantics: repository releases use `v0.x Alpha`; state labels such as `v0.1 State`
+identify the knowledge snapshot that first recorded the ranking. Updating the repository version
+does not automatically rewrite the historical state label.
+
 Atlas does not classify AI opportunities mainly by traditional industry. It classifies them by
 AI-system bottleneck.
 

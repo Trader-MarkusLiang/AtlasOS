@@ -25,3 +25,13 @@ A signal may be promoted from Watch to Action only after it records:
 | Date | Signal | Layer Changed | Bottleneck | Evidence | Action |
 |---|---|---|---|---|---|
 | Weekly review | New market signal | Fact / Physics / Engineering / Economics / Finance / Capital / Trading | Named bottleneck | Linked case, source, or framework file | Watch / Promote / Reject |
+
+## External Signal Record Template
+
+Use this table for signals that originate outside the Atlas repository, such as earnings calls,
+customer announcements, supply-chain checks, pricing reports, policy events, competitor moves, or
+market dislocations.
+
+| Date | External Signal | Source Type | Source / Link | Affected Layer | Bottleneck | Initial Read | Evidence Quality | Counter Argument | Required Confirmation | Action |
+|---|---|---|---|---|---|---|---|---|---|---|
+| YYYY-MM-DD | Signal summary | Filing / Earnings / News / Research / Channel check / Price action / Policy | Source reference | Fact / Physics / Engineering / Economics / Finance / Capital / Trading | Named bottleneck | One-sentence Atlas read | Low / Medium / High | Strongest reason this signal may be wrong | Order, price, margin, ROI, or case confirmation needed | Watch / Promote / Reject |

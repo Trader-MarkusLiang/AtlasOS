@@ -22,3 +22,9 @@
 | v0.3 high-priority TBD placeholders cleared | Done |
 | v0.3 framework/snapshot authority clarified | Done |
 | v0.3 first six cases converted to seven-layer reasoning | Done |
+| v0.4 company-level scoring fields added | Done |
+| v0.4 real evidence templates added | Done |
+| v0.4 external signal template added | Done |
+| v0.4 company/financial mapping fields added | Done |
+| v0.4 risk trigger thresholds added | Done |
+| v0.4 repository/snapshot version semantics clarified | Done |

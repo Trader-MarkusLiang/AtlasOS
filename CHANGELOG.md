@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.4 Alpha - 2026-06-29
+
+- Added company-level scoring fields to AI Shovel 100.
+- Added real order, capacity, delivery, backlog, shipment, utilization, and qualification evidence fields to Order Book.
+- Added external signal recording fields to Alpha Radar.
+- Added company and financial mapping fields to Price Transmission.
+- Added trigger threshold fields to Risk Radar.
+- Clarified repository release version versus knowledge snapshot version semantics.
+- Added `99_Verification/Audit_Report_v0.4_Alpha.md`.
+- Kept scope limited to Markdown research database maintenance: no new framework, dashboard, agent, database program, code, or large directory.
+
 ## v0.3 Alpha - 2026-06-28
 
 - Cleared high-priority `TBD` placeholders from database and Trading OS templates.

@@ -12,6 +12,21 @@
 | Pricing power | 5% |
 | Current bottleneck exposure | 5% |
 
+## Company-Level Scoring Table
+
+Use this table to turn the candidate pool into a research database. Scores use a 0-5 scale for each
+dimension, then apply the weights above.
+
+| Date | Company | Ticker / Chain | Bottleneck | Region | Technical Barrier | Order Certainty | 3Y Earnings Elasticity | Capital Recognition | Trading Position | Pricing Power | Bottleneck Exposure | Weighted Score | Evidence | Review Trigger |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+| 2026-06-29 | Example entry | Ticker or chain | Memory / Equipment / Materials / Bandwidth | Global / Domestic | 0-5 | 0-5 | 0-5 | 0-5 | 0-5 | 0-5 | 0-5 | 0-100 | Link to Order Book, Price Transmission, case, or source note | Event or date for re-score |
+
+## Scoring Rule
+
+- A company cannot be ranked as core unless it has evidence in at least one of Order Book, Price Transmission, or a case replay.
+- If evidence is missing, keep the company in the candidate pool and leave it unranked.
+- Review scores when orders, pricing, margins, bottleneck ranking, or capital position changes.
+
 ## Initial Candidate Pool
 
 ### Memory

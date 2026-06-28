@@ -5,6 +5,9 @@ Authority: current snapshot.
 This file records the current market placement using the framework defined in
 `01_Framework/Capital_Relay.md`.
 
+Version semantics: repository releases use `v0.x Alpha`; map labels such as `v1` or `v0.1 capital
+map` identify the snapshot version of the market view, not the repository release version.
+
 Current v0.1 capital map:
 
 ```text

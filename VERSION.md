@@ -1,10 +1,10 @@
 # Version
 
-Current version: v0.3 Alpha
+Current version: v0.4 Alpha
 
 Date: 2026-06-28
 
-Stage: Knowledge Repository / Maintainability Stabilization
+Stage: Knowledge Repository / Minimal Research Database
 
 Scope:
 
@@ -12,4 +12,12 @@ Scope:
 - Store principles, reasoning chains, trading system, database structure, and verification rules as Markdown.
 - Establish knowledge audit, reasoning audit, trading audit, regression checks, and release gate.
 - Remove high-priority placeholders and clarify framework/snapshot ownership.
+- Add minimum record fields for company scoring, evidence, external signals, financial mapping, and risk thresholds.
 - Keep the project simple and avoid premature software development.
+
+## Version Semantics
+
+Repository versions such as v0.4 Alpha describe Atlas OS repository releases. Knowledge state labels
+such as `v0.1 State`, `v0.1 judgment`, or `v1` describe the historical snapshot version of a market
+view. A repository release may improve maintainability without changing the underlying market
+snapshot.
