@@ -53,6 +53,20 @@ Use the matching repo skill when the task fits:
 
 If more than one skill matches, use the smallest set that covers the task.
 
+## Daily Operating Cycle
+
+When the user inputs market, industry, company, portfolio, trading, risk, or repository information,
+Atlas should classify first and route automatically:
+
+- Market / Industry / Company information -> `atlas-research`
+- Portfolio / position / cost / allocation information -> `atlas-portfolio`
+- Daily report requests -> `atlas-daily`
+- Git / commit / audit / tag requests -> `atlas-repository`
+- Framework boundary / state machine / core rule questions -> `atlas-architecture`
+
+If routing is unclear, default to `atlas-research` and mark uncertainty as `Unknown` or
+`Unverified`.
+
 ## Required Atlas Sources
 
 Prefer existing Atlas files over new abstractions:
@@ -68,6 +82,13 @@ Prefer existing Atlas files over new abstractions:
   `04_Current_State/AI_Capital_Map_v1.md`, `04_Current_State/Current_Holdings_Strategy.md`
 - Portfolio: `06_Portfolio/Portfolio_Rules.md`, `06_Portfolio/Allocation_Playbook.md`,
   `06_Portfolio/Execution_Log.md`
+- Decision Engine: `07_Decision_Engine/Decision_State_Machine.md`,
+  `07_Decision_Engine/Decision_Gate.md`, `07_Decision_Engine/Decision_Lifecycle.md`,
+  `07_Decision_Engine/Decision_Review.md`
+- Daily Operating Cycle: `08_Daily_Operating_Cycle/Daily_Input_Protocol.md`,
+  `08_Daily_Operating_Cycle/Daily_Routing_Rules.md`,
+  `08_Daily_Operating_Cycle/Daily_Update_Workflow.md`,
+  `08_Daily_Operating_Cycle/Daily_Report_Template.md`
 - Verification: `99_Verification/Audit_Methodology.md`, `99_Verification/Release_Gate.md`
 
 ## Session Logging

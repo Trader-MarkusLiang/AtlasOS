@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-06-29_0115_atlas-daily-operating-cycle-alpha.md`
 - `docs/codex-sessions/completed/2026-06-29_0106_atlas-decision-engine-alpha.md`
 - `docs/codex-sessions/completed/2026-06-29_0056_atlas-codex-routing-v06.md`
 - `docs/codex-sessions/completed/2026-06-29_0053_codex-capability-check-atlas.md`

@@ -1,10 +1,10 @@
 # Version
 
-Current version: v0.7 Alpha
+Current version: v0.8 Alpha
 
 Date: 2026-06-29
 
-Stage: Decision Engine Alpha
+Stage: Daily Operating Cycle Alpha
 
 Scope:
 
@@ -23,6 +23,9 @@ Scope:
   Portfolio, Review, Repository, Daily, and Architecture.
 - Keep Decision Engine separate from Framework: no change to Atlas Principles, Seven Layer
   Reasoning, Trading Discipline, Portfolio Rules, or Living Database structure.
+- Establish Daily Operating Cycle as the daily input, routing, update, and report workflow.
+- Keep Daily Operating Cycle as Markdown procedure and template only: no program, script,
+  automation, agent, dashboard, crawler, API, or new investment framework.
 - Keep the project simple and avoid premature software development.
 
 ## Version Semantics

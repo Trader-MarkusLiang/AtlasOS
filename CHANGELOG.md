@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.8 Alpha - 2026-06-29
+
+- Added `08_Daily_Operating_Cycle/` for daily Atlas operation.
+- Added `Daily_Input_Protocol.md` for daily user input types and first-response classification.
+- Added `Daily_Routing_Rules.md` mapping daily tasks to Atlas skills.
+- Added `Daily_Update_Workflow.md` defining the daily sequence from input to report and optional
+  repository sync.
+- Added `Daily_Report_Template.md` as the one-page daily output template.
+- Updated `AGENTS.md` with Daily Operating Cycle routing rules and required sources.
+- Documented daily use in `README.md`.
+- Updated `VERSION.md` to v0.8 Alpha.
+- Added `99_Verification/Audit_Report_v0.8_Alpha.md`.
+- Kept scope limited to daily operating procedure and template: no new investment framework,
+  Core changes, Portfolio Rules changes, software, scripts, automation, or agents.
+
 ## v0.7 Alpha - 2026-06-29
 
 - Added `07_Decision_Engine/` as the Atlas Decision Engine operating mechanism.

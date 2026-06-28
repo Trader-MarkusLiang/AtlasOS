@@ -6,7 +6,7 @@ This repository stores the core Atlas framework in Git so the principles, reason
 market maps, trading discipline, and verification cases can be versioned and reused by Codex,
 ChatGPT, and future agents.
 
-Current stage: Decision Operating System Alpha.
+Current stage: Daily Operating Cycle Alpha.
 
 This stage does not build a dashboard, API, database, crawler, agent automation, or complex
 software architecture.
@@ -23,12 +23,13 @@ software architecture.
 | `05_Cases/` | Case notes used by the framework |
 | `06_Portfolio/` | Portfolio layer for capital, execution, and review governance |
 | `07_Decision_Engine/` | Decision lifecycle, gates, review, and state-machine operating mechanism |
+| `08_Daily_Operating_Cycle/` | Daily input protocol, routing rules, update workflow, and report template |
 | `99_Verification/` | Migration checklist, regression tests, and acceptance criteria |
 | `.agents/skills/` | Repo-scoped Codex workflow routing skills |
 
 ## Version
 
-Current version: v0.7 Alpha.
+Current version: v0.8 Alpha.
 
 ## Codex Routing
 
@@ -83,6 +84,32 @@ Archive
 Decision Engine connects Research, Trading OS, Portfolio, Review, Repository, Daily, and
 Architecture into one closed loop. It does not change Atlas Principles, Seven Layer Reasoning,
 Trading Discipline, Portfolio Rules, or the Living Database structure.
+
+## Daily Use
+
+v0.8 Alpha adds the Daily Operating Cycle. Each day, the user can input market, industry, company,
+portfolio, risk, trading, or repository information in rough form.
+
+Atlas processes daily input in this order:
+
+```text
+Classify input
+ ↓
+Route to the matching skill
+ ↓
+Place item into Decision Engine state
+ ↓
+Update research judgment if evidence supports it
+ ↓
+Review portfolio impact if relevant
+ ↓
+Output Atlas Daily Report
+ ↓
+Prepare Repository Sync only if the user confirms
+```
+
+If routing is unclear, Atlas defaults to Research and marks missing evidence as `Unknown` or
+`Unverified`.
 
 ## Living Database
 
