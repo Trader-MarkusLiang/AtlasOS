@@ -1,0 +1,14 @@
+.DS_Store
+
+# Local environment and editor state
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+
+# Generated archives and temporary files
+*.tmp
+*.log
+dist/
+build/

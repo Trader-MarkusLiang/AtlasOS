@@ -1,0 +1,20 @@
+# Atlas Principles
+
+1. Follow Capital, Not Noise.  
+   追踪资本，而非情绪。
+
+2. Capital Always Follows ROI.  
+   资本最终追逐 ROI。
+
+3. Research the Future. Trade the Transition.  
+   研究未来，交易拐点。
+
+4. 热点只是 Signal，不是 Action。
+
+5. 产业决定方向，交易决定仓位。
+
+6. 高信念 + 高赔率，才值得重仓。
+
+7. Atlas 不是为了证明自己正确，而是为了不断接近真实世界。
+
+8. 如果事实改变，Atlas 必须修正模型。

@@ -1,0 +1,51 @@
+# Regression Tests
+
+## Case 1: Apple Purchases CXMT
+
+Expected output:
+
+- Strengthen Memory.
+- Strengthen domestic substitution.
+- Strengthen Equipment / Materials.
+- Do not directly chase CXMT concept stocks.
+
+## Case 2: DeepSeek Spark
+
+Expected output:
+
+- Introduce Jevons Paradox.
+- Inference efficiency improvement may amplify Token demand.
+- Memory / Equipment still benefit.
+
+## Case 3: Nomura FCF Chart
+
+Expected output:
+
+- AI giants become asset-heavy in the short term.
+- Shovel sellers benefit.
+- Track ROI / FCF.
+
+## Case 4: Corning
+
+Expected output:
+
+- Bandwidth is upgraded into a first-level bottleneck.
+- Do not chase directly.
+- Search for domestic Bandwidth beneficiary chain.
+
+## Case 5: Korea Memory CapEx
+
+Expected output:
+
+- Strengthen Memory.
+- Strengthen Equipment / Materials even more.
+- Do not directly conclude that the cycle is ending.
+
+## Case 6: Google Limits Meta Use of Gemini
+
+Expected output:
+
+- Inference compute is still undersupplied.
+- AI Infrastructure Gap expands.
+- Memory / Equipment / Materials continue to benefit.
+- Do not chase; wait for pullback.
