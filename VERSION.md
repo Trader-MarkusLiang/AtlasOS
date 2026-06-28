@@ -1,10 +1,10 @@
 # Version
 
-Current version: v0.5 Alpha
+Current version: Portfolio OS Alpha
 
 Date: 2026-06-28
 
-Stage: Living Database Seed
+Stage: Portfolio Operating System Alpha
 
 Scope:
 
@@ -14,6 +14,7 @@ Scope:
 - Remove high-priority placeholders and clarify framework/snapshot ownership.
 - Add minimum record fields for company scoring, evidence, external signals, financial mapping, and risk thresholds.
 - Seed the first Priority S/A/B living company database for long-term research tracking.
+- Establish Portfolio Layer for capital, execution, and review governance.
 - Keep the project simple and avoid premature software development.
 
 ## Version Semantics

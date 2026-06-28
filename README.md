@@ -21,11 +21,12 @@ software architecture.
 | `03_Trading_OS/` | Templates that turn research into trading actions |
 | `04_Current_State/` | Current maps, holdings strategy, and growth-curve state |
 | `05_Cases/` | Case notes used by the framework |
+| `06_Portfolio/` | Portfolio layer for capital, execution, and review governance |
 | `99_Verification/` | Migration checklist, regression tests, and acceptance criteria |
 
 ## Version
 
-Current version: v0.5 Alpha.
+Current version: Portfolio OS Alpha.
 
 ## Living Database
 
@@ -36,6 +37,17 @@ Starting in v0.5 Alpha, Atlas tracks companies as living research records:
 - Priority B: watch pool, promoted only after evidence improves.
 
 Unknown or unsupported data must be recorded as `Unknown` or `Unverified`.
+
+## Portfolio Layer
+
+Portfolio OS Alpha adds a portfolio layer around real capital:
+
+- Living Database handles Research.
+- Portfolio handles Capital.
+- Execution handles Trade.
+- Review handles Learning.
+
+Real holdings must stay out of Git in `portfolio.local.yaml`; Git stores only the template.
 
 See `VERSION.md` and `CHANGELOG.md`.
 

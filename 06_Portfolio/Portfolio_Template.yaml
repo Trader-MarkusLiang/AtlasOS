@@ -1,0 +1,17 @@
+portfolio:
+  company:
+  ticker:
+  priority:
+  portfolio:
+  current_position:
+  weight:
+  target_weight:
+  cost:
+  market:
+  conviction:
+  capital_action:
+  thesis:
+  next_trigger:
+  stop_condition:
+  review_frequency:
+  last_update:

@@ -1,5 +1,17 @@
 # Changelog
 
+## Portfolio OS Alpha - 2026-06-29
+
+- Added `06_Portfolio/` as the Portfolio Layer.
+- Added `Portfolio_README.md`, `Portfolio_Template.yaml`, `Portfolio_Rules.md`, `Execution_Log.md`, and `Allocation_Playbook.md`.
+- Added Portfolio responsibility boundaries: Living Database = Research, Portfolio = Capital, Execution = Trade, Review = Learning.
+- Added position lifecycle, capital action vocabulary, conviction, priority, and review frequency rules.
+- Added portfolio review checklist for daily, weekly, and monthly review.
+- Added allocation playbook for pullback, acceleration, and risk-release scenarios.
+- Added `portfolio.local.yaml` and `06_Portfolio/portfolio.local.yaml` to `.gitignore`.
+- Added `99_Verification/Audit_Report_Portfolio_OS_Alpha.md`.
+- Kept scope limited to Portfolio Layer: no new framework, dashboard, agent, program, automation script, or core-principle change.
+
 ## v0.5 Alpha - 2026-06-29
 
 - Seeded the first Atlas Living Database in `02_Databases/AI_Shovel_100.md`.

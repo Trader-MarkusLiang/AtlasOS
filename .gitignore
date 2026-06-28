@@ -12,3 +12,7 @@
 *.log
 dist/
 build/
+
+# Local portfolio data
+portfolio.local.yaml
+06_Portfolio/portfolio.local.yaml
