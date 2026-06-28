@@ -49,3 +49,21 @@ Expected output:
 - AI Infrastructure Gap expands.
 - Memory / Equipment / Materials continue to benefit.
 - Do not chase; wait for pullback.
+
+## Case 7: HBM Supercycle
+
+Expected output:
+
+- Strengthen Memory as a first-level bottleneck.
+- Reinforce Equipment and Materials because HBM capacity expansion requires more process intensity.
+- Track whether HBM pricing and supply tightness transmit into earnings.
+- Avoid treating the supercycle label as an automatic chase signal.
+
+## Case 8: DRAM Supercycle
+
+Expected output:
+
+- Strengthen Memory and DRAM allocation logic.
+- Confirm whether demand is driven by AI server growth, not only traditional cycle recovery.
+- Watch capex discipline, inventory, and pricing power.
+- Keep position discipline if price already reflects the thesis.

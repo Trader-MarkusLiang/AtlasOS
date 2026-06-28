@@ -8,4 +8,5 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-06-28_2245_atlas-os-v02-audit.md`
 - `docs/codex-sessions/completed/2026-06-28_2220_atlas-os-git-build.md`

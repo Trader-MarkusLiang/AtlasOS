@@ -25,6 +25,11 @@ software architecture.
 
 ## Version
 
-Current version: v0.1 Alpha.
+Current version: v0.2 Alpha.
 
 See `VERSION.md` and `CHANGELOG.md`.
+
+## Audit
+
+Every release must pass the Atlas Audit levels in `99_Verification/Audit_Methodology.md`
+and the release gate in `99_Verification/Release_Gate.md`.

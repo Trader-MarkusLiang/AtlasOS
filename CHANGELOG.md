@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2 Alpha - 2026-06-28
+
+- Added the v0.2 migration blueprint under `docs/`.
+- Added Atlas Audit methodology with four audit levels: Structure, Knowledge, Reasoning, and Trading.
+- Added v0.2 Audit Report and Release Gate.
+- Expanded reasoning audit coverage with HBM Supercycle and DRAM Supercycle cases.
+- Updated regression tests and acceptance criteria for v0.2 Alpha.
+- Preserved the no-dashboard, no-agent, no-crawler, no-API, no-database-program stage boundary.
+
 ## v0.1 Alpha - 2026-06-28
 
 - Created the Atlas OS Git knowledge repository.
