@@ -1,5 +1,10 @@
 # AI Bottleneck Index
 
+Authority: classification system.
+
+This file defines the bottleneck taxonomy. Current rankings belong in
+`04_Current_State/Bottleneck_Map_v1.md`.
+
 Atlas does not classify AI opportunities mainly by traditional industry. It classifies them by
 AI-system bottleneck.
 

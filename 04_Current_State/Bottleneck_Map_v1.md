@@ -1,5 +1,10 @@
 # Bottleneck Map v1
 
+Authority: current ranking snapshot.
+
+This file records the current bottleneck ranking using the classification system defined in
+`01_Framework/AI_Bottleneck_Index.md`.
+
 | Bottleneck | Current State | Notes |
 |---|---|---|
 | Memory | S+ | DRAM / HBM pressure remains central |

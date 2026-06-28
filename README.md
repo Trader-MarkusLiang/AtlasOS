@@ -25,7 +25,7 @@ software architecture.
 
 ## Version
 
-Current version: v0.2 Alpha.
+Current version: v0.3 Alpha.
 
 See `VERSION.md` and `CHANGELOG.md`.
 

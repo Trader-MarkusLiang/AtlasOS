@@ -1,5 +1,10 @@
 # Capital Relay
 
+Authority: framework definition.
+
+This file defines the capital relay model. Current market placement belongs in
+`04_Current_State/AI_Capital_Map_v1.md`.
+
 Current capital migration path:
 
 ```text

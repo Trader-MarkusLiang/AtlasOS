@@ -1,5 +1,10 @@
 # AI Capital Map v1
 
+Authority: current snapshot.
+
+This file records the current market placement using the framework defined in
+`01_Framework/Capital_Relay.md`.
+
 Current v0.1 capital map:
 
 ```text

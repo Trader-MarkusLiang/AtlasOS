@@ -2,8 +2,26 @@
 
 Alpha Radar tracks signals that may become tradable only after they pass the Atlas reasoning chain.
 
-## Template
+## Current Priority Signals
 
 | Date | Signal | Layer Changed | Bottleneck | Evidence | Action |
 |---|---|---|---|---|---|
-| TBD | TBD | TBD | TBD | TBD | Watch |
+| 2026-06-28 | Memory remains the strongest current AI bottleneck | L5 Capital | Memory | `04_Current_State/Bottleneck_Map_v1.md` ranks Memory S+ | Watch for non-crowded add windows |
+| 2026-06-28 | Equipment is the next capital relay after Memory | L5 Capital | Equipment | `01_Framework/Capital_Relay.md` says Equipment is taking the relay | Watch order certainty and pullbacks |
+| 2026-06-28 | Bandwidth upgraded into a first-level theme | L1 Physics / L5 Capital | Bandwidth | `05_Cases/Corning_Bandwidth.md` and bottleneck map rank Bandwidth S | Watch domestic beneficiary chain |
+
+## Entry Rule
+
+A signal may be promoted from Watch to Action only after it records:
+
+1. Changed reasoning layer.
+2. Affected bottleneck.
+3. Evidence source.
+4. Counter argument.
+5. Trading trigger.
+
+## Review Cadence
+
+| Date | Signal | Layer Changed | Bottleneck | Evidence | Action |
+|---|---|---|---|---|---|
+| Weekly review | New market signal | Fact / Physics / Engineering / Economics / Finance / Capital / Trading | Named bottleneck | Linked case, source, or framework file | Watch / Promote / Reject |

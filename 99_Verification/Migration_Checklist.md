@@ -19,3 +19,6 @@
 | v0.2 Release gate written | Done |
 | HBM Supercycle case written | Done |
 | DRAM Supercycle case written | Done |
+| v0.3 high-priority TBD placeholders cleared | Done |
+| v0.3 framework/snapshot authority clarified | Done |
+| v0.3 first six cases converted to seven-layer reasoning | Done |

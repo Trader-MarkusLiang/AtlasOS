@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.3 Alpha - 2026-06-28
+
+- Cleared high-priority `TBD` placeholders from database and Trading OS templates.
+- Filled Alpha Radar, Order Book, Risk Radar, Price Transmission, Daily Dashboard Template, Trading Decision Table, and Capital Rotation Table with maintainable baseline content.
+- Clarified framework/snapshot authority for Capital Relay, AI Capital Map, AI Bottleneck Index, and Bottleneck Map.
+- Converted the first six regression cases into the unified seven-layer reasoning format.
+- Added `99_Verification/Audit_Report_v0.3_Alpha.md`.
+- Kept scope limited to Markdown knowledge maintenance: no new framework, dashboard, agent, database program, or code.
+
 ## v0.2 Alpha - 2026-06-28
 
 - Added the v0.2 migration blueprint under `docs/`.
