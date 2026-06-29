@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.1 RC Polish - 2026-06-29
+
+- Polished v2.1 RC before Production Trial without adding new capabilities or engines.
+- Standardized Improvement Proposal IDs as `IP-YYYY-NNN` with independent Category.
+- Added roadmap stage meanings: Released, Current, Planned, Ideas, and Deprecated.
+- Added Deprecated roadmap record for the Old Stage Model replaced by Deployment Lifecycle.
+- Strengthened Release Gate with Production Trial Validation.
+- Defined release lifecycle: Alpha -> RC -> Production Trial -> Final.
+- Defined Production Trial as frozen architecture, daily real usage, bug fixes and usability
+  improvements only, no new Engine, and no workflow redesign.
+- Standardized CDE explainability around What, Why, Limits, and Change Trigger.
+- Added `99_Verification/Audit_Report_v2.1_RC_Final_Polish.md`.
+- Did not modify Seven Layer Reasoning, World Model, Knowledge Distillation, Decision Engine,
+  Portfolio Rules, Capital Deployment logic, Daily Operating Cycle, databases, or private portfolio
+  files.
+
 ## v2.1 RC - 2026-06-29
 
 - Entered Run First stage: freeze major architecture expansion and make Atlas usable every trading

@@ -12,6 +12,10 @@ Stage: Run First + Capital Deployment Engine
 
 Presentation stage: Decision Experience v1.1 RC
 
+Release lifecycle: Alpha -> RC -> Production Trial -> Final
+
+Current release position: RC, preparing for Production Trial
+
 Scope:
 
 - Rebuild Atlas OS core framework in Git.
@@ -59,6 +63,9 @@ Scope:
   derivation, and complete Deployment Lifecycle.
 - Future modules are roadmap only: Risk Budget Engine, Execution Governance Engine, Performance
   Attribution, and Meta Learning Engine are Planned, not implemented.
+- Standardize Improvement Proposal IDs as `IP-YYYY-NNN` with independent Category.
+- Add Production Trial release status and validation principle.
+- Add Deprecated roadmap stage for architectural traceability.
 
 ## Version Semantics
 

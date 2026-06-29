@@ -34,7 +34,28 @@ software architecture.
 
 Current version: v2.1 RC.
 
-Latest release tag: v2.1-rc.
+Latest release tag: v2.1-rc-polish.
+
+Release lifecycle:
+
+```text
+Alpha
+ ↓
+RC
+ ↓
+Production Trial
+ ↓
+Final
+```
+
+Production Trial means:
+
+- Architecture frozen.
+- Daily real usage.
+- Only bug fixes.
+- Only usability improvements.
+- No new Engine.
+- No workflow redesign.
 
 Current architecture diagram:
 
@@ -155,6 +176,8 @@ CDE output must be explainable:
   Portfolio Exposure, Dry Powder, and Market Risk.
 - Today's Authority must show its origin from Deployment Score, Deployment Lifecycle, Dry Powder,
   Execution Risk, and a short reason.
+- Deployment Score, Authority, and Deployment Lifecycle should all answer: What, Why, what limits
+  the decision, and what could change the decision.
 
 Deployment Lifecycle:
 
@@ -176,6 +199,34 @@ CDE never predicts prices and never executes trades. Authority is permission, no
 
 Run First roadmap:
 
+Roadmap stage meanings:
+
+| Stage | Meaning |
+|---|---|
+| Released | Production-ready capability. |
+| Current | Actively under refinement. |
+| Planned | Architecture approved but intentionally not implemented. |
+| Ideas | Interesting concepts waiting for real-world validation. |
+| Deprecated | Historical capability retained only for traceability. |
+
+Released:
+
+- Seven Layer Reasoning.
+- Decision Engine.
+- World Model.
+- Portfolio OS.
+- Daily Operating Cycle.
+- Decision First user experience.
+
+Current:
+
+- Run First v2.1 RC.
+- Explainable Capital Deployment Engine.
+- Deployment Lifecycle.
+- Authority Explainability.
+
+Planned:
+
 | Future Milestone | Status |
 |---|---|
 | Risk Budget Engine | Planned |
@@ -185,6 +236,34 @@ Run First roadmap:
 
 These modules are not implemented in v2.1 RC. Atlas will add them only if real operation exposes
 the need.
+
+Ideas:
+
+- None accepted for implementation.
+
+Deprecated:
+
+| Deprecated Concept | Replaced By | Reason |
+|---|---|---|
+| Old Stage Model | Deployment Lifecycle | Lower explainability. |
+
+## Improvement Proposals
+
+Future Improvement Proposal IDs must be globally unique.
+
+Use `IP-YYYY-NNN`, for example `IP-2026-001`.
+
+Do not encode module names in the ID. Use an independent `Category` field.
+
+Supported categories:
+
+- Knowledge
+- World Model
+- Decision Engine
+- Portfolio
+- Capital Deployment
+- User Experience
+- Engineering
 
 ## Daily Use
 

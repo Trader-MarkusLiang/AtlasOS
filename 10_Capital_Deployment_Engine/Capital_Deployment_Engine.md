@@ -28,6 +28,19 @@ Atlas 的成长来自真实投资决策，而不是不断增加功能。
 v2.1 RC freezes major architecture expansion. CDE should become more usable every trading day
 before Atlas adds any new engine.
 
+## Explainability Standard
+
+CDE explanations should be concise and decision-first.
+
+Every Deployment Score, Authority, and Deployment Lifecycle output should answer:
+
+1. What is the current decision?
+2. Why is this the decision?
+3. What limits this decision?
+4. What could change this decision?
+
+Do not expose unnecessary implementation detail in the default Decision Brief.
+
 ## Architecture Position
 
 ```text
@@ -150,6 +163,15 @@ Reason:
 - Large price dislocation.
 - Portfolio already highly deployed.
 - Preserve strategic cash.
+
+Limits:
+- Dry Powder is limited.
+- Portfolio exposure is already high.
+
+Could Change:
+- Evidence quality improves.
+- Market risk falls.
+- Portfolio exposure is reduced.
 ```
 
 The score is invalid if it is only a single number.
@@ -195,6 +217,9 @@ Medium
 
 Reason:
 Deployment authority is limited by portfolio exposure and remaining strategic cash.
+
+Could Change:
+Authority may increase if evidence quality improves, market risk falls, or exposure room improves.
 ```
 
 Authority is invalid if it does not show the score, lifecycle stage, dry powder, execution risk,
@@ -380,7 +405,66 @@ No `Buy` / `Sell` language.
 
 No automatic trading.
 
+## Improvement Proposal Standard
+
+Improvement Proposal IDs must be globally unique.
+
+Use:
+
+```text
+IP-YYYY-NNN
+```
+
+Example:
+
+```text
+IP-2026-001
+Category: Capital Deployment
+```
+
+Do not encode module names in the ID. Use `Category` as an independent field.
+
+Supported categories:
+
+- Knowledge
+- World Model
+- Decision Engine
+- Portfolio
+- Capital Deployment
+- User Experience
+- Engineering
+
 ## Roadmap
+
+Atlas roadmap stages:
+
+| Stage | Meaning |
+|---|---|
+| Released | Production-ready capability. |
+| Current | Actively under refinement. |
+| Planned | Architecture approved but intentionally not implemented. |
+| Ideas | Interesting concepts waiting for real-world validation. |
+| Deprecated | Historical capability retained only for traceability. |
+
+Current roadmap:
+
+### Released
+
+- Seven Layer Reasoning.
+- Decision Engine.
+- World Model.
+- Portfolio OS.
+- Daily Operating Cycle.
+- Decision First user experience.
+
+### Current
+
+- Run First v2.1 RC.
+- Explainable Capital Deployment Engine.
+- Deployment Lifecycle.
+- Authority Explainability.
+
+### Planned
 
 The following modules are planned future milestones only.
 
@@ -394,3 +478,13 @@ They are not implemented in v2.1 RC:
 | Meta Learning Engine | Planned | Do not implement before long-term case history exists. |
 
 Future engines must come from observed operating problems, not imagined architecture gaps.
+
+### Ideas
+
+- None accepted for implementation.
+
+### Deprecated
+
+| Deprecated Concept | Replaced By | Reason |
+|---|---|---|
+| Old Stage Model | Deployment Lifecycle | Lower explainability and weaker daily operating clarity. |

@@ -63,6 +63,11 @@ unless the user explicitly changes the project scope.
 - Do not implement Risk Budget Engine, Execution Governance Engine, Performance Attribution, or
   Meta Learning Engine unless a future user request explicitly changes project stage.
 - Atlas evolves from real investment decisions, not imagined features.
+- Improvement Proposal IDs must use `IP-YYYY-NNN` and remain globally unique. Use `Category` for
+  Knowledge, World Model, Decision Engine, Portfolio, Capital Deployment, User Experience, or
+  Engineering.
+- Roadmap stages are Released, Current, Planned, Ideas, and Deprecated. Deprecated items remain for
+  traceability and must not disappear silently.
 
 ## Response Policy
 
@@ -114,6 +119,9 @@ Decision Confidence means evidence completeness, not probability forecast of pri
 
 Capital Deployment Dashboard must expose Deployment Score composition and authority derivation
 whenever a capital action or deployment question is answered.
+
+Deployment Score, Authority, and Deployment Lifecycle explanations should answer: What, Why, what
+limits this decision, and what could change this decision.
 
 ## Routing Rules
 

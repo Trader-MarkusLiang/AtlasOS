@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-06-29_1424_v21-rc-final-polish.md`
 - `docs/codex-sessions/completed/2026-06-29_1400_run-first-cde-v21-rc.md`
 - `docs/codex-sessions/completed/2026-06-29_1253_capital-deployment-engine-v21-alpha.md`
 - `docs/codex-sessions/completed/2026-06-29_1230_save-v2-architecture-diagram.md`
