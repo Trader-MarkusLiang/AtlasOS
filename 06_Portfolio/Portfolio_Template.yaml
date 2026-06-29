@@ -1,17 +1,52 @@
-portfolio:
-  company:
-  ticker:
-  priority:
-  portfolio:
-  current_position:
-  weight:
-  target_weight:
-  cost:
-  market:
-  conviction:
-  capital_action:
-  thesis:
-  next_trigger:
-  stop_condition:
-  review_frequency:
-  last_update:
+capital_system:
+  name: Atlas Portfolio
+  principle: Atlas manages capital allocation, not wealth.
+  accounts:
+    - account: Tiger
+      deployment:
+        current: 77%
+      cash:
+        weight: 30%
+      capital_thesis:
+        thesis: Memory / AI infrastructure allocation
+        mission: Preserve exposure to confirmed AI infrastructure bottlenecks
+        review_frequency: Weekly
+      capital_buckets:
+        - bucket: Memory Exposure
+          exposure:
+            thesis: 70%
+          holdings:
+            - ticker:
+              company:
+              priority:
+              weight:
+              target_weight:
+              conviction:
+              capital_action:
+              review_frequency:
+              last_update:
+              notes:
+    - account: China
+      deployment:
+        current: 77%
+      cash:
+        weight: 23%
+      capital_thesis:
+        thesis: China AI infrastructure allocation
+        mission: Allocate to domestic AI infrastructure chains only when evidence supports thesis
+        review_frequency: Weekly
+      capital_buckets:
+        - bucket: China Infrastructure Exposure
+          exposure:
+            thesis: 77%
+          holdings:
+            - ticker:
+              company:
+              priority:
+              weight:
+              target_weight:
+              conviction:
+              capital_action:
+              review_frequency:
+              last_update:
+              notes:

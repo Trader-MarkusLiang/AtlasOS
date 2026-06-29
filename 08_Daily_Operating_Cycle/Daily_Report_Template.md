@@ -32,9 +32,26 @@ Reason:
 
 ## Portfolio 影响
 
-| Position / Theme | Impact | Decision Gate Status | Suggested Atlas Action |
-|---|---|---|---|
-| Name | None / Low / Medium / High | Blocked / Partial / Passed | Research / Observe / Build / Accumulate / Hold / Reduce / Exit |
+### Tiger
+
+| Field | Read |
+|---|---|
+| Deployment | Current deployment percentage or status |
+| Cash Allocation | Cash weight only |
+| Memory Exposure | Thesis exposure weight |
+| Action | Research / Observe / Build / Accumulate / Hold / Reduce / Exit |
+
+### China
+
+| Field | Read |
+|---|---|
+| Deployment | Current deployment percentage or status |
+| Cash Allocation | Cash weight only |
+| Infrastructure Exposure | Thesis exposure weight |
+| Action | Research / Observe / Build / Accumulate / Hold / Reduce / Exit |
+
+Daily reports must not show money, account balance, market value, net worth, cost, currency, or
+position amount.
 
 ## Risk 变化
 

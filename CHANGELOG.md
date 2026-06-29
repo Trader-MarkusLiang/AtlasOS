@@ -1,5 +1,21 @@
 # Changelog
 
+## Portfolio Allocation v1.1 - 2026-06-29
+
+- Upgraded Portfolio OS to allocation-based privacy architecture.
+- Rebuilt `06_Portfolio/Portfolio_Template.yaml` around Capital System, Account, Capital Thesis,
+  Capital Bucket, and Holding.
+- Removed cost, balance, currency, account value, market value, net worth, and position amount from
+  the Git-tracked portfolio template.
+- Added account-level cash weight and deployment status.
+- Added bucket-level exposure thesis.
+- Added Portfolio Privacy Rule and Allocation First Principle.
+- Updated Daily Report Portfolio Impact to show deployment, cash allocation, exposure, and action
+  without money fields.
+- Documented Privacy Design in `README.md` and Capital Allocation OS positioning in
+  `06_Portfolio/Portfolio_README.md`.
+- Added `99_Verification/Audit_Report_Portfolio_Privacy_v1.1.md`.
+
 ## v1.0 - 2026-06-29
 
 - Added Atlas Principle 9: Atlas does not accumulate information; Atlas distills reusable reasoning

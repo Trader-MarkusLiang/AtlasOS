@@ -202,6 +202,33 @@ Portfolio OS Alpha adds a portfolio layer around real capital:
 
 Real holdings must stay out of Git in `portfolio.local.yaml`; Git stores only the template.
 
+## Privacy Design
+
+Atlas Portfolio is a Capital Allocation Operating System, not a wealth tracker.
+
+Atlas is designed not to know the user's asset scale.
+
+Atlas does not store:
+
+- Money.
+- Balance.
+- Net worth.
+- Currency amount.
+- Market value.
+- Position amount.
+- Cost basis.
+
+Atlas stores only:
+
+- Allocation.
+- Exposure.
+- Thesis.
+- Risk.
+
+Therefore Git, Case, Audit, and Session records should not leak wealth information. They should
+describe only how capital is allocated, what exposure exists, what thesis the capital serves, and
+what risk must be reviewed.
+
 See `VERSION.md` and `CHANGELOG.md`.
 
 ## Audit

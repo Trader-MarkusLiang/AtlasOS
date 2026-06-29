@@ -3,6 +3,29 @@
 Allocation Playbook records how capital moves under different market states. Every action must be
 traceable to Trading OS.
 
+## Allocation First Principle
+
+Every Portfolio Decision must proceed in this order:
+
+```text
+Allocation
+ ↓
+Exposure
+ ↓
+Thesis
+ ↓
+Holding
+```
+
+1. Judge Allocation first.
+2. Judge Exposure second.
+3. Judge Thesis third.
+4. Judge Holding last.
+
+Do not change Capital Thesis directly because a single holding moved up or down.
+
+Decision Engine should judge exposure and capital mission, not account amount.
+
 ## Pullback
 
 ```text

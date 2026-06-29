@@ -3,6 +3,30 @@
 Atlas Portfolio Layer turns research into capital management. It does not replace the Living
 Database, Trading OS, or Execution Review.
 
+Atlas Portfolio is not:
+
+- A PMS.
+- Accounting software.
+- Wealth management software.
+- A balance tracker.
+
+Atlas Portfolio is a Capital Allocation OS.
+
+It manages:
+
+- Allocation.
+- Exposure.
+- Thesis.
+- Risk.
+
+It does not manage:
+
+- Money.
+- Balance.
+- Net worth.
+- Currency amount.
+- Account value.
+
 ## Responsibility Boundary
 
 | Layer | Responsibility |
