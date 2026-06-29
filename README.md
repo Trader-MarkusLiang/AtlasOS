@@ -35,6 +35,11 @@ Current version: v2.0 Alpha.
 
 Latest release tag: v2.0-alpha.
 
+Current architecture diagram:
+
+- `docs/assets/atlas-os-v2-cognitive-world-model-architecture.png`
+- `docs/architecture/Atlas_OS_v2_Cognitive_World_Model_Check.md`
+
 ## Architecture Principle
 
 Atlas does not collect news.
