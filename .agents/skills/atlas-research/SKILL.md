@@ -13,6 +13,9 @@ Use this skill when the task involves:
 - Deciding whether a user-provided item is a real Atlas Signal.
 - Running `Fact -> Physics -> Engineering -> Economics -> Finance -> Capital -> Trading`.
 - Suggesting updates to Living Database, Alpha Radar, Risk Radar, Order Book, or Price Transmission.
+- Candidate stocks, beneficiaries, supplier overlap, rankings, watchlists, industry-chain
+  opportunities, strategic opportunities, capital market confirmation, technical / K-line position,
+  cycle position, or which names deserve deeper research.
 
 ## required_reads
 
@@ -50,6 +53,44 @@ Return:
 9. Required confirmation.
 10. Atlas action: Research / Observe only unless a separate portfolio workflow is requested.
 11. Suggested database update, if any, with target file and fields.
+12. Strategic Candidate Dashboard only when the user asks about candidates, rankings, watchlists,
+    beneficiaries, supplier overlap, strategic opportunities, industry-chain mapping, technical
+    position, cycle position, or research priority.
+
+## strategic_candidate_dashboard
+
+Strategic Candidate Dashboard is an optional output layer, not a new Engine and not a trading
+recommendation system.
+
+It must include current holdings first when portfolio context exists, then new research candidates.
+Use the compact table:
+
+Candidate | Type | Exposure | Thesis Fit | Cycle | Evidence | Market Confirmation | Valuation Risk | Technical Status | Portfolio Fit | Trigger | Score | Tier | Atlas Stance
+
+Strategic Candidate Score is 0-100:
+
+- Thesis Fit: 20.
+- Industry Cycle Position: 15.
+- Evidence Quality: 15.
+- Capital Market Confirmation: 15.
+- Valuation / Expectation Risk: 10.
+- Technical / K-line Structure: 10.
+- Portfolio Fit: 10.
+- Trigger Readiness: 5.
+
+Tiering:
+
+- 85-100: S, strategic priority research candidate.
+- 75-84: A, strong research candidate; wait for trigger.
+- 65-74: B, valid watchlist candidate.
+- 50-64: C, low priority / needs more proof.
+- <50: Reject / Ignore.
+
+Research Priority Is Not Trading Authority. CDE Deployment Score remains the only deployment
+authority. Do not describe S Tier as Buy / Sell / Must Buy / Strong Buy.
+
+Do not invent stock price, PE / PB, market cap, K-line status, volume breakout, valuation level,
+customer order, or margin change. If unavailable, write `Data Missing` or `Needs Verification`.
 
 ## forbidden_actions
 
@@ -62,3 +103,5 @@ Return:
   when portfolio context exists.
 - Do not open a new thematic branch for a highly deployed account unless evidence quality is high,
   direct portfolio mapping exists, CDE authority allows it, and the user explicitly approves.
+- Do not treat Strategic Candidate Score as CDE Deployment Score.
+- Do not turn candidate ranking into a direct trading action.

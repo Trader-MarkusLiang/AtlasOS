@@ -68,6 +68,9 @@ unless the user explicitly changes the project scope.
   Engineering.
 - Roadmap stages are Released, Current, Planned, Ideas, and Deprecated. Deprecated items remain for
   traceability and must not disappear silently.
+- Research Priority Is Not Trading Authority. Strategic Candidate Dashboard ranks research
+  opportunities; it does not authorize capital deployment. Only CDE can authorize deployment.
+  Candidate ranking must never be presented as Buy / Sell / Must Buy / Strong Buy language.
 
 ## Production Trial Issue Rule
 
@@ -96,6 +99,26 @@ unless the user explicitly changes the project scope.
 - If the user account is already highly deployed, Atlas must not open a new thematic branch unless
   evidence quality is high, direct portfolio mapping exists, CDE authority allows it, and the user
   explicitly approves.
+
+## Strategic Candidate Dashboard Rule
+
+- Strategic Candidate Dashboard is an optional output module, not a new Engine, not a research
+  redesign, and not a trading recommendation system.
+- Add Strategic Candidate Dashboard only when the user asks about candidate stocks, beneficiaries,
+  industry-chain opportunities, supplier overlap, rankings, watchlists, strategic opportunities,
+  upstream / downstream mapping, capital market confirmation, K-line / technical position,
+  industry cycle position, waiting for entry points, or which names deserve deeper research.
+- If portfolio context exists, current holdings must be mapped before new research candidates.
+- If portfolio context is missing or stale, write:
+  `Portfolio Context Missing or Stale — Candidate Dashboard Limited`
+- Strategic Candidate Score and CDE Deployment Score are different:
+  - Strategic Candidate Score answers whether a candidate deserves research priority.
+  - CDE Deployment Score answers whether capital deployment is allowed today.
+- A candidate can be S Tier with CDE Authority 0% when price is overextended, evidence is early,
+  portfolio exposure is high, dry powder is limited, or no trigger exists.
+- Do not invent current stock price, PE / PB, market cap, K-line status, volume breakout, valuation
+  level, customer order, or margin change. If data is unavailable, write `Data Missing` or
+  `Needs Verification`.
 
 ## Response Policy
 

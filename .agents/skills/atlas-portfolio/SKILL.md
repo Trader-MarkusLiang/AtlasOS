@@ -11,6 +11,8 @@ Use this skill when the task involves:
 
 - Portfolio or position review.
 - Capital action suggestions.
+- Candidate fit versus existing holdings, portfolio overlap, supplier overlap, watchlist priority,
+  concentration risk, or strategic opportunity mapping.
 - `portfolio.local.yaml` or local-only portfolio records.
 - Execution Log entries.
 - Allocation Playbook decisions.
@@ -44,6 +46,39 @@ Return:
 8. Risk and invalidation trigger.
 9. Execution Log update suggestion, if a trade occurred.
 10. Privacy check: confirm no private holding details are being committed.
+11. Strategic Candidate Dashboard only when the user asks about candidates, rankings, watchlists,
+    beneficiaries, supplier overlap, strategic opportunities, or industry-chain mapping.
+
+## strategic_candidate_dashboard
+
+Strategic Candidate Dashboard must obey Portfolio Context Injection.
+
+When portfolio context exists, include current holdings first. For each current holding show:
+
+- Exposure: Direct / Indirect / None / Unknown.
+- Strategic Impact.
+- Portfolio Role.
+- Action: Hold / Verify / Watch / Reduce Risk / No Change.
+- Evidence Status.
+
+Then show new research candidates with:
+
+- Business Link.
+- Thesis Fit.
+- Evidence Quality.
+- Cycle Position.
+- Capital Market Confirmation.
+- Valuation / Expectation Risk.
+- Technical / K-line Status.
+- Portfolio Fit.
+- Trigger Readiness.
+- Tier.
+
+Research Priority Is Not Trading Authority. Strategic Candidate Score ranks research priority; CDE
+Deployment Score authorizes capital deployment. A candidate can be S Tier with CDE Authority 0%.
+
+If data is unavailable, write `Data Missing` or `Needs Verification`. Do not invent price,
+valuation, K-line, volume, customer order, or margin data.
 
 ## forbidden_actions
 
@@ -54,3 +89,4 @@ Return:
 - Do not bypass the Trading Decision Table.
 - Do not open a new thematic branch for a highly deployed account unless evidence quality is high,
   direct portfolio mapping exists, CDE authority allows it, and the user explicitly approves.
+- Do not treat Strategic Candidate Dashboard ranking as a direct Accumulate / Reduce instruction.

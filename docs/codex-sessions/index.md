@@ -8,6 +8,11 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-06-30_0745_strategic-candidate-dashboard-v01.md`
+- `docs/codex-sessions/completed/2026-06-30_0735_social-views-memory-ouster-corning.md`
+- `docs/codex-sessions/completed/2026-06-29_2151_memory-equipment-etf-methodology.md`
+- `docs/codex-sessions/completed/2026-06-29_1542_local-portfolio-mapping-layer.md`
+- `docs/codex-sessions/completed/2026-06-29_1534_local-portfolio-mlcc-mapping.md`
 - `docs/codex-sessions/completed/2026-06-29_1523_portfolio-context-injection-fix.md`
 - `docs/codex-sessions/completed/2026-06-29_1500_record-issue-2026-009.md`
 - `docs/codex-sessions/completed/2026-06-29_1441_atlas-issue-system-v10.md`

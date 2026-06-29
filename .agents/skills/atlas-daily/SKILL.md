@@ -14,6 +14,8 @@ Use this skill when the user asks for:
 - Daily market or signal triage.
 - Daily risk, waiting triggers, or watchlist summary.
 - A concise answer to whether today's information changes Atlas action.
+- Candidate stocks, beneficiaries, supplier overlap, rankings, watchlists, strategic opportunities,
+  industry-chain opportunities, cycle position, or technical / K-line position when requested.
 
 ## required_reads
 
@@ -49,6 +51,9 @@ Return by default:
    authority derivation.
 12. Bias Warning.
 13. Decision Confidence.
+14. Strategic Candidate Dashboard only when requested by candidate, beneficiary, ranking,
+    watchlist, strategic opportunity, supplier overlap, industry-chain, cycle position, or
+    technical / K-line language.
 
 Decision Brief must answer:
 
@@ -80,6 +85,17 @@ Existing Portfolio Mapping must show direct / indirect / none exposure, impact, 
 status for each current holding affected by the input. For Cash / Dry Powder, show deployment
 implication and CDE authority impact.
 
+Strategic Candidate Dashboard is optional. When included, it must:
+
+- Map existing holdings first when portfolio context exists.
+- Separate existing holdings from new research candidates.
+- Score candidates with Strategic Candidate Score, which is not CDE Deployment Score.
+- Use research-priority language: Research Priority, Watchlist Tier, Candidate Ranking, Trigger
+  Readiness.
+- Avoid Buy / Sell / Must Buy / Strong Buy language.
+- Use `Data Missing` or `Needs Verification` for missing price, valuation, K-line, customer order,
+  volume, or margin data.
+
 Hide Research View, Knowledge View, and Repository View unless the user asks for them.
 
 Research View may include evidence, Seven Layer Reasoning, counter argument, and signal assessment.
@@ -96,3 +112,5 @@ Repository View may include sync, repository, Git, commit, tag, audit, database,
 - Do not expose or commit real private holdings.
 - Do not turn an unconfirmed signal into an action.
 - Do not output only research candidates when portfolio context exists; map current holdings first.
+- Do not make Strategic Candidate Dashboard mandatory for every daily answer.
+- Do not treat candidate ranking as capital deployment authority.

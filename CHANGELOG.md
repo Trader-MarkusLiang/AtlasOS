@@ -1,5 +1,24 @@
 # Changelog
 
+## Strategic Candidate Dashboard v0.1 - 2026-06-30
+
+- Added `ISSUE-2026-011` for missing strategic candidate evaluation dashboard during Production
+  Trial.
+- Added `IP-2026-011` for Strategic Candidate Dashboard v0.1.
+- Added Research Priority Is Not Trading Authority rule.
+- Added optional Strategic Candidate Dashboard section to Decision Brief Template.
+- Added Strategic Candidate Score with dimensions for thesis fit, cycle position, evidence
+  quality, capital market confirmation, valuation / expectation risk, technical / K-line structure,
+  portfolio fit, and trigger readiness.
+- Added S/A/B/C/Reject tiering as research priority, not trading authority.
+- Updated atlas-research, atlas-portfolio, and atlas-daily skills to trigger the dashboard only for
+  candidate, ranking, watchlist, beneficiary, supplier overlap, strategic opportunity, industry
+  chain, cycle, or technical-position requests.
+- Added Regression Test Case 10 for Strategic Candidate Dashboard.
+- Added `99_Verification/Audit_Report_Strategic_Candidate_Dashboard.md`.
+- Did not implement a new Engine, IDA, Knowledge Context Injection, research redesign, CDE
+  modification, or private portfolio file change.
+
 ## Atlas Issue System v1.0 - 2026-06-29
 
 - Established lightweight Production Trial issue tracking under `10_Production_Trial/`.

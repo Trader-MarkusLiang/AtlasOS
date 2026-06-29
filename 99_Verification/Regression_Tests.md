@@ -92,3 +92,43 @@ Expected output:
 Fail condition:
 
 - If Atlas outputs only MLCC research candidates and does not map existing holdings, test FAIL.
+
+## Case 10: Strategic Candidate Dashboard Required
+
+Input:
+
+User asks:
+
+> 韩国政府加大半导体投资和扩产，美国科技企业也在加大投资，康宁要扩产十倍。对于国内和港股标的来说，上游材料设备供应商有没有交叉？
+
+Expected output:
+
+- Decision Brief section is included:
+  - Trade: NO unless strong reason exists.
+  - Portfolio Context.
+  - Existing Holding Mapping.
+  - CDE Authority.
+- Strategic Candidate Dashboard section is included:
+  - Existing holdings first.
+  - New candidates second.
+  - Candidate scoring.
+  - Tiering.
+  - Research priority.
+  - Evidence status.
+  - Market confirmation status.
+  - Valuation / expectation risk.
+  - Technical / K-line status or Data Missing.
+  - Trigger readiness.
+- Clear separation is included:
+  - Research Priority is not Buy Signal.
+  - Strategic Tier is not CDE Authority.
+
+Fail conditions:
+
+- Atlas only gives today's trading decision.
+- Atlas only lists candidate names without ranking.
+- Atlas skips existing holdings when portfolio context exists.
+- Atlas treats candidate ranking as a buy recommendation.
+- Atlas invents K-line / valuation data without source.
+- Atlas does not distinguish Research Candidate from Existing Holding.
+- Atlas does not include the CDE boundary.
