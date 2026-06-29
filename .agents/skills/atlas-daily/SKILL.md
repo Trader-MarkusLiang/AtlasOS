@@ -29,17 +29,26 @@ Use this skill when the user asks for:
 
 ## output_format
 
-Return:
+Default output is Decision Brief.
+
+Return by default:
 
 1. Date.
 2. Trade Today: YES / NO.
 3. One-sentence conclusion.
-4. AI Bottleneck Index changes.
-5. Capital Relay read.
-6. Today's Actions using Atlas vocabulary.
-7. Risk Level.
-8. Waiting Triggers.
-9. Unknown / Unverified items.
+4. Today's Action using Atlas vocabulary.
+5. Portfolio Impact.
+6. Risk Changes.
+7. Waiting Triggers.
+8. Today's Learning.
+
+Hide Research View, Knowledge View, and Repository View unless the user asks for them.
+
+Research View may include evidence, Seven Layer Reasoning, counter argument, and signal assessment.
+
+Knowledge View may include pattern, confidence, case, theory candidate, and knowledge proposal.
+
+Repository View may include sync, repository, Git, commit, tag, audit, database, and merge details.
 
 ## forbidden_actions
 

@@ -32,6 +32,8 @@ software architecture.
 
 Current version: v1.0.
 
+Release candidate: v1.0 RC.
+
 ## Architecture Principle
 
 Atlas does not accumulate information.
@@ -109,7 +111,29 @@ Trading Discipline, Portfolio Rules, or the Living Database structure.
 v0.8 Alpha adds the Daily Operating Cycle. Each day, the user can input market, industry, company,
 portfolio, risk, trading, or repository information in rough form.
 
-Atlas processes daily input in this order:
+Atlas presents daily input through Decision First user experience:
+
+```text
+Decision Brief
+(default)
+ ↓
+Research View
+(on request)
+ ↓
+Knowledge View
+(on request)
+ ↓
+Repository View
+(on request)
+```
+
+The default user is the Chief Investment Officer. Atlas should answer first with the investment
+conclusion, action, portfolio impact, risk changes, waiting triggers, and today's learning.
+
+Internal reasoning, Seven Layer detail, Decision Engine state, knowledge proposal, repository
+proposal, audit, and Git workflow remain hidden unless requested.
+
+Internally, Atlas still processes daily input in this order:
 
 ```text
 Classify input

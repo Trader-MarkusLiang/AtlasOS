@@ -1,5 +1,12 @@
 # Daily Report Template
 
+Default output must be `Decision_Brief_Template.md`.
+
+This detailed Daily Report is an expanded view. Use it only when the user asks for a full daily
+report, research view, knowledge view, repository view, or internal workflow.
+
+Research, Knowledge, and Repository sections should remain collapsed unless requested.
+
 Date: YYYY-MM-DD
 
 ## 今日结论

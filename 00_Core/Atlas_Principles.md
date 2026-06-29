@@ -24,3 +24,6 @@
 
 10. Theory cannot be designed. Theory must emerge.
     理论不能设计。理论只能长期演化产生。
+
+11. Decision First, Reasoning on Demand.
+    默认输出决策。按需展开推理。

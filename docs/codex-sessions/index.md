@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-06-29_1134_decision-first-ux-rc.md`
 - `docs/codex-sessions/completed/2026-06-29_1107_portfolio-consistency-v121.md`
 - `docs/codex-sessions/completed/2026-06-29_1100_portfolio-scale-complexity-v12.md`
 - `docs/codex-sessions/completed/2026-06-29_1051_portfolio-allocation-privacy-v11.md`

@@ -2,11 +2,15 @@
 
 Current version: v1.0
 
+Release candidate: v1.0 RC
+
 Portfolio layer version: Portfolio OS v1.2.1
 
 Date: 2026-06-29
 
 Stage: Knowledge Distillation Engine
+
+Presentation stage: Decision First User Experience
 
 Scope:
 
@@ -39,6 +43,8 @@ Scope:
   Scale Tier, Management Mode, Execution Complexity, Liquidity Sensitivity, and Risk Budget fields.
 - Add Portfolio Consistency Rules so Portfolio Action can only proceed from self-consistent
   allocation data.
+- Add Decision First presentation layer: default output is Decision Brief, with Research,
+  Knowledge, and Repository views expanded only on request.
 
 ## Version Semantics
 

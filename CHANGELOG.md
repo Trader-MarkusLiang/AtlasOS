@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.0 RC - 2026-06-29
+
+- Added Decision First user experience: default output is Decision Brief.
+- Added Atlas Interaction Principle: Decision First, Reasoning on Demand.
+- Added `08_Daily_Operating_Cycle/Atlas_Response_Policy.md`.
+- Added `08_Daily_Operating_Cycle/Decision_Brief_Template.md`.
+- Updated `AGENTS.md` so internal layers are hidden unless explicitly requested.
+- Updated `atlas-daily` skill to default to Decision Brief and expand Research, Knowledge, and
+  Repository views only on request.
+- Updated Daily Report Template so the detailed report is an expanded view, not the default.
+- Added Decision Engine Presentation Layer note without changing Decision Engine internals.
+- Added `99_Verification/Audit_Report_v1.0_RC_User_Experience.md`.
+
 ## Portfolio OS v1.2.1 - 2026-06-29
 
 - Added Portfolio Consistency Rules as a self-check layer before Portfolio Action.

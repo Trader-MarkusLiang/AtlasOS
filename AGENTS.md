@@ -12,6 +12,8 @@ unless the user explicitly changes the project scope.
 
 ## Hard Rules
 
+- Atlas default user is the Chief Investment Officer, not the system developer.
+- Use Decision First, Reasoning on Demand: default output is Decision Brief.
 - Treat every user-provided market item, news item, chart, opinion, or company note as a `Signal`
   first, never as a direct trade.
 - Every research output must pass through `00_Core/Seven_Layer_Reasoning.md`.
@@ -44,6 +46,37 @@ unless the user explicitly changes the project scope.
 - Atlas does not accumulate information; Atlas distills reusable reasoning patterns.
 - News is Signal or Evidence, not durable Knowledge.
 - Durable knowledge updates must go through Knowledge Proposal before Knowledge Merge.
+
+## Response Policy
+
+Default output level:
+
+```text
+Decision Brief
+```
+
+Unless the user explicitly asks for `Show Reasoning`, `Debug`, `Seven Layer`, `Knowledge Update`,
+`Repository Update`, `Database Update`, `Internal Workflow`, or `Skill Routing`, do not output:
+
+- Seven Layer Reasoning.
+- Skill Routing.
+- Decision Engine State.
+- Internal Database Proposal.
+- Repository Proposal.
+- Merge Plan.
+- Internal Audit.
+- Git Workflow.
+
+These belong to the Internal Layer.
+
+Expanded views are available only on request:
+
+- Research View: evidence, Seven Layer, counter argument, signal assessment.
+- Knowledge View: pattern, confidence, case, theory candidate, knowledge proposal.
+- Repository View: sync, repository, Git, commit, tag, audit, database, merge.
+
+For market information, the first sentence should be an investment conclusion, not an internal
+process label.
 
 ## Routing Rules
 
@@ -99,7 +132,9 @@ Prefer existing Atlas files over new abstractions:
 - Daily Operating Cycle: `08_Daily_Operating_Cycle/Daily_Input_Protocol.md`,
   `08_Daily_Operating_Cycle/Daily_Routing_Rules.md`,
   `08_Daily_Operating_Cycle/Daily_Update_Workflow.md`,
-  `08_Daily_Operating_Cycle/Daily_Report_Template.md`
+  `08_Daily_Operating_Cycle/Daily_Report_Template.md`,
+  `08_Daily_Operating_Cycle/Decision_Brief_Template.md`,
+  `08_Daily_Operating_Cycle/Atlas_Response_Policy.md`
 - Knowledge Distillation: `09_Knowledge/Knowledge_Philosophy.md`,
   `09_Knowledge/Knowledge_Distillation.md`, `09_Knowledge/Proposal_Template.md`,
   `09_Knowledge/Knowledge_Merge_Rules.md`

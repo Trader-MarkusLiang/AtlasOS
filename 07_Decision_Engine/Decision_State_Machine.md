@@ -52,3 +52,26 @@ Archive
 
 A state can only move forward when its exit condition is met. If the exit condition is not met,
 the decision remains in the current state or falls back to Observe / Research more.
+
+## Presentation Layer
+
+Decision Engine internals remain unchanged.
+
+Internally, Atlas still runs:
+
+```text
+Signal
+ ↓
+Evidence
+ ↓
+Reasoning
+ ↓
+Knowledge
+ ↓
+Repository
+```
+
+Externally, the Presentation Layer converts the current result into Decision Brief by default.
+
+Do not expose internal state, Seven Layer Reasoning, knowledge proposals, repository workflow, audit,
+or Git workflow unless the user asks for the corresponding expanded view.
