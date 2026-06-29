@@ -13,6 +13,14 @@ Its core value is the repeatable knowledge framework:
 - Trading discipline
 - Sustainable knowledge-base iteration
 
+From v1.0 onward, Atlas is a Knowledge Distillation Engine:
+
+- It does not accumulate information.
+- It distills reusable reasoning patterns.
+- News is Signal or Evidence, not durable Knowledge.
+- Long-term knowledge assets are Reasoning, Pattern, Decision Logic, Case Library, and Knowledge
+  Distillation.
+
 Git exists here to:
 
 1. Preserve Atlas core knowledge assets.

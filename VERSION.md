@@ -1,10 +1,10 @@
 # Version
 
-Current version: v0.8 Alpha
+Current version: v1.0
 
 Date: 2026-06-29
 
-Stage: Daily Operating Cycle Alpha
+Stage: Knowledge Distillation Engine
 
 Scope:
 
@@ -26,6 +26,12 @@ Scope:
 - Establish Daily Operating Cycle as the daily input, routing, update, and report workflow.
 - Keep Daily Operating Cycle as Markdown procedure and template only: no program, script,
   automation, agent, dashboard, crawler, API, or new investment framework.
+- Establish Knowledge Distillation Engine: Signal -> Evidence -> Reasoning -> Pattern Extraction ->
+  Case Generation -> Knowledge Merge -> Repository.
+- Define Knowledge Layer as Signal, Evidence, Case, and Pattern.
+- Add Knowledge Proposal before Knowledge Merge.
+- Reframe Repository commits as Knowledge Merge, not News Archive.
+- Reframe companies as Pattern instances, not the primary knowledge subject.
 - Keep the project simple and avoid premature software development.
 
 ## Version Semantics

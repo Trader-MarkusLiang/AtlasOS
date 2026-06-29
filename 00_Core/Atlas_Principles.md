@@ -18,3 +18,6 @@
 7. Atlas 不是为了证明自己正确，而是为了不断接近真实世界。
 
 8. 如果事实改变，Atlas 必须修正模型。
+
+9. Atlas does not accumulate information. Atlas distills reusable reasoning patterns.
+   Atlas 不积累信息。Atlas 沉淀可复用的推理模式。

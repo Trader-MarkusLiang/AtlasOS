@@ -61,3 +61,5 @@ After Research classification, place the item into the appropriate Decision Engi
 
 Repository sync happens only after Research, Decision Engine, Portfolio, and Daily outputs identify
 what should become durable knowledge.
+
+Repository sync should merge reviewed Knowledge Proposals, not archive raw news.

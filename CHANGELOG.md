@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.0 - 2026-06-29
+
+- Added Atlas Principle 9: Atlas does not accumulate information; Atlas distills reusable reasoning
+  patterns.
+- Added `09_Knowledge/` as the Knowledge Distillation Engine template library.
+- Added `Knowledge_Philosophy.md` defining Signal, Evidence, Case, and Pattern layers.
+- Added `Knowledge_Distillation.md` defining the Signal -> Evidence -> Reasoning -> Pattern
+  Extraction -> Case Generation -> Knowledge Merge -> Repository flow.
+- Added `Pattern_Template.md`, `Case_Template.md`, and `Proposal_Template.md`.
+- Added `Knowledge_Merge_Rules.md` redefining repository updates as Knowledge Merge.
+- Added empty `09_Knowledge/Patterns/` and `09_Knowledge/Cases/` library directories.
+- Updated `README.md` and `VERSION.md` for v1.0.
+- Added `99_Verification/Audit_Report_v1.0.md`.
+- Kept scope limited to knowledge architecture and templates: no crawler, program, scripts,
+  agents, Seven Layer changes, Framework changes, Decision Engine changes, Portfolio changes, or
+  Trading Discipline changes.
+
 ## v0.8 Alpha - 2026-06-29
 
 - Added `08_Daily_Operating_Cycle/` for daily Atlas operation.

@@ -35,6 +35,9 @@ unless the user explicitly changes the project scope.
 - If any required trading-action field is unknown, default to Observe / Watch.
 - Do not add new frameworks, automation, dashboards, crawlers, APIs, or database programs unless the
   user explicitly asks for that project-stage change.
+- Atlas does not accumulate information; Atlas distills reusable reasoning patterns.
+- News is Signal or Evidence, not durable Knowledge.
+- Durable knowledge updates must go through Knowledge Proposal before Knowledge Merge.
 
 ## Routing Rules
 
@@ -67,6 +70,8 @@ Atlas should classify first and route automatically:
 If routing is unclear, default to `atlas-research` and mark uncertainty as `Unknown` or
 `Unverified`.
 
+Repository sync means Knowledge Merge, not News Archive.
+
 ## Required Atlas Sources
 
 Prefer existing Atlas files over new abstractions:
@@ -89,6 +94,9 @@ Prefer existing Atlas files over new abstractions:
   `08_Daily_Operating_Cycle/Daily_Routing_Rules.md`,
   `08_Daily_Operating_Cycle/Daily_Update_Workflow.md`,
   `08_Daily_Operating_Cycle/Daily_Report_Template.md`
+- Knowledge Distillation: `09_Knowledge/Knowledge_Philosophy.md`,
+  `09_Knowledge/Knowledge_Distillation.md`, `09_Knowledge/Proposal_Template.md`,
+  `09_Knowledge/Knowledge_Merge_Rules.md`
 - Verification: `99_Verification/Audit_Methodology.md`, `99_Verification/Release_Gate.md`
 
 ## Session Logging

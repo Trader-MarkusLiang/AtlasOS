@@ -36,9 +36,9 @@ Assign each item to a Decision Engine state:
 - Knowledge Update
 - Archive
 
-### Step 4: Update Research Judgment
+### Step 4: Create Knowledge Proposal
 
-If the item has research value, suggest or perform updates only when requested:
+If the item has research value, create a Knowledge Proposal before any durable update.
 
 | Evidence Type | Target |
 |---|---|
@@ -49,6 +49,8 @@ If the item has research value, suggest or perform updates only when requested:
 | Company thesis, priority, confidence, trigger | `02_Databases/AI_Shovel_100.md` |
 
 Missing evidence remains `Unknown` or `Unverified`.
+
+Signal cannot write directly into Atlas databases.
 
 ### Step 5: Update Portfolio Action Suggestion
 
@@ -73,17 +75,19 @@ Daily output should summarize:
 
 ### Step 7: Repository Sync Instruction
 
-If the user confirms repository sync, generate a repository update plan:
+If the user confirms repository sync, generate a Knowledge Merge plan:
 
 ```text
 Target files:
 Reason:
 Evidence:
+Proposal ID:
 Privacy check:
 Commit needed: YES / NO
 ```
 
-Do not commit unless the user explicitly asks for commit.
+Do not commit unless the user explicitly asks for commit. Commit represents Knowledge Merge, not
+News Archive.
 
 ## Daily Stop Rule
 

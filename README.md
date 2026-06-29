@@ -6,7 +6,7 @@ This repository stores the core Atlas framework in Git so the principles, reason
 market maps, trading discipline, and verification cases can be versioned and reused by Codex,
 ChatGPT, and future agents.
 
-Current stage: Daily Operating Cycle Alpha.
+Current stage: Knowledge Distillation Engine v1.0.
 
 This stage does not build a dashboard, API, database, crawler, agent automation, or complex
 software architecture.
@@ -24,12 +24,23 @@ software architecture.
 | `06_Portfolio/` | Portfolio layer for capital, execution, and review governance |
 | `07_Decision_Engine/` | Decision lifecycle, gates, review, and state-machine operating mechanism |
 | `08_Daily_Operating_Cycle/` | Daily input protocol, routing rules, update workflow, and report template |
+| `09_Knowledge/` | Knowledge philosophy, distillation rules, proposal templates, case and pattern library |
 | `99_Verification/` | Migration checklist, regression tests, and acceptance criteria |
 | `.agents/skills/` | Repo-scoped Codex workflow routing skills |
 
 ## Version
 
-Current version: v0.8 Alpha.
+Current version: v1.0.
+
+## Architecture Principle
+
+Atlas does not accumulate information.
+
+Atlas distills reusable reasoning patterns.
+
+Atlas 不积累信息。
+
+Atlas 沉淀可复用的推理模式。
 
 ## Codex Routing
 
@@ -110,6 +121,46 @@ Prepare Repository Sync only if the user confirms
 
 If routing is unclear, Atlas defaults to Research and marks missing evidence as `Unknown` or
 `Unverified`.
+
+## Knowledge Distillation Engine
+
+v1.0 upgrades Atlas from Knowledge Database to Knowledge Distillation Engine.
+
+Atlas no longer treats news as knowledge. News is Signal. Verified records are Evidence. Durable
+knowledge starts when Atlas extracts reusable reasoning, decision logic, Case learning, or Pattern
+logic.
+
+Knowledge has four layers:
+
+| Layer | Name | Lifecycle | Role |
+|---|---|---|---|
+| 1 | Signal | Hours to days | Triggers research; archived unless upgraded |
+| 2 | Evidence | Weeks to months | Validates or rejects Signal |
+| 3 | Case | Years | Preserves reusable decision episodes |
+| 4 | Pattern | Long term | Atlas's primary durable knowledge asset |
+
+Knowledge Distillation flow:
+
+```text
+Signal
+ ↓
+Evidence
+ ↓
+Reasoning
+ ↓
+Pattern Extraction
+ ↓
+Case Generation
+ ↓
+Knowledge Merge
+ ↓
+Repository
+```
+
+Every durable update starts as a Knowledge Proposal. Proposal comes before Merge. Repository commits
+represent Knowledge Merge, not News Archive.
+
+Companies are not Atlas's primary knowledge unit. Companies are instances of Patterns.
 
 ## Living Database
 
