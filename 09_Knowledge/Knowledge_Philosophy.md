@@ -15,14 +15,41 @@ News is not Knowledge.
 News is Signal or Evidence. Knowledge begins only when Atlas extracts reusable reasoning, pattern,
 decision logic, or case learning from evidence.
 
-## Knowledge Layers
+## Atlas Knowledge Pyramid
 
-| Layer | Name | Lifecycle | Characteristics | Role | Default |
-|---|---|---|---|---|---|
-| Layer 1 | Signal | Hours to days | News, announcements, X, Reddit, calls, meetings, channel checks, price action | Triggers research | Archive unless upgraded |
-| Layer 2 | Evidence | Weeks to months | Orders, ASP, backlog, CapEx, FCF, earnings, official announcements | Validates or rejects Signal | Keep until decision or review resolves it |
-| Layer 3 | Case | Years | A reusable event with evidence, reasoning, trading decision, outcome, and lessons | Preserves a learned decision episode | Promote only when upgrade criteria are met |
-| Layer 4 | Pattern | Long term | Cross-company, cross-industry, cross-cycle reusable reasoning logic | Atlas's most important knowledge asset | Merge only after review |
+```text
+Theory
+ ↑
+Pattern
+ ↑
+Case
+ ↑
+Evidence
+ ↑
+Signal
+```
+
+| Layer | Lifecycle | Role | Default |
+|---|---|---|---|
+| Signal | Hours to days | Triggers research. News, announcements, X, Reddit, calls, meetings, channel checks, and price action live here first. | Archive unless upgraded |
+| Evidence | Weeks to months | Validates or rejects Signal. Orders, ASP, backlog, CapEx, FCF, earnings, and official announcements live here. | Keep until decision or review resolves it |
+| Case | Years | Validates Pattern. A Case is a reusable decision episode with background, evidence, reasoning, decision, outcome, and lessons. | Promote only when it tests a Pattern |
+| Pattern | Long term | Atlas's primary Knowledge layer. Pattern is reusable logic extracted from multiple Cases. | Merge only after review |
+| Theory | Emergent, long term | A Theory is formed only after multiple Patterns remain stable across years, industries, and cycles. | No active creation |
+
+## Layer Relationships
+
+- Signal triggers research.
+- Evidence validates Signal.
+- Case validates Pattern.
+- Pattern is extracted from multiple Cases.
+- Theory emerges from multiple long-lived Patterns.
+
+Theory cannot be designed.
+
+Theory must emerge.
+
+Theory does not participate in daily workflow. It can only appear after long-term Atlas operation.
 
 ## Case Upgrade Criteria
 
@@ -42,6 +69,8 @@ A Pattern must be reusable across:
 - Companies.
 - Industries.
 - Cycles.
+
+Pattern is the main subject of Atlas Knowledge.
 
 Examples include:
 
@@ -70,3 +99,19 @@ Examples:
 ## Repository Rule
 
 Repository commits should represent Knowledge Merge, not News Archive.
+
+## Theory Rule
+
+Theory is not a planning artifact.
+
+Theory is not a framework design task.
+
+Theory can only emerge from:
+
+- Multiple Patterns.
+- Years of validation.
+- Cross-industry usefulness.
+- Cross-cycle survival.
+- Ability to predict future market structure.
+
+Current status: no Theory yet.

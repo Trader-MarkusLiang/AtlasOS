@@ -21,3 +21,6 @@
 
 9. Atlas does not accumulate information. Atlas distills reusable reasoning patterns.
    Atlas 不积累信息。Atlas 沉淀可复用的推理模式。
+
+10. Theory cannot be designed. Theory must emerge.
+    理论不能设计。理论只能长期演化产生。

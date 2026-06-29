@@ -49,6 +49,18 @@ What decision behavior does this Pattern imply?
 - Counter example:
 - Counter example:
 
+## Prediction Record
+
+| Date | Prediction | Result | Accuracy | Notes |
+|---|---|---|---|---|
+| YYYY-MM-DD | Prediction made by this Pattern | Pending / Correct / Partial / Wrong | Low / Medium / High | Notes |
+
+## Theory Candidate
+
+YES / NO
+
+If YES, explain which higher-order Theory this Pattern may eventually support.
+
 ## Invalid Conditions
 
 When should Atlas stop applying this Pattern?

@@ -38,9 +38,17 @@ Atlas does not accumulate information.
 
 Atlas distills reusable reasoning patterns.
 
+Atlas does not remember the market.
+
+Atlas learns how markets work.
+
 Atlas 不积累信息。
 
 Atlas 沉淀可复用的推理模式。
+
+Atlas 不记住市场。
+
+Atlas 学习市场运行规律。
 
 ## Codex Routing
 
@@ -130,14 +138,23 @@ Atlas no longer treats news as knowledge. News is Signal. Verified records are E
 knowledge starts when Atlas extracts reusable reasoning, decision logic, Case learning, or Pattern
 logic.
 
-Knowledge has four layers:
+Knowledge follows the Atlas Knowledge Pyramid:
 
-| Layer | Name | Lifecycle | Role |
-|---|---|---|---|
-| 1 | Signal | Hours to days | Triggers research; archived unless upgraded |
-| 2 | Evidence | Weeks to months | Validates or rejects Signal |
-| 3 | Case | Years | Preserves reusable decision episodes |
-| 4 | Pattern | Long term | Atlas's primary durable knowledge asset |
+```text
+Theory
+ ↑
+Pattern
+ ↑
+Case
+ ↑
+Evidence
+ ↑
+Signal
+```
+
+Signal triggers research. Evidence validates Signal. Case validates Pattern. Pattern is extracted
+from multiple Cases. Theory cannot be designed; it can only emerge after multiple Patterns remain
+stable across years, industries, and cycles.
 
 Knowledge Distillation flow:
 
@@ -151,6 +168,8 @@ Reasoning
 Pattern Extraction
  ↓
 Case Generation
+ ↓
+Pattern Validation
  ↓
 Knowledge Merge
  ↓

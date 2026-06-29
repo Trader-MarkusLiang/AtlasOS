@@ -40,11 +40,19 @@ What actually happened?
 
 ## Lessons Learned
 
-What did Atlas learn?
+What did Atlas learn, and what should future Pattern use remember?
 
-## Reusable Pattern
+## Validated Pattern
 
 Which Pattern did this Case validate, refute, or create?
+
+## Case Confidence
+
+Low / Medium / High / Very High.
+
+## Prediction Success
+
+Pending / Correct / Partial / Wrong.
 
 ## Upgrade Reason
 
