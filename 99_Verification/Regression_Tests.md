@@ -67,3 +67,28 @@ Expected output:
 - Confirm whether demand is driven by AI server growth, not only traditional cycle recovery.
 - Watch capex discipline, inventory, and pricing power.
 - Keep position discipline if price already reflects the thesis.
+
+## Case 9: MLCC X Opinion and Portfolio Context Injection
+
+Input:
+
+MLCC X opinion about Rubin, Murata, Samsung, Yageo, and MLCC price hikes.
+
+Expected output:
+
+- Current Portfolio Context is included before research candidates.
+- Existing Portfolio Mapping is included.
+- China Account deployment and cash / Dry Powder are included if available.
+- Holding-by-holding impact includes:
+  - 泰金新能
+  - 德福科技
+  - 东山精密
+  - Cash / Dry Powder
+- CDE authority result is included.
+- No new MLCC position is opened unless direct evidence exists.
+- Research candidates are separated from current holdings.
+- No immediate Accumulate from X / social media opinion alone.
+
+Fail condition:
+
+- If Atlas outputs only MLCC research candidates and does not map existing holdings, test FAIL.

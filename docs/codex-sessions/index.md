@@ -8,6 +8,8 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-06-29_1523_portfolio-context-injection-fix.md`
+- `docs/codex-sessions/completed/2026-06-29_1500_record-issue-2026-009.md`
 - `docs/codex-sessions/completed/2026-06-29_1441_atlas-issue-system-v10.md`
 - `docs/codex-sessions/completed/2026-06-29_1424_v21-rc-final-polish.md`
 - `docs/codex-sessions/completed/2026-06-29_1400_run-first-cde-v21-rc.md`

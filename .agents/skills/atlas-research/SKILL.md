@@ -19,6 +19,9 @@ Use this skill when the task involves:
 - `00_Core/Atlas_Principles.md`
 - `00_Core/Seven_Layer_Reasoning.md`
 - `00_Core/Trading_Discipline.md`
+- `06_Portfolio/portfolio.local.yaml` if present, or user-provided portfolio context.
+- `06_Portfolio/Portfolio_Rules.md`
+- `10_Capital_Deployment_Engine/Capital_Deployment_Engine.md`
 - `02_Databases/AI_Shovel_100.md`
 - `02_Databases/Alpha_Radar.md`
 - `02_Databases/Risk_Radar.md`
@@ -31,14 +34,22 @@ Use this skill when the task involves:
 
 Return:
 
-1. Signal classification: Fact / Signal / Evidence / Risk / Price Action / Noise.
-2. Seven-layer reasoning table.
-3. Affected bottleneck and current Atlas rank.
-4. Evidence quality: Low / Medium / High.
-5. Counter argument.
-6. Required confirmation.
-7. Atlas action: Research / Observe only unless a separate portfolio workflow is requested.
-8. Suggested database update, if any, with target file and fields.
+1. Current Portfolio Context if available; otherwise state
+   `Portfolio Context Missing or Stale — Decision Limited`.
+2. Existing Portfolio Mapping:
+   - Direct / Indirect / None exposure.
+   - Impact.
+   - Action.
+   - Evidence status.
+3. CDE authority impact.
+4. Signal classification: Fact / Signal / Evidence / Risk / Price Action / Noise.
+5. Seven-layer reasoning table.
+6. Affected bottleneck and current Atlas rank.
+7. Evidence quality: Low / Medium / High.
+8. Counter argument.
+9. Required confirmation.
+10. Atlas action: Research / Observe only unless a separate portfolio workflow is requested.
+11. Suggested database update, if any, with target file and fields.
 
 ## forbidden_actions
 
@@ -47,3 +58,7 @@ Return:
 - Do not commit changes unless the user explicitly asks for repository work.
 - Do not invent evidence; write `Unknown` or `Unverified`.
 - Do not promote a signal to action without trigger and counter argument.
+- Do not output research candidates before mapping the signal to existing holdings and Dry Powder
+  when portfolio context exists.
+- Do not open a new thematic branch for a highly deployed account unless evidence quality is high,
+  direct portfolio mapping exists, CDE authority allows it, and the user explicitly approves.

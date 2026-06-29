@@ -31,6 +31,34 @@ Robotics: █████░░░░░ Early Stage
 This is World Model health, not a stock score or price forecast.
 
 ==================================================
+【Current Portfolio Context】
+If portfolio context exists, include:
+Account:
+Deployment:
+Cash / Dry Powder:
+Existing Thesis Exposure:
+Portfolio Consistency:
+
+If portfolio context is missing or stale:
+Portfolio Context Missing or Stale — Decision Limited
+
+==================================================
+【Existing Portfolio Mapping】
+For each relevant current holding:
+
+Holding:
+• Exposure: Direct / Indirect / None / Unknown
+• Impact:
+• Action: Research / Observe / Build / Accumulate / Hold / Reduce / Exit
+• Evidence Status: Verified / Unverified / Unknown
+
+Cash / Dry Powder:
+• Deployment implication:
+• CDE authority impact:
+
+Research candidates must be separated from current holdings.
+
+==================================================
 【Capital Deployment Dashboard】
 Deployment Lifecycle:
 Observe / Pilot Deployment / Initial Deployment / Scaling / Maximum Opportunity / Capital Preservation

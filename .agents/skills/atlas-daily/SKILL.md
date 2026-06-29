@@ -20,12 +20,14 @@ Use this skill when the user asks for:
 - `03_Trading_OS/Daily_Dashboard_Template.md`
 - `00_Core/Seven_Layer_Reasoning.md`
 - `00_Core/Trading_Discipline.md`
+- `06_Portfolio/portfolio.local.yaml` if present, or user-provided portfolio context.
 - `04_Current_State/Bottleneck_Map_v1.md`
 - `04_Current_State/AI_Capital_Map_v1.md`
 - `04_Current_State/Current_Holdings_Strategy.md`
 - `02_Databases/Alpha_Radar.md`
 - `02_Databases/Risk_Radar.md`
 - `06_Portfolio/Portfolio_Rules.md`
+- `10_Capital_Deployment_Engine/Capital_Deployment_Engine.md`
 
 ## output_format
 
@@ -37,14 +39,16 @@ Return by default:
 2. Trade Today: YES / NO.
 3. Executive Conclusion.
 4. Portfolio Action using Atlas vocabulary.
-5. Portfolio Impact.
-6. Today's New Risks.
-7. Waiting Triggers.
-8. World Model Delta.
-9. Capital Deployment Dashboard with Deployment Lifecycle, Deployment Score composition, and
+5. Current Portfolio Context if available.
+6. Existing Portfolio Mapping.
+7. Portfolio Impact.
+8. Today's New Risks.
+9. Waiting Triggers.
+10. World Model Delta.
+11. Capital Deployment Dashboard with Deployment Lifecycle, Deployment Score composition, and
    authority derivation.
-10. Bias Warning.
-11. Decision Confidence.
+12. Bias Warning.
+13. Decision Confidence.
 
 Decision Brief must answer:
 
@@ -72,6 +76,10 @@ Capital Deployment Dashboard must show:
 - Today's Authority derived from Deployment Score, Deployment Lifecycle, Dry Powder, Execution Risk,
   and reason.
 
+Existing Portfolio Mapping must show direct / indirect / none exposure, impact, action, and evidence
+status for each current holding affected by the input. For Cash / Dry Powder, show deployment
+implication and CDE authority impact.
+
 Hide Research View, Knowledge View, and Repository View unless the user asks for them.
 
 Research View may include evidence, Seven Layer Reasoning, counter argument, and signal assessment.
@@ -87,3 +95,4 @@ Repository View may include sync, repository, Git, commit, tag, audit, database,
 - Do not commit.
 - Do not expose or commit real private holdings.
 - Do not turn an unconfirmed signal into an action.
+- Do not output only research candidates when portfolio context exists; map current holdings first.
