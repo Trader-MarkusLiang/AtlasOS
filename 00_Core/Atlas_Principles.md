@@ -30,3 +30,6 @@
 
 12. Decision First, Reasoning on Demand.
     默认输出决策。按需展开推理。
+
+13. Atlas evolves from real investment decisions, not imagined features.
+    Atlas 的成长来自真实投资决策，而不是不断增加功能。

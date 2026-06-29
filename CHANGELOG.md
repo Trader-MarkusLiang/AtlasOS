@@ -1,5 +1,25 @@
 # Changelog
 
+## v2.1 RC - 2026-06-29
+
+- Entered Run First stage: freeze major architecture expansion and make Atlas usable every trading
+  day.
+- Refined existing Capital Deployment Engine instead of adding new systems.
+- Added explainable Deployment Score composition: World Model Stability, Evidence Quality, Price
+  Dislocation, Portfolio Exposure, Dry Powder, and Market Risk.
+- Added Authority Explainability: Today's Authority must derive from Deployment Score, Deployment
+  Lifecycle, Dry Powder, Execution Risk, and a reason.
+- Replaced simple Stage labels with Deployment Lifecycle: Observe, Pilot Deployment, Initial
+  Deployment, Scaling, Maximum Opportunity, and Capital Preservation.
+- Added Run First development principle: Atlas evolves from real investment decisions, not imagined
+  features.
+- Added future milestones as Planned only: Risk Budget Engine, Execution Governance Engine,
+  Performance Attribution, and Meta Learning Engine.
+- Updated Decision Brief Template, AGENTS, README, VERSION, and CDE documentation.
+- Added `99_Verification/Audit_Report_v2.1_RC_Run_First.md`.
+- Did not implement new engines or modify Seven Layer Reasoning, Decision Engine, Portfolio Rules,
+  Knowledge Distillation, World Model hierarchy, or databases.
+
 ## v2.1 Alpha - 2026-06-29
 
 - Added `10_Capital_Deployment_Engine/Capital_Deployment_Engine.md`.

@@ -53,8 +53,16 @@ unless the user explicitly changes the project scope.
   and identifies the affected World Model Node.
 - Portfolio follows World Model, not news.
 - Capital Deployment Engine sits between Decision Engine and Portfolio. It manages deployment
-  rhythm, today's maximum authority, deployment stage, Dry Powder, and unlock conditions.
+  rhythm, today's maximum authority, deployment lifecycle, Dry Powder, and unlock conditions.
 - CDE authority is permission, not mandatory action, and never predicts prices.
+- CDE must be explainable: Deployment Score must show component scores, and today's authority must
+  show its origin from score, lifecycle stage, Dry Powder, execution risk, and reason.
+- CDE lifecycle uses Observe -> Pilot Deployment -> Initial Deployment -> Scaling -> Maximum
+  Opportunity -> Capital Preservation.
+- Atlas is in Run First stage: improve daily decision usability before adding new systems.
+- Do not implement Risk Budget Engine, Execution Governance Engine, Performance Attribution, or
+  Meta Learning Engine unless a future user request explicitly changes project stage.
+- Atlas evolves from real investment decisions, not imagined features.
 
 ## Response Policy
 
@@ -103,6 +111,9 @@ news. If nothing changed, write `No World Model Change Today`.
 Risk Changes may show only today's new risks. If there is no new risk, write `No New Risk Today`.
 
 Decision Confidence means evidence completeness, not probability forecast of price direction.
+
+Capital Deployment Dashboard must expose Deployment Score composition and authority derivation
+whenever a capital action or deployment question is answered.
 
 ## Routing Rules
 

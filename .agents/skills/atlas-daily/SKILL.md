@@ -41,7 +41,8 @@ Return by default:
 6. Today's New Risks.
 7. Waiting Triggers.
 8. World Model Delta.
-9. Capital Deployment Dashboard.
+9. Capital Deployment Dashboard with Deployment Lifecycle, Deployment Score composition, and
+   authority derivation.
 10. Bias Warning.
 11. Decision Confidence.
 
@@ -61,6 +62,15 @@ evidence, and counter evidence in Atlas's World Model. If nothing changed, write
 Change Today`.
 
 Decision Confidence means evidence completeness, not probability forecast of price direction.
+
+Capital Deployment Dashboard must show:
+
+- Deployment Lifecycle: Observe / Pilot Deployment / Initial Deployment / Scaling / Maximum
+  Opportunity / Capital Preservation.
+- Deployment Score composition: World Model Stability, Evidence Quality, Price Dislocation,
+  Portfolio Exposure, Dry Powder, and Market Risk.
+- Today's Authority derived from Deployment Score, Deployment Lifecycle, Dry Powder, Execution Risk,
+  and reason.
 
 Hide Research View, Knowledge View, and Repository View unless the user asks for them.
 

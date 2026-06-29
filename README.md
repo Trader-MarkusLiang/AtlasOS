@@ -6,7 +6,7 @@ This repository stores the core Atlas framework in Git so the principles, reason
 market maps, trading discipline, and verification cases can be versioned and reused by Codex,
 ChatGPT, and future agents.
 
-Current stage: Cognitive World Model v2.0 Alpha.
+Current stage: Run First v2.1 RC.
 
 This stage does not build a dashboard, API, database, crawler, agent automation, or complex
 software architecture.
@@ -32,9 +32,9 @@ software architecture.
 
 ## Version
 
-Current version: v2.0 Alpha.
+Current version: v2.1 RC.
 
-Latest release tag: v2.0-alpha.
+Latest release tag: v2.1-rc.
 
 Current architecture diagram:
 
@@ -66,6 +66,10 @@ Atlas 学习市场运行规律。
 Atlas 不收集新闻。
 
 Atlas 持续更新自己对世界的理解。
+
+Atlas evolves from real investment decisions, not imagined features.
+
+Atlas 的成长来自真实投资决策，而不是不断增加功能。
 
 ## Codex Routing
 
@@ -123,7 +127,7 @@ Trading Discipline, Portfolio Rules, or the Living Database structure.
 
 ## Capital Deployment Engine
 
-v2.1 Alpha adds the Capital Deployment Engine between Decision Engine and Portfolio.
+v2.1 RC refines the Capital Deployment Engine between Decision Engine and Portfolio.
 
 ```text
 World Model
@@ -140,12 +144,47 @@ Execution
 CDE decides deployment rhythm:
 
 - Whether deployment is allowed today.
-- Today's maximum authority.
-- Current deployment stage.
+- Today's explainable authority.
+- Current deployment lifecycle stage.
 - Remaining Dry Powder.
-- Next-stage unlock conditions.
+- Next lifecycle unlock conditions.
+
+CDE output must be explainable:
+
+- Deployment Score is broken into World Model Stability, Evidence Quality, Price Dislocation,
+  Portfolio Exposure, Dry Powder, and Market Risk.
+- Today's Authority must show its origin from Deployment Score, Deployment Lifecycle, Dry Powder,
+  Execution Risk, and a short reason.
+
+Deployment Lifecycle:
+
+```text
+Observe
+ ↓
+Pilot Deployment
+ ↓
+Initial Deployment
+ ↓
+Scaling
+ ↓
+Maximum Opportunity
+ ↓
+Capital Preservation
+```
 
 CDE never predicts prices and never executes trades. Authority is permission, not mandatory action.
+
+Run First roadmap:
+
+| Future Milestone | Status |
+|---|---|
+| Risk Budget Engine | Planned |
+| Execution Governance Engine | Planned |
+| Performance Attribution | Planned |
+| Meta Learning Engine | Planned |
+
+These modules are not implemented in v2.1 RC. Atlas will add them only if real operation exposes
+the need.
 
 ## Daily Use
 

@@ -1,14 +1,14 @@
 # Version
 
-Current version: v2.1 Alpha
+Current version: v2.1 RC
 
-Release candidate: v1.1 RC
+Release candidate: v2.1 RC
 
 Portfolio layer version: Portfolio OS v1.2.1
 
 Date: 2026-06-29
 
-Stage: Cognitive World Model + Capital Deployment Engine
+Stage: Run First + Capital Deployment Engine
 
 Presentation stage: Decision Experience v1.1 RC
 
@@ -54,7 +54,11 @@ Scope:
 - Require Case to validate a Pattern and identify the affected World Model Node before merge.
 - Upgrade Decision Brief from Knowledge Delta to World Model Delta.
 - Add Capital Deployment Engine between Decision Engine and Portfolio to manage deployment score,
-  deployment stage, daily authority, dry powder, and unlock conditions.
+  deployment lifecycle, daily authority, dry powder, and unlock conditions.
+- Refine Capital Deployment Engine for Run First with explainable Deployment Score, authority
+  derivation, and complete Deployment Lifecycle.
+- Future modules are roadmap only: Risk Budget Engine, Execution Governance Engine, Performance
+  Attribution, and Meta Learning Engine are Planned, not implemented.
 
 ## Version Semantics
 

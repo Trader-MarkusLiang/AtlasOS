@@ -32,16 +32,41 @@ This is World Model health, not a stock score or price forecast.
 
 ==================================================
 【Capital Deployment Dashboard】
+Deployment Lifecycle:
+Observe / Pilot Deployment / Initial Deployment / Scaling / Maximum Opportunity / Capital Preservation
+
 Deployment Score:
-Deployment Stage: Stage 0 Observe / Stage 1 Initial Deployment / Stage 2 Deep Pullback / Stage 3 Maximum Opportunity
-Today’s Maximum Authority:
+__/100
+
+Score Composition:
+World Model Stability: __/25
+Evidence Quality: __/20
+Price Dislocation: __/20
+Portfolio Exposure: __/15
+Dry Powder: __/10
+Market Risk: __/10
+
+Score Reason:
+• ...
+
+Today’s Authority:
+__%
+
+Derived From:
+Deployment Score: __
+Deployment Lifecycle: ...
+Dry Powder: __%
+Execution Risk: Low / Medium / High
+
+Authority Reason:
+一句话说明今日权限为什么是这个比例。
+
 Executed Today:
 Remaining Dry Powder:
-Next Unlock Stage:
+Next Lifecycle Stage:
 Unlock Conditions:
 □ World Model unchanged or strengthening
 □ No fundamental deterioration
-□ Risk budget available
 □ Portfolio exposure below threshold
 □ Dry Powder remains above required reserve
 
