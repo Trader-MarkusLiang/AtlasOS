@@ -6,7 +6,7 @@ This repository stores the core Atlas framework in Git so the principles, reason
 market maps, trading discipline, and verification cases can be versioned and reused by Codex,
 ChatGPT, and future agents.
 
-Current stage: Run First v2.1 RC.
+Current stage: v2.1 Production Trial.
 
 This stage does not build a dashboard, API, database, crawler, agent automation, or complex
 software architecture.
@@ -27,6 +27,7 @@ software architecture.
 | `09_Knowledge/` | Knowledge philosophy, distillation rules, proposal templates, case and pattern library |
 | `09_World_Model/` | Atlas World Model: the highest active knowledge structure |
 | `10_Capital_Deployment_Engine/` | Capital deployment authority, stages, dry powder, and unlock rules |
+| `10_Production_Trial/` | Production Trial issue tracking, weekly reviews, and improvement candidates |
 | `99_Verification/` | Migration checklist, regression tests, and acceptance criteria |
 | `.agents/skills/` | Repo-scoped Codex workflow routing skills |
 
@@ -34,7 +35,7 @@ software architecture.
 
 Current version: v2.1 RC.
 
-Latest release tag: v2.1-rc-polish.
+Latest release tag: ais-v1.0.
 
 Release lifecycle:
 
@@ -54,6 +55,7 @@ Production Trial means:
 - Daily real usage.
 - Only bug fixes.
 - Only usability improvements.
+- Issue recording before iteration.
 - No new Engine.
 - No workflow redesign.
 
@@ -220,7 +222,8 @@ Released:
 
 Current:
 
-- Run First v2.1 RC.
+- v2.1 Production Trial.
+- Atlas Issue System v1.0.
 - Explainable Capital Deployment Engine.
 - Deployment Lifecycle.
 - Authority Explainability.
@@ -229,6 +232,7 @@ Planned:
 
 | Future Milestone | Status |
 |---|---|
+| Atlas Engineering System v0.1 | Planned |
 | Risk Budget Engine | Planned |
 | Execution Governance Engine | Planned |
 | Performance Attribution | Planned |
@@ -236,6 +240,8 @@ Planned:
 
 These modules are not implemented in v2.1 RC. Atlas will add them only if real operation exposes
 the need.
+
+Planned modules cannot be implemented until validated by Issues.
 
 Ideas:
 
@@ -264,6 +270,21 @@ Supported categories:
 - Capital Deployment
 - User Experience
 - Engineering
+
+## Issue System
+
+Atlas Production Trial follows:
+
+```text
+No Issue, No Iteration.
+```
+
+没有 Issue，就不进入迭代。
+
+Any new idea must first be recorded as an Issue under `10_Production_Trial/Issues/`.
+
+An Issue is not an Improvement Proposal. It may become an IP only after discussion, priority
+review, and user approval.
 
 ## Daily Use
 

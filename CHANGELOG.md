@@ -1,5 +1,21 @@
 # Changelog
 
+## Atlas Issue System v1.0 - 2026-06-29
+
+- Established lightweight Production Trial issue tracking under `10_Production_Trial/`.
+- Added Issue Template, Issue Policy, Weekly Review Template, and Improvement Candidate Template.
+- Added Issue lifecycle: Observed -> Recorded -> Watching -> Discussed -> Accepted / Rejected ->
+  Converted to IP -> Implemented -> Validated.
+- Added priority rules P0, P1, P2, and P3.
+- Updated roadmap: Current now includes v2.1 Production Trial and Atlas Issue System v1.0.
+- Added Atlas Engineering System v0.1 to Planned, alongside Risk Budget Engine, Execution
+  Governance Engine, Performance Attribution, and Meta Learning Engine.
+- Required Planned modules to be validated by Issues before implementation.
+- Updated AGENTS with Production Trial Issue Rule: No Issue, No Iteration.
+- Added `99_Verification/Audit_Report_AIS_v1.0.md`.
+- Did not implement AES, add a new Engine, modify core architecture, or touch private portfolio
+  files.
+
 ## v2.1 RC Polish - 2026-06-29
 
 - Polished v2.1 RC before Production Trial without adding new capabilities or engines.

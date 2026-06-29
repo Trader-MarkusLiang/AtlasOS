@@ -69,6 +69,14 @@ unless the user explicitly changes the project scope.
 - Roadmap stages are Released, Current, Planned, Ideas, and Deprecated. Deprecated items remain for
   traceability and must not disappear silently.
 
+## Production Trial Issue Rule
+
+- During Production Trial, Atlas must not directly convert a new idea into implementation.
+- All improvement ideas must first be recorded as Issues.
+- Only after discussion, priority review, and user approval may an Issue become an Improvement
+  Proposal.
+- No Issue, No Iteration.
+
 ## Response Policy
 
 Default output level:
@@ -175,6 +183,9 @@ Prefer existing Atlas files over new abstractions:
   `07_Decision_Engine/Decision_Gate.md`, `07_Decision_Engine/Decision_Lifecycle.md`,
   `07_Decision_Engine/Decision_Review.md`
 - Capital Deployment Engine: `10_Capital_Deployment_Engine/Capital_Deployment_Engine.md`
+- Production Trial: `10_Production_Trial/README.md`,
+  `10_Production_Trial/Issue_Policy.md`,
+  `10_Production_Trial/Issues/Issue_Template.md`
 - Daily Operating Cycle: `08_Daily_Operating_Cycle/Daily_Input_Protocol.md`,
   `08_Daily_Operating_Cycle/Daily_Routing_Rules.md`,
   `08_Daily_Operating_Cycle/Daily_Update_Workflow.md`,

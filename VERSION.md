@@ -14,7 +14,7 @@ Presentation stage: Decision Experience v1.1 RC
 
 Release lifecycle: Alpha -> RC -> Production Trial -> Final
 
-Current release position: RC, preparing for Production Trial
+Current release position: Production Trial
 
 Scope:
 
@@ -66,6 +66,9 @@ Scope:
 - Standardize Improvement Proposal IDs as `IP-YYYY-NNN` with independent Category.
 - Add Production Trial release status and validation principle.
 - Add Deprecated roadmap stage for architectural traceability.
+- Add Atlas Issue System v1.0 for Production Trial issue recording before future iteration.
+- Require every future iteration to reference at least one Issue.
+- Keep Atlas Engineering System and future engines Planned until validated by Issues.
 
 ## Version Semantics
 
