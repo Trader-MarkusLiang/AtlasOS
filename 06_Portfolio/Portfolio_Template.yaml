@@ -1,12 +1,19 @@
 capital_system:
   name: Atlas Portfolio
-  principle: Atlas manages capital allocation, not wealth.
+  principle: Atlas is wealth-blind, but scale-aware.
+  capital_profile:
+    scale_tier: Unknown
+    management_mode: Individual
+    execution_complexity: Unknown
+    liquidity_sensitivity: Unknown
+    risk_budget: Unknown
+    capital_scale_note: "Scale tier only. No exact account value, net worth, balance, or currency amount is stored."
   accounts:
     - account: Tiger
       deployment:
         current: 77%
       cash:
-        weight: 30%
+        weight: 23%
       capital_thesis:
         thesis: Memory / AI infrastructure allocation
         mission: Preserve exposure to confirmed AI infrastructure bottlenecks
@@ -16,13 +23,23 @@ capital_system:
           exposure:
             thesis: 70%
           holdings:
-            - ticker:
-              company:
-              priority:
-              weight:
+            - ticker: MEMORY_A
+              company: Memory Holding A
+              priority: A
+              weight: 30%
               target_weight:
               conviction:
-              capital_action:
+              capital_action: Observe
+              review_frequency:
+              last_update:
+              notes:
+            - ticker: MEMORY_B
+              company: Memory Holding B
+              priority: A
+              weight: 40%
+              target_weight:
+              conviction:
+              capital_action: Observe
               review_frequency:
               last_update:
               notes:
@@ -40,13 +57,43 @@ capital_system:
           exposure:
             thesis: 77%
           holdings:
-            - ticker:
-              company:
-              priority:
-              weight:
+            - ticker: INFRA_A
+              company: Infrastructure Holding A
+              priority: A
+              weight: 26%
               target_weight:
               conviction:
-              capital_action:
+              capital_action: Observe
+              review_frequency:
+              last_update:
+              notes:
+            - ticker: INFRA_B
+              company: Infrastructure Holding B
+              priority: A
+              weight: 13%
+              target_weight:
+              conviction:
+              capital_action: Observe
+              review_frequency:
+              last_update:
+              notes:
+            - ticker: INFRA_C
+              company: Infrastructure Holding C
+              priority: A
+              weight: 18%
+              target_weight:
+              conviction:
+              capital_action: Observe
+              review_frequency:
+              last_update:
+              notes:
+            - ticker: INFRA_D
+              company: Infrastructure Holding D
+              priority: A
+              weight: 20%
+              target_weight:
+              conviction:
+              capital_action: Observe
               review_frequency:
               last_update:
               notes:

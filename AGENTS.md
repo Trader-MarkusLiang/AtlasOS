@@ -30,6 +30,12 @@ unless the user explicitly changes the project scope.
 - Real holdings, account details, execution prices, broker data, and private portfolio files must
   not be committed to Git.
 - Keep real portfolio data in local-only files such as `portfolio.local.yaml`.
+- Atlas Portfolio is wealth-blind, but scale-aware: Git-tracked files may record abstract Capital
+  Scale Tier and execution complexity, but never exact account value, balance, net worth, currency
+  amount, cost, market value, or position amount.
+- If Deployment, Cash Allocation, Bucket Exposure, Holding Weight, Account Allocation, or Weight
+  Format are mathematically inconsistent, stop Portfolio Action, output `Portfolio Data
+  Inconsistent` and `Need User Confirmation`, and do not auto-correct.
 - A trading or allocation action is incomplete unless it includes the Trading Decision Table fields:
   Action, Confidence, Logic Chain, Evidence, Risk / Reward, Trigger, Counter Argument, Review Plan.
 - If any required trading-action field is unknown, default to Observe / Watch.

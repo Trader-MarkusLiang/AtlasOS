@@ -32,6 +32,19 @@ Reason:
 
 ## Portfolio 影响
 
+### Portfolio Consistency
+
+| Status | Reason |
+|---|---|
+| PASS / FAIL | If FAIL, list inconsistent Deployment, Cash Allocation, Bucket Exposure, Holding Weight, Account Allocation, or Weight Format fields. |
+
+If Portfolio Consistency is `FAIL`, do not continue to Portfolio Action. Output:
+
+```text
+Portfolio Data Inconsistent
+Need User Confirmation
+```
+
 ### Tiger
 
 | Field | Read |

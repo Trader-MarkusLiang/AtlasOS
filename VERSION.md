@@ -2,6 +2,8 @@
 
 Current version: v1.0
 
+Portfolio layer version: Portfolio OS v1.2.1
+
 Date: 2026-06-29
 
 Stage: Knowledge Distillation Engine
@@ -33,6 +35,10 @@ Scope:
 - Reframe Repository commits as Knowledge Merge, not News Archive.
 - Reframe companies as Pattern instances, not the primary knowledge subject.
 - Keep the project simple and avoid premature software development.
+- Upgrade Portfolio Layer privacy model to be wealth-blind but scale-aware through abstract Capital
+  Scale Tier, Management Mode, Execution Complexity, Liquidity Sensitivity, and Risk Budget fields.
+- Add Portfolio Consistency Rules so Portfolio Action can only proceed from self-consistent
+  allocation data.
 
 ## Version Semantics
 

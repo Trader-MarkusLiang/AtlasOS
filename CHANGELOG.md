@@ -1,5 +1,33 @@
 # Changelog
 
+## Portfolio OS v1.2.1 - 2026-06-29
+
+- Added Portfolio Consistency Rules as a self-check layer before Portfolio Action.
+- Required Deployment + Cash Allocation to equal 100% for each account.
+- Required Bucket Exposure totals to stay within Deployment.
+- Required Holding Weight totals to equal Bucket Exposure.
+- Required Global Portfolio account weights to equal 100% when Global Portfolio is declared.
+- Standardized weight format as percentage with at most one decimal place.
+- Added Daily Report Portfolio Consistency status and failure stop rule.
+- Added Portfolio Validation -> Consistency Check before Portfolio Action in Decision Gate.
+- Updated `AGENTS.md` with the rule that inconsistent Portfolio data blocks Portfolio Action and
+  requires user confirmation.
+- Added `99_Verification/Audit_Report_Portfolio_Consistency_v1.2.1.md`.
+
+## Portfolio OS v1.2 - 2026-06-29
+
+- Added scale-aware privacy principle: Atlas is wealth-blind, but scale-aware.
+- Added Capital Scale Tier as Capital Management Complexity, not wealth ranking.
+- Added S0-S8 scale tier reference bands for allocation, execution, liquidity, and risk-budget
+  complexity classification.
+- Added `capital_profile` to `06_Portfolio/Portfolio_Template.yaml` with `scale_tier`,
+  `management_mode`, `execution_complexity`, `liquidity_sensitivity`, and `risk_budget`.
+- Updated Portfolio privacy rules to allow only abstract scale-awareness fields, never exact
+  account value, balance, net worth, currency amount, cost, market value, or position amount.
+- Documented scale-aware privacy in `README.md`, `AGENTS.md`, and
+  `06_Portfolio/Portfolio_README.md`.
+- Added `99_Verification/Audit_Report_Portfolio_Scale_v1.2.md`.
+
 ## Portfolio Allocation v1.1 - 2026-06-29
 
 - Upgraded Portfolio OS to allocation-based privacy architecture.

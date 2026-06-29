@@ -206,7 +206,13 @@ Real holdings must stay out of Git in `portfolio.local.yaml`; Git stores only th
 
 Atlas Portfolio is a Capital Allocation Operating System, not a wealth tracker.
 
-Atlas is designed not to know the user's asset scale.
+Atlas is designed not to know the user's exact asset scale.
+
+Portfolio OS v1.2 refines this rule:
+
+Atlas is wealth-blind, but scale-aware.
+
+Atlas 不感知具体财富金额，但感知资金规模层级。
 
 Atlas does not store:
 
@@ -224,6 +230,14 @@ Atlas stores only:
 - Exposure.
 - Thesis.
 - Risk.
+- Capital Scale Tier.
+- Management Mode.
+- Execution Complexity.
+- Liquidity Sensitivity.
+- Risk Budget.
+
+Capital Scale Tier is not a wealth ranking. It is a Capital Management Complexity tier used to
+decide how much execution, liquidity, allocation, and review discipline the Portfolio Layer needs.
 
 Therefore Git, Case, Audit, and Session records should not leak wealth information. They should
 describe only how capital is allocated, what exposure exists, what thesis the capital serves, and
