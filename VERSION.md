@@ -1,6 +1,6 @@
 # Version
 
-Current version: v2.0 Alpha
+Current version: v2.1 Alpha
 
 Release candidate: v1.1 RC
 
@@ -8,7 +8,7 @@ Portfolio layer version: Portfolio OS v1.2.1
 
 Date: 2026-06-29
 
-Stage: Cognitive World Model
+Stage: Cognitive World Model + Capital Deployment Engine
 
 Presentation stage: Decision Experience v1.1 RC
 
@@ -53,6 +53,8 @@ Scope:
 - Require Pattern to belong to a World Model Node.
 - Require Case to validate a Pattern and identify the affected World Model Node before merge.
 - Upgrade Decision Brief from Knowledge Delta to World Model Delta.
+- Add Capital Deployment Engine between Decision Engine and Portfolio to manage deployment score,
+  deployment stage, daily authority, dry powder, and unlock conditions.
 
 ## Version Semantics
 

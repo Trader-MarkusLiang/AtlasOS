@@ -26,6 +26,7 @@ software architecture.
 | `08_Daily_Operating_Cycle/` | Daily input protocol, routing rules, update workflow, and report template |
 | `09_Knowledge/` | Knowledge philosophy, distillation rules, proposal templates, case and pattern library |
 | `09_World_Model/` | Atlas World Model: the highest active knowledge structure |
+| `10_Capital_Deployment_Engine/` | Capital deployment authority, stages, dry powder, and unlock rules |
 | `99_Verification/` | Migration checklist, regression tests, and acceptance criteria |
 | `.agents/skills/` | Repo-scoped Codex workflow routing skills |
 
@@ -119,6 +120,32 @@ Archive
 Decision Engine connects Research, Trading OS, Portfolio, Review, Repository, Daily, and
 Architecture into one closed loop. It does not change Atlas Principles, Seven Layer Reasoning,
 Trading Discipline, Portfolio Rules, or the Living Database structure.
+
+## Capital Deployment Engine
+
+v2.1 Alpha adds the Capital Deployment Engine between Decision Engine and Portfolio.
+
+```text
+World Model
+ ↓
+Decision Engine
+ ↓
+Capital Deployment Engine
+ ↓
+Portfolio
+ ↓
+Execution
+```
+
+CDE decides deployment rhythm:
+
+- Whether deployment is allowed today.
+- Today's maximum authority.
+- Current deployment stage.
+- Remaining Dry Powder.
+- Next-stage unlock conditions.
+
+CDE never predicts prices and never executes trades. Authority is permission, not mandatory action.
 
 ## Daily Use
 

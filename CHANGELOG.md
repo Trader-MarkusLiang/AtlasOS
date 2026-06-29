@@ -1,5 +1,22 @@
 # Changelog
 
+## v2.1 Alpha - 2026-06-29
+
+- Added `10_Capital_Deployment_Engine/Capital_Deployment_Engine.md`.
+- Established architecture: World Model -> Decision Engine -> Capital Deployment Engine ->
+  Portfolio -> Execution.
+- Added Deployment Stages: Stage 0 Observe, Stage 1 Initial Deployment, Stage 2 Deep Pullback,
+  Stage 3 Maximum Opportunity.
+- Added Deployment Score dimensions: World Model Stability, Fundamental Evidence, Price
+  Dislocation, Portfolio Exposure, Dry Powder, and Market Risk.
+- Added Capital Authority as maximum additional capital allowed today, not mandatory action.
+- Added explicit unlock rules for each deployment stage.
+- Updated Decision Brief Template with Capital Deployment Dashboard before Portfolio Impact.
+- Updated AGENTS, README, VERSION, and atlas-daily skill references.
+- Added `99_Verification/Audit_Report_v2.1_Alpha_CDE.md`.
+- Did not modify Seven Layer Reasoning, World Model hierarchy, Knowledge Distillation, Decision
+  Engine state machine, Portfolio Rules, or databases.
+
 ## v2.0 Alpha - 2026-06-29
 
 - Upgraded Atlas OS from Knowledge Operating System to Cognitive World Model.

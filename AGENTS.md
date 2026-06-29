@@ -52,6 +52,9 @@ unless the user explicitly changes the project scope.
 - Pattern cannot exist without a World Model Node. Case cannot merge unless it validates a Pattern
   and identifies the affected World Model Node.
 - Portfolio follows World Model, not news.
+- Capital Deployment Engine sits between Decision Engine and Portfolio. It manages deployment
+  rhythm, today's maximum authority, deployment stage, Dry Powder, and unlock conditions.
+- CDE authority is permission, not mandatory action, and never predicts prices.
 
 ## Response Policy
 
@@ -152,6 +155,7 @@ Prefer existing Atlas files over new abstractions:
 - Decision Engine: `07_Decision_Engine/Decision_State_Machine.md`,
   `07_Decision_Engine/Decision_Gate.md`, `07_Decision_Engine/Decision_Lifecycle.md`,
   `07_Decision_Engine/Decision_Review.md`
+- Capital Deployment Engine: `10_Capital_Deployment_Engine/Capital_Deployment_Engine.md`
 - Daily Operating Cycle: `08_Daily_Operating_Cycle/Daily_Input_Protocol.md`,
   `08_Daily_Operating_Cycle/Daily_Routing_Rules.md`,
   `08_Daily_Operating_Cycle/Daily_Update_Workflow.md`,

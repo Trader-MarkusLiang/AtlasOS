@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-06-29_1253_capital-deployment-engine-v21-alpha.md`
 - `docs/codex-sessions/completed/2026-06-29_1230_save-v2-architecture-diagram.md`
 - `docs/codex-sessions/completed/2026-06-29_1212_cognitive-world-model-v20-alpha.md`
 - `docs/codex-sessions/completed/2026-06-29_1201_decision-experience-v11-rc.md`

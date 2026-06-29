@@ -41,8 +41,9 @@ Return by default:
 6. Today's New Risks.
 7. Waiting Triggers.
 8. World Model Delta.
-9. Bias Warning.
-10. Decision Confidence.
+9. Capital Deployment Dashboard.
+10. Bias Warning.
+11. Decision Confidence.
 
 Decision Brief must answer:
 

@@ -31,6 +31,24 @@ Robotics: █████░░░░░ Early Stage
 This is World Model health, not a stock score or price forecast.
 
 ==================================================
+【Capital Deployment Dashboard】
+Deployment Score:
+Deployment Stage: Stage 0 Observe / Stage 1 Initial Deployment / Stage 2 Deep Pullback / Stage 3 Maximum Opportunity
+Today’s Maximum Authority:
+Executed Today:
+Remaining Dry Powder:
+Next Unlock Stage:
+Unlock Conditions:
+□ World Model unchanged or strengthening
+□ No fundamental deterioration
+□ Risk budget available
+□ Portfolio exposure below threshold
+□ Dry Powder remains above required reserve
+
+Authority is the maximum additional capital allowed today.
+It is not a mandatory action.
+
+==================================================
 【Portfolio Impact】
 Tiger:
 • Thesis 是否变化:
