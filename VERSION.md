@@ -1,6 +1,6 @@
 # Version
 
-Current version: v1.0
+Current version: v2.0 Alpha
 
 Release candidate: v1.1 RC
 
@@ -8,7 +8,7 @@ Portfolio layer version: Portfolio OS v1.2.1
 
 Date: 2026-06-29
 
-Stage: Knowledge Distillation Engine
+Stage: Cognitive World Model
 
 Presentation stage: Decision Experience v1.1 RC
 
@@ -47,6 +47,12 @@ Scope:
   Knowledge, and Repository views expanded only on request.
 - Upgrade Decision Experience so the first screen answers action need, thesis change, new risk,
   observable triggers, knowledge delta, bias warning, and decision confidence.
+- Establish World Model as the highest active knowledge structure above Pattern, Case, Evidence,
+  and Signal.
+- Reframe Database, Pattern, Case, Evidence, and Signal as components of World Model.
+- Require Pattern to belong to a World Model Node.
+- Require Case to validate a Pattern and identify the affected World Model Node before merge.
+- Upgrade Decision Brief from Knowledge Delta to World Model Delta.
 
 ## Version Semantics
 

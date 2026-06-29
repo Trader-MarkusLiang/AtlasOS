@@ -40,7 +40,7 @@ Return by default:
 5. Portfolio Impact.
 6. Today's New Risks.
 7. Waiting Triggers.
-8. Knowledge Delta.
+8. World Model Delta.
 9. Bias Warning.
 10. Decision Confidence.
 
@@ -55,8 +55,9 @@ If these are answered, stop output.
 Risk Changes should include only today's new risks. If no new risk appeared, write `No New Risk
 Today`.
 
-Knowledge Delta should describe only Pattern, Thesis, or Confidence changes in Atlas's world model.
-If nothing changed, write `No Knowledge Change`.
+World Model Delta should describe only changed domain, changed node, weight, confidence, reason,
+evidence, and counter evidence in Atlas's World Model. If nothing changed, write `No World Model
+Change Today`.
 
 Decision Confidence means evidence completeness, not probability forecast of price direction.
 

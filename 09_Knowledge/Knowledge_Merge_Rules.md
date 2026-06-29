@@ -4,6 +4,10 @@ Knowledge Merge is the repository act of accepting reusable reasoning into Atlas
 
 Commit represents Knowledge Merge, not News Archive.
 
+From v2.0 Alpha, Knowledge Merge should ultimately update or preserve Atlas World Model.
+
+Markdown is persistence. World Model is the knowledge object.
+
 ## Merge Requirements
 
 Before merge, a Knowledge Proposal must include:
@@ -15,13 +19,16 @@ Before merge, a Knowledge Proposal must include:
 5. Confidence.
 6. Pattern or `Unknown`.
 7. Case or `Unknown`.
-8. Review Result.
-9. Merge Result.
+8. Affected World Model Node or `Unknown`.
+9. World Model Delta or `No World Model Change Today`.
+10. Review Result.
+11. Merge Result.
 
 ## Merge Targets
 
 | Target | Merge Condition |
 |---|---|
+| World Model | Evidence, reasoning, and review show a node weight, confidence, trend, counter evidence, or waiting trigger changed. |
 | Pattern | Reusable across companies, industries, or cycles and reviewed. |
 | Case | Meets at least one Case upgrade criterion and includes outcome or review plan. |
 | Alpha Radar | Signal remains useful but has not become Case or Pattern. |
@@ -45,6 +52,12 @@ Required path:
 Signal -> Evidence -> Reasoning -> Proposal -> Review -> Merge
 ```
 
+From v2.0 Alpha, durable merge path is:
+
+```text
+Signal -> Evidence -> Reasoning -> Review -> World Model Delta -> Knowledge Merge -> Repository
+```
+
 ## Repository Responsibility
 
 Repository owns:
@@ -61,6 +74,8 @@ Repository does not own:
 - Pattern creation without review.
 - Portfolio action.
 - News archiving for its own sake.
+
+Repository records World Model Merge. It does not replace World Model.
 
 ## Merge Decision
 

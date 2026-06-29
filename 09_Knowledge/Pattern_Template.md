@@ -10,6 +10,12 @@ PATTERN-YYYY-NNN
 
 Name.
 
+## World Model Node
+
+Which World Model Node owns this Pattern?
+
+No Node, no new Pattern.
+
 ## Definition
 
 What reusable logic does this Pattern describe?

@@ -46,6 +46,12 @@ What did Atlas learn, and what should future Pattern use remember?
 
 Which Pattern did this Case validate, refute, or create?
 
+## Affected World Model Node
+
+Which World Model Node did the validated Pattern affect?
+
+If no Pattern and World Model Node are identified, this Case cannot merge.
+
 ## Case Confidence
 
 Low / Medium / High / Very High.

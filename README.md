@@ -6,7 +6,7 @@ This repository stores the core Atlas framework in Git so the principles, reason
 market maps, trading discipline, and verification cases can be versioned and reused by Codex,
 ChatGPT, and future agents.
 
-Current stage: Knowledge Distillation Engine v1.0.
+Current stage: Cognitive World Model v2.0 Alpha.
 
 This stage does not build a dashboard, API, database, crawler, agent automation, or complex
 software architecture.
@@ -25,16 +25,21 @@ software architecture.
 | `07_Decision_Engine/` | Decision lifecycle, gates, review, and state-machine operating mechanism |
 | `08_Daily_Operating_Cycle/` | Daily input protocol, routing rules, update workflow, and report template |
 | `09_Knowledge/` | Knowledge philosophy, distillation rules, proposal templates, case and pattern library |
+| `09_World_Model/` | Atlas World Model: the highest active knowledge structure |
 | `99_Verification/` | Migration checklist, regression tests, and acceptance criteria |
 | `.agents/skills/` | Repo-scoped Codex workflow routing skills |
 
 ## Version
 
-Current version: v1.0.
+Current version: v2.0 Alpha.
 
-Release candidate: v1.0 RC.
+Latest release tag: v2.0-alpha.
 
 ## Architecture Principle
+
+Atlas does not collect news.
+
+Atlas continuously updates its understanding of the world.
 
 Atlas does not accumulate information.
 
@@ -51,6 +56,10 @@ Atlas 沉淀可复用的推理模式。
 Atlas 不记住市场。
 
 Atlas 学习市场运行规律。
+
+Atlas 不收集新闻。
+
+Atlas 持续更新自己对世界的理解。
 
 ## Codex Routing
 
@@ -162,10 +171,17 @@ Atlas no longer treats news as knowledge. News is Signal. Verified records are E
 knowledge starts when Atlas extracts reusable reasoning, decision logic, Case learning, or Pattern
 logic.
 
+v2.0 Alpha upgrades Atlas from Knowledge Operating System to Cognitive Operating System.
+
+World Model becomes the highest active knowledge structure. Database, Pattern, Case, Evidence, and
+Signal are components of World Model.
+
 Knowledge follows the Atlas Knowledge Pyramid:
 
 ```text
 Theory
+ ↑
+World Model
  ↑
 Pattern
  ↑
@@ -177,8 +193,9 @@ Signal
 ```
 
 Signal triggers research. Evidence validates Signal. Case validates Pattern. Pattern is extracted
-from multiple Cases. Theory cannot be designed; it can only emerge after multiple Patterns remain
-stable across years, industries, and cycles.
+from multiple Cases. World Model organizes Patterns into Atlas's current understanding of the AI
+world. Theory cannot be designed; it can only emerge after multiple Patterns remain stable across
+years, industries, and cycles.
 
 Knowledge Distillation flow:
 
@@ -195,15 +212,21 @@ Case Generation
  ↓
 Pattern Validation
  ↓
+World Model Update
+ ↓
 Knowledge Merge
  ↓
 Repository
 ```
 
 Every durable update starts as a Knowledge Proposal. Proposal comes before Merge. Repository commits
-represent Knowledge Merge, not News Archive.
+represent Knowledge Merge, not News Archive. A Knowledge Merge should explain the World Model
+change, or explicitly state that there was no World Model change.
 
 Companies are not Atlas's primary knowledge unit. Companies are instances of Patterns.
+
+Patterns cannot exist without a World Model Node. Cases cannot merge unless they validate a Pattern
+and identify the affected World Model Node.
 
 ## Living Database
 

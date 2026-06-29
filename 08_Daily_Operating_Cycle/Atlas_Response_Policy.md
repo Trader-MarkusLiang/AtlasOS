@@ -67,7 +67,7 @@ Decision Brief must include:
 - Portfolio Impact.
 - Today's New Risks.
 - Waiting Triggers.
-- Knowledge Delta.
+- World Model Delta.
 - Bias Warning.
 - Decision Confidence.
 
@@ -144,20 +144,26 @@ The following are internal by default:
 
 Do not output them unless the user explicitly asks for the matching view.
 
-## Knowledge Delta Rule
+## World Model Delta Rule
 
-Knowledge Delta may describe only Atlas world-model changes:
+Knowledge Delta is now World Model Delta.
 
-- Pattern.
-- Thesis.
+World Model Delta may describe only Atlas World Model changes:
+
+- Changed Domain.
+- Changed Node.
+- Weight.
 - Confidence.
+- Reason.
+- Evidence.
+- Counter Evidence.
 
-It must not repeat today's news.
+It must not repeat today's news, Repository workflow, or Pattern Merge.
 
 If nothing changed, write:
 
 ```text
-No Knowledge Change
+No World Model Change Today
 ```
 
 ## Risk Presentation Rule
@@ -188,6 +194,12 @@ Robot: 51%, Early Stage
 ```
 
 Show Thesis Health only when it helps answer whether the user's thesis changed.
+
+## Portfolio World Model Rule
+
+Portfolio tracks World Model, not news.
+
+Portfolio Action must be driven by World Model changes, not headlines or a single Pattern.
 
 ## First Sentence Rule
 

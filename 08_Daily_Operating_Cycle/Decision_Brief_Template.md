@@ -21,6 +21,16 @@ If No Action:
 一句话说明原因。
 
 ==================================================
+【World Model Status】
+Atlas World:
+Memory: █████████░ Stable
+Optical Interconnect: ███████░░░ Strengthening
+Power: ██████░░░░ Developing
+Robotics: █████░░░░░ Early Stage
+
+This is World Model health, not a stock score or price forecast.
+
+==================================================
 【Portfolio Impact】
 Tiger:
 • Thesis 是否变化:
@@ -59,16 +69,20 @@ Examples:
 Do not use vague triggers.
 
 ==================================================
-【Knowledge Delta】
-No Knowledge Change
+【World Model Delta】
+No World Model Change Today
 
 or:
-• Pattern:
-• Thesis:
+• Domain:
+• Changed Node:
+• Weight:
 • Confidence:
+• Reason:
+• Evidence:
+• Counter Evidence:
 
-Knowledge Delta describes only Atlas world-model changes.
-It must not repeat today's news.
+World Model Delta describes how Atlas's understanding of the AI world changed.
+It must not show Repository, Pattern Merge, or news repetition.
 
 ==================================================
 【Bias Warning】

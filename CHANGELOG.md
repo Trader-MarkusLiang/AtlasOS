@@ -1,5 +1,25 @@
 # Changelog
 
+## v2.0 Alpha - 2026-06-29
+
+- Upgraded Atlas OS from Knowledge Operating System to Cognitive World Model.
+- Added Atlas first principle: Atlas does not collect news; Atlas continuously updates its
+  understanding of the world.
+- Added `09_World_Model/` with `World_Model.md` as the root World Model.
+- Established hierarchy: Theory -> World Model -> Pattern -> Case -> Evidence -> Signal.
+- Added AI World nodes for Compute, Memory, Networking, Optical Interconnect, Power, Manufacturing,
+  Materials, Robotics, and Industry AI.
+- Updated Knowledge Philosophy and Knowledge Distillation so World Model is the highest active
+  knowledge structure.
+- Updated Pattern Template: every Pattern must belong to a World Model Node.
+- Updated Case Template: every Case must validate a Pattern and identify the affected World Model
+  Node before merge.
+- Upgraded Decision Brief from Knowledge Delta to World Model Delta and added World Model Status.
+- Updated AGENTS and atlas-daily skill for World Model Delta.
+- Added `99_Verification/Audit_Report_v2.0_Alpha_World_Model.md`.
+- Kept scope as Markdown knowledge architecture: no Seven Layer, Decision Engine, Portfolio Rules,
+  Daily workflow, or database changes.
+
 ## v1.1 RC - 2026-06-29
 
 - Upgraded Atlas Decision Experience for CIO-style first-screen reporting.

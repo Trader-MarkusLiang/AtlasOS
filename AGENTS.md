@@ -44,8 +44,14 @@ unless the user explicitly changes the project scope.
 - Do not add new frameworks, automation, dashboards, crawlers, APIs, or database programs unless the
   user explicitly asks for that project-stage change.
 - Atlas does not accumulate information; Atlas distills reusable reasoning patterns.
+- Atlas does not collect news; Atlas continuously updates its understanding of the world.
 - News is Signal or Evidence, not durable Knowledge.
 - Durable knowledge updates must go through Knowledge Proposal before Knowledge Merge.
+- World Model is Atlas's highest active knowledge structure. Database, Pattern, Case, Evidence, and
+  Signal are components of World Model.
+- Pattern cannot exist without a World Model Node. Case cannot merge unless it validates a Pattern
+  and identifies the affected World Model Node.
+- Portfolio follows World Model, not news.
 
 ## Response Policy
 
@@ -87,8 +93,9 @@ Expanded views are available only on request:
 For market information, the first sentence should be an investment conclusion, not an internal
 process label.
 
-Knowledge Delta may describe only Atlas world-model changes: Pattern, Thesis, or Confidence. It
-must not repeat today's news. If nothing changed, write `No Knowledge Change`.
+Knowledge Delta is now World Model Delta. It may describe only World Model changes: changed domain,
+changed node, weight, confidence, reason, evidence, and counter evidence. It must not repeat today's
+news. If nothing changed, write `No World Model Change Today`.
 
 Risk Changes may show only today's new risks. If there is no new risk, write `No New Risk Today`.
 
@@ -154,6 +161,7 @@ Prefer existing Atlas files over new abstractions:
 - Knowledge Distillation: `09_Knowledge/Knowledge_Philosophy.md`,
   `09_Knowledge/Knowledge_Distillation.md`, `09_Knowledge/Proposal_Template.md`,
   `09_Knowledge/Knowledge_Merge_Rules.md`
+- World Model: `09_World_Model/World_Model.md`
 - Verification: `99_Verification/Audit_Methodology.md`, `99_Verification/Release_Gate.md`
 
 ## Session Logging
