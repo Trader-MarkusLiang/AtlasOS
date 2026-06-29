@@ -35,12 +35,30 @@ Return by default:
 
 1. Date.
 2. Trade Today: YES / NO.
-3. One-sentence conclusion.
-4. Today's Action using Atlas vocabulary.
+3. Executive Conclusion.
+4. Portfolio Action using Atlas vocabulary.
 5. Portfolio Impact.
-6. Risk Changes.
+6. Today's New Risks.
 7. Waiting Triggers.
-8. Today's Learning.
+8. Knowledge Delta.
+9. Bias Warning.
+10. Decision Confidence.
+
+Decision Brief must answer:
+
+1. Do I need to act?
+2. Has my thesis changed?
+3. What should I watch next?
+
+If these are answered, stop output.
+
+Risk Changes should include only today's new risks. If no new risk appeared, write `No New Risk
+Today`.
+
+Knowledge Delta should describe only Pattern, Thesis, or Confidence changes in Atlas's world model.
+If nothing changed, write `No Knowledge Change`.
+
+Decision Confidence means evidence completeness, not probability forecast of price direction.
 
 Hide Research View, Knowledge View, and Repository View unless the user asks for them.
 

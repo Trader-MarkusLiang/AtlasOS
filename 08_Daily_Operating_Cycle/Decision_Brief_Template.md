@@ -1,42 +1,99 @@
 # Decision Brief Template
 
 ```text
-══════════════════════
+==================================================
 Atlas Decision Brief
 Date: YYYY-MM-DD
-══════════════════════
+==================================================
 
-【一句话结论】
-...
+【Executive Conclusion】
+一句话告诉用户今天最大的结论。
 
-══════════════════════
-【今日动作】
+Example:
+Memory Thesis 持续强化。暂无调仓必要。
+
+==================================================
+【Today's Action】
 Trade: YES / NO
-Action: Build / Hold / Reduce / Exit
-══════════════════════
+Portfolio Action: Build / Hold / Reduce / Exit
 
+If No Action:
+一句话说明原因。
+
+==================================================
 【Portfolio Impact】
 Tiger:
-...
+• Thesis 是否变化:
+• 是否需要调整:
 
 China:
-...
+• Thesis 是否变化:
+• 是否需要调整:
 
-══════════════════════
-【Risk Changes】
-...
+Do not repeat allocation percentages in the default brief.
 
-══════════════════════
+==================================================
+【Today's New Risks】
+No New Risk Today
+
+or:
+• 新增风险:
+• 为什么今天新增:
+
+Do not repeat historical risks.
+
+==================================================
 【Waiting Triggers】
+□ Observable trigger
+□ Observable trigger
+□ Observable trigger
+
+Triggers must be observable.
+
+Examples:
+□ DRAM ASP 连续两周下跌
+□ HBM Lead Time 缩短
+□ Cloud CapEx 下修
+□ 三星 Guidance 下调
+
+Do not use vague triggers.
+
+==================================================
+【Knowledge Delta】
+No Knowledge Change
+
+or:
+• Pattern:
+• Thesis:
+• Confidence:
+
+Knowledge Delta describes only Atlas world-model changes.
+It must not repeat today's news.
+
+==================================================
+【Bias Warning】
+Today's Biggest Mistake:
 ...
 
-══════════════════════
-【Today’s Learning】
-一句话说明今天 Atlas 哪个 Thesis / Pattern / Confidence 发生变化。
-══════════════════════
+Examples:
+不要因为价格下跌，误判 Thesis 已结束。
+不要因为一条 X 消息，改变长期仓位。
+
+==================================================
+【Decision Confidence】
+Decision Confidence: High / Medium / Low
+
+Confidence means evidence completeness.
+It is not a probability forecast of price direction.
+==================================================
 ```
 
 Keep the brief within one screen when possible.
 
-Do not include Seven Layer Reasoning, skill routing, Decision Engine state, repository proposal,
-audit, merge plan, or Git workflow unless the user asks for the relevant expanded view.
+Default Decision Brief must answer:
+
+1. Do I need to act?
+2. Has my thesis changed?
+3. What should I watch next?
+
+If these are answered, stop. Do not continue into internal workflow.

@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.1 RC - 2026-06-29
+
+- Upgraded Atlas Decision Experience for CIO-style first-screen reporting.
+- Rebuilt `08_Daily_Operating_Cycle/Decision_Brief_Template.md` around Executive Conclusion,
+  Today's Action, simplified Portfolio Impact, Today's New Risks, Waiting Triggers, Knowledge
+  Delta, Bias Warning, and Decision Confidence.
+- Updated `08_Daily_Operating_Cycle/Atlas_Response_Policy.md` with Decision Experience Principle,
+  Knowledge Delta Rule, Risk Presentation Rule, and Thesis Health Rule.
+- Updated `AGENTS.md` so default answers stop after answering action need, thesis change, and
+  next triggers.
+- Updated `atlas-daily` skill to keep Research, Knowledge, and Repository views hidden unless
+  explicitly requested.
+- Added `99_Verification/Audit_Report_v1.1_RC_Decision_Experience.md`.
+- Kept scope limited to presentation: no Seven Layer, Decision Engine, Portfolio Rules, or Database
+  changes.
+
 ## v1.0 RC - 2026-06-29
 
 - Added Decision First user experience: default output is Decision Brief.

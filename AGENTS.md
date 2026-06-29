@@ -55,8 +55,17 @@ Default output level:
 Decision Brief
 ```
 
-Unless the user explicitly asks for `Show Reasoning`, `Debug`, `Seven Layer`, `Knowledge Update`,
-`Repository Update`, `Database Update`, `Internal Workflow`, or `Skill Routing`, do not output:
+Default answer must answer:
+
+1. Do I need to act?
+2. Has my thesis changed?
+3. What should I watch next?
+
+If these three questions are answered, stop output. Do not continue into internal workflow.
+
+Unless the user explicitly asks for `Why`, `Explain`, `Research`, `Debug`, `Knowledge`,
+`Repository`, `Show Reasoning`, `Seven Layer`, `Knowledge Update`, `Repository Update`,
+`Database Update`, `Internal Workflow`, or `Skill Routing`, do not output:
 
 - Seven Layer Reasoning.
 - Skill Routing.
@@ -77,6 +86,13 @@ Expanded views are available only on request:
 
 For market information, the first sentence should be an investment conclusion, not an internal
 process label.
+
+Knowledge Delta may describe only Atlas world-model changes: Pattern, Thesis, or Confidence. It
+must not repeat today's news. If nothing changed, write `No Knowledge Change`.
+
+Risk Changes may show only today's new risks. If there is no new risk, write `No New Risk Today`.
+
+Decision Confidence means evidence completeness, not probability forecast of price direction.
 
 ## Routing Rules
 

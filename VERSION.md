@@ -2,7 +2,7 @@
 
 Current version: v1.0
 
-Release candidate: v1.0 RC
+Release candidate: v1.1 RC
 
 Portfolio layer version: Portfolio OS v1.2.1
 
@@ -10,7 +10,7 @@ Date: 2026-06-29
 
 Stage: Knowledge Distillation Engine
 
-Presentation stage: Decision First User Experience
+Presentation stage: Decision Experience v1.1 RC
 
 Scope:
 
@@ -45,6 +45,8 @@ Scope:
   allocation data.
 - Add Decision First presentation layer: default output is Decision Brief, with Research,
   Knowledge, and Repository views expanded only on request.
+- Upgrade Decision Experience so the first screen answers action need, thesis change, new risk,
+  observable triggers, knowledge delta, bias warning, and decision confidence.
 
 ## Version Semantics
 
