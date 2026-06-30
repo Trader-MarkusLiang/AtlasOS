@@ -66,6 +66,39 @@ tickers:
       akshare: "300666"
       yfinance: "300666.SZ"
 
+  - name: 太极实业
+    aliases:
+      - 太极实业
+    code: "600667"
+    market: A-share
+    exchange: SH
+    identity_status: Validated
+    provider_symbols:
+      akshare: "600667"
+      yfinance: "600667.SS"
+
+  - name: 广钢气体
+    aliases:
+      - 广钢气体
+    code: "688548"
+    market: A-share
+    exchange: SH
+    identity_status: Validated
+    provider_symbols:
+      akshare: "688548"
+      yfinance: "688548.SS"
+
+  - name: 昊华科技
+    aliases:
+      - 昊华科技
+    code: "600378"
+    market: A-share
+    exchange: SH
+    identity_status: Validated
+    provider_symbols:
+      akshare: "600378"
+      yfinance: "600378.SS"
+
   - name: 建滔集团
     aliases:
       - 建滔集团

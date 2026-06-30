@@ -29,11 +29,33 @@ python3 -m pip install --user akshare yfinance beautifulsoup4 lxml 'pandas_marke
 get_latest_quote(ticker: str, market: str) -> dict
 get_history(ticker: str, market: str, period: str = "60d") -> pandas.DataFrame
 get_market_snapshot(ticker: str, market: str) -> dict
+get_domestic_market_snapshot(ticker: str, market: str) -> dict
 ```
 
 Missing fields are returned as `None` and listed in `missing_fields`.
 
 Valuation data is optional. Missing valuation data does not fail provider setup.
+
+## Domestic Snapshot v0.2
+
+`get_domestic_market_snapshot` adds China / Hong Kong decision-input fields:
+
+- 5D / 10D / 20D / 60D changes.
+- MA5 / MA10 / MA20 / MA60.
+- Price distance from MA20 / MA60 and 20D / 60D highs / lows.
+- Volume ratios vs 5D / 20D averages.
+- Turnover ratios when turnover is available.
+- `market_structure_status`.
+- `execution_readiness`.
+- `data_freshness`.
+
+`market_structure_status` is rule-based and explainable. It does not predict price.
+
+`execution_readiness` is not Trading Authority. CDE authorization is still required before any
+portfolio action.
+
+If data is partial, stale, or unavailable, Atlas should output decision limitations such as
+`CDE Precision Limited` and avoid strong execution advice.
 
 ## Privacy
 

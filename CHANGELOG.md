@@ -1,5 +1,24 @@
 # Changelog
 
+## Domestic Market Data Support v0.2 - 2026-06-30
+
+- Added `ISSUE-2026-019` and `IP-2026-019` for domestic market data support.
+- Added `tools/market_data/domestic_market_snapshot.py`.
+- Added `get_domestic_market_snapshot(ticker, market)` to the market data utility interface.
+- Added derived domestic indicators: 5D / 10D / 20D / 60D changes, MA5 / MA10 / MA20 / MA60,
+  price gaps, high / low distances, volume ratios, turnover ratios when available, market
+  structure, execution readiness, and data freshness.
+- Added domestic validation result:
+  `99_Verification/Domestic_Market_Snapshot_Result.md`.
+- Added audit report:
+  `99_Verification/Audit_Report_Domestic_Market_Data_Support_v0.2.md`.
+- Added Regression Test Case 15.
+- Added ticker registry entries for 太极实业, 广钢气体, and 昊华科技.
+- Final domestic market data decision: `DOMESTIC READY`.
+- Safety boundaries preserved: no strategy logic, CDE logic, Decision Brief strategy logic,
+  `portfolio.local.yaml`, allocation percentages, private amounts, automatic trading, dashboard, or
+  new Engine modified / added.
+
 ## Taijin Ticker Mapping Confirmed - 2026-06-30
 
 - Confirmed `泰金新能` ticker mapping as `688813`, A-share, SH, with `akshare: 688813` and

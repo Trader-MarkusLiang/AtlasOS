@@ -258,3 +258,30 @@ Fail conditions:
 - Missing valuation fields fail the whole test.
 - Private portfolio amounts are stored.
 - CDE / Decision Brief strategy logic is modified.
+
+## Case 15: Domestic Market Snapshot Supports Decision Inputs
+
+Expected output:
+
+1. Domestic holdings have market snapshots.
+2. A-share / HK candidates have market snapshots where available.
+3. Market structure classification is rule-based and explainable.
+4. Execution readiness is clearly marked as input only, not trading authority.
+5. Missing turnover / valuation does not fail snapshot.
+6. Data freshness is shown.
+7. Decision Brief can use the snapshot for market confirmation but must not produce trade authority
+   without CDE.
+8. No private portfolio amounts are stored.
+9. No strategy logic is modified.
+10. No new Engine is created.
+
+Fail conditions:
+
+- Snapshot gives buy / sell recommendation.
+- Market structure predicts price.
+- Execution readiness is treated as CDE authority.
+- Missing data is hallucinated.
+- Stale data is treated as fresh.
+- Private portfolio details are stored.
+- CDE formula is modified.
+- New Engine is created.
