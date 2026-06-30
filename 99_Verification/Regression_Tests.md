@@ -132,3 +132,38 @@ Fail conditions:
 - Atlas invents K-line / valuation data without source.
 - Atlas does not distinguish Research Candidate from Existing Holding.
 - Atlas does not include the CDE boundary.
+
+## Case 11: Portfolio Freshness and Candidate Identity Validation
+
+Input:
+
+Use the Korea AI / DRAM screenshot candidate list.
+
+Expected output:
+
+- Portfolio Source is shown.
+- Portfolio Last Updated is shown.
+- China account exposure + cash is validated to equal 100%.
+- Portfolio Consistency is shown.
+- Exposure Sum is shown.
+- Cash / Dry Powder is shown.
+- Decision Limitation is shown.
+- If portfolio context is inconsistent, stale, conflicting, or unverifiable, Atlas refuses precise
+  CDE authority and uses conservative Hold / Observe only.
+- Candidate table includes Code, Candidate, Identity Status, and Source Category.
+- `688008 澜起科技` is correctly identified.
+- `润起科技` is not output as a valid candidate when source code is `688008 澜起科技`.
+- Unverified identities are marked Needs Validation.
+- Identity-mismatched candidates are not scored normally.
+- Top 3 candidates receive compact score explanations.
+- Research Priority remains separate from Trading Authority.
+
+Fail conditions:
+
+- Portfolio percentages are inconsistent without warning.
+- Atlas uses stale portfolio data without marking limitation.
+- Atlas gives precise CDE authority with inconsistent portfolio context.
+- Atlas misnames a candidate.
+- Atlas scores an identity-mismatched candidate normally.
+- Atlas omits code / name validation.
+- Atlas invents K-line, valuation, or order data.

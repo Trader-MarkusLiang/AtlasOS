@@ -36,6 +36,8 @@ Use this skill when the task involves:
 Return:
 
 1. Portfolio context and affected position.
+   Include Portfolio Source, Portfolio Last Updated, Portfolio Consistency, Exposure Sum, Cash /
+   Dry Powder, and Decision Limitation.
 2. Existing Portfolio Mapping for any market, industry, company, supply-chain, pricing, macro,
    social media, or thematic investment input.
 3. CDE authority impact.
@@ -53,6 +55,25 @@ Return:
 
 Strategic Candidate Dashboard must obey Portfolio Context Injection.
 
+Before Decision Brief or Strategic Candidate Dashboard output, validate portfolio freshness:
+
+- Portfolio Source.
+- Portfolio Last Updated.
+- Portfolio Consistency.
+- Exposure Sum.
+- Cash / Dry Powder.
+- Decision Limitation.
+
+For each account, validate `Total Exposure + Cash = 100%` within small rounding tolerance. If not,
+mark `Portfolio Consistency: FAIL`.
+
+If portfolio source is missing, stale, inconsistent, conflicting, or cannot be verified, output
+`Portfolio Context Stale / Inconsistent — Decision Limited`, avoid precise CDE authority, and use
+conservative Hold / Observe only.
+
+If multiple portfolio versions exist and the latest valid source cannot be determined, output
+`Portfolio Context Conflict — Decision Limited`.
+
 When portfolio context exists, include current holdings first. For each current holding show:
 
 - Exposure: Direct / Indirect / None / Unknown.
@@ -63,6 +84,10 @@ When portfolio context exists, include current holdings first. For each current 
 
 Then show new research candidates with:
 
+- Code.
+- Candidate.
+- Identity Status.
+- Source Category.
 - Business Link.
 - Thesis Fit.
 - Evidence Quality.
@@ -80,6 +105,10 @@ Deployment Score authorizes capital deployment. A candidate can be S Tier with C
 If data is unavailable, write `Data Missing` or `Needs Verification`. Do not invent price,
 valuation, K-line, volume, customer order, or margin data.
 
+For candidates extracted from image, screenshot, OCR, social media post, or unstructured text,
+validate code and Chinese name. If code and name do not match, output `Candidate Identity Mismatch
+— Needs Validation` and do not score the candidate normally.
+
 ## forbidden_actions
 
 - Do not commit real holdings, account data, or `portfolio.local.yaml`.
@@ -90,3 +119,5 @@ valuation, K-line, volume, customer order, or margin data.
 - Do not open a new thematic branch for a highly deployed account unless evidence quality is high,
   direct portfolio mapping exists, CDE authority allows it, and the user explicitly approves.
 - Do not treat Strategic Candidate Dashboard ranking as a direct Accumulate / Reduce instruction.
+- Do not calculate precise CDE authority when portfolio context is stale, inconsistent, conflicting,
+  or cannot be verified.

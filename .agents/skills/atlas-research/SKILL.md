@@ -39,6 +39,8 @@ Return:
 
 1. Current Portfolio Context if available; otherwise state
    `Portfolio Context Missing or Stale — Decision Limited`.
+   Include Portfolio Source, Portfolio Last Updated, Portfolio Consistency, Exposure Sum, Cash /
+   Dry Powder, and Decision Limitation.
 2. Existing Portfolio Mapping:
    - Direct / Indirect / None exposure.
    - Impact.
@@ -65,7 +67,7 @@ recommendation system.
 It must include current holdings first when portfolio context exists, then new research candidates.
 Use the compact table:
 
-Candidate | Type | Exposure | Thesis Fit | Cycle | Evidence | Market Confirmation | Valuation Risk | Technical Status | Portfolio Fit | Trigger | Score | Tier | Atlas Stance
+Code | Candidate | Identity Status | Source Category | Type | Exposure | Thesis Fit | Cycle | Evidence | Market Confirmation | Valuation Risk | Technical Status | Portfolio Fit | Trigger | Score | Tier | Atlas Stance
 
 Strategic Candidate Score is 0-100:
 
@@ -89,6 +91,22 @@ Tiering:
 Research Priority Is Not Trading Authority. CDE Deployment Score remains the only deployment
 authority. Do not describe S Tier as Buy / Sell / Must Buy / Strong Buy.
 
+Candidate identity validation is required for candidates extracted from images, screenshots, OCR,
+social media posts, or unstructured text:
+
+- Ticker / Code.
+- Chinese Name.
+- Category.
+- Source Mention.
+- Identity Status: Validated / Needs Validation / Mismatch / Data Missing.
+
+If code and name do not match, output `Candidate Identity Mismatch — Needs Validation` and do not
+score the candidate normally.
+
+For the Top 3 candidates, or candidates directly related to current holdings, provide compact score
+explanations with thesis fit, evidence quality, portfolio fit, missing data, and main trigger. Do
+not over-explain every candidate.
+
 Do not invent stock price, PE / PB, market cap, K-line status, volume breakout, valuation level,
 customer order, or margin change. If unavailable, write `Data Missing` or `Needs Verification`.
 
@@ -105,3 +123,4 @@ customer order, or margin change. If unavailable, write `Data Missing` or `Needs
   direct portfolio mapping exists, CDE authority allows it, and the user explicitly approves.
 - Do not treat Strategic Candidate Score as CDE Deployment Score.
 - Do not turn candidate ranking into a direct trading action.
+- Do not score an identity-mismatched candidate normally.

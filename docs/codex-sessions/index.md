@@ -8,6 +8,8 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-06-30_1101_portfolio-freshness-candidate-identity.md`
+- `docs/codex-sessions/completed/2026-06-30_1047_korea-ai-dram-candidate-dashboard.md`
 - `docs/codex-sessions/completed/2026-06-30_0745_strategic-candidate-dashboard-v01.md`
 - `docs/codex-sessions/completed/2026-06-30_0735_social-views-memory-ouster-corning.md`
 - `docs/codex-sessions/completed/2026-06-29_2151_memory-equipment-etf-methodology.md`

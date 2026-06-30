@@ -33,14 +33,33 @@ This is World Model health, not a stock score or price forecast.
 ==================================================
 【Current Portfolio Context】
 If portfolio context exists, include:
+Portfolio Source:
+Portfolio Last Updated:
 Account:
 Deployment:
 Cash / Dry Powder:
 Existing Thesis Exposure:
 Portfolio Consistency:
+Exposure Sum:
+Decision Limitation:
+
+Validate for each account:
+Total Exposure + Cash = 100%
 
 If portfolio context is missing or stale:
 Portfolio Context Missing or Stale — Decision Limited
+
+If portfolio context is stale, inconsistent, conflicting, or cannot be verified:
+Portfolio Context Stale / Inconsistent — Decision Limited
+
+If multiple portfolio versions exist and the latest valid source cannot be determined:
+Portfolio Context Conflict — Decision Limited
+
+When limited:
+• Do not give strong portfolio action.
+• Do not calculate precise CDE authority.
+• Use conservative Hold / Observe only.
+• Ask user to confirm portfolio if needed.
 
 ==================================================
 【Existing Portfolio Mapping】
@@ -82,10 +101,22 @@ Strategic Candidate Score answers research priority.
 CDE Deployment Score answers whether capital deployment is allowed today.
 S Tier does not mean Buy. Candidate ranking is not a trading action.
 
+Candidate Identity Validation:
+For every candidate extracted from image, screenshot, OCR, social media post, or unstructured text,
+validate:
+• Ticker / Code
+• Chinese Name
+• Category
+• Source Mention
+• Identity Status: Validated / Needs Validation / Mismatch / Data Missing
+
+If code and name do not match:
+Candidate Identity Mismatch — Needs Validation
+
 Candidate Table:
-| Candidate | Type | Exposure | Thesis Fit | Cycle | Evidence | Market Confirmation | Valuation Risk | Technical Status | Portfolio Fit | Trigger | Score | Tier | Atlas Stance |
-|---|---|---|---|---|---|---|---|---|---|---:|---|---|
-| ... | Existing Holding / New Candidate / Sector / Chain | Direct / Indirect / None / Unknown | ... | Early / Mid / Late / Top Risk / Re-acceleration / Structural / Pure Cyclical | Known / Partially Verified / Unverified / Data Missing | Confirmed / Partially Confirmed / Not Confirmed / Overcrowded / Broken / Data Missing | Underpriced / Reasonably priced / Fully priced / Overpriced / Bubble risk / Data Missing | Breakout / Pullback to Support / Uptrend Continuation / Overextended / Distribution Risk / Breakdown / Data Missing | Complements / Duplicates / Concentration risk / Replacement / Irrelevant | ... | __ | S / A / B / C / Reject | Hold / Verify / Research / Watch / Wait for Pullback / Avoid / Replace Candidate / Data Missing |
+| Code | Candidate | Identity Status | Source Category | Type | Exposure | Thesis Fit | Cycle | Evidence | Market Confirmation | Valuation Risk | Technical Status | Portfolio Fit | Trigger | Score | Tier | Atlas Stance |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---:|---|---|
+| ... | ... | Validated / Needs Validation / Mismatch / Data Missing | ... | Existing Holding / New Candidate / Sector / Chain / Invalid | Direct / Indirect / None / Unknown | ... | Early / Mid / Late / Top Risk / Re-acceleration / Structural / Pure Cyclical | Known / Partially Verified / Unverified / Data Missing | Confirmed / Partially Confirmed / Not Confirmed / Overcrowded / Broken / Data Missing | Underpriced / Reasonably priced / Fully priced / Overpriced / Bubble risk / Data Missing | Breakout / Pullback to Support / Uptrend Continuation / Overextended / Distribution Risk / Breakdown / Data Missing | Complements / Duplicates / Concentration risk / Replacement / Irrelevant | ... | __ / N/A | S / A / B / C / Reject / N/A | Hold / Verify / Research / Watch / Wait for Pullback / Avoid / Replace Candidate / Needs Validation / Data Missing |
 
 Strategic Candidate Score:
 Thesis Fit: __/20
@@ -107,6 +138,17 @@ Tiering:
 Data Discipline:
 Do not invent stock price, PE / PB, market cap, K-line status, volume breakout, valuation level,
 customer order, or margin change. If unavailable, write Data Missing or Needs Verification.
+
+Top Candidate Score Explanation:
+Explain only Top 3 candidates or candidates directly related to current holdings.
+
+Format:
+Candidate — Score / Tier
+• Thesis Fit:
+• Evidence Quality:
+• Portfolio Fit:
+• Data Missing:
+• Main Trigger:
 
 ==================================================
 【Capital Deployment Dashboard】

@@ -42,6 +42,8 @@ Return by default:
 3. Executive Conclusion.
 4. Portfolio Action using Atlas vocabulary.
 5. Current Portfolio Context if available.
+   Include Portfolio Source, Portfolio Last Updated, Portfolio Consistency, Exposure Sum, Cash /
+   Dry Powder, and Decision Limitation.
 6. Existing Portfolio Mapping.
 7. Portfolio Impact.
 8. Today's New Risks.
@@ -85,6 +87,11 @@ Existing Portfolio Mapping must show direct / indirect / none exposure, impact, 
 status for each current holding affected by the input. For Cash / Dry Powder, show deployment
 implication and CDE authority impact.
 
+Portfolio context freshness must be validated before Decision Brief or Strategic Candidate
+Dashboard output. If missing, stale, inconsistent, conflicting, or unverifiable, write `Portfolio
+Context Stale / Inconsistent — Decision Limited`, avoid precise CDE authority, and use conservative
+Hold / Observe only.
+
 Strategic Candidate Dashboard is optional. When included, it must:
 
 - Map existing holdings first when portfolio context exists.
@@ -92,6 +99,12 @@ Strategic Candidate Dashboard is optional. When included, it must:
 - Score candidates with Strategic Candidate Score, which is not CDE Deployment Score.
 - Use research-priority language: Research Priority, Watchlist Tier, Candidate Ranking, Trigger
   Readiness.
+- Include Code, Candidate, Identity Status, and Source Category for candidates extracted from image,
+  screenshot, OCR, social media post, or unstructured text.
+- Mark identity mismatches as `Candidate Identity Mismatch — Needs Validation` and do not score them
+  normally.
+- Provide compact score explanations for Top 3 candidates or candidates directly related to current
+  holdings.
 - Avoid Buy / Sell / Must Buy / Strong Buy language.
 - Use `Data Missing` or `Needs Verification` for missing price, valuation, K-line, customer order,
   volume, or margin data.
@@ -114,3 +127,4 @@ Repository View may include sync, repository, Git, commit, tag, audit, database,
 - Do not output only research candidates when portfolio context exists; map current holdings first.
 - Do not make Strategic Candidate Dashboard mandatory for every daily answer.
 - Do not treat candidate ranking as capital deployment authority.
+- Do not score identity-mismatched candidates normally.

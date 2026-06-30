@@ -1,5 +1,24 @@
 # Changelog
 
+## Portfolio Freshness and Candidate Identity Fix - 2026-06-30
+
+- Added `ISSUE-2026-012` for Portfolio Context Source Inconsistency.
+- Added `ISSUE-2026-013` for Candidate Identity Validation Missing.
+- Added Portfolio Context Freshness Check requirements before Decision Brief and Strategic
+  Candidate Dashboard outputs.
+- Required Portfolio Source, Portfolio Last Updated, Portfolio Consistency, Exposure Sum, Cash /
+  Dry Powder, and Decision Limitation in relevant outputs.
+- Required `Total Exposure + Cash = 100%` validation for each account.
+- Added limitation language for stale, inconsistent, conflicting, or unverifiable portfolio context.
+- Added Candidate Identity Validation fields: Code, Candidate, Identity Status, and Source Category.
+- Required identity-mismatched candidates to be marked `Candidate Identity Mismatch — Needs
+  Validation` and not scored normally.
+- Required Top 3 Strategic Candidate Dashboard score explanations.
+- Added Regression Test Case 11.
+- Added `99_Verification/Audit_Report_Portfolio_Freshness_Candidate_Identity.md`.
+- Did not add a new Engine, IDA, Research redesign, Strategic Candidate Dashboard redesign, or
+  private portfolio modification.
+
 ## Strategic Candidate Dashboard v0.1 - 2026-06-30
 
 - Added `ISSUE-2026-011` for missing strategic candidate evaluation dashboard during Production
