@@ -1,5 +1,16 @@
 # Changelog
 
+## Taijin Ticker Mapping Confirmed - 2026-06-30
+
+- Confirmed `泰金新能` ticker mapping as `688813`, A-share, SH, with `akshare: 688813` and
+  `yfinance: 688813.SS`.
+- Updated `ISSUE-2026-018` so only `DRAM ETF` remains `Needs Manual Mapping`.
+- Reran provider smoke test; `泰金新能` quote, 60-day history, volume, and MA20 / MA60 are available.
+- Updated smoke test and audit outputs; final provider status remains `PARTIAL` because `DRAM ETF`
+  is still unmapped.
+- Did not modify CDE, Decision Brief strategy logic, Strategic Candidate Dashboard logic,
+  `portfolio.local.yaml`, allocation percentages, private amounts, or create a new Engine.
+
 ## Ticker Registry and Provider Smoke Test - 2026-06-30
 
 - Added `ISSUE-2026-018` for incomplete current holding ticker mapping.

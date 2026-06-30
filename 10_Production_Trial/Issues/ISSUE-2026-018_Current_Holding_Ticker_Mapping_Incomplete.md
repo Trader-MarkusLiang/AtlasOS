@@ -31,7 +31,6 @@ data for current portfolio holdings.
 
 Known unresolved mappings:
 
-- 泰金新能.
 - DRAM ETF.
 
 Potential naming normalization issue:
@@ -65,7 +64,8 @@ Provider smoke test on 2026-06-30 found:
 - 雅克科技: mapped and fetchable.
 - 建滔集团: mapped and fetchable; `建韬集团` retained as alias.
 - 东山精密: mapped and fetchable.
-- 泰金新能: `Needs Manual Mapping`.
+- 泰金新能: ticker mapping confirmed by user on 2026-06-30 as `688813`, A-share, SH /
+  科创板, with `akshare: 688813` and `yfinance: 688813.SS`.
 - DRAM ETF: `Needs Manual Mapping`.
 
 ## Root Cause Hypothesis
@@ -76,7 +76,6 @@ legacy mapping.
 
 ## Possible Solutions
 
-- Confirm exact executable ticker for 泰金新能.
 - Confirm exact executable ticker for DRAM ETF.
 - Keep registry aliases for naming variants such as 建韬集团 / 建滔集团.
 - Do not force-map uncertain symbols.

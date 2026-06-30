@@ -26,12 +26,12 @@ tickers:
       - 泰金新能
     code: "688813"
     market: A-share
-    exchange: Unknown
-    identity_status: Needs Manual Mapping
+    exchange: SH
+    identity_status: Validated
     provider_symbols:
-      akshare: null
-      yfinance: null
-    notes: Local registry previously mentioned 688813, but mapping requires manual confirmation.
+      akshare: "688813"
+      yfinance: "688813.SS"
+    notes: User confirmed ticker mapping on 2026-06-30.
 
   - name: 赛腾股份
     aliases:

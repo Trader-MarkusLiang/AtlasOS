@@ -149,6 +149,40 @@ def status_summary(rows: List[Dict[str, Any]]) -> str:
     return "Blocked"
 
 
+def main_blockers(rows: List[Dict[str, Any]]) -> str:
+    blockers = []
+    for row in rows:
+        if row["status"] == "Needs Manual Mapping" and row["name"] not in blockers:
+            blockers.append(row["name"])
+    if blockers:
+        verb = "remains" if len(blockers) == 1 else "remain"
+        return (
+            f"{', '.join(blockers)} {verb} Needs Manual Mapping; "
+            "valuation and turnover are optional and often missing."
+        )
+    unavailable = [
+        row["name"]
+        for row in rows
+        if row["status"] not in {"Available", "Partial"}
+    ]
+    if unavailable:
+        return (
+            f"{', '.join(unavailable)} provider data unavailable; "
+            "valuation and turnover are optional and often missing."
+        )
+    return "No mapping blocker; valuation and turnover are optional and often missing."
+
+
+def next_step(rows: List[Dict[str, Any]]) -> str:
+    blockers = []
+    for row in rows:
+        if row["status"] == "Needs Manual Mapping" and row["name"] not in blockers:
+            blockers.append(row["name"])
+    if blockers:
+        return f"Confirm executable ticker mapping for {', '.join(blockers)}."
+    return "No ticker mapping action required."
+
+
 def registry_table(registry: Dict[str, Dict[str, Any]]) -> str:
     unique_entries: List[Dict[str, Any]] = []
     seen = set()
@@ -227,7 +261,7 @@ def main() -> int:
         f"- A-share candidate data status: {status_summary(a_share)}",
         f"- Hong Kong candidate data status: {status_summary(hk)}",
         f"- US / ETF data status: {status_summary(us_etf)}",
-        "- Main blockers: 泰金新能 and DRAM ETF remain Needs Manual Mapping; valuation and turnover are optional and often missing.",
+        f"- Main blockers: {main_blockers(current + a_share + hk + us_etf)}",
         "",
         "## Ticker Registry Status",
         "",
@@ -255,7 +289,7 @@ def main() -> int:
         "",
         "## Next Step",
         "",
-        "Confirm executable ticker mappings for 泰金新能 and DRAM ETF.",
+        next_step(current + a_share + hk + us_etf),
         "",
         "## Safety",
         "",

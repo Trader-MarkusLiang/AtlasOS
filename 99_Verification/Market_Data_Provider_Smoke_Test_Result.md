@@ -1,6 +1,6 @@
 # Market Data Provider Smoke Test Result
 
-Generated: 2026-06-30T22:09:26
+Generated: 2026-06-30T22:36:01
 
 ## Executive Summary
 
@@ -9,7 +9,7 @@ Generated: 2026-06-30T22:09:26
 - A-share candidate data status: Available
 - Hong Kong candidate data status: Available
 - US / ETF data status: Blocked
-- Main blockers: 泰金新能 and DRAM ETF remain Needs Manual Mapping; valuation and turnover are optional and often missing.
+- Main blockers: DRAM ETF remains Needs Manual Mapping; valuation and turnover are optional and often missing.
 
 ## Ticker Registry Status
 
@@ -17,7 +17,7 @@ Generated: 2026-06-30T22:09:26
 | --- | --- | --- | --- | --- | --- |
 | 雅克科技 | 002409 | A-share | 002409 | Validated |  |
 | 东山精密 | 002384 | A-share | 002384 | Validated |  |
-| 泰金新能 | 688813 | A-share | Needs Manual Mapping | Needs Manual Mapping | Local registry previously mentioned 688813, but mapping requires manual confirmation. |
+| 泰金新能 | 688813 | A-share | 688813 | Validated | User confirmed ticker mapping on 2026-06-30. |
 | 赛腾股份 | 603283 | A-share | 603283 | Validated |  |
 | 澜起科技 | 688008 | A-share | 688008 | Validated |  |
 | 江丰电子 | 300666 | A-share | 300666 | Validated |  |
@@ -33,7 +33,7 @@ Generated: 2026-06-30T22:09:26
 | 雅克科技 | A-share | Available | Available | Available | Available | Optional Data Missing | Available | yfinance | turnover; market_cap (optional); pe (optional); pb (optional) |
 | 建滔集团 | HK | Available | Available | Available | Available | Optional Data Missing | Available | yfinance | turnover; market_cap (optional); pe (optional); pb (optional) |
 | 东山精密 | A-share | Available | Available | Available | Available | Optional Data Missing | Available | yfinance | turnover; market_cap (optional); pe (optional); pb (optional) |
-| 泰金新能 | A-share | Data Missing | Data Missing | Data Missing | Data Missing | Optional Data Missing | Needs Manual Mapping | None | Local registry previously mentioned 688813, but mapping requires manual confirmation. |
+| 泰金新能 | A-share | Available | Available | Available | Available | Optional Data Missing | Available | yfinance | turnover; market_cap (optional); pe (optional); pb (optional) |
 | DRAM ETF | US / ETF | Data Missing | Data Missing | Data Missing | Data Missing | Optional Data Missing | Needs Manual Mapping | None | Local portfolio uses descriptive DRAM ETF exposure but no executable ticker mapping. |
 
 ## A-share Candidates
@@ -64,7 +64,7 @@ PARTIAL
 
 ## Next Step
 
-Confirm executable ticker mappings for 泰金新能 and DRAM ETF.
+Confirm executable ticker mapping for DRAM ETF.
 
 ## Safety
 

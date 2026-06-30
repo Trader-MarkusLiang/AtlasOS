@@ -253,7 +253,7 @@ Expected output:
 Fail conditions:
 
 - Registry guesses an uncertain ticker.
-- `泰金新能` or `DRAM ETF` is force-mapped without verification.
+- Any uncertain ticker, including `DRAM ETF`, is force-mapped without verification.
 - Smoke test mixes A-share, Hong Kong, and US / ETF results without labels.
 - Missing valuation fields fail the whole test.
 - Private portfolio amounts are stored.

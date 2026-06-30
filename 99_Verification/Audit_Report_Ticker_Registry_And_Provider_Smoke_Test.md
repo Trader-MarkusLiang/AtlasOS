@@ -13,7 +13,7 @@ PARTIAL
 Current holdings data status:
 
 - Mapped current holdings are fetchable.
-- 泰金新能 remains `Needs Manual Mapping`.
+- 泰金新能 mapping is validated and fetchable.
 - DRAM ETF remains `Needs Manual Mapping`.
 
 Candidate data status:
@@ -24,7 +24,6 @@ Candidate data status:
 
 Main blockers:
 
-- 泰金新能 executable ticker is not fully verified.
 - DRAM ETF executable ticker is not defined.
 - Turnover and valuation fields are missing from yfinance-backed snapshots and remain optional.
 
@@ -37,7 +36,7 @@ PARTIAL
 Next step:
 
 ```text
-Confirm executable ticker mappings for 泰金新能 and DRAM ETF.
+Confirm executable ticker mapping for DRAM ETF.
 ```
 
 ## Ticker Registry Status
@@ -46,7 +45,7 @@ Confirm executable ticker mappings for 泰金新能 and DRAM ETF.
 |---|---|---|---|---|---|
 | 雅克科技 | 002409 | A-share | 002409 | Validated |  |
 | 东山精密 | 002384 | A-share | 002384 | Validated |  |
-| 泰金新能 | 688813 | A-share | Needs Manual Mapping | Needs Manual Mapping | Local registry previously mentioned 688813, but mapping requires manual confirmation. |
+| 泰金新能 | 688813 | A-share | 688813 | Validated | User confirmed ticker mapping on 2026-06-30. |
 | 赛腾股份 | 603283 | A-share | 603283 | Validated |  |
 | 澜起科技 | 688008 | A-share | 688008 | Validated |  |
 | 江丰电子 | 300666 | A-share | 300666 | Validated |  |
@@ -62,7 +61,7 @@ Confirm executable ticker mappings for 泰金新能 and DRAM ETF.
 | 雅克科技 | A-share | Available | Available | Available | Available | Optional Data Missing | Available | Source: yfinance |
 | 建滔集团 | HK | Available | Available | Available | Available | Optional Data Missing | Available | Source: yfinance |
 | 东山精密 | A-share | Available | Available | Available | Available | Optional Data Missing | Available | Source: yfinance |
-| 泰金新能 | A-share | Data Missing | Data Missing | Data Missing | Data Missing | Optional Data Missing | Needs Manual Mapping | Mapping not forced |
+| 泰金新能 | A-share | Available | Available | Available | Available | Optional Data Missing | Available | Source: yfinance |
 | DRAM ETF | US / ETF | Data Missing | Data Missing | Data Missing | Data Missing | Optional Data Missing | Needs Manual Mapping | Mapping not forced |
 
 ## Candidate Smoke Test
