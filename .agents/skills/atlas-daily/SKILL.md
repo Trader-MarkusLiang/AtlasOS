@@ -16,6 +16,9 @@ Use this skill when the user asks for:
 - A concise answer to whether today's information changes Atlas action.
 - Candidate stocks, beneficiaries, supplier overlap, rankings, watchlists, strategic opportunities,
   industry-chain opportunities, cycle position, or technical / K-line position when requested.
+- Daily action, rebalance, candidate ranking, CDE authority, or execution questions that depend on
+  current price, daily change, volume, valuation, K-line, market confirmation, or price
+  dislocation.
 
 ## required_reads
 
@@ -56,6 +59,9 @@ Return by default:
 14. Strategic Candidate Dashboard only when requested by candidate, beneficiary, ranking,
     watchlist, strategic opportunity, supplier overlap, industry-chain, cycle position, or
     technical / K-line language.
+15. Market Data Status when the daily answer depends on current price, daily change, K-line /
+    technical status, volume / turnover, market confirmation, valuation / expectation risk, price
+    dislocation, rebalance timing, intraday execution, or CDE authority affected by market movement.
 
 Decision Brief must answer:
 
@@ -83,6 +89,11 @@ Capital Deployment Dashboard must show:
 - Today's Authority derived from Deployment Score, Deployment Lifecycle, Dry Powder, Execution Risk,
   and reason.
 
+If current market data is required for Price Dislocation, Market Risk, Execution Risk, Technical
+Confirmation, rebalance timing, or intraday action, run Market Data Fetch Gate first. If market
+data cannot be retrieved, output `Market Data Missing or Unavailable — Decision Limited`, mark
+`CDE Precision Limited`, and avoid precise authority.
+
 Existing Portfolio Mapping must show direct / indirect / none exposure, impact, action, and evidence
 status for each current holding affected by the input. For Cash / Dry Powder, show deployment
 implication and CDE authority impact.
@@ -108,6 +119,36 @@ Strategic Candidate Dashboard is optional. When included, it must:
 - Avoid Buy / Sell / Must Buy / Strong Buy language.
 - Use `Data Missing` or `Needs Verification` for missing price, valuation, K-line, customer order,
   volume, or margin data.
+
+Market Data Fetch Gate must run before filling Market Confirmation, Valuation Risk, Technical
+Status, Price Dislocation, or market-sensitive candidate ranking. If unavailable, output
+`Needs Market Data` / `Data Missing`, and mark Decision Limited when material.
+
+## market_data_fetch_gate
+
+Trigger this gate when the user asks about 调仓, 换仓, 今天能不能买, 今天能不能卖, 是否追,
+是否加仓, 是否减仓, K线, 趋势, 市场确认, 资金流, 成交量, 估值, 价格错杀, 候选标的排名,
+Strategic Candidate Dashboard, Rebalance Plan, or CDE Authority.
+
+Attempt to retrieve latest available market data from providers available in the local environment,
+such as Yahoo Finance / yfinance, akshare, 东方财富, 同花顺, Wind / Choice, exchange data, or web
+search fallback. If no provider is available, output:
+
+```text
+Market Data Provider Missing — Configure data source
+```
+
+If market data cannot be retrieved, output:
+
+```text
+Market Data Missing or Unavailable — Decision Limited
+```
+
+For quick rebalance or intraday decision without market data, output:
+
+```text
+Fast Rebalance Decision Limited — Market Data Required
+```
 
 Hide Research View, Knowledge View, and Repository View unless the user asks for them.
 

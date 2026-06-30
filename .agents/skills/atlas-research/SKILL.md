@@ -16,6 +16,9 @@ Use this skill when the task involves:
 - Candidate stocks, beneficiaries, supplier overlap, rankings, watchlists, industry-chain
   opportunities, strategic opportunities, capital market confirmation, technical / K-line position,
   cycle position, or which names deserve deeper research.
+- Market-sensitive research that depends on current price, price change, K-line / technical status,
+  volume, market confirmation, valuation, price dislocation, rebalance timing, intraday execution,
+  or CDE authority affected by price / market movement.
 
 ## required_reads
 
@@ -58,6 +61,58 @@ Return:
 12. Strategic Candidate Dashboard only when the user asks about candidates, rankings, watchlists,
     beneficiaries, supplier overlap, strategic opportunities, industry-chain mapping, technical
     position, cycle position, or research priority.
+13. Market Data Status when current market data is required for market confirmation, technical
+    status, valuation risk, price dislocation, rebalance timing, intraday execution, or CDE
+    authority.
+
+## market_data_fetch_gate
+
+Before producing Decision Brief, Strategic Candidate Dashboard, CDE output, or Rebalance output,
+check whether the answer depends on:
+
+- Current stock price.
+- Daily price change.
+- K-line / technical status.
+- Volume / turnover.
+- Market confirmation.
+- Valuation / expectation risk.
+- Price dislocation.
+- Rebalance timing.
+- Intraday execution.
+- Candidate ranking with market confirmation.
+- CDE deployment authority affected by price or market movement.
+
+If yes, attempt to retrieve latest available market data from providers available in the local
+environment, such as Yahoo Finance / yfinance, akshare, 东方财富, 同花顺, Wind / Choice, exchange
+data, or web search fallback. Do not hard-code one provider as mandatory.
+
+For each current holding and each Top candidate when material, attempt to collect code / ticker,
+latest price, timestamp, daily change %, volume / turnover if available, 5-day / 20-day / 60-day
+change, distance from 20-day / 60-day moving average if available, market cap, PE / PB, data
+source, and data freshness.
+
+If market data cannot be retrieved, output:
+
+```text
+Market Data Missing or Unavailable — Decision Limited
+```
+
+If no provider is available, output:
+
+```text
+Market Data Provider Missing — Configure data source
+```
+
+Then avoid strong claims about K-line structure, market confirmation, valuation level, price
+dislocation, intraday execution window, or precise deployment authority.
+
+If quick rebalance or intraday decision is requested and market data is unavailable, output:
+
+```text
+Fast Rebalance Decision Limited — Market Data Required
+```
+
+Provide only a conservative framework.
 
 ## strategic_candidate_dashboard
 
@@ -110,6 +165,12 @@ not over-explain every candidate.
 Do not invent stock price, PE / PB, market cap, K-line status, volume breakout, valuation level,
 customer order, or margin change. If unavailable, write `Data Missing` or `Needs Verification`.
 
+Market Data Fetch Gate must run before filling Market Confirmation, Valuation Risk, Technical
+Status, or Price Dislocation. If market data is missing, write `Needs Market Data` or
+`Data Missing`, mark Decision Limited when material, and do not rank candidates as S Tier solely
+from industry logic. The maximum tier should usually be A unless evidence quality is exceptionally
+high.
+
 ## forbidden_actions
 
 - Do not directly execute trades.
@@ -124,3 +185,7 @@ customer order, or margin change. If unavailable, write `Data Missing` or `Needs
 - Do not treat Strategic Candidate Score as CDE Deployment Score.
 - Do not turn candidate ranking into a direct trading action.
 - Do not score an identity-mismatched candidate normally.
+- Do not output K-line, valuation, price dislocation, market confirmation, volume, or intraday
+  execution claims without first attempting market data retrieval.
+- Do not calculate precise CDE authority when market data needed for Price Dislocation, Market
+  Risk, Execution Risk, or Technical Confirmation is unavailable.

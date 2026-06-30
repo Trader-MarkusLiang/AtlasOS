@@ -17,6 +17,8 @@ Use this skill when the task involves:
 - Execution Log entries.
 - Allocation Playbook decisions.
 - Position lifecycle, risk release, reduction, accumulation, or review cadence.
+- Rebalance, quick allocation decisions, price dislocation, K-line / technical status, market
+  confirmation, valuation risk, or CDE authority affected by price / market movement.
 
 ## required_reads
 
@@ -50,6 +52,49 @@ Return:
 10. Privacy check: confirm no private holding details are being committed.
 11. Strategic Candidate Dashboard only when the user asks about candidates, rankings, watchlists,
     beneficiaries, supplier overlap, strategic opportunities, or industry-chain mapping.
+12. Market Data Status when portfolio action, rebalance timing, price dislocation, technical
+    status, valuation, market confirmation, or precise CDE authority depends on current market
+    data.
+
+## market_data_fetch_gate
+
+When a portfolio output depends on current stock price, daily price change, K-line / technical
+status, volume / turnover, market confirmation, valuation / expectation risk, price dislocation,
+rebalance timing, intraday execution, candidate market confirmation, or CDE authority affected by
+price / market movement, attempt to retrieve latest available market data first.
+
+Use any provider available in the local environment, such as Yahoo Finance / yfinance, akshare,
+东方财富, 同花顺, Wind / Choice, exchange data, or web search fallback. Do not hard-code one
+provider as mandatory.
+
+If market data cannot be retrieved, output:
+
+```text
+Market Data Missing or Unavailable — Decision Limited
+```
+
+If no provider is available, output:
+
+```text
+Market Data Provider Missing — Configure data source
+```
+
+If the user asks for quick rebalance or intraday decision and market data is unavailable, output:
+
+```text
+Fast Rebalance Decision Limited — Market Data Required
+```
+
+and provide only a conservative framework, not precise execution sizing.
+
+CDE Deployment Score must not include precise Price Dislocation, Market Risk, Execution Risk, or
+Technical Confirmation unless market data is available. If market data is missing, mark:
+
+```text
+CDE Precision Limited
+```
+
+and avoid precise authority.
 
 ## strategic_candidate_dashboard
 
@@ -105,6 +150,10 @@ Deployment Score authorizes capital deployment. A candidate can be S Tier with C
 If data is unavailable, write `Data Missing` or `Needs Verification`. Do not invent price,
 valuation, K-line, volume, customer order, or margin data.
 
+Market Data Fetch Gate must run before Market Confirmation, Valuation Risk, Technical Status, or
+Price Dislocation is used in Strategic Candidate Dashboard or portfolio action. If unavailable,
+output `Needs Market Data` and mark Decision Limited when material.
+
 For candidates extracted from image, screenshot, OCR, social media post, or unstructured text,
 validate code and Chinese name. If code and name do not match, output `Candidate Identity Mismatch
 — Needs Validation` and do not score the candidate normally.
@@ -121,3 +170,6 @@ validate code and Chinese name. If code and name do not match, output `Candidate
 - Do not treat Strategic Candidate Dashboard ranking as a direct Accumulate / Reduce instruction.
 - Do not calculate precise CDE authority when portfolio context is stale, inconsistent, conflicting,
   or cannot be verified.
+- Do not calculate precise CDE authority when required market data is unavailable.
+- Do not provide confident rebalance timing, K-line, valuation, price dislocation, market
+  confirmation, or intraday execution claims without first attempting market data retrieval.

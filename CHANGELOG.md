@@ -1,5 +1,27 @@
 # Changelog
 
+## Market Data Fetch Gate v0.1 - 2026-06-30
+
+- Added `ISSUE-2026-015` for Market Data Fetch Gate Missing.
+- Added `IP-2026-015` for Market Data Fetch Gate v0.1.
+- Required Atlas to attempt market data retrieval before market-sensitive Decision Brief,
+  Strategic Candidate Dashboard, CDE, or Rebalance outputs.
+- Added Market Data Status block with Current Holdings, Candidate Pool, Valuation, and Technical /
+  K-line scopes.
+- Added limitation language:
+  - `Market Data Missing or Unavailable — Decision Limited`
+  - `Market Data Provider Missing — Configure data source`
+  - `Fast Rebalance Decision Limited — Market Data Required`
+  - `CDE Precision Limited`
+- Updated Strategic Candidate Dashboard discipline so Market Confirmation, Valuation Risk,
+  Technical Status, and Price Dislocation require market data.
+- Updated atlas-research, atlas-portfolio, and atlas-daily skills.
+- Updated Execution Log notes so market-sensitive execution records require Market Data Fetch Gate.
+- Added Regression Test Case 12.
+- Added `99_Verification/Audit_Report_Market_Data_Fetch_Gate.md`.
+- Did not add a new Engine, IDA, CDE redesign, Strategic Candidate Dashboard redesign, market data
+  crawler, API, trading system, or private portfolio modification.
+
 ## Portfolio Freshness and Candidate Identity Fix - 2026-06-30
 
 - Added `ISSUE-2026-012` for Portfolio Context Source Inconsistency.

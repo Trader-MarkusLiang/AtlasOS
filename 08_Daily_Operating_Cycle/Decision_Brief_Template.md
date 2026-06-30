@@ -78,6 +78,53 @@ Cash / Dry Powder:
 Research candidates must be separated from current holdings.
 
 ==================================================
+【Market Data Status】
+Include when the output depends on current price, daily change, K-line / technical status, volume /
+turnover, market confirmation, valuation / expectation risk, price dislocation, rebalance timing,
+intraday execution, candidate ranking with market confirmation, or CDE authority affected by price
+or market movement.
+
+Before filling market-sensitive fields, attempt to retrieve latest available market data from the
+local environment or web-search fallback.
+
+If market data cannot be retrieved:
+Market Data Missing or Unavailable — Decision Limited
+
+If no provider is available:
+Market Data Provider Missing — Configure data source
+
+If quick rebalance or intraday execution is requested and market data is unavailable:
+Fast Rebalance Decision Limited — Market Data Required
+
+| Scope | Status | Source | Timestamp | Limitation |
+|---|---|---|---|---|
+| Current Holdings | Available / Partial / Unavailable | source name | time | limitation |
+| Candidate Pool | Available / Partial / Unavailable | source name | time | limitation |
+| Valuation | Available / Partial / Unavailable | source name | time | limitation |
+| Technical / K-line | Available / Partial / Unavailable | source name | time | limitation |
+
+For each current holding and each Top candidate when material, attempt to collect:
+• Code / ticker
+• Latest price
+• Price timestamp
+• Daily change %
+• Volume / turnover if available
+• 5-day change %
+• 20-day change %
+• 60-day change %
+• Distance from 20-day moving average if available
+• Distance from 60-day moving average if available
+• Market cap if available
+• PE / PB if available
+• Data source
+• Data freshness
+
+If some fields are unavailable, mark them individually as Data Missing.
+
+Do not make strong claims about K-line structure, market confirmation, valuation level, price
+dislocation, intraday execution window, or precise deployment authority without market data.
+
+==================================================
 【Strategic Candidate Dashboard v0.1】
 Optional. Include only when the user asks about candidate stocks, beneficiaries, industry-chain
 opportunities, supplier overlap, rankings, watchlists, strategic opportunities, upstream /
@@ -139,6 +186,15 @@ Data Discipline:
 Do not invent stock price, PE / PB, market cap, K-line status, volume breakout, valuation level,
 customer order, or margin change. If unavailable, write Data Missing or Needs Verification.
 
+Market Data Discipline:
+If Market Confirmation, Valuation Risk, Technical Status, or Price Dislocation is included, Market
+Data Fetch Gate must run first.
+When market data is available, fill Market Confirmation, Valuation Risk, and Technical Status from
+the retrieved data.
+When unavailable, output Data Missing / Needs Market Data, and mark Decision Limited if material.
+Do not rank candidates as S Tier solely from industry logic if market data is missing. The maximum
+tier should usually be A unless evidence quality is exceptionally high.
+
 Top Candidate Score Explanation:
 Explain only Top 3 candidates or candidates directly related to current holdings.
 
@@ -161,10 +217,10 @@ __/100
 Score Composition:
 World Model Stability: __/25
 Evidence Quality: __/20
-Price Dislocation: __/20
+Price Dislocation: __/20 or CDE Precision Limited
 Portfolio Exposure: __/15
 Dry Powder: __/10
-Market Risk: __/10
+Market Risk: __/10 or CDE Precision Limited
 
 Score Reason:
 • ...
@@ -180,6 +236,11 @@ Execution Risk: Low / Medium / High
 
 Authority Reason:
 一句话说明今日权限为什么是这个比例。
+
+If market data is missing:
+CDE Precision Limited
+Do not calculate precise authority.
+Do not include precise Price Dislocation, Market Risk, Execution Risk, or Technical Confirmation.
 
 Executed Today:
 Remaining Dry Powder:

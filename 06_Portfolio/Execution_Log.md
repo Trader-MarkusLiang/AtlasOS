@@ -11,6 +11,19 @@ real sensitive portfolio data may belong in local-only files if it should not en
 
 Execution records the trade. It does not create the research thesis.
 
+If execution depends on current price, intraday timing, K-line / technical status, volume, price
+dislocation, market confirmation, or quick rebalance conditions, Market Data Fetch Gate must run
+before the execution rationale is treated as valid.
+
+If market data is unavailable, record:
+
+```text
+Fast Rebalance Decision Limited — Market Data Required
+```
+
+Do not record precise execution authority, intraday timing, or technical confirmation as valid
+without current market data.
+
 Before any execution entry is treated as valid, it must have:
 
 1. Reason.

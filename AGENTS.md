@@ -149,6 +149,42 @@ unless the user explicitly changes the project scope.
 - For the Top 3 candidates, or candidates directly related to current holdings, provide a compact
   score explanation. Do not over-explain every candidate.
 
+## Market Data Fetch Gate Rule
+
+- When an output depends on current stock price, daily price change, K-line / technical status,
+  volume / turnover, market confirmation, valuation / expectation risk, price dislocation,
+  rebalance timing, intraday execution, candidate ranking with market confirmation, or CDE
+  deployment authority affected by price or market movement, Atlas must first attempt to retrieve
+  latest available market data.
+- This gate triggers when the user asks about 调仓, 换仓, 今天能不能买, 今天能不能卖, 是否追,
+  是否加仓, 是否减仓, K线, 趋势, 市场确认, 资金流, 成交量, 估值, 价格错杀, 候选标的排名,
+  Strategic Candidate Dashboard, Rebalance Plan, or CDE Authority.
+- This gate also triggers automatically when Strategic Candidate Dashboard includes Market
+  Confirmation, Technical Status, Valuation Risk, or Price Dislocation.
+- Atlas may use any market data provider available in the local environment, including Yahoo
+  Finance / yfinance, akshare, 东方财富, 同花顺, Wind / Choice, exchange data, or web search
+  fallback. Do not hard-code one provider as mandatory.
+- For each current holding and each Top candidate when market data is material, Atlas should
+  attempt to collect code / ticker, latest price, timestamp, daily change %, volume / turnover when
+  available, 5-day / 20-day / 60-day change, distance from 20-day / 60-day moving average when
+  available, market cap, PE / PB, data source, and data freshness.
+- If some fields are unavailable, mark them individually as `Data Missing`.
+- If market data cannot be retrieved, output:
+  `Market Data Missing or Unavailable — Decision Limited`
+  and avoid strong claims about K-line structure, market confirmation, valuation level, price
+  dislocation, intraday execution window, or precise deployment authority.
+- If no provider is available, output:
+  `Market Data Provider Missing — Configure data source`.
+- If the user asks for quick rebalance or intraday decision and market data is unavailable, output:
+  `Fast Rebalance Decision Limited — Market Data Required`
+  and provide only a conservative framework, not precise execution authority.
+- CDE Deployment Score must not include precise Price Dislocation, Market Risk, Execution Risk, or
+  Technical Confirmation unless market data is available. If market data is missing, mark
+  `CDE Precision Limited` and avoid precise authority.
+- Do not rank candidates as S Tier solely from industry logic when market data is missing. If
+  market data is missing, the maximum tier should usually be A unless evidence quality is
+  exceptionally high.
+
 ## Response Policy
 
 Default output level:

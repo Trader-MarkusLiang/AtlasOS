@@ -167,3 +167,46 @@ Fail conditions:
 - Atlas scores an identity-mismatched candidate normally.
 - Atlas omits code / name validation.
 - Atlas invents K-line, valuation, or order data.
+
+## Case 12: Market Data Fetch Gate Required
+
+Input:
+
+User asks:
+
+> 韩国政府扩大 AI / DRAM 投资，截图里这些 A 股候选标的谁更值得研究？请结合当前持仓、资本市场表现、K线形态和是否适合调仓。
+
+Expected output:
+
+- Portfolio Context Injection is triggered.
+- Market Data Fetch Gate is triggered.
+- Market Data Status block is shown:
+  - Current Holdings.
+  - Candidate Pool.
+  - Valuation.
+  - Technical / K-line.
+- For current holdings and Top candidates, output latest available market data or explicit
+  `Data Missing`.
+- Atlas does not invent K-line, valuation, price, volume, market cap, or market confirmation data.
+- If market data is unavailable, Atlas marks
+  `Market Data Missing or Unavailable — Decision Limited`.
+- If no provider is available, Atlas marks
+  `Market Data Provider Missing — Configure data source`.
+- Atlas avoids precise CDE authority without market data.
+- Atlas separates Research Priority from Trading Authority.
+- Atlas explains whether candidate ranking is based on industry logic only or industry + market
+  data.
+- Waiting triggers include both fundamental triggers and market confirmation triggers.
+- If quick rebalance or intraday execution is requested and market data is unavailable, Atlas
+  outputs `Fast Rebalance Decision Limited — Market Data Required`.
+- CDE output marks `CDE Precision Limited` if Price Dislocation, Market Risk, Execution Risk, or
+  Technical Confirmation requires missing market data.
+
+Fail conditions:
+
+- Atlas gives K-line or market confirmation without fetching data.
+- Atlas outputs `Data Missing` without attempting market data retrieval.
+- Atlas gives precise CDE authority while required market data is unavailable.
+- Atlas ranks candidates as highly actionable without market data.
+- Atlas invents price / valuation / volume / trend data.
+- Atlas does not show Market Data Status.
