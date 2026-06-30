@@ -1,5 +1,9 @@
 # Changelog
 
+## GLW Decision Brief Correction - 2026-07-01
+
+- Added GLW Decision Brief correction, marking missing US market data source verification requirements.
+
 ## Rebalance Execution Plan Production Trial Exam - 2026-07-01
 
 - Added `99_Verification/Rebalance_Execution_Plan_Production_Trial_Exam.md`.
