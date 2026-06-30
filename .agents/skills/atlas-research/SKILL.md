@@ -114,6 +114,17 @@ Fast Rebalance Decision Limited — Market Data Required
 
 Provide only a conservative framework.
 
+## rebalance_execution_plan_boundary
+
+If the user asks for rebalance, switching, migration, cash redeployment, or execution, route the
+portfolio action portion through `atlas-portfolio` rules. Research may provide candidate evidence
+and Strategic Candidate Dashboard context, but it must not convert research priority into migration
+authority.
+
+For China / Hong Kong names, Domestic Market Snapshot and Data Anomaly Check must run before any
+execution sizing language. Execution Readiness is not Trading Authority, and Migration Authority is
+not CDE Authority.
+
 ## strategic_candidate_dashboard
 
 Strategic Candidate Dashboard is an optional output layer, not a new Engine and not a trading

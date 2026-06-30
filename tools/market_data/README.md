@@ -30,6 +30,7 @@ get_latest_quote(ticker: str, market: str) -> dict
 get_history(ticker: str, market: str, period: str = "60d") -> pandas.DataFrame
 get_market_snapshot(ticker: str, market: str) -> dict
 get_domestic_market_snapshot(ticker: str, market: str) -> dict
+check_data_anomaly(snapshot: dict) -> dict
 ```
 
 Missing fields are returned as `None` and listed in `missing_fields`.
@@ -56,6 +57,22 @@ portfolio action.
 
 If data is partial, stale, or unavailable, Atlas should output decision limitations such as
 `CDE Precision Limited` and avoid strong execution advice.
+
+## Data Anomaly Check
+
+`check_data_anomaly` flags extreme market data before Domestic Market Snapshot is used for CDE,
+rebalance, or execution readiness.
+
+Outputs:
+
+- `anomaly_status`: Normal / Warning / Severe / Unknown.
+- `anomaly_flags`.
+- `anomaly_reason`.
+- `decision_impact`: None / CDE Precision Limited / Execution Blocked / Use Conservative Framework
+  Only.
+
+Extreme moves are not automatically wrong. They mean execution sizing should become more
+conservative until Atlas has confirmation.
 
 ## Privacy
 

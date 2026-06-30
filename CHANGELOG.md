@@ -1,5 +1,20 @@
 # Changelog
 
+## Rebalance Execution Plan v0.1 - 2026-06-30
+
+- Added `ISSUE-2026-020` and `IP-2026-020` for Rebalance Execution Plan v0.1.
+- Added `tools/market_data/data_anomaly_check.py`.
+- Added Rebalance Execution Plan template under `06_Portfolio/`.
+- Added integration guidance to `AGENTS.md` and Atlas skills.
+- Added validation result:
+  `99_Verification/Rebalance_Execution_Plan_Test_Result.md`.
+- Added audit report:
+  `99_Verification/Audit_Report_Rebalance_Execution_Plan_v0.1.md`.
+- Added Regression Test Case 16.
+- Validation detected severe anomaly and capped migration authority at `0-5%`.
+- Safety boundaries preserved: no CDE formula, Decision Brief strategy logic, portfolio allocation,
+  private amount, new Engine, automatic trading, or Buy / Sell action language.
+
 ## Domestic Market Data Support v0.2 - 2026-06-30
 
 - Added `ISSUE-2026-019` and `IP-2026-019` for domestic market data support.

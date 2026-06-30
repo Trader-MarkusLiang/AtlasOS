@@ -96,6 +96,42 @@ CDE Precision Limited
 
 and avoid precise authority.
 
+## rebalance_execution_plan
+
+Trigger Rebalance Execution Plan only when the user asks about rebalance, switching, migration,
+cash redeployment, or execution, including 调仓, 换仓, 快速调仓, 仓位迁移, 现金部署, 重新部署,
+old holdings vs new candidates, 平仓后接什么, 国内账户怎么重新布局, or 当前哪些该减，哪些该接.
+
+Before giving migration authority:
+
+1. Run Portfolio Context Injection.
+2. Run Market Data Fetch Gate.
+3. Use Domestic Market Snapshot for China / Hong Kong names.
+4. Run Data Anomaly Check.
+5. Show CDE boundary.
+
+Output must separate:
+
+- Current Holding Assessment.
+- Candidate Receiving Assessment.
+- Migration Authority.
+- Execution Tiers.
+- Stop Conditions.
+- Follow-up Triggers.
+- Post-Action Review note.
+
+Rules:
+
+- Execution Plan is not Trading Authority.
+- Migration Authority is not CDE Authority and not mandatory action.
+- Execution Readiness is not Trading Authority.
+- Strategic Candidate Ranking is not Trading Authority.
+- User confirmation is required for any actual trade.
+- If anomaly Warning exists, output `Market Data Anomaly Warning — CDE Precision Limited` and avoid
+  aggressive migration bands.
+- If anomaly Severe exists, output `Market Data Anomaly Severe — Execution Blocked` and block or cap
+  migration authority at 0-5%.
+
 ## strategic_candidate_dashboard
 
 Strategic Candidate Dashboard must obey Portfolio Context Injection.

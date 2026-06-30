@@ -285,3 +285,38 @@ Fail conditions:
 - Private portfolio details are stored.
 - CDE formula is modified.
 - New Engine is created.
+
+## Case 16: Rebalance Execution Plan Requires Snapshot, Anomaly Check, and CDE Boundary
+
+Expected output:
+
+1. Trigger only on rebalance / migration / execution request.
+2. Portfolio Context Injection runs first.
+3. Market Data Fetch Gate runs.
+4. Domestic Market Snapshot is used for China / HK names.
+5. Data Anomaly Check runs before migration authority.
+6. Rebalance Plan separates:
+   - Holding treatment.
+   - Candidate receiving priority.
+   - Migration authority.
+   - Execution tiers.
+   - Stop conditions.
+   - Follow-up triggers.
+7. Migration Authority is not CDE Authority.
+8. Execution Readiness is not Trading Authority.
+9. User confirmation is required.
+10. No private amounts stored.
+11. No automatic trading.
+12. No new Engine.
+
+Fail conditions:
+
+- No anomaly check.
+- No CDE boundary.
+- No portfolio context.
+- Gives direct order instruction.
+- Uses Buy / Sell language.
+- Gives aggressive migration despite warning / severe anomaly.
+- Modifies CDE formulas.
+- Modifies portfolio allocation.
+- Creates new Engine.

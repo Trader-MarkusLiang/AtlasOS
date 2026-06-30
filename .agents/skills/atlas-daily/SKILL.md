@@ -150,6 +150,25 @@ For quick rebalance or intraday decision without market data, output:
 Fast Rebalance Decision Limited — Market Data Required
 ```
 
+## rebalance_execution_plan
+
+Do not make Rebalance Execution Plan mandatory for every daily answer. Include only the compact
+block when the user asks about rebalance / switching / migration / cash redeployment / execution:
+
+```text
+Rebalance Plan Required: YES / NO
+Migration Authority: 0-5% / 5-10% / 10-20% / 20-40% / 40%+
+Reason:
+Limits:
+Next Trigger:
+```
+
+Expanded Rebalance Plan requires Portfolio Context Injection, Market Data Fetch Gate, Domestic
+Market Snapshot for China / Hong Kong names, Data Anomaly Check, and CDE boundary.
+
+Execution Plan is not Trading Authority. Migration Authority is not CDE Authority. User
+confirmation is required for any actual trade.
+
 Hide Research View, Knowledge View, and Repository View unless the user asks for them.
 
 Research View may include evidence, Seven Layer Reasoning, counter argument, and signal assessment.
