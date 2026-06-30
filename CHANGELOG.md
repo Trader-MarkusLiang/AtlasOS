@@ -1,5 +1,25 @@
 # Changelog
 
+## Market Data Provider Setup v0.1 - 2026-06-30
+
+- Added `IP-2026-017` for Market Data Provider Setup v0.1.
+- Converted `ISSUE-2026-017` to an Improvement Proposal.
+- Installed and verified importable market data packages:
+  - `akshare`
+  - `yfinance`
+  - `beautifulsoup4`
+  - `lxml`
+  - `pandas_market_calendars`
+- Added lightweight provider utility under `tools/market_data/`.
+- Added identity-only ticker registry with no position size, cost, account value, or private amount.
+- Added `99_Verification/validate_market_data_provider.py`.
+- Generated `99_Verification/Market_Data_Provider_Validation_Result.md`.
+- Added `99_Verification/Audit_Report_Market_Data_Provider_Setup.md`.
+- Added Regression Test Case 13.
+- Final provider decision: `PARTIAL`.
+- Did not modify strategy logic, CDE logic, Decision Brief strategy logic, `portfolio.local.yaml`,
+  add a new Engine, implement IDA, implement Rebalance Execution Plan, or automatic trading.
+
 ## Market Data Fetch Gate v0.1 - 2026-06-30
 
 - Added `ISSUE-2026-015` for Market Data Fetch Gate Missing.

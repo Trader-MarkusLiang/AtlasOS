@@ -210,3 +210,27 @@ Fail conditions:
 - Atlas ranks candidates as highly actionable without market data.
 - Atlas invents price / valuation / volume / trend data.
 - Atlas does not show Market Data Status.
+
+## Case 13: Market Data Provider Setup Validation
+
+Expected output:
+
+- `akshare` is importable.
+- `yfinance` is importable.
+- `beautifulsoup4` is importable.
+- `lxml` is importable.
+- `pandas_market_calendars` is importable.
+- At least A-share or Hong Kong market data can be fetched.
+- Missing valuation data does not fail provider setup.
+- Unmapped tickers are marked `Needs Manual Mapping`.
+- No strategy logic is modified.
+- No `portfolio.local.yaml` modification occurs.
+- No new Engine is created.
+
+Fail conditions:
+
+- Provider setup claims `READY` without successful quote / history fetch.
+- Missing fields are hallucinated.
+- Ticker mapping is forced without validation.
+- Private portfolio data is written into registry or audit.
+- CDE / Decision Brief strategy logic is modified.

@@ -2,7 +2,7 @@
 
 ## Status
 
-Open / Accepted
+Accepted / Converted to IP
 
 ## Origin
 
@@ -95,13 +95,17 @@ P1
 
 ## Decision
 
-Accepted
+Accepted / Converted to Improvement Proposal
 
 ## Linked IP
 
-None
+IP-2026-017 — Market Data Provider Setup v0.1
 
 ## Notes
 
-This issue records provider availability only. It does not request a new Engine, provider adapter,
-market data cache, crawler, API, strategy change, CDE change, or portfolio modification.
+This issue originally recorded provider availability only. It has now been converted into a
+provider setup IP.
+
+Market Data Provider Setup v0.1 adds a lightweight utility and validation script. It does not add a
+new Engine, market data cache, crawler, paid API, strategy change, CDE change, or portfolio
+modification.

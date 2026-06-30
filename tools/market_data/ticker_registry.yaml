@@ -1,0 +1,92 @@
+tickers:
+  - name: 雅克科技
+    code: "002409"
+    market: A-share
+    exchange: SZ
+    identity_status: Validated
+    provider_symbols:
+      akshare: "002409"
+      yfinance: "002409.SZ"
+
+  - name: 东山精密
+    code: "002384"
+    market: A-share
+    exchange: SZ
+    identity_status: Validated
+    provider_symbols:
+      akshare: "002384"
+      yfinance: "002384.SZ"
+
+  - name: 泰金新能
+    code: "688813"
+    market: A-share
+    exchange: Unknown
+    identity_status: Needs Manual Mapping
+    provider_symbols:
+      akshare: null
+      yfinance: null
+    notes: Local registry previously mentioned 688813, but mapping requires manual confirmation.
+
+  - name: 赛腾股份
+    code: "603283"
+    market: A-share
+    exchange: SH
+    identity_status: Validated
+    provider_symbols:
+      akshare: "603283"
+      yfinance: "603283.SS"
+
+  - name: 澜起科技
+    code: "688008"
+    market: A-share
+    exchange: SH
+    identity_status: Validated
+    provider_symbols:
+      akshare: "688008"
+      yfinance: "688008.SS"
+
+  - name: 江丰电子
+    code: "300666"
+    market: A-share
+    exchange: SZ
+    identity_status: Validated
+    provider_symbols:
+      akshare: "300666"
+      yfinance: "300666.SZ"
+
+  - name: 建滔集团
+    code: "00148"
+    market: HK
+    exchange: HKEX
+    identity_status: Validated
+    provider_symbols:
+      akshare: "00148"
+      yfinance: "0148.HK"
+
+  - name: 长飞光纤光缆
+    code: "06869"
+    market: HK
+    exchange: HKEX
+    identity_status: Validated
+    provider_symbols:
+      akshare: "06869"
+      yfinance: "6869.HK"
+
+  - name: 中芯国际
+    code: "00981"
+    market: HK
+    exchange: HKEX
+    identity_status: Validated
+    provider_symbols:
+      akshare: "00981"
+      yfinance: "0981.HK"
+
+  - name: DRAM ETF
+    code: null
+    market: US / ETF
+    exchange: Unknown
+    identity_status: Needs Manual Mapping
+    provider_symbols:
+      akshare: null
+      yfinance: null
+    notes: Local portfolio uses descriptive DRAM ETF exposure but no executable ticker mapping.
