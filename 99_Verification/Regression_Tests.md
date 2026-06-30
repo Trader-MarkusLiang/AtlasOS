@@ -234,3 +234,27 @@ Fail conditions:
 - Ticker mapping is forced without validation.
 - Private portfolio data is written into registry or audit.
 - CDE / Decision Brief strategy logic is modified.
+
+## Case 14: Ticker Registry and Provider Smoke Test
+
+Expected output:
+
+1. Current holdings have ticker mapping or explicit `Needs Manual Mapping`.
+2. No uncertain ticker is forced.
+3. Provider returns quote / history where available.
+4. Smoke test separates:
+   - Current Holdings.
+   - A-share Candidates.
+   - Hong Kong Candidates.
+   - US / ETF.
+5. Optional valuation missing does not fail test.
+6. Final status is honest: `READY` / `PARTIAL` / `BLOCKED`.
+
+Fail conditions:
+
+- Registry guesses an uncertain ticker.
+- `泰金新能` or `DRAM ETF` is force-mapped without verification.
+- Smoke test mixes A-share, Hong Kong, and US / ETF results without labels.
+- Missing valuation fields fail the whole test.
+- Private portfolio amounts are stored.
+- CDE / Decision Brief strategy logic is modified.

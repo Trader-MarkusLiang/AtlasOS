@@ -1,5 +1,19 @@
 # Changelog
 
+## Ticker Registry and Provider Smoke Test - 2026-06-30
+
+- Added `ISSUE-2026-018` for incomplete current holding ticker mapping.
+- Updated `tools/market_data/ticker_registry.yaml` with `aliases` fields.
+- Normalized `建滔集团` as the registry name for HK ticker `00148` and retained `建韬集团` as an alias.
+- Kept `泰金新能` and `DRAM ETF` as `Needs Manual Mapping`.
+- Added `99_Verification/smoke_test_market_data_provider.py`.
+- Generated `99_Verification/Market_Data_Provider_Smoke_Test_Result.md`.
+- Added `99_Verification/Audit_Report_Ticker_Registry_And_Provider_Smoke_Test.md`.
+- Added Regression Test Case 14.
+- Final provider smoke test decision: `PARTIAL`.
+- Did not modify CDE, Decision Brief strategy logic, `portfolio.local.yaml` allocation, create a new
+  Engine, implement IDA, or implement Rebalance Execution Plan.
+
 ## Market Data Provider Setup v0.1 - 2026-06-30
 
 - Added `IP-2026-017` for Market Data Provider Setup v0.1.

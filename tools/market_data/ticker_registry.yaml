@@ -1,5 +1,7 @@
 tickers:
   - name: 雅克科技
+    aliases:
+      - 雅克科技
     code: "002409"
     market: A-share
     exchange: SZ
@@ -9,6 +11,8 @@ tickers:
       yfinance: "002409.SZ"
 
   - name: 东山精密
+    aliases:
+      - 东山精密
     code: "002384"
     market: A-share
     exchange: SZ
@@ -18,6 +22,8 @@ tickers:
       yfinance: "002384.SZ"
 
   - name: 泰金新能
+    aliases:
+      - 泰金新能
     code: "688813"
     market: A-share
     exchange: Unknown
@@ -28,6 +34,8 @@ tickers:
     notes: Local registry previously mentioned 688813, but mapping requires manual confirmation.
 
   - name: 赛腾股份
+    aliases:
+      - 赛腾股份
     code: "603283"
     market: A-share
     exchange: SH
@@ -37,6 +45,8 @@ tickers:
       yfinance: "603283.SS"
 
   - name: 澜起科技
+    aliases:
+      - 澜起科技
     code: "688008"
     market: A-share
     exchange: SH
@@ -46,6 +56,8 @@ tickers:
       yfinance: "688008.SS"
 
   - name: 江丰电子
+    aliases:
+      - 江丰电子
     code: "300666"
     market: A-share
     exchange: SZ
@@ -55,6 +67,9 @@ tickers:
       yfinance: "300666.SZ"
 
   - name: 建滔集团
+    aliases:
+      - 建滔集团
+      - 建韬集团
     code: "00148"
     market: HK
     exchange: HKEX
@@ -62,8 +77,12 @@ tickers:
     provider_symbols:
       akshare: "00148"
       yfinance: "0148.HK"
+    notes: Registry normalizes to 建滔集团 for HK ticker 00148; 建韬集团 retained as user spelling alias.
 
   - name: 长飞光纤光缆
+    aliases:
+      - 长飞光纤光缆
+      - 长飞光纤
     code: "06869"
     market: HK
     exchange: HKEX
@@ -73,6 +92,9 @@ tickers:
       yfinance: "6869.HK"
 
   - name: 中芯国际
+    aliases:
+      - 中芯国际
+      - SMIC
     code: "00981"
     market: HK
     exchange: HKEX
@@ -82,6 +104,8 @@ tickers:
       yfinance: "0981.HK"
 
   - name: DRAM ETF
+    aliases:
+      - DRAM ETF
     code: null
     market: US / ETF
     exchange: Unknown
