@@ -1,5 +1,14 @@
 # Changelog
 
+## Market Regime Early Warning Architecture - 2026-07-03
+
+- Added proposed architecture for Market Regime Early Warning v0.1, centered on Attention Momentum,
+  Narrative Crowding, Attention Exhaustion, and Attention-Price Divergence.
+- Linked `IP-2026-021` to the architecture and kept status as `Proposed`.
+- Added architecture test plan and review file.
+- Did not implement runtime code, create a new Engine, modify CDE formulas, modify Decision Brief
+  strategy logic, modify `portfolio.local.yaml`, store private amounts, or create automatic trading.
+
 ## A-share Breakdown Early Warning Review - 2026-07-03
 
 - Added A-share market breakdown early-warning review.

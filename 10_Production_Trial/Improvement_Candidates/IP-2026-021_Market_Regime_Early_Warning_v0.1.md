@@ -37,6 +37,19 @@ answer:
 - Should Rebalance Authority be capped?
 - Should the user prioritize capital preservation over new deployment?
 
+## Architecture Design
+
+See:
+
+`10_Production_Trial/Architecture/IP-2026-021_Market_Regime_Early_Warning_Architecture.md`
+
+This architecture defines Market Regime Early Warning v0.1 as an Attention Momentum / Narrative
+Crowding framework with price confirmation as a secondary layer.
+
+The design prioritizes Attention Momentum, Narrative Crowding, Attention Exhaustion,
+Attention-Price Divergence, Evidence-to-Narrative Ratio, Leadership Fragility, and Market
+Participation over lagging technical indicators.
+
 ## Proposed Future Fields
 
 - Market Regime.
