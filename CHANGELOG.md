@@ -1,5 +1,16 @@
 # Changelog
 
+## A-share Breakdown Early Warning Review - 2026-07-03
+
+- Added A-share market breakdown early-warning review.
+- Created `ISSUE-2026-021` for missing market-regime early warning.
+- Created proposed-only `IP-2026-021` for Market Regime Early Warning v0.1.
+- Final decision: `PARTIAL — EXECUTION WARNING ONLY`.
+- Confirmed Atlas previously warned through Severe anomaly, Execution Blocked, and `0-5%`
+  migration cap, but did not yet provide full market-regime detection.
+- Did not modify CDE formulas, Decision Brief strategy logic, `portfolio.local.yaml`, private
+  amounts, create a new Engine, or implement automatic trading.
+
 ## GLW Decision Brief Correction - 2026-07-01
 
 - Added GLW Decision Brief correction, marking missing US market data source verification requirements.
