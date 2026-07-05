@@ -61,6 +61,9 @@ Production Trial means:
 
 Current architecture diagram:
 
+- `docs/assets/atlas-os-v2.2-architecture.png`
+- `docs/assets/atlas-os-v2.2-architecture_en.png`
+- `docs/architecture/Atlas_OS_v2.2_Architecture_Check.md`
 - `docs/assets/atlas-os-v2-cognitive-world-model-architecture.png`
 - `docs/architecture/Atlas_OS_v2_Cognitive_World_Model_Check.md`
 

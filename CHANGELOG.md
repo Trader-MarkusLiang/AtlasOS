@@ -1,5 +1,13 @@
 # Changelog
 
+## Atlas OS v2.2 Architecture Diagrams - 2026-07-05
+
+- Added Chinese and English Atlas OS v2.2 Production Trial architecture diagrams.
+- Added `docs/architecture/Atlas_OS_v2.2_Architecture_Check.md`.
+- Updated architecture index and README current architecture references.
+- Did not modify release version, runtime code, CDE formulas, Decision Brief strategy logic,
+  `portfolio.local.yaml`, allocation percentages, or private portfolio data.
+
 ## Market Regime Early Warning Architecture - 2026-07-03
 
 - Added proposed architecture for Market Regime Early Warning v0.1, centered on Attention Momentum,

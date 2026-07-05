@@ -2,6 +2,23 @@
 
 This directory indexes visual architecture assets for Atlas OS.
 
+## v2.2 Production Trial Architecture
+
+![Atlas OS v2.2 Architecture](../assets/atlas-os-v2.2-architecture.png)
+
+![Atlas OS v2.2 Architecture English](../assets/atlas-os-v2.2-architecture_en.png)
+
+Source assets:
+
+- `docs/assets/atlas-os-v2.2-architecture.png`
+- `docs/assets/atlas-os-v2.2-architecture_en.png`
+
+Architecture check:
+
+- `docs/architecture/Atlas_OS_v2.2_Architecture_Check.md`
+
+Use these diagrams as the visual reference for Atlas OS v2.2 Production Trial architecture.
+
 ## v2.0 Cognitive World Model Architecture
 
 ![Atlas OS v2.0 Cognitive World Model](../assets/atlas-os-v2-cognitive-world-model-architecture.png)
