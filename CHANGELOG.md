@@ -1,5 +1,17 @@
 # Changelog
 
+## Roadmap Update - 2026-07-05
+
+- Updated Atlas OS roadmap in `README.md` and Capital Deployment Engine documentation.
+- Recorded `ISSUE-2026-023` for Runtime System v0.1 request.
+- Marked Market Regime Early Warning v0.1 and Attention-Flow Market Transition System v0.1 as
+  Proposed Architecture, not implemented.
+- Marked Runtime System v0.1 as Issue Recorded / Watching, not Planned implementation.
+- Added roadmap verification review.
+- Did not implement runtime code, create a new Engine, modify CDE formulas, modify Decision Brief
+  strategy logic, modify `portfolio.local.yaml`, store private amounts, or create automatic
+  trading.
+
 ## Attention-Flow Regime Transition Request - 2026-07-05
 
 - Created `ISSUE-2026-022` for Attention-Flow regime transition request.

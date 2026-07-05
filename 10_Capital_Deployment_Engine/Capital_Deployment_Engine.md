@@ -443,7 +443,7 @@ Atlas roadmap stages:
 | Released | Production-ready capability. |
 | Current | Actively under refinement. |
 | Planned | Architecture approved but intentionally not implemented. |
-| Ideas | Interesting concepts waiting for real-world validation. |
+| Ideas | Interesting concepts or proposed architectures waiting for validation / approval. |
 | Deprecated | Historical capability retained only for traceability. |
 
 Current roadmap:
@@ -463,6 +463,10 @@ Current roadmap:
 - Explainable Capital Deployment Engine.
 - Deployment Lifecycle.
 - Authority Explainability.
+- Market Data Fetch Gate.
+- Market Data Provider v0.1 / Domestic Market Data Support v0.2.
+- Data Anomaly Check.
+- Rebalance Execution Plan v0.1.
 
 ### Planned
 
@@ -481,7 +485,16 @@ Future engines must come from observed operating problems, not imagined architec
 
 ### Ideas
 
-- None accepted for implementation.
+| Idea / Proposed Architecture | Status | Boundary |
+|---|---|---|
+| Market Regime Early Warning v0.1 | Proposed Architecture | `IP-2026-021`; not implemented. |
+| Attention-Flow Market Transition System v0.1 | Proposed Architecture | `IP-2026-022`; no runtime code. |
+| Runtime System v0.1 | Issue Recorded / Watching | `ISSUE-2026-023`; no runtime scheduler, orchestrator, event engine, state store, or output generator. |
+
+Ideas are not implementation approval.
+
+Runtime or engine-like work requires Issue discussion, Architecture Review, Acceptance Test
+definition, and explicit user approval before coding.
 
 ### Deprecated
 
