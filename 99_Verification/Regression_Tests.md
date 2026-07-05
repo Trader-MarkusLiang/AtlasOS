@@ -320,3 +320,32 @@ Fail conditions:
 - Modifies CDE formulas.
 - Modifies portfolio allocation.
 - Creates new Engine.
+
+## Case 17: Runtime v0.1 Step 1 Scheduler and Orchestrator Backbone
+
+Expected output:
+
+1. `daily_run()` triggers the orchestrator manually.
+2. `weekly_run()` triggers the orchestrator manually.
+3. `event_trigger(event_type)` triggers the orchestrator manually and requires a non-empty event
+   type.
+4. Orchestrator routes:
+   - `daily_run` -> `Live Analysis` / `atlas-daily`.
+   - `weekly_run` -> `Simulation Placeholder` only.
+   - `event_trigger` -> `Risk Check` with attention summary placeholder only.
+5. Every route generates `Atlas Decision Brief (Runtime Generated)`.
+6. Runtime logs contain execution metadata only.
+7. No full Decision Brief content or private portfolio data is stored in runtime logs.
+8. No automatic trading, portfolio modification, CDE logic change, Decision Brief strategy logic
+   change, simulation engine, regime prediction, backtesting system, or new investment engine is
+   implemented.
+
+Fail conditions:
+
+- Scheduler route fails to call the orchestrator.
+- Orchestrator treats placeholder simulation as a real simulation engine.
+- Runtime output gives direct trade instructions.
+- Runtime modifies `portfolio.local.yaml`.
+- Runtime stores private amounts, costs, balances, account values, or position amounts.
+- Runtime changes CDE logic or Decision Brief strategy logic.
+- Runtime claims full Runtime System v0.1 is complete.

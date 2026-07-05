@@ -1,5 +1,16 @@
 # Changelog
 
+## Runtime v0.1 Step 1 - 2026-07-05
+
+- Implemented minimal Runtime Step 1 scheduler and orchestrator backbone under `runtime/`.
+- Added manual entrypoints for `daily_run`, `weekly_run`, and `event_trigger`.
+- Added runtime-generated Decision Brief stub and JSONL execution metadata logging.
+- Added `IP-2026-023` and updated `ISSUE-2026-023` to Step 1 Implemented only.
+- Added Runtime Step 1 validation script, validation result, and Regression Test Case 17.
+- Did not implement automatic trading, state store, full event engine, simulation engine, regime
+  prediction, backtesting, CDE logic changes, Decision Brief strategy logic changes,
+  `portfolio.local.yaml` changes, portfolio weight changes, or a new investment engine.
+
 ## Roadmap Update - 2026-07-05
 
 - Updated Atlas OS roadmap in `README.md` and Capital Deployment Engine documentation.

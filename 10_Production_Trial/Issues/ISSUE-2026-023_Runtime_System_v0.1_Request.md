@@ -2,7 +2,7 @@
 
 ## Status
 
-Open / Watching
+Open / Accepted / Converted to IP / Step 1 Implemented
 
 ## Origin
 
@@ -18,7 +18,7 @@ Production Trial / User Architecture Request
 
 ## Frequency
 
-1
+2
 
 ## Affected Area
 
@@ -53,9 +53,20 @@ Requested runtime deliverables included:
 - Architecture documentation update.
 - Runtime-enabled Decision Brief Template.
 
-However, Atlas is currently in Production Trial. Current stage rules forbid direct runtime
-automation or new system implementation without Issue discussion, priority review, Architecture
-Review, Acceptance Test definition, and explicit user approval.
+However, Atlas is currently in Production Trial. Current stage rules forbid direct full runtime
+automation or new investment-engine implementation without Issue discussion, priority review,
+Architecture Review, Acceptance Test definition, and explicit user approval.
+
+On 2026-07-05, the user explicitly narrowed and approved Step 1:
+
+- Minimal scheduler.
+- Minimal orchestrator.
+- Pipeline routing skeleton.
+- Runtime-generated Decision Brief stub.
+- Runtime execution logging.
+
+The user explicitly excluded full simulation, state machine, trading logic, portfolio weight
+changes, CDE logic changes, backtesting, regime prediction, and automatic trading.
 
 ## Impact
 
@@ -99,18 +110,35 @@ templates, but it still lacks a runtime boundary design for scheduled / event-tr
 
 ## Priority
 
-P2
+P1
 
 ## Decision
 
-Watch / Discuss
+Accepted for Step 1 only.
+
+Full Runtime System v0.1 remains unimplemented and requires separate approval.
 
 ## Linked IP
 
-None
+IP-2026-023 — Runtime v0.1 Step 1 Minimal Scheduler + Orchestrator Backbone
 
 ## Notes
 
-No runtime files are authorized by this Issue.
+Step 1 implementation evidence:
 
-This Issue records the request only. It does not approve implementation.
+- `runtime/scheduler.py`
+- `runtime/orchestrator.py`
+- `runtime/logging.py`
+- `99_Verification/validate_runtime_step1.py`
+- `99_Verification/Runtime_v0.1_Step1_Validation_Result.md`
+
+Step 1 does not approve:
+
+- automatic trading
+- state store
+- event trigger engine beyond manual event trigger entrypoint
+- simulation engine
+- regime prediction
+- CDE formula changes
+- portfolio allocation changes
+- Decision Brief strategy logic changes
