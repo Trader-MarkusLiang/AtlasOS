@@ -28,7 +28,7 @@ def main() -> None:
 
         _assert(daily["status"] == "success", "daily_run should succeed")
         _assert(daily["pipeline"] == "Live Analysis", "daily_run should route to Live Analysis")
-        _assert(daily["modules_executed"] == ["atlas-daily"], "daily_run should call atlas-daily boundary")
+        _assert("atlas-daily" in daily["modules_executed"], "daily_run should call atlas-daily boundary")
 
         _assert(weekly["status"] == "success", "weekly_run should succeed")
         _assert(weekly["pipeline"] == "Simulation Placeholder", "weekly_run should route to placeholder")

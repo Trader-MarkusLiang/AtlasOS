@@ -40,3 +40,18 @@ def log_execution(record: Dict[str, Any], log_path: Optional[str] = None) -> Pat
         handle.write(json.dumps(safe_record, ensure_ascii=False, sort_keys=True) + "\n")
     return path
 
+
+def read_log_records(log_path: Optional[str] = None, limit: int = 50) -> list[Dict[str, Any]]:
+    """Read recent JSONL runtime records."""
+
+    path = resolve_log_path(log_path)
+    if not path.exists():
+        return []
+    lines = path.read_text(encoding="utf-8").splitlines()
+    records: list[Dict[str, Any]] = []
+    for line in lines[-limit:]:
+        try:
+            records.append(json.loads(line))
+        except json.JSONDecodeError:
+            records.append({"status": "invalid_log_record"})
+    return records

@@ -1,5 +1,21 @@
 # Changelog
 
+## Lightweight Execution Kernel v0.1 - 2026-07-05
+
+- Added macOS-friendly Atlas runtime host under `runtime/atlas_host.py`.
+- Expanded runtime scheduler with `intraday_run` and supported event triggers.
+- Added multi-provider LLM router abstraction for GPT, Claude, Kimi, and GLM aliases with safe
+  offline fallback when API keys are unavailable.
+- Added SQLite state store for redacted portfolio metadata, regime state, attention history,
+  runtime Decision Briefs, and system logs.
+- Added non-binding runtime Decision Brief generator.
+- Added minimal web dashboard under `web/app.py` with optional FastAPI support and standard-library
+  fallback.
+- Added `ISSUE-2026-024`, `IP-2026-024`, validation script, validation result, and Regression Test
+  Case 18.
+- Did not use OpenClaw, CrewAI, Conductor, heavy agent frameworks, trading execution, automatic
+  portfolio modification, CDE bypass, full backtesting, or regime prediction implementation.
+
 ## Runtime v0.1 Step 1 - 2026-07-05
 
 - Implemented minimal Runtime Step 1 scheduler and orchestrator backbone under `runtime/`.

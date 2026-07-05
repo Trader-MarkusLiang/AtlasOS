@@ -349,3 +349,43 @@ Fail conditions:
 - Runtime stores private amounts, costs, balances, account values, or position amounts.
 - Runtime changes CDE logic or Decision Brief strategy logic.
 - Runtime claims full Runtime System v0.1 is complete.
+
+## Case 18: Lightweight Execution Kernel v0.1 Runtime Host
+
+Expected output:
+
+1. `runtime/atlas_host.py` can run a daemon-style loop.
+2. Host can execute scheduled cycles after startup without a new chat prompt.
+3. Scheduler supports:
+   - `daily_run()`.
+   - `intraday_run()`.
+   - `event_trigger(event_type)`.
+4. Event trigger supports:
+   - `market_open`.
+   - `market_close`.
+   - `attention_spike`.
+   - `volatility_spike`.
+   - `user_input_event`.
+5. Orchestrator routes:
+   - daily -> market summary + portfolio review.
+   - intraday -> regime check + attention update.
+   - event -> risk evaluation + anomaly detection.
+6. LLM router supports at least GPT and Claude provider aliases and falls back safely when API keys
+   are missing.
+7. SQLite state store persists redacted portfolio snapshot, regime state, attention history,
+   latest Decision Brief, and system logs.
+8. Web dashboard exposes current portfolio view, latest Decision Brief, regime status, attention
+   signals, and system logs.
+9. Runtime logs include timestamp, trigger type, modules executed, LLM model used, and Decision
+   Brief ID.
+10. Runtime output remains non-binding and does not create CDE authority.
+
+Fail conditions:
+
+- Runtime imports or depends on OpenClaw, CrewAI, Conductor, Kafka, Ray, or Kubernetes.
+- Runtime executes trades or creates order instructions.
+- Runtime modifies `portfolio.local.yaml`.
+- Runtime stores private amounts, costs, balances, net worth, or position amounts.
+- Runtime bypasses CDE.
+- Runtime implements a full backtesting engine or regime prediction model.
+- Runtime emits Buy / Sell as Atlas action vocabulary.

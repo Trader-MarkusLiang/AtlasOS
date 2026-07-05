@@ -234,6 +234,8 @@ Current:
 - Market Data Provider v0.1 / Domestic Market Data Support v0.2.
 - Data Anomaly Check.
 - Rebalance Execution Plan v0.1.
+- Runtime v0.1 Step 1 scheduler / orchestrator backbone.
+- Lightweight Execution Kernel v0.1 local runtime trial.
 
 Planned:
 
@@ -256,7 +258,7 @@ Ideas:
 |---|---|---|
 | Market Regime Early Warning v0.1 | Proposed Architecture | `IP-2026-021`; not implemented. |
 | Attention-Flow Market Transition System v0.1 | Proposed Architecture | `IP-2026-022`; no runtime code. |
-| Runtime System v0.1 | Issue Recorded / Watching | `ISSUE-2026-023`; no runtime scheduler, orchestrator, event engine, state store, or output generator. |
+| Runtime System v0.1 | Partial Runtime Trial | `IP-2026-023` and `IP-2026-024`; local host, scheduler, orchestrator, SQLite state, LLM router abstraction, and dashboard are implemented. No trading execution, CDE bypass, portfolio auto-modification, full simulation, or regime prediction. |
 
 Ideas are not implementation approval.
 
