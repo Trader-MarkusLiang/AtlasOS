@@ -237,6 +237,7 @@ Current:
 - Runtime v0.1 Step 1 scheduler / orchestrator backbone.
 - Lightweight Execution Kernel v0.1 local runtime trial.
 - Autonomous Runtime v0.2 event-driven local runtime trial.
+- Cognitive Runtime v0.3 event fusion / regime memory local trial.
 
 Planned:
 
@@ -259,7 +260,7 @@ Ideas:
 |---|---|---|
 | Market Regime Early Warning v0.1 | Proposed Architecture | `IP-2026-021`; not implemented. |
 | Attention-Flow Market Transition System v0.1 | Proposed Architecture | `IP-2026-022`; no runtime code. |
-| Runtime System v0.1 / v0.2 | Partial Runtime Trial | `IP-2026-023`, `IP-2026-024`, and `IP-2026-025`; local host, scheduler, event stream, state machine, decision loop, orchestrator, SQLite state, LLM router abstraction, launchd plist, and dashboard are implemented. No trading execution, CDE bypass, portfolio auto-modification, full simulation, broker integration, autonomous trading, or full backtesting. |
+| Runtime System v0.1 / v0.2 / v0.3 | Partial Runtime Trial | `IP-2026-023`, `IP-2026-024`, `IP-2026-025`, and `IP-2026-026`; local host, scheduler, event stream, state machine, cognitive fusion layer, regime memory, causal inference, decision loop, orchestrator, SQLite state, LLM router abstraction, launchd plist, and dashboard are implemented. No trading execution, CDE bypass, portfolio auto-modification, full simulation, broker integration, autonomous trading, deep learning, reinforcement learning, or full backtesting. |
 
 Ideas are not implementation approval.
 

@@ -386,6 +386,12 @@ def _route_state_modules(route_name: str) -> List[str]:
             "atlas-portfolio",
             "risk_off_placeholder",
         ],
+        "crash_stress": [
+            "atlas-research",
+            "atlas-portfolio",
+            "crash_stress_placeholder",
+            "liquidity_risk_placeholder",
+        ],
     }
     return routes.get(route_name, routes["daily"])
 
@@ -506,10 +512,15 @@ def _build_state_market_state(
     route: Dict[str, str],
 ) -> Dict[str, str]:
     event_type = event.get("event_type") if event else "none"
+    cognition = (event or {}).get("payload", {}).get("cognition", {})
+    fusion = cognition.get("fusion", {})
+    causal = cognition.get("causal", {})
     return {
         "summary": f"State-driven runtime route: {route['description']} from {system_state}.",
         "data_status": "Event Stream / Confidence Limited",
         "event_type": event_type,
+        "fusion_stress_level": fusion.get("stress_level", "Data Missing"),
+        "primary_driver": causal.get("primary_driver", "Unknown"),
     }
 
 
@@ -517,6 +528,10 @@ def _build_state_regime_state(
     system_state: str,
     event: Optional[Dict[str, Any]],
 ) -> Dict[str, object]:
+    cognition = (event or {}).get("payload", {}).get("cognition", {})
+    fusion = cognition.get("fusion", {})
+    causal = cognition.get("causal", {})
+    controller = cognition.get("controller", {})
     vector = {
         "bull_regime": 0,
         "distribution_risk": 0,
@@ -540,16 +555,27 @@ def _build_state_regime_state(
         vector["bull_regime"] = 15
         vector["transition_to_exhaustion"] = 15
         vector["data_insufficient"] = 70
+    elif system_state == "CRASH_STRESS":
+        vector["crash_stress"] = 55
+        vector["distribution_risk"] = 25
+        vector["data_insufficient"] = 20
     return {
         "status": f"{system_state} / Runtime State Context",
         "probability_vector": vector,
         "confidence": "Low",
         "event_id": event.get("event_id") if event else None,
-        "note": "State-machine route only. No market prediction or CDE authority.",
+        "fusion_stress_score": fusion.get("stress_score"),
+        "fusion_attention_pressure": fusion.get("attention_pressure"),
+        "fusion_liquidity_condition": fusion.get("liquidity_condition"),
+        "causal_primary_driver": causal.get("primary_driver"),
+        "transition_allowed": controller.get("transition_allowed"),
+        "note": "Cognition-layer route only. No market prediction or CDE authority.",
     }
 
 
 def _derive_state_risk_level(system_state: str, event: Optional[Dict[str, Any]]) -> str:
+    if system_state == "CRASH_STRESS":
+        return "Severe"
     if system_state in {"RISK_OFF", "HIGH_VOLATILITY", "DISTRIBUTION"}:
         return "High"
     if event and int(event.get("priority", 50)) >= 80:

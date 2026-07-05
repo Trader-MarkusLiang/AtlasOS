@@ -29,6 +29,7 @@ def dashboard_payload() -> Dict[str, Any]:
     attention_signals = store.get_attention_history(limit=10)
     return {
         "system_state": store.get_system_state(),
+        "cognition_state": store.get_state("cognition_state"),
         "event_stream": store.get_event_history(limit=20),
         "portfolio": store.get_latest_portfolio_snapshot(),
         "decision_brief": store.get_latest_decision_brief(),
@@ -57,6 +58,7 @@ def render_dashboard() -> str:
 <body>
   <h1>Atlas Runtime Dashboard</h1>
   <section><h2>Current System State</h2><pre>{html.escape(json.dumps(payload["system_state"], ensure_ascii=False, indent=2))}</pre></section>
+  <section><h2>Cognition State</h2><pre>{html.escape(json.dumps(payload["cognition_state"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>Live Event Stream</h2><pre>{html.escape(json.dumps(payload["event_stream"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>Current Portfolio View</h2><pre>{html.escape(json.dumps(payload["portfolio"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>Latest Decision Brief</h2><pre>{html.escape(brief)}</pre></section>

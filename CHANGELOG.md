@@ -1,5 +1,18 @@
 # Changelog
 
+## Cognitive Runtime v0.3 - 2026-07-05
+
+- Added cognitive runtime layer under `runtime/cognition/`.
+- Added Event Fusion Engine, Regime Memory, Causal Market Inference, Anti-overwrite State
+  Controller, and Attention vs Liquidity separation model.
+- Updated decision loop from latest-event state transition to fused market reality transition.
+- Added `CRASH_STRESS` runtime state route without changing trading authority.
+- Added `ISSUE-2026-026`, `IP-2026-026`, validation script, validation result, and Regression Test
+  Case 20.
+- Did not modify runtime host, daemon, scheduler logic, Decision Brief interface, CDE logic,
+  portfolio files, trading execution, broker integration, deep learning, reinforcement learning, or
+  distributed systems.
+
 ## Autonomous Runtime v0.2 - 2026-07-05
 
 - Added launchd-compatible daemon entrypoint in `runtime/atlas_daemon.py`.

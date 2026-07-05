@@ -41,6 +41,7 @@ STATE_RISK_OFF = "RISK_OFF"
 STATE_BREAKOUT = "BREAKOUT"
 STATE_DISTRIBUTION = "DISTRIBUTION"
 STATE_HIGH_VOLATILITY = "HIGH_VOLATILITY"
+STATE_CRASH_STRESS = "CRASH_STRESS"
 
 
 @dataclass
@@ -151,6 +152,11 @@ def route_for_state(state: str) -> Dict[str, str]:
             "pipeline": "Risk-Off Portfolio Review",
             "route": "risk_off",
             "description": "run defensive risk review",
+        },
+        STATE_CRASH_STRESS: {
+            "pipeline": "Crash Stress Review",
+            "route": "crash_stress",
+            "description": "run crash stress and liquidity risk review",
         },
     }
     return routes.get(state, routes[STATE_NORMAL])

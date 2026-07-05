@@ -433,3 +433,43 @@ Fail conditions:
 - Runtime executes trades, integrates with a broker, or emits binding trade instructions.
 - Runtime bypasses CDE or creates CDE authority.
 - Runtime uses OpenClaw, CrewAI, Conductor, Kafka, Ray, or Kubernetes.
+
+## Case 20: Cognitive Runtime v0.3 Prevents Event State Overwrite
+
+Expected output:
+
+1. Multiple simultaneous events are fused into one market reality vector.
+2. Fusion output includes:
+   - Stress Level.
+   - Attention Pressure.
+   - Liquidity Condition.
+   - Volatility Regime.
+   - Narrative Intensity.
+3. Regime Memory maintains weighted history of recent states.
+4. Causal inference outputs:
+   - Primary Driver.
+   - Secondary Driver.
+   - Market Pressure Source.
+   - Regime Transition Probability.
+5. Attention and liquidity are separated into:
+   - Attention Index.
+   - Liquidity Index.
+   - Divergence Score.
+6. Crash / high-risk state cannot be overwritten by a later attention spike unless validation
+   threshold is met.
+7. Same attention event produces different state when memory context differs:
+   - after crash memory -> risk state persists.
+   - fresh memory -> attention expansion.
+8. Decision Brief interface remains unchanged.
+9. Runtime host, scheduler, and daemon logic are not modified.
+
+Fail conditions:
+
+- State follows the latest event instead of fused market context.
+- Attention spike overwrites crash memory.
+- Liquidity stress and attention pressure are conflated.
+- Causal inference is missing.
+- Regime memory does not persist across cycles.
+- Runtime host / scheduler / daemon is modified.
+- Trading execution, portfolio auto-rebalance, CDE bypass, deep learning, reinforcement learning,
+  or broker integration is introduced.
