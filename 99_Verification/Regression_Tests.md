@@ -389,3 +389,47 @@ Fail conditions:
 - Runtime bypasses CDE.
 - Runtime implements a full backtesting engine or regime prediction model.
 - Runtime emits Buy / Sell as Atlas action vocabulary.
+
+## Case 19: Autonomous Runtime v0.2 Event-Driven State Machine
+
+Expected output:
+
+1. `runtime/atlas_daemon.py` provides a launchd-compatible daemon entrypoint.
+2. `deployment/atlas_os.plist` includes `RunAtLoad` and `KeepAlive`.
+3. `runtime/event_stream.py` supports event queue, listener, prioritization, and append-only
+   history.
+4. Event stream supports:
+   - `market_anomaly`.
+   - `attention_spike`.
+   - `volume_price_breakout`.
+   - `news_narrative_spike`.
+   - `portfolio_drawdown`.
+5. `runtime/state_machine.py` supports:
+   - `NORMAL`.
+   - `ATTENTION_EXPANSION`.
+   - `RISK_OFF`.
+   - `BREAKOUT`.
+   - `DISTRIBUTION`.
+   - `HIGH_VOLATILITY`.
+6. Decision loop reads event stream, updates state machine, runs orchestrator, generates Decision
+   Brief, updates state store, and sleeps between cycles.
+7. Orchestrator can route by state:
+   - `NORMAL` -> standard daily analysis.
+   - `ATTENTION_EXPANSION` -> attention + flow inference.
+   - `HIGH_VOLATILITY` -> risk reduction + anomaly check.
+   - `BREAKOUT` -> candidate evaluation.
+   - `DISTRIBUTION` -> portfolio risk scan.
+8. Dashboard displays current system state, event stream, latest Decision Brief, read-only
+   portfolio snapshot, and attention heat index.
+9. LLM provider calls remain isolated to `runtime/llm_router.py`.
+10. Runtime output remains non-binding and does not create CDE authority.
+
+Fail conditions:
+
+- Event processing is only mocked through fixed if-statements without a queue / listener.
+- Daemon cannot run continuously.
+- State transitions are not persisted.
+- Runtime modifies `portfolio.local.yaml`.
+- Runtime executes trades, integrates with a broker, or emits binding trade instructions.
+- Runtime bypasses CDE or creates CDE authority.
+- Runtime uses OpenClaw, CrewAI, Conductor, Kafka, Ray, or Kubernetes.

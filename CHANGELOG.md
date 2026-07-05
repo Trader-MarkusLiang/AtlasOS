@@ -1,5 +1,24 @@
 # Changelog
 
+## Autonomous Runtime v0.2 - 2026-07-05
+
+- Added launchd-compatible daemon entrypoint in `runtime/atlas_daemon.py`.
+- Added SQLite-backed event stream with queue, listener, prioritization, and append-only event
+  history.
+- Added runtime state machine with `NORMAL`, `ATTENTION_EXPANSION`, `RISK_OFF`, `BREAKOUT`,
+  `DISTRIBUTION`, and `HIGH_VOLATILITY`.
+- Added continuous decision loop for event -> state -> orchestrator -> Decision Brief -> state
+  store updates.
+- Enhanced orchestrator with state-driven autonomous routing.
+- Enhanced state store with system state, event history, state transitions, and time-series query
+  support.
+- Enhanced dashboard with system state, event stream, state transitions, and attention heat index.
+- Added macOS launchd plist under `deployment/atlas_os.plist`.
+- Added `ISSUE-2026-025`, `IP-2026-025`, validation script, validation result, and Regression Test
+  Case 19.
+- Did not introduce OpenClaw, CrewAI, Conductor, heavy frameworks, trading execution, automatic
+  portfolio modification, CDE bypass, broker integration, full backtesting, or autonomous trading.
+
 ## Lightweight Execution Kernel v0.1 - 2026-07-05
 
 - Added macOS-friendly Atlas runtime host under `runtime/atlas_host.py`.

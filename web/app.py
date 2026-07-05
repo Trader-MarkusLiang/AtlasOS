@@ -26,11 +26,16 @@ except ModuleNotFoundError:  # pragma: no cover
 
 def dashboard_payload() -> Dict[str, Any]:
     store = StateStore()
+    attention_signals = store.get_attention_history(limit=10)
     return {
+        "system_state": store.get_system_state(),
+        "event_stream": store.get_event_history(limit=20),
         "portfolio": store.get_latest_portfolio_snapshot(),
         "decision_brief": store.get_latest_decision_brief(),
         "regime_status": store.get_regime_state(),
-        "attention_signals": store.get_attention_history(limit=10),
+        "attention_signals": attention_signals,
+        "attention_heat_index": _attention_heat_index(attention_signals),
+        "state_transitions": store.get_state_transitions(limit=20),
         "system_logs": store.get_system_logs(limit=20),
     }
 
@@ -51,13 +56,31 @@ def render_dashboard() -> str:
 </head>
 <body>
   <h1>Atlas Runtime Dashboard</h1>
+  <section><h2>Current System State</h2><pre>{html.escape(json.dumps(payload["system_state"], ensure_ascii=False, indent=2))}</pre></section>
+  <section><h2>Live Event Stream</h2><pre>{html.escape(json.dumps(payload["event_stream"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>Current Portfolio View</h2><pre>{html.escape(json.dumps(payload["portfolio"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>Latest Decision Brief</h2><pre>{html.escape(brief)}</pre></section>
   <section><h2>Regime Status</h2><pre>{html.escape(json.dumps(payload["regime_status"], ensure_ascii=False, indent=2))}</pre></section>
+  <section><h2>Attention Heat Index</h2><pre>{html.escape(json.dumps(payload["attention_heat_index"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>Attention Signals</h2><pre>{html.escape(json.dumps(payload["attention_signals"], ensure_ascii=False, indent=2))}</pre></section>
+  <section><h2>State Transitions</h2><pre>{html.escape(json.dumps(payload["state_transitions"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>System Logs</h2><pre>{html.escape(json.dumps(payload["system_logs"], ensure_ascii=False, indent=2))}</pre></section>
 </body>
 </html>"""
+
+
+def _attention_heat_index(signals: list[Dict[str, Any]]) -> Dict[str, Any]:
+    if not signals:
+        return {"level": "Data Missing", "score": 0, "confidence": "Low"}
+    high_count = sum(1 for signal in signals if "High" in str(signal.get("attention_level", "")))
+    score = min(100, high_count * 20)
+    if score >= 60:
+        level = "High"
+    elif score >= 20:
+        level = "Medium"
+    else:
+        level = "Low"
+    return {"level": level, "score": score, "confidence": "Low / Runtime Derived"}
 
 
 try:

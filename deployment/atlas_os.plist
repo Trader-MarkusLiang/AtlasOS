@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.markus.atlasos.runtime</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>-m</string>
+    <string>runtime.atlas_daemon</string>
+    <string>--interval</string>
+    <string>60</string>
+    <string>--heartbeat-interval</string>
+    <string>300</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/markus/AtlasOS</string>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/markus/AtlasOS/runtime/logs/atlas_daemon.out.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/markus/AtlasOS/runtime/logs/atlas_daemon.err.log</string>
+</dict>
+</plist>

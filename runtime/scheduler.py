@@ -35,6 +35,9 @@ SUPPORTED_EVENT_TYPES = {
     "market_close",
     "market_anomaly",
     "attention_spike",
+    "volume_price_breakout",
+    "news_narrative_spike",
+    "portfolio_drawdown",
     "volatility_spike",
     "user_input_event",
 }

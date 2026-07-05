@@ -65,8 +65,27 @@ class StateStore:
                     record_json TEXT NOT NULL,
                     created_at TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    event_id TEXT UNIQUE NOT NULL,
+                    event_type TEXT NOT NULL,
+                    payload_json TEXT NOT NULL,
+                    priority INTEGER NOT NULL,
+                    source TEXT NOT NULL,
+                    status TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS state_transitions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    transition_json TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                );
                 """
             )
+
+    def ensure_event_schema(self) -> None:
+        self._init_schema()
 
     def set_state(self, key: str, value: Dict[str, Any]) -> None:
         now = utc_now_iso()
@@ -106,6 +125,12 @@ class StateStore:
 
     def get_regime_state(self) -> Dict[str, Any]:
         return self.get_state("regime_state")
+
+    def save_system_state(self, state: Dict[str, Any]) -> None:
+        self.set_state("system_state", state)
+
+    def get_system_state(self) -> Dict[str, Any]:
+        return self.get_state("system_state")
 
     def append_attention_signal(self, signal: Dict[str, Any]) -> None:
         with self._connect() as conn:
@@ -185,3 +210,100 @@ class StateStore:
                 (limit,),
             ).fetchall()
         return [{"created_at": row["created_at"], **json.loads(row["record_json"])} for row in rows]
+
+    def append_event(self, event: Dict[str, Any], status: str = "pending") -> None:
+        now = utc_now_iso()
+        with self._connect() as conn:
+            conn.execute(
+                """
+                INSERT INTO events
+                    (event_id, event_type, payload_json, priority, source, status, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    event["event_id"],
+                    event["event_type"],
+                    json.dumps(event.get("payload", {}), ensure_ascii=False, sort_keys=True),
+                    int(event.get("priority", 50)),
+                    event.get("source", "runtime"),
+                    status,
+                    event.get("created_at", now),
+                    now,
+                ),
+            )
+
+    def get_pending_events(self, limit: int = 10) -> List[Dict[str, Any]]:
+        with self._connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT event_id, event_type, payload_json, priority, source, status, created_at, updated_at
+                FROM events
+                WHERE status = 'pending'
+                ORDER BY priority DESC, created_at ASC
+                LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
+        return [_event_row_to_dict(row) for row in rows]
+
+    def update_event_status(self, event_id: str, status: str) -> None:
+        with self._connect() as conn:
+            conn.execute(
+                "UPDATE events SET status = ?, updated_at = ? WHERE event_id = ?",
+                (status, utc_now_iso(), event_id),
+            )
+
+    def get_event_history(self, limit: int = 50) -> List[Dict[str, Any]]:
+        with self._connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT event_id, event_type, payload_json, priority, source, status, created_at, updated_at
+                FROM events
+                ORDER BY id DESC
+                LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
+        return [_event_row_to_dict(row) for row in rows]
+
+    def append_state_transition(self, transition: Dict[str, Any]) -> None:
+        with self._connect() as conn:
+            conn.execute(
+                "INSERT INTO state_transitions (transition_json, created_at) VALUES (?, ?)",
+                (json.dumps(transition, ensure_ascii=False, sort_keys=True), utc_now_iso()),
+            )
+
+    def get_state_transitions(self, limit: int = 50) -> List[Dict[str, Any]]:
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT transition_json, created_at FROM state_transitions ORDER BY id DESC LIMIT ?",
+                (limit,),
+            ).fetchall()
+        return [
+            {"created_at": row["created_at"], **json.loads(row["transition_json"])}
+            for row in rows
+        ]
+
+    def query_series(self, table: str, limit: int = 50) -> List[Dict[str, Any]]:
+        allowed = {
+            "events": self.get_event_history,
+            "state_transitions": self.get_state_transitions,
+            "attention_history": self.get_attention_history,
+            "system_logs": self.get_system_logs,
+        }
+        if table not in allowed:
+            raise ValueError(f"unsupported time-series table: {table}")
+        return allowed[table](limit=limit)
+
+
+def _event_row_to_dict(row: sqlite3.Row) -> Dict[str, Any]:
+    return {
+        "event_id": row["event_id"],
+        "event_type": row["event_type"],
+        "payload": json.loads(row["payload_json"]),
+        "priority": row["priority"],
+        "source": row["source"],
+        "status": row["status"],
+        "created_at": row["created_at"],
+        "updated_at": row["updated_at"],
+    }

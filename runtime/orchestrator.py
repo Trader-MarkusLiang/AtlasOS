@@ -17,6 +17,7 @@ try:
     from runtime.decision_brief import choose_action_bias, generate_decision_brief
     from runtime.llm_router import call_llm
     from runtime.logging import log_execution, utc_now_iso
+    from runtime.state_machine import route_for_state
     from runtime.state_store import StateStore
 except ModuleNotFoundError:  # pragma: no cover - supports direct script usage
     import sys
@@ -25,6 +26,7 @@ except ModuleNotFoundError:  # pragma: no cover - supports direct script usage
     from runtime.decision_brief import choose_action_bias, generate_decision_brief
     from runtime.llm_router import call_llm
     from runtime.logging import log_execution, utc_now_iso
+    from runtime.state_machine import route_for_state
     from runtime.state_store import StateStore
 
 
@@ -202,6 +204,132 @@ def run_runtime(
     ).to_dict()
 
 
+def run_state_runtime(
+    system_state: str,
+    event: Optional[Dict[str, Any]] = None,
+    log_path: Optional[str] = None,
+    db_path: Optional[str] = None,
+    llm_model: str = "gpt-5.5",
+) -> Dict[str, Any]:
+    """Route autonomous runtime by state-machine state and event context."""
+
+    run_id = str(uuid.uuid4())
+    brief_id = f"brief-{run_id}"
+    timestamp = utc_now_iso()
+    errors: List[str] = []
+    store = StateStore(db_path=db_path)
+    event_type = event.get("event_type") if event else None
+    route = route_for_state(system_state)
+    trigger_type = "autonomous_state_loop"
+    pipeline = route["pipeline"]
+
+    try:
+        modules = _route_state_modules(route["route"])
+        module_results = [_call_atlas_module(module) for module in modules]
+        modules_executed = [result["module"] for result in module_results]
+        portfolio_state = _read_portfolio_snapshot()
+        market_state = _build_state_market_state(system_state, event, route)
+        regime_state = _build_state_regime_state(system_state, event)
+        risk_level = _derive_state_risk_level(system_state, event)
+        action_bias = choose_action_bias(trigger_type, risk_level)
+        llm_result = call_llm(
+            llm_model,
+            _build_state_prompt(system_state, event, pipeline),
+            {
+                "system_state": system_state,
+                "event": event or {},
+                "market_state": market_state,
+                "regime_state": regime_state,
+                "portfolio_state": portfolio_state,
+                "risk_level": risk_level,
+                "action_bias": action_bias,
+                "safety": "No automatic trading. CDE remains mandatory.",
+            },
+        )
+        decision_brief = generate_decision_brief(
+            brief_id=brief_id,
+            trigger_type=trigger_type,
+            pipeline=pipeline,
+            event_type=event_type,
+            market_state=market_state,
+            regime_state=regime_state,
+            portfolio_state=portfolio_state,
+            risk_level=risk_level,
+            action_bias=action_bias,
+            modules_executed=modules_executed,
+            llm_result=llm_result,
+        )
+        store.save_portfolio_snapshot(portfolio_state)
+        store.save_regime_state(regime_state)
+        store.save_decision_brief(
+            brief_id=brief_id,
+            trigger_type=trigger_type,
+            event_type=event_type,
+            content=decision_brief,
+            metadata={
+                "pipeline": pipeline,
+                "system_state": system_state,
+                "risk_level": risk_level,
+                "action_bias": action_bias,
+                "llm_provider": llm_result.get("provider"),
+                "llm_model": llm_result.get("model"),
+                "llm_status": llm_result.get("status"),
+            },
+        )
+        status = "success"
+    except Exception as exc:
+        modules_executed = []
+        portfolio_state = _read_portfolio_snapshot()
+        market_state = {"summary": "Autonomous runtime failure", "data_status": "Error"}
+        regime_state = {"status": "Data Insufficient", "confidence": "Low"}
+        risk_level = "Unknown"
+        llm_result = {"provider": "none", "status": "not_called", "model": "none"}
+        decision_brief = generate_decision_brief(
+            brief_id=brief_id,
+            trigger_type=trigger_type,
+            pipeline=pipeline,
+            event_type=event_type,
+            market_state=market_state,
+            regime_state=regime_state,
+            portfolio_state=portfolio_state,
+            risk_level=risk_level,
+            action_bias="Observe",
+            modules_executed=modules_executed,
+            llm_result=llm_result,
+        )
+        status = "failure"
+        errors.append(str(exc))
+
+    record = {
+        "run_id": run_id,
+        "trigger_type": trigger_type,
+        "event_type": event_type,
+        "system_state": system_state,
+        "pipeline": pipeline,
+        "timestamp": timestamp,
+        "modules_executed": modules_executed,
+        "llm_model_used": llm_result.get("model"),
+        "llm_provider": llm_result.get("provider"),
+        "decision_brief_id": brief_id,
+        "status": status,
+        "errors": errors,
+    }
+    written_log = log_execution(record, log_path=log_path)
+    store.append_system_log(record)
+    return RuntimeResult(
+        run_id=run_id,
+        trigger_type=trigger_type,
+        event_type=event_type,
+        pipeline=pipeline,
+        timestamp=timestamp,
+        modules_executed=modules_executed,
+        status=status,
+        decision_brief=decision_brief,
+        log_path=str(written_log),
+        errors=errors,
+    ).to_dict()
+
+
 def _route(trigger_type: str) -> tuple[str, List[str]]:
     if trigger_type == TRIGGER_DAILY:
         return PIPELINE_LIVE_ANALYSIS, ["atlas-daily", "atlas-portfolio"]
@@ -227,6 +355,39 @@ def _route(trigger_type: str) -> tuple[str, List[str]]:
             "attention_summary_placeholder",
         ]
     raise ValueError(f"Unsupported trigger type: {trigger_type}")
+
+
+def _route_state_modules(route_name: str) -> List[str]:
+    routes = {
+        "daily": ["atlas-daily", "atlas-portfolio"],
+        "attention_flow": [
+            "atlas-research",
+            "atlas-portfolio",
+            "attention_flow_placeholder",
+        ],
+        "risk_anomaly": [
+            "atlas-research",
+            "atlas-portfolio",
+            "risk_evaluation_placeholder",
+            "anomaly_detection_placeholder",
+        ],
+        "candidate_evaluation": [
+            "atlas-research",
+            "atlas-portfolio",
+            "candidate_evaluation_placeholder",
+        ],
+        "portfolio_risk_scan": [
+            "atlas-research",
+            "atlas-portfolio",
+            "portfolio_risk_scan_placeholder",
+        ],
+        "risk_off": [
+            "atlas-research",
+            "atlas-portfolio",
+            "risk_off_placeholder",
+        ],
+    }
+    return routes.get(route_name, routes["daily"])
 
 
 def _call_atlas_module(module_name: str) -> Dict[str, str]:
@@ -335,5 +496,79 @@ def _build_prompt(trigger_type: str, event_type: Optional[str], pipeline: str) -
             f"Pipeline: {pipeline}",
             "Rules: no trading execution, no portfolio modification, no CDE bypass.",
             "Allowed action vocabulary: Hold, Reduce exposure suggestion, Observe, Rebalance suggestion.",
+        ]
+    )
+
+
+def _build_state_market_state(
+    system_state: str,
+    event: Optional[Dict[str, Any]],
+    route: Dict[str, str],
+) -> Dict[str, str]:
+    event_type = event.get("event_type") if event else "none"
+    return {
+        "summary": f"State-driven runtime route: {route['description']} from {system_state}.",
+        "data_status": "Event Stream / Confidence Limited",
+        "event_type": event_type,
+    }
+
+
+def _build_state_regime_state(
+    system_state: str,
+    event: Optional[Dict[str, Any]],
+) -> Dict[str, object]:
+    vector = {
+        "bull_regime": 0,
+        "distribution_risk": 0,
+        "transition_to_exhaustion": 0,
+        "crash_stress": 0,
+        "consolidation": 0,
+        "data_insufficient": 60,
+    }
+    if system_state == "BREAKOUT":
+        vector["bull_regime"] = 25
+        vector["data_insufficient"] = 45
+    elif system_state == "DISTRIBUTION":
+        vector["distribution_risk"] = 35
+        vector["transition_to_exhaustion"] = 20
+        vector["data_insufficient"] = 45
+    elif system_state in {"RISK_OFF", "HIGH_VOLATILITY"}:
+        vector["crash_stress"] = 20
+        vector["distribution_risk"] = 25
+        vector["data_insufficient"] = 55
+    elif system_state == "ATTENTION_EXPANSION":
+        vector["bull_regime"] = 15
+        vector["transition_to_exhaustion"] = 15
+        vector["data_insufficient"] = 70
+    return {
+        "status": f"{system_state} / Runtime State Context",
+        "probability_vector": vector,
+        "confidence": "Low",
+        "event_id": event.get("event_id") if event else None,
+        "note": "State-machine route only. No market prediction or CDE authority.",
+    }
+
+
+def _derive_state_risk_level(system_state: str, event: Optional[Dict[str, Any]]) -> str:
+    if system_state in {"RISK_OFF", "HIGH_VOLATILITY", "DISTRIBUTION"}:
+        return "High"
+    if event and int(event.get("priority", 50)) >= 80:
+        return "Medium"
+    return "Low"
+
+
+def _build_state_prompt(
+    system_state: str,
+    event: Optional[Dict[str, Any]],
+    pipeline: str,
+) -> str:
+    return "\n".join(
+        [
+            "Generate a concise Atlas autonomous runtime Decision Brief supplement.",
+            f"System State: {system_state}",
+            f"Event Type: {event.get('event_type') if event else 'None'}",
+            f"Pipeline: {pipeline}",
+            "Rules: no trading execution, no portfolio modification, no CDE bypass.",
+            "Output must remain non-binding and use Atlas action vocabulary only.",
         ]
     )
