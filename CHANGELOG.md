@@ -1,5 +1,17 @@
 # Changelog
 
+## Attention-Flow Regime Transition Request - 2026-07-05
+
+- Created `ISSUE-2026-022` for Attention-Flow regime transition request.
+- Created proposed-only `IP-2026-022` for Attention-Flow Market Transition System v0.1.
+- Added boundary review and test plan for probabilistic regime transition architecture.
+- Preserved the Attention -> Flow -> Price -> Transition Probability concept without runtime
+  implementation.
+- Did not create `regime_engine_v3.py`, `attention_flow_model.py`, or
+  `market_regime_transition.py`.
+- Did not modify AGENTS, Decision Brief strategy logic, CDE formulas, `portfolio.local.yaml`,
+  private amounts, or automatic trading logic.
+
 ## Atlas OS v2.2 Architecture Diagrams - 2026-07-05
 
 - Added Chinese and English Atlas OS v2.2 Production Trial architecture diagrams.
