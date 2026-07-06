@@ -14,8 +14,13 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 try:
+    from runtime.cognition.decision_contract import (
+        build_decision_contract_context,
+        build_decision_contract_prompt,
+        parse_decision_packet,
+    )
     from runtime.decision_brief import choose_action_bias, generate_decision_brief
-    from runtime.llm_router import call_llm
+    from runtime.llm_router import call_llm_raw, provider_metadata
     from runtime.logging import log_execution, utc_now_iso
     from runtime.state_machine import route_for_state
     from runtime.state_store import StateStore
@@ -23,8 +28,13 @@ except ModuleNotFoundError:  # pragma: no cover - supports direct script usage
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from runtime.cognition.decision_contract import (
+        build_decision_contract_context,
+        build_decision_contract_prompt,
+        parse_decision_packet,
+    )
     from runtime.decision_brief import choose_action_bias, generate_decision_brief
-    from runtime.llm_router import call_llm
+    from runtime.llm_router import call_llm_raw, provider_metadata
     from runtime.logging import log_execution, utc_now_iso
     from runtime.state_machine import route_for_state
     from runtime.state_store import StateStore
@@ -60,6 +70,7 @@ class RuntimeResult:
     decision_brief: str
     log_path: str
     event_type: Optional[str] = None
+    decision_packet: Dict[str, Any] = field(default_factory=dict)
     errors: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,6 +83,7 @@ class RuntimeResult:
             "modules_executed": self.modules_executed,
             "status": self.status,
             "decision_brief": self.decision_brief,
+            "decision_packet": self.decision_packet,
             "log_path": self.log_path,
             "errors": self.errors,
         }
@@ -108,18 +120,22 @@ def run_runtime(
         regime_state = _build_regime_state(trigger_type, event_type)
         risk_level = _derive_risk_level(trigger_type, event_type)
         action_bias = choose_action_bias(trigger_type, risk_level)
-        llm_result = call_llm(
+        decision_packet, llm_result = _run_decision_contract(
             llm_model,
-            _build_prompt(trigger_type, event_type, pipeline),
-            {
-                "market_state": market_state,
-                "regime_state": regime_state,
+            cognitive_output={},
+            market_state=market_state,
+            regime_state=regime_state,
+            risk_level=risk_level,
+            action_bias=action_bias,
+            runtime_context={
+                "trigger_type": trigger_type,
+                "event_type": event_type,
+                "pipeline": pipeline,
                 "portfolio_state": portfolio_state,
-                "risk_level": risk_level,
-                "action_bias": action_bias,
-                "safety": "No automatic trading. CDE remains mandatory.",
             },
         )
+        risk_level = _packet_risk_to_runtime(decision_packet["risk_level"], fallback=risk_level)
+        action_bias = _packet_action_to_bias(decision_packet["recommended_action"])
         decision_brief = generate_decision_brief(
             brief_id=brief_id,
             trigger_type=trigger_type,
@@ -148,6 +164,8 @@ def run_runtime(
                 "llm_provider": llm_result.get("provider"),
                 "llm_model": llm_result.get("model"),
                 "llm_status": llm_result.get("status"),
+                "decision_packet": decision_packet,
+                "raw_llm_output_stored": False,
             },
         )
         status = "success"
@@ -172,6 +190,7 @@ def run_runtime(
             modules_executed=modules_executed,
             llm_result=llm_result,
         )
+        decision_packet = _failure_decision_packet()
         status = "failure"
         errors.append(str(exc))
 
@@ -184,6 +203,7 @@ def run_runtime(
         "modules_executed": modules_executed,
         "llm_model_used": llm_result.get("model"),
         "llm_provider": llm_result.get("provider"),
+        "decision_packet": decision_packet,
         "decision_brief_id": brief_id,
         "status": status,
         "errors": errors,
@@ -200,6 +220,7 @@ def run_runtime(
         status=status,
         decision_brief=decision_brief,
         log_path=str(written_log),
+        decision_packet=decision_packet,
         errors=errors,
     ).to_dict()
 
@@ -232,20 +253,24 @@ def run_state_runtime(
         regime_state = _build_state_regime_state(system_state, event)
         risk_level = _derive_state_risk_level(system_state, event)
         action_bias = choose_action_bias(trigger_type, risk_level)
-        llm_result = call_llm(
+        cognition = (event or {}).get("payload", {}).get("cognition", {})
+        decision_packet, llm_result = _run_decision_contract(
             llm_model,
-            _build_state_prompt(system_state, event, pipeline),
-            {
+            cognitive_output=cognition if isinstance(cognition, dict) else {},
+            market_state=market_state,
+            regime_state=regime_state,
+            risk_level=risk_level,
+            action_bias=action_bias,
+            runtime_context={
+                "trigger_type": trigger_type,
                 "system_state": system_state,
-                "event": event or {},
-                "market_state": market_state,
-                "regime_state": regime_state,
+                "event_type": event_type,
+                "pipeline": pipeline,
                 "portfolio_state": portfolio_state,
-                "risk_level": risk_level,
-                "action_bias": action_bias,
-                "safety": "No automatic trading. CDE remains mandatory.",
             },
         )
+        risk_level = _packet_risk_to_runtime(decision_packet["risk_level"], fallback=risk_level)
+        action_bias = _packet_action_to_bias(decision_packet["recommended_action"])
         decision_brief = generate_decision_brief(
             brief_id=brief_id,
             trigger_type=trigger_type,
@@ -274,6 +299,8 @@ def run_state_runtime(
                 "llm_provider": llm_result.get("provider"),
                 "llm_model": llm_result.get("model"),
                 "llm_status": llm_result.get("status"),
+                "decision_packet": decision_packet,
+                "raw_llm_output_stored": False,
             },
         )
         status = "success"
@@ -297,6 +324,7 @@ def run_state_runtime(
             modules_executed=modules_executed,
             llm_result=llm_result,
         )
+        decision_packet = _failure_decision_packet()
         status = "failure"
         errors.append(str(exc))
 
@@ -310,6 +338,7 @@ def run_state_runtime(
         "modules_executed": modules_executed,
         "llm_model_used": llm_result.get("model"),
         "llm_provider": llm_result.get("provider"),
+        "decision_packet": decision_packet,
         "decision_brief_id": brief_id,
         "status": status,
         "errors": errors,
@@ -326,6 +355,7 @@ def run_state_runtime(
         status=status,
         decision_brief=decision_brief,
         log_path=str(written_log),
+        decision_packet=decision_packet,
         errors=errors,
     ).to_dict()
 
@@ -491,6 +521,76 @@ def _derive_risk_level(trigger_type: str, event_type: Optional[str]) -> str:
     if trigger_type == TRIGGER_EVENT:
         return "Medium"
     return "Low"
+
+
+def _run_decision_contract(
+    llm_model: str,
+    *,
+    cognitive_output: Dict[str, Any],
+    market_state: Dict[str, Any],
+    regime_state: Dict[str, Any],
+    risk_level: str,
+    action_bias: str,
+    runtime_context: Dict[str, Any],
+) -> tuple[Dict[str, Any], Dict[str, Any]]:
+    contract_context = build_decision_contract_context(
+        cognitive_output=cognitive_output,
+        market_state=market_state,
+        regime_state=regime_state,
+        risk_level=risk_level,
+        action_bias=action_bias,
+        runtime_context=runtime_context,
+    )
+    prompt = build_decision_contract_prompt(contract_context)
+    raw_text = call_llm_raw(llm_model, prompt, contract_context)
+    packet = parse_decision_packet(raw_text)
+    metadata = provider_metadata(llm_model)
+    status = "validated_decision_packet"
+    if (
+        packet.get("recommended_action") == "neutral"
+        and packet.get("risk_level") == "unknown"
+        and float(packet.get("confidence", 0.0)) == 0.0
+    ):
+        status = "failsafe_decision_packet"
+    return packet, {
+        "provider": metadata["provider"],
+        "model": metadata["model"],
+        "status": status,
+        "raw_text_only": True,
+        "raw_output_stored": False,
+    }
+
+
+def _packet_action_to_bias(recommended_action: str) -> str:
+    if recommended_action == "reduce":
+        return "Reduce exposure suggestion"
+    if recommended_action == "observe":
+        return "Observe"
+    return "Observe"
+
+
+def _packet_risk_to_runtime(risk_level: str, fallback: str) -> str:
+    mapping = {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "severe": "Severe",
+        "unknown": "Unknown",
+    }
+    return mapping.get(risk_level, fallback)
+
+
+def _failure_decision_packet() -> Dict[str, Any]:
+    return {
+        "regime_state": "unknown",
+        "confidence": 0.0,
+        "risk_level": "unknown",
+        "attention_state": "unknown",
+        "liquidity_state": "unknown",
+        "causal_summary": "Runtime exception before validated LLM reasoning.",
+        "recommended_action": "neutral",
+        "reasoning_trace": "runtime_failure_failsafe",
+    }
 
 
 def _build_prompt(trigger_type: str, event_type: Optional[str], pipeline: str) -> str:

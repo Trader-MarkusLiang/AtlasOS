@@ -1,0 +1,24 @@
+{
+  "assets": {
+    "asset_list": [],
+    "portfolio_json": "{}",
+    "weights": {}
+  },
+  "llm": {
+    "api_key": "",
+    "base_url": "",
+    "model": "gpt-5.5",
+    "provider": "OpenAI"
+  },
+  "metadata": {
+    "no_runtime_reload": true,
+    "no_trading_execution": true,
+    "ui_only": true
+  },
+  "system": {
+    "hypothesis_switching_sensitivity": 0.08,
+    "runtime_mode": "simulation",
+    "tick_interval": 60,
+    "trust_threshold": 0.45
+  }
+}

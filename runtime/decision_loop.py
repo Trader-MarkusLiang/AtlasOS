@@ -7,10 +7,33 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional
 
 try:
-    from runtime.cognition.causal_inference import infer_causal_state
+    from runtime.cognition.causal_intelligence_layer import infer_causal_intelligence
+    from runtime.cognition.causal_graph_mutation_engine import mutate_causal_graph
+    from runtime.cognition.causal_hypothesis_engine import generate_causal_hypotheses
+    from runtime.cognition.causal_structure_selector import select_active_causal_structure
+    from runtime.cognition.causal_self_correction_engine import apply_causal_self_correction
     from runtime.cognition.event_fusion_engine import EventFusionEngine
+    from runtime.cognition.explanation_error_engine import compute_explanation_error, compute_multi_explanation_competition
+    from runtime.cognition.hypothesis_memory import update_hypothesis_memory
+    from runtime.cognition.hypothesis_scoring_engine import score_causal_hypotheses
+    from runtime.cognition.latent_market_structure_engine import infer_latent_market_structure
+    from runtime.cognition.llm_cognitive_feedback_engine import (
+        apply_pending_feedback_to_fusion,
+        attach_trust_weighting,
+        run_cognitive_refinement_cycle,
+    )
+    from runtime.cognition.market_physics_constraint_engine import apply_market_physics_constraints
+    from runtime.cognition.market_law_emergence_engine import infer_market_law_emergence
     from runtime.cognition.regime_memory import RegimeMemory
+    from runtime.cognition.regime_explanation_alignment import align_regime_explanation
+    from runtime.cognition.regime_topology_engine import evolve_regime_topology
+    from runtime.cognition.self_organizing_engine import run_self_organization_cycle
     from runtime.cognition.state_controller import AntiOverwriteStateController
+    from runtime.cognition.structural_drift_controller import apply_structural_drift
+    from runtime.cognition.system_trust_state import update_system_trust_state
+    from runtime.cognition.trust_score_engine import calibrate_confidence, compute_trust_score
+    from runtime.cognition.unified_market_intelligence_core import infer_unified_market_intelligence
+    from runtime.cognition.world_model_engine import simulate_market_world_model
     from runtime.event_stream import EVENT_HEARTBEAT, EventStream
     from runtime.logging import log_execution, utc_now_iso
     from runtime.orchestrator import run_state_runtime
@@ -21,10 +44,33 @@ except ModuleNotFoundError:  # pragma: no cover
     from pathlib import Path
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from runtime.cognition.causal_inference import infer_causal_state
+    from runtime.cognition.causal_intelligence_layer import infer_causal_intelligence
+    from runtime.cognition.causal_graph_mutation_engine import mutate_causal_graph
+    from runtime.cognition.causal_hypothesis_engine import generate_causal_hypotheses
+    from runtime.cognition.causal_structure_selector import select_active_causal_structure
+    from runtime.cognition.causal_self_correction_engine import apply_causal_self_correction
     from runtime.cognition.event_fusion_engine import EventFusionEngine
+    from runtime.cognition.explanation_error_engine import compute_explanation_error, compute_multi_explanation_competition
+    from runtime.cognition.hypothesis_memory import update_hypothesis_memory
+    from runtime.cognition.hypothesis_scoring_engine import score_causal_hypotheses
+    from runtime.cognition.latent_market_structure_engine import infer_latent_market_structure
+    from runtime.cognition.llm_cognitive_feedback_engine import (
+        apply_pending_feedback_to_fusion,
+        attach_trust_weighting,
+        run_cognitive_refinement_cycle,
+    )
+    from runtime.cognition.market_physics_constraint_engine import apply_market_physics_constraints
+    from runtime.cognition.market_law_emergence_engine import infer_market_law_emergence
     from runtime.cognition.regime_memory import RegimeMemory
+    from runtime.cognition.regime_explanation_alignment import align_regime_explanation
+    from runtime.cognition.regime_topology_engine import evolve_regime_topology
+    from runtime.cognition.self_organizing_engine import run_self_organization_cycle
     from runtime.cognition.state_controller import AntiOverwriteStateController
+    from runtime.cognition.structural_drift_controller import apply_structural_drift
+    from runtime.cognition.system_trust_state import update_system_trust_state
+    from runtime.cognition.trust_score_engine import calibrate_confidence, compute_trust_score
+    from runtime.cognition.unified_market_intelligence_core import infer_unified_market_intelligence
+    from runtime.cognition.world_model_engine import simulate_market_world_model
     from runtime.event_stream import EVENT_HEARTBEAT, EventStream
     from runtime.logging import log_execution, utc_now_iso
     from runtime.orchestrator import run_state_runtime
@@ -67,23 +113,70 @@ class DecisionLoop:
 
         if events:
             fusion = self.fusion_engine.fuse(events)
+            previous_llm_feedback = self.store.get_state("llm_feedback_state")
+            previous_structural_state = self.store.get_state("structural_coevolution_state")
+            previous_self_organization_state = self.store.get_state("self_organization_state")
+            previous_hypothesis_memory = self.store.get_state("causal_hypothesis_memory")
+            fusion = apply_pending_feedback_to_fusion(fusion, previous_llm_feedback)
             memory_before = self.regime_memory.summary()
-            causal = infer_causal_state(
+            causal = infer_causal_intelligence(
                 fusion=fusion,
                 attention_liquidity=fusion.get("attention_liquidity", {}),
                 memory_summary=memory_before,
             )
+            world_model = simulate_market_world_model(
+                fusion=fusion,
+                causal=causal,
+                memory_summary=memory_before,
+            )
+            latent_structure = infer_latent_market_structure(
+                world_model=world_model,
+                causal=causal,
+                memory_summary=memory_before,
+            )
+            physics_constraints = apply_market_physics_constraints(
+                world_model=world_model,
+                latent_structure=latent_structure,
+                causal=causal,
+                memory_summary=memory_before,
+            )
+            market_laws = infer_market_law_emergence(
+                latent_structure=latent_structure,
+                physics_constraints=physics_constraints,
+                world_model=world_model,
+                memory_summary=memory_before,
+            )
+            previous_cognition = self.store.get_state("cognition_state")
+            previous_unified = {}
+            if isinstance(previous_cognition, dict):
+                previous_unified = previous_cognition.get("unified_intelligence", {})
+            unified_intelligence = infer_unified_market_intelligence(
+                fusion=fusion,
+                causal=causal,
+                world_model=world_model,
+                latent_structure=latent_structure,
+                physics_constraints=physics_constraints,
+                market_laws=market_laws,
+                memory_summary=memory_before,
+                previous_unified_state=previous_unified if isinstance(previous_unified, dict) else {},
+            )
+            controller_context = dict(causal)
+            controller_context["world_model"] = world_model
+            controller_context["latent_structure"] = latent_structure
+            controller_context["physics_constraints"] = physics_constraints
+            controller_context["market_laws"] = market_laws
+            controller_context["unified_intelligence"] = unified_intelligence
             previous_state = self.state_machine.current_state()
             transition = self.state_controller.decide(
                 previous_state=previous_state,
                 fusion=fusion,
                 memory_summary=memory_before,
-                causal=causal,
+                causal=controller_context,
             )
             memory_after = self.regime_memory.record(
                 transition["current_state"],
                 fusion=fusion,
-                causal=causal,
+                causal=controller_context,
             )
             transition["memory_after"] = memory_after
             self.store.save_system_state(transition)
@@ -93,10 +186,31 @@ class DecisionLoop:
                 {
                     "fusion": fusion,
                     "causal": causal,
+                    "world_model": world_model,
+                    "latent_structure": latent_structure,
+                    "physics_constraints": physics_constraints,
+                    "market_laws": market_laws,
+                    "unified_intelligence": unified_intelligence,
                     "controller": transition,
                     "memory": memory_after,
+                    "llm_feedback": previous_llm_feedback,
+                    "structural_coevolution": previous_structural_state,
+                    "self_organization": previous_self_organization_state,
                 },
             )
+            cognition_snapshot = {
+                "fusion": fusion,
+                "causal": causal,
+                "world_model": world_model,
+                "latent_structure": latent_structure,
+                "physics_constraints": physics_constraints,
+                "market_laws": market_laws,
+                "unified_intelligence": unified_intelligence,
+                "controller": transition,
+                "memory": memory_after,
+                "structural_coevolution": previous_structural_state,
+                "self_organization": previous_self_organization_state,
+            }
             fused_event = {
                 "event_id": "fusion:" + ",".join(event["event_id"] for event in events),
                 "event_type": "fused_market_reality",
@@ -105,8 +219,15 @@ class DecisionLoop:
                     "cognition": {
                         "fusion": fusion,
                         "causal": causal,
+                        "world_model": world_model,
+                        "latent_structure": latent_structure,
+                        "physics_constraints": physics_constraints,
+                        "market_laws": market_laws,
+                        "unified_intelligence": unified_intelligence,
                         "controller": transition,
                         "memory": memory_after,
+                        "structural_coevolution": previous_structural_state,
+                        "self_organization": previous_self_organization_state,
                     }
                 },
                 "source": "event_fusion_engine",
@@ -121,6 +242,184 @@ class DecisionLoop:
             )
             for event in events:
                 self.event_stream.acknowledge(event["event_id"], "handled")
+            decision_packet = result.get("decision_packet", {})
+            llm_feedback = run_cognitive_refinement_cycle(
+                decision_packet=decision_packet if isinstance(decision_packet, dict) else {},
+                cognitive_state_snapshot=cognition_snapshot,
+                llm_reasoning_output=str(
+                    decision_packet.get("reasoning_trace", "") if isinstance(decision_packet, dict) else ""
+                ),
+                previous_feedback=previous_llm_feedback if isinstance(previous_llm_feedback, dict) else {},
+            )
+            feedback_delta = {
+                "attention": llm_feedback.get("modifiers", {}).get("attention_weight_delta"),
+                "causal": llm_feedback.get("modifiers", {}).get("causal_edge_strength_delta"),
+                "risk": llm_feedback.get("modifiers", {}).get("risk_confidence_delta"),
+            }
+            trust_score = compute_trust_score(
+                cognitive_state=cognition_snapshot,
+                llm_output=decision_packet if isinstance(decision_packet, dict) else {},
+                feedback_delta=feedback_delta,
+            )
+            actual_outcome_state = {
+                "transition": transition,
+                "controller": transition,
+                "fusion": fusion,
+                "memory": memory_after,
+                "state": transition.get("current_state"),
+            }
+            explanation_error = compute_explanation_error(
+                decision_explanation=decision_packet if isinstance(decision_packet, dict) else {},
+                actual_outcome_state=actual_outcome_state,
+                causal_graph_prediction=controller_context,
+                observed_result={
+                    "state": transition.get("current_state"),
+                    "attention": fusion.get("attention_pressure"),
+                    "liquidity": fusion.get("liquidity_score"),
+                    "stress": fusion.get("stress_score"),
+                    "narrative": fusion.get("narrative_intensity"),
+                    "volatility": fusion.get("volatility_regime"),
+                },
+            )
+            regime_alignment = align_regime_explanation(
+                regime_label=str(transition.get("current_state", "UNKNOWN")),
+                decision_explanation=decision_packet if isinstance(decision_packet, dict) else {},
+                causal_model=controller_context,
+                actual_outcome_state=actual_outcome_state,
+            )
+            previous_error_history = (
+                previous_hypothesis_memory.get("explanation_error_history", [])
+                if isinstance(previous_hypothesis_memory, dict)
+                else []
+            )
+            explanation_error_history = list(previous_error_history[-8:]) + [explanation_error]
+            causal_hypotheses = generate_causal_hypotheses(
+                event_stream=events,
+                regime_state=str(transition.get("current_state", "UNKNOWN")),
+                lmse_structure=latent_structure,
+                explanation_error_history=explanation_error_history,
+            )
+            hypothesis_scoring = score_causal_hypotheses(
+                hypotheses=causal_hypotheses.get("hypotheses", []),
+                explanation_error_history=explanation_error_history,
+                regime_state=str(transition.get("current_state", "UNKNOWN")),
+                trust_score=trust_score,
+                hypothesis_memory_state=previous_hypothesis_memory if isinstance(previous_hypothesis_memory, dict) else {},
+            )
+            active_causal_structure = select_active_causal_structure(
+                scored_hypotheses=hypothesis_scoring,
+                hypotheses=causal_hypotheses.get("hypotheses", []),
+                previous_selection=previous_hypothesis_memory if isinstance(previous_hypothesis_memory, dict) else {},
+                trust_score=trust_score,
+                regime_state=str(transition.get("current_state", "UNKNOWN")),
+            )
+            multi_explanation_competition = compute_multi_explanation_competition(
+                explanations=[
+                    {
+                        "causal_summary": hypothesis.get("id"),
+                        "reasoning_trace": " ".join(str(item) for item in hypothesis.get("structural_assumptions", [])),
+                    }
+                    for hypothesis in causal_hypotheses.get("hypotheses", [])
+                    if isinstance(hypothesis, dict)
+                ],
+                causal_graph_variants=[
+                    hypothesis.get("causal_graph_variant", {})
+                    for hypothesis in causal_hypotheses.get("hypotheses", [])
+                    if isinstance(hypothesis, dict)
+                ],
+            )
+            hypothesis_memory_state = update_hypothesis_memory(
+                previous_memory=previous_hypothesis_memory if isinstance(previous_hypothesis_memory, dict) else {},
+                selection_state=active_causal_structure,
+                scored_hypotheses=hypothesis_scoring,
+                regime_state=str(transition.get("current_state", "UNKNOWN")),
+                explanation_error=explanation_error,
+            )
+            hypothesis_memory_state["explanation_error_history"] = explanation_error_history[-12:]
+            previous_explanation_feedback = (
+                previous_structural_state.get("explanation_feedback", {})
+                if isinstance(previous_structural_state, dict)
+                else {}
+            )
+            causal_self_correction = apply_causal_self_correction(
+                explanation_error=explanation_error,
+                causal_graph=causal.get("causal_graph", {}) if isinstance(causal, dict) else {},
+                trust_score=trust_score,
+                regime_alignment=regime_alignment,
+                previous_correction=previous_explanation_feedback.get("causal_correction", {})
+                if isinstance(previous_explanation_feedback, dict)
+                else {},
+            )
+            llm_feedback = attach_trust_weighting(llm_feedback, trust_score)
+            previous_trust_state = self.store.get_state("system_trust_state")
+            system_trust_state = update_system_trust_state(
+                previous_state=previous_trust_state,
+                trust_score=trust_score,
+                provider=str(result.get("decision_packet", {}).get("provider", "runtime")),
+                feedback_delta=feedback_delta,
+                regime_volatility=float(fusion.get("stress_score", 0) or 0),
+            )
+            confidence_calibration = calibrate_confidence(
+                (decision_packet or {}).get("confidence") if isinstance(decision_packet, dict) else 0.0,
+                trust_score,
+            )
+            mutation_state = mutate_causal_graph(
+                cil_causal_graph=causal.get("causal_graph", {}) if isinstance(causal, dict) else {},
+                latent_structure=latent_structure,
+                physics_constraints=physics_constraints,
+                trust_score=trust_score,
+                feedback_delta=feedback_delta,
+                previous_graph_state=previous_structural_state.get("mutation", {})
+                if isinstance(previous_structural_state, dict)
+                else {},
+            )
+            regime_topology = evolve_regime_topology(
+                latent_structure=latent_structure,
+                mutation_state=mutation_state,
+                trust_score=trust_score,
+                feedback_delta=feedback_delta,
+                previous_topology=previous_structural_state.get("regime_topology", {})
+                if isinstance(previous_structural_state, dict)
+                else {},
+            )
+            structural_coevolution_state = apply_structural_drift(
+                mutated_graph=mutation_state,
+                regime_topology=regime_topology,
+                previous_structural_state=previous_structural_state
+                if isinstance(previous_structural_state, dict)
+                else {},
+                trust_score=trust_score,
+                explanation_correction=causal_self_correction,
+            )
+            self_organization_state = run_self_organization_cycle(
+                cognitive_state=cognition_snapshot,
+                structural_coevolution_state=structural_coevolution_state,
+                system_trust_state=system_trust_state,
+                trust_score=trust_score,
+                feedback_delta=feedback_delta,
+                previous_self_organization_state=previous_self_organization_state
+                if isinstance(previous_self_organization_state, dict)
+                else {},
+            )
+            self.store.set_state("llm_feedback_state", llm_feedback)
+            cognition_snapshot["llm_feedback"] = llm_feedback
+            cognition_snapshot["trust_score"] = trust_score
+            cognition_snapshot["explanation_error"] = explanation_error
+            cognition_snapshot["regime_explanation_alignment"] = regime_alignment
+            cognition_snapshot["causal_hypotheses"] = causal_hypotheses
+            cognition_snapshot["hypothesis_scoring"] = hypothesis_scoring
+            cognition_snapshot["active_causal_structure"] = active_causal_structure
+            cognition_snapshot["multi_explanation_competition"] = multi_explanation_competition
+            cognition_snapshot["hypothesis_memory"] = hypothesis_memory_state
+            cognition_snapshot["causal_self_correction"] = causal_self_correction
+            cognition_snapshot["system_trust_state"] = system_trust_state
+            cognition_snapshot["structural_coevolution"] = structural_coevolution_state
+            cognition_snapshot["self_organization"] = self_organization_state
+            self.store.set_state("cognition_state", cognition_snapshot)
+            self.store.set_state("system_trust_state", system_trust_state)
+            self.store.set_state("structural_coevolution_state", structural_coevolution_state)
+            self.store.set_state("self_organization_state", self_organization_state)
+            self.store.set_state("causal_hypothesis_memory", hypothesis_memory_state)
             results.append(
                 {
                     "event_ids": [event["event_id"] for event in events],
@@ -129,8 +428,60 @@ class DecisionLoop:
                     "proposed_state": transition["proposed_state"],
                     "transition_allowed": transition["transition_allowed"],
                     "primary_driver": causal["primary_driver"],
+                    "world_model_phase_transition": world_model["regime_emergence_dynamics"][
+                        "phase_transition_likelihood"
+                    ],
+                    "latent_attractor_basin": latent_structure["regime_attractors"]["dominant_attractor_basin"],
+                    "physics_stability_score": physics_constraints["system_stability_report"]["stability_score"],
+                    "law_system_stability_score": market_laws["system_stability_evaluation"][
+                        "law_system_stability_score"
+                    ],
+                    "unified_dominant_structure": unified_intelligence["unified_interpretation"][
+                        "dominant_regime_structure"
+                    ],
+                    "unified_feedback_influence": unified_intelligence["feedback_loop_design"][
+                        "feedback_influence_score"
+                    ],
                     "result_status": result["status"],
                     "decision_brief_id": result["run_id"],
+                    "decision_packet_action": result.get("decision_packet", {}).get("recommended_action"),
+                    "decision_packet_risk": result.get("decision_packet", {}).get("risk_level"),
+                    "decision_packet_confidence": result.get("decision_packet", {}).get("confidence"),
+                    "llm_feedback_status": llm_feedback.get("status"),
+                    "llm_feedback_attention_delta": llm_feedback.get("modifiers", {}).get("attention_weight_delta"),
+                    "llm_feedback_causal_delta": llm_feedback.get("modifiers", {}).get("causal_edge_strength_delta"),
+                    "llm_feedback_risk_delta": llm_feedback.get("modifiers", {}).get("risk_confidence_delta"),
+                    "llm_feedback_freeze": llm_feedback.get("stability", {}).get("freeze_feedback"),
+                    "trust_score": trust_score,
+                    "system_trust_state": system_trust_state,
+                    "calibrated_confidence": confidence_calibration["calibrated_confidence"],
+                    "confidence_adjustment_factor": confidence_calibration["confidence_adjustment_factor"],
+                    "explanation_error_score": explanation_error.get("explanation_error_score"),
+                    "explanation_missing_causal_links": explanation_error.get("missing_causal_links"),
+                    "causal_self_correction_status": causal_self_correction.get("status"),
+                    "causal_self_correction_intensity": causal_self_correction.get("correction_intensity"),
+                    "causal_self_correction_edges": causal_self_correction.get("edge_weight_updates"),
+                    "regime_explanation_alignment_score": regime_alignment.get("alignment_score"),
+                    "regime_explanation_alignment_conflicts": regime_alignment.get("alignment_conflicts"),
+                    "causal_hypothesis_count": causal_hypotheses.get("hypothesis_count"),
+                    "active_causal_hypothesis_id": active_causal_structure.get("active_hypothesis_id"),
+                    "causal_hypothesis_switch_allowed": active_causal_structure.get("switch_allowed"),
+                    "causal_hypothesis_selection_reason": active_causal_structure.get("selection_reason"),
+                    "causal_hypothesis_score_distribution": hypothesis_scoring.get("score_distribution"),
+                    "causal_shadow_hypothesis_count": len(active_causal_structure.get("shadow_hypotheses", [])),
+                    "explanation_divergence_index": multi_explanation_competition.get("explanation_divergence_index"),
+                    "causal_conflict_score": multi_explanation_competition.get("causal_conflict_score"),
+                    "model_instability_pressure": multi_explanation_competition.get("model_instability_pressure"),
+                    "structural_coevolution_status": structural_coevolution_state.get("status"),
+                    "structural_mutation_intensity": mutation_state.get("mutation_intensity"),
+                    "structural_shift_index": mutation_state.get("structural_shift_index"),
+                    "regime_basin_deformation": regime_topology.get("basin_deformation"),
+                    "structural_trust_gate": structural_coevolution_state.get("trust_gate"),
+                    "self_organization_status": self_organization_state.get("status"),
+                    "self_organization_shift_index": self_organization_state.get("structural_shift_index"),
+                    "self_organization_regime_attractor_shift": self_organization_state.get("regime_attractor_shift"),
+                    "trust_field_evolution": self_organization_state.get("trust_field_evolution"),
+                    "self_organization_trust_gate": self_organization_state.get("trust_gate"),
                 }
             )
 

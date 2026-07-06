@@ -83,6 +83,22 @@ Validation result:
 
 `99_Verification/Cognitive_Runtime_v0.3_Validation_Result.md`
 
+## Next Roadmap
+
+Atlas OS v0.4 roadmap:
+
+`10_Production_Trial/Architecture/Atlas_OS_v0.4_Cognitive_Market_OS_Roadmap.md`
+
+The v0.4 roadmap proposes a future Cognitive Market OS path:
+
+- DSA as infrastructure only.
+- Atlas Adapter Layer for schema normalization and DSA signal transformation.
+- Cognitive stabilization before deeper causal reasoning.
+- Causal Engine v0 as non-ML reasoning context, not trading authority.
+- Regime intelligence as decision context, not execution command.
+
+This roadmap is not implemented by this IP.
+
 ## Status
 
 Implemented — cognitive runtime trial.

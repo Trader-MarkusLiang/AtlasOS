@@ -1,6 +1,6 @@
 # Rebalance Execution Plan Test Result
 
-Generated: 2026-06-30T23:56:19
+Generated: 2026-07-06T23:41:34
 
 ## Scenario
 
@@ -29,36 +29,36 @@ Execution Plan is not Trading Authority. CDE authorization and user confirmation
 
 | Name | Structure | 20D | 60D | MA20 Gap | Anomaly | Impact | Flags |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 雅克科技 | Overextended | 113.83 | 185.94 | 52.96 | Warning | CDE Precision Limited | abs_20d_change_pct; abs_60d_change_pct; price_vs_ma20_pct; price_vs_ma60_pct |
-| 建滔集团 | Strong Uptrend | 96.86 | 253.86 | 17.26 | Severe | Execution Blocked | abs_60d_change_pct; abs_20d_change_pct; price_vs_ma60_pct |
-| 东山精密 | Strong Uptrend | 36.82 | 153.97 | 8.83 | Warning | CDE Precision Limited | abs_60d_change_pct |
-| 泰金新能 | Strong Uptrend | 29.01 | 324.50 | 14.19 | Severe | Execution Blocked | abs_60d_change_pct |
-| 赛腾股份 | Overextended | 68.01 | 153.35 | 36.97 | Warning | CDE Precision Limited | abs_60d_change_pct |
-| 澜起科技 | Strong Uptrend | 33.41 | 147.37 | 21.45 | Normal | None | None |
-| 江丰电子 | Overextended | 96.00 | 165.30 | 31.53 | Warning | CDE Precision Limited | abs_20d_change_pct; abs_60d_change_pct |
-| 太极实业 | Overextended | 115.36 | 227.13 | 48.11 | Warning | CDE Precision Limited | abs_20d_change_pct; abs_60d_change_pct; price_vs_ma20_pct; price_vs_ma60_pct |
-| 广钢气体 | Overextended | 94.62 | 134.51 | 54.12 | Warning | CDE Precision Limited | abs_20d_change_pct; price_vs_ma20_pct |
-| 昊华科技 | Overextended | 85.53 | 149.57 | 28.15 | Warning | CDE Precision Limited | abs_20d_change_pct |
+| 雅克科技 | Data Insufficient | Data Missing | Data Missing | Data Missing | Severe | Execution Blocked | latest_price_missing_or_non_positive; history_too_short_for_ma60; timestamp_freshness_unknown |
+| 建滔集团 | Data Insufficient | Data Missing | Data Missing | Data Missing | Severe | Execution Blocked | latest_price_missing_or_non_positive; history_too_short_for_ma60; timestamp_freshness_unknown |
+| 东山精密 | Mild Uptrend | 1.38 | 105.91 | -7.49 | Normal | None | None |
+| 泰金新能 | Mild Uptrend | -5.07 | 312.10 | -7.07 | Severe | Execution Blocked | abs_60d_change_pct |
+| 赛腾股份 | Strong Uptrend | 38.61 | 110.80 | 6.49 | Normal | None | None |
+| 澜起科技 | Strong Uptrend | 12.24 | 110.07 | 2.67 | Normal | None | None |
+| 江丰电子 | Strong Uptrend | 62.46 | 119.06 | 5.92 | Normal | None | None |
+| 太极实业 | Overextended | 70.10 | 211.82 | 21.77 | Warning | CDE Precision Limited | abs_60d_change_pct |
+| 广钢气体 | Strong Uptrend | 60.57 | 92.07 | 18.90 | Normal | None | None |
+| 昊华科技 | Strong Uptrend | 47.71 | 106.52 | 4.45 | Normal | None | None |
 
 ## Current Holding Assessment
 
 | Holding | Role | Current Structure | Execution Readiness | Anomaly Status | Portfolio Role | Suggested Treatment |
 | --- | --- | --- | --- | --- | --- | --- |
-| 雅克科技 | Current Holding | Overextended | Wait for Pullback | Warning | Existing exposure | Trim if Extended |
-| 建滔集团 | Current Holding | Strong Uptrend | Wait for Pullback | Severe | Existing exposure | Data Limited |
-| 东山精密 | Current Holding | Strong Uptrend | Wait for Breakout Confirmation | Warning | Existing exposure | Hold Core |
-| 泰金新能 | Current Holding | Strong Uptrend | Wait for Pullback | Severe | Existing exposure | Data Limited |
+| 雅克科技 | Current Holding | Data Insufficient | Data Insufficient | Severe | Existing exposure | Data Limited |
+| 建滔集团 | Current Holding | Data Insufficient | Data Insufficient | Severe | Existing exposure | Data Limited |
+| 东山精密 | Current Holding | Mild Uptrend | Watch | Normal | Existing exposure | Hold Core |
+| 泰金新能 | Current Holding | Mild Uptrend | Watch | Severe | Existing exposure | Data Limited |
 
 ## Candidate Receiving Assessment
 
 | Candidate | Research Tier | Market Structure | Execution Readiness | Anomaly Status | Portfolio Fit | Receiving Priority |
 | --- | --- | --- | --- | --- | --- | --- |
-| 赛腾股份 | Needs Strategic Candidate Dashboard | Overextended | Wait for Pullback | Warning | Needs portfolio fit review | Pullback Candidate |
-| 澜起科技 | Needs Strategic Candidate Dashboard | Strong Uptrend | Wait for Pullback | Normal | Needs portfolio fit review | Pullback Candidate |
-| 江丰电子 | Needs Strategic Candidate Dashboard | Overextended | Wait for Pullback | Warning | Needs portfolio fit review | Pullback Candidate |
+| 赛腾股份 | Needs Strategic Candidate Dashboard | Strong Uptrend | Wait for Breakout Confirmation | Normal | Needs portfolio fit review | Breakout Confirmation Candidate |
+| 澜起科技 | Needs Strategic Candidate Dashboard | Strong Uptrend | Wait for Breakout Confirmation | Normal | Needs portfolio fit review | Breakout Confirmation Candidate |
+| 江丰电子 | Needs Strategic Candidate Dashboard | Strong Uptrend | Wait for Breakout Confirmation | Normal | Needs portfolio fit review | Breakout Confirmation Candidate |
 | 太极实业 | Needs Strategic Candidate Dashboard | Overextended | Wait for Pullback | Warning | Needs portfolio fit review | Pullback Candidate |
-| 广钢气体 | Needs Strategic Candidate Dashboard | Overextended | Wait for Pullback | Warning | Needs portfolio fit review | Pullback Candidate |
-| 昊华科技 | Needs Strategic Candidate Dashboard | Overextended | Wait for Pullback | Warning | Needs portfolio fit review | Pullback Candidate |
+| 广钢气体 | Needs Strategic Candidate Dashboard | Strong Uptrend | Wait for Pullback | Normal | Needs portfolio fit review | Pullback Candidate |
+| 昊华科技 | Needs Strategic Candidate Dashboard | Strong Uptrend | Wait for Breakout Confirmation | Normal | Needs portfolio fit review | Breakout Confirmation Candidate |
 
 ## Migration Authority
 

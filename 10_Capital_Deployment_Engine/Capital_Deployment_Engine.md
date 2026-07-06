@@ -467,6 +467,15 @@ Current roadmap:
 - Market Data Provider v0.1 / Domestic Market Data Support v0.2.
 - Data Anomaly Check.
 - Rebalance Execution Plan v0.1.
+- DSA Infrastructure Adapter v0.4 boundary trial.
+- Input Abstraction Layer v0.4.1 cognitive isolation fix.
+- Causal Intelligence Layer v0.5 symbolic causal reasoning local trial.
+- Market World Model v0.6 structural evolution simulation local trial.
+- Latent Market Structure Engine v0.7 market-physics local trial.
+- Market Physics Constraint Engine v0.8 constraint-system local trial.
+- Market Law Emergence Engine v0.9 adaptive law-emergence local trial.
+- Unified Market Intelligence Core v1.0 closed-loop cognition local trial.
+- Bidirectional Perception Loop v1.2 input-deformation local trial.
 
 ### Planned
 
@@ -489,7 +498,17 @@ Future engines must come from observed operating problems, not imagined architec
 |---|---|---|
 | Market Regime Early Warning v0.1 | Proposed Architecture | `IP-2026-021`; not implemented. |
 | Attention-Flow Market Transition System v0.1 | Proposed Architecture | `IP-2026-022`; no runtime code. |
-| Runtime System v0.1 | Issue Recorded / Watching | `ISSUE-2026-023`; no runtime scheduler, orchestrator, event engine, state store, or output generator. |
+| Runtime System v0.1 / v0.2 / v0.3 | Partial Runtime Trial | `IP-2026-023`, `IP-2026-024`, `IP-2026-025`, and `IP-2026-026`; local runtime, event stream, state machine, cognitive fusion, memory, causal inference, SQLite state, LLM router abstraction, launchd plist, and dashboard are implemented. No trading execution, CDE bypass, portfolio auto-modification, full simulation, broker integration, autonomous trading, deep learning, reinforcement learning, or full backtesting. |
+| Cognitive Market OS v0.4 Roadmap | Proposed Roadmap | `10_Production_Trial/Architecture/Atlas_OS_v0.4_Cognitive_Market_OS_Roadmap.md`; Phase 1 adapter boundary is tracked separately in `IP-2026-027`. Full DSA infrastructure merge, causal engine, and regime intelligence remain proposed only. No trading execution, CDE bypass, or portfolio automation is authorized. |
+| DSA Infrastructure Adapter v0.4 | Adapter Boundary Trial | `IP-2026-027`; unified schema adapter, inbox ingestion, optional data-fetch hook, optional LiteLLM backend selection, and dashboard infrastructure status are implemented. External DSA source is not bundled or required. No DSA business logic, stock picking, strategy scoring, trading execution, CDE bypass, or portfolio automation. |
+| Input Abstraction Layer v0.4.1 | Cognitive Isolation Fix | `IP-2026-028`; EventStream now depends on source-neutral Input Router instead of `dsa_bridge.py`. Illegal strategy/trading fields are stripped and neutralized to `market_event`. No cognitive logic, CDE, portfolio, trading, or stock-picking behavior added. |
+| Causal Intelligence Layer v0.5 | Symbolic Causal Reasoning Trial | `IP-2026-029`; adds causal graph, attention meaning resolution, flow propagation, regime emergence reasoning, and lightweight counterfactual inference inside runtime cognition. It does not create CDE authority, trading execution, Buy / Sell output, ML model, or portfolio automation. |
+| Market World Model v0.6 | Structural Evolution Simulation Trial | `IP-2026-030`; adds continuous MarketState(t), deterministic state transition, attention-liquidity transformation, regime emergence dynamics, and counterfactual trajectory simulation. It does not create CDE authority, forecast output, trading execution, Buy / Sell output, ML model, or portfolio automation. |
+| Latent Market Structure Engine v0.7 | Market Physics Trial | `IP-2026-031`; adds latent variables, regime attractor basins, phase space geometry, attention field dynamics, structural evolution, and structural counterfactual simulation. It does not create CDE authority, prediction output, trading execution, Buy / Sell output, ML model, or portfolio automation. |
+| Market Physics Constraint Engine v0.8 | Constraint-System Trial | `IP-2026-032`; adds conservation checks, entropy modeling, structural invariants, dynamic-system formulation, constraint-driven emergence, and stability monitoring. It does not create CDE authority, forecasting output, trading execution, Buy / Sell output, ML model, or portfolio automation. |
+| Market Law Emergence Engine v0.9 | Adaptive Law-Emergence Trial | `IP-2026-033`; adds law discovery, adaptive constraint evolution, regime-conditioned law behavior, meta-dynamics, and contradiction coexistence checks. It does not create CDE authority, prediction output, trading execution, Buy / Sell output, ML model, black-box optimization, or portfolio automation. |
+| Unified Market Intelligence Core v1.0 | Closed-Loop Cognition Trial | `IP-2026-034`; adds unified market state, feedback loop, self-referential causality, co-evolution dynamics, unified interpretation, and internal interpretation-weight adaptation. It does not create CDE authority, prediction output, trading execution, Buy / Sell output, ML model, black-box prediction, signal-generator behavior, or portfolio automation. |
+| Bidirectional Perception Loop v1.2 | Input-Deformation Trial | `IP-2026-035`; adds perception weighting and bounded input deformation before EventStream queue persistence. It does not create CDE authority, prediction output, trading execution, Buy / Sell output, ML model, Event Fusion core logic changes, or portfolio automation. |
 
 Ideas are not implementation approval.
 

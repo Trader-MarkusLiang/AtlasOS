@@ -16,11 +16,17 @@ from pathlib import Path
 from typing import Any, Dict
 
 try:
+    from runtime.adapter.data_fetch import data_source_status
+    from runtime.adapter.input_router import router_diagnostics
+    from runtime.llm_router import backend_status
     from runtime.state_store import StateStore
 except ModuleNotFoundError:  # pragma: no cover
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from runtime.adapter.data_fetch import data_source_status
+    from runtime.adapter.input_router import router_diagnostics
+    from runtime.llm_router import backend_status
     from runtime.state_store import StateStore
 
 
@@ -36,6 +42,11 @@ def dashboard_payload() -> Dict[str, Any]:
         "regime_status": store.get_regime_state(),
         "attention_signals": attention_signals,
         "attention_heat_index": _attention_heat_index(attention_signals),
+        "infrastructure": {
+            "input_router": router_diagnostics(),
+            "data_source": data_source_status(),
+            "llm_backend": backend_status(),
+        },
         "state_transitions": store.get_state_transitions(limit=20),
         "system_logs": store.get_system_logs(limit=20),
     }
@@ -64,6 +75,7 @@ def render_dashboard() -> str:
   <section><h2>Latest Decision Brief</h2><pre>{html.escape(brief)}</pre></section>
   <section><h2>Regime Status</h2><pre>{html.escape(json.dumps(payload["regime_status"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>Attention Heat Index</h2><pre>{html.escape(json.dumps(payload["attention_heat_index"], ensure_ascii=False, indent=2))}</pre></section>
+  <section><h2>Infrastructure Layer</h2><pre>{html.escape(json.dumps(payload["infrastructure"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>Attention Signals</h2><pre>{html.escape(json.dumps(payload["attention_signals"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>State Transitions</h2><pre>{html.escape(json.dumps(payload["state_transitions"], ensure_ascii=False, indent=2))}</pre></section>
   <section><h2>System Logs</h2><pre>{html.escape(json.dumps(payload["system_logs"], ensure_ascii=False, indent=2))}</pre></section>

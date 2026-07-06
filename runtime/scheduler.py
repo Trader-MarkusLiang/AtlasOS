@@ -6,6 +6,8 @@ not execute trades, modify portfolio weights, or bypass CDE.
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -41,6 +43,34 @@ SUPPORTED_EVENT_TYPES = {
     "volatility_spike",
     "user_input_event",
 }
+
+SUPPORTED_TICK_INTERVALS = {10, 30, 60, 300}
+
+
+@dataclass(frozen=True)
+class RuntimeScheduleConfig:
+    """Tick interval configuration for background runtime loops."""
+
+    interval_seconds: int = 60
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+
+    def __post_init__(self) -> None:
+        if self.interval_seconds not in SUPPORTED_TICK_INTERVALS:
+            raise ValueError("interval_seconds must be one of 10, 30, 60, or 300")
+
+
+def next_run_time(
+    config: RuntimeScheduleConfig | None = None,
+    *,
+    from_time: datetime | None = None,
+) -> datetime:
+    """Return the next scheduler tick time."""
+
+    schedule = config or RuntimeScheduleConfig()
+    base = from_time or datetime.now(timezone.utc)
+    if base.tzinfo is None:
+        base = base.replace(tzinfo=timezone.utc)
+    return base + timedelta(seconds=schedule.interval_seconds)
 
 
 def daily_run(

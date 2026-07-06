@@ -1,0 +1,187 @@
+{
+  "version": "v0.1 - v0.8",
+  "current_stage": "v0.7",
+  "next_stage": "v0.7 stability validation -> v0.8 preparation",
+  "active_version": "v0.7",
+  "stability_status": "validation_passed",
+  "trust_status": "trust_calibrated",
+  "release_update_policy": "update this file during each Atlas runtime/UI release validation",
+  "layers": [
+    {
+      "version": "v0.1",
+      "name": "Runtime Daemon",
+      "status": "completed",
+      "category": "runtime",
+      "modules_added": [
+        "runtime/atlas_runtime_daemon.py",
+        "runtime/scheduler.py",
+        "runtime/event_source.py",
+        "runtime/output_logger.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/Runtime_Daemon_v0.1_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.2",
+      "name": "Decision Contract + LLM Router Runtime",
+      "status": "completed",
+      "category": "runtime",
+      "modules_added": [
+        "runtime/cognition/decision_contract.py",
+        "runtime/cognition/decision_validator.py",
+        "runtime/llm_router.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/Decision_Contract_LLM_Router_v0.2_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.3",
+      "name": "LLM Cognitive Feedback",
+      "status": "completed",
+      "category": "runtime",
+      "modules_added": [
+        "runtime/cognition/llm_cognitive_feedback_engine.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/LLM_Cognitive_Feedback_v0.3_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.3.1",
+      "name": "Runtime Observability + Telemetry",
+      "status": "completed",
+      "category": "telemetry",
+      "modules_added": [
+        "runtime/telemetry/llm_trace_logger.py",
+        "runtime/telemetry/decision_trace_logger.py",
+        "runtime/telemetry/state_snapshot.py",
+        "runtime/telemetry/replay_engine.py",
+        "web/dashboard_observability.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/Runtime_Observability_v0.3.1_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.3.2",
+      "name": "Trust Calibration",
+      "status": "completed",
+      "category": "reliability",
+      "modules_added": [
+        "runtime/cognition/trust_score_engine.py",
+        "runtime/cognition/system_trust_state.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/Trust_Calibration_v0.3.2_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.4",
+      "name": "Structural Co-Evolution",
+      "status": "completed",
+      "category": "cognition_overlay",
+      "modules_added": [
+        "runtime/cognition/causal_graph_mutation_engine.py",
+        "runtime/cognition/regime_topology_engine.py",
+        "runtime/cognition/structural_drift_controller.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/Structural_CoEvolution_v0.4_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.5",
+      "name": "Self-Organizing Core + UI Runtime",
+      "status": "completed",
+      "category": "ui_runtime",
+      "modules_added": [
+        "runtime/cognition/self_organizing_engine.py",
+        "ui/app_server.py",
+        "ui/components/top_bar.py",
+        "ui/components/system_state_panel.py",
+        "ui/components/inspector_panel.py",
+        "ui/components/event_stream_panel.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/Self_Organizing_Core_UI_v0.5_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.6",
+      "name": "Explanation-Driven Self-Correction",
+      "status": "completed",
+      "category": "cognition_overlay",
+      "modules_added": [
+        "runtime/cognition/explanation_error_engine.py",
+        "runtime/cognition/causal_self_correction_engine.py",
+        "runtime/cognition/regime_explanation_alignment.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/Explanation_Self_Correction_v0.6_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.7",
+      "name": "Causal Self-Discovery",
+      "status": "completed",
+      "category": "cognition_overlay",
+      "modules_added": [
+        "runtime/cognition/causal_hypothesis_engine.py",
+        "runtime/cognition/hypothesis_scoring_engine.py",
+        "runtime/cognition/causal_structure_selector.py",
+        "runtime/cognition/hypothesis_memory.py"
+      ],
+      "validation": {
+        "status": "PASS",
+        "result_file": "99_Verification/Causal_Self_Discovery_v0.7_Validation_Result.md"
+      }
+    },
+    {
+      "version": "v0.8",
+      "name": "Causal Interaction Layer",
+      "status": "planned",
+      "category": "cognition_overlay",
+      "modules_added": [],
+      "validation": {
+        "status": "PENDING",
+        "result_file": null
+      }
+    }
+  ],
+  "architecture_evolution": [
+    {
+      "from": "Runtime",
+      "to": "Decision Contract"
+    },
+    {
+      "from": "Decision Contract",
+      "to": "Feedback + Trust"
+    },
+    {
+      "from": "Feedback + Trust",
+      "to": "Structural Co-Evolution"
+    },
+    {
+      "from": "Structural Co-Evolution",
+      "to": "Explanation Correction"
+    },
+    {
+      "from": "Explanation Correction",
+      "to": "Causal Self-Discovery"
+    },
+    {
+      "from": "Causal Self-Discovery",
+      "to": "Causal Interaction Layer"
+    }
+  ]
+}

@@ -1,5 +1,139 @@
 # Changelog
 
+## Bidirectional Perception Loop v1.2 - 2026-07-06
+
+- Added `ISSUE-2026-035` and `IP-2026-035` for the Bidirectional Market Perception Loop upgrade.
+- Added `runtime/cognition/bidirectional_perception_engine.py` with perception weight fields,
+  input distribution deformation, attention-influenced observation, biased market view generation,
+  and coupling strength metrics.
+- Updated `runtime/event_stream.py` to apply bounded BMPL deformation before events are persisted
+  to the queue, without modifying Event Fusion core logic.
+- Added Bidirectional Perception Loop validation result and Regression Test Case 29.
+- Validation showed the same event receives different EventStream priority and Fusion attention
+  representation under high-attention vs low-attention system state.
+- Did not modify Event Fusion core logic, CIL, LMSE, MPCE, MLE, CDE formulas, Decision Brief
+  strategy logic, `portfolio.local.yaml`, trading execution, Buy / Sell recommendations, ML /
+  deep learning / reinforcement learning, prediction-engine behavior, or portfolio automation.
+
+## Unified Market Intelligence Core v1.0 - 2026-07-06
+
+- Added `ISSUE-2026-034` and `IP-2026-034` for the Unified Market Intelligence Core upgrade.
+- Added `runtime/cognition/unified_market_intelligence_core.py` with unified market state,
+  closed-loop feedback, self-referential causality, co-evolution dynamics, unified interpretation,
+  and internal system self-adaptation.
+- Updated `runtime/decision_loop.py` to route cognition through UMIS after MLE and before State
+  Controller, persisting output under `cognition_state.unified_intelligence`.
+- Added Unified Market Intelligence validation result and Regression Test Case 28.
+- Did not modify Event Fusion Engine logic, Regime Memory architecture, CDE formulas, Decision
+  Brief strategy logic, `portfolio.local.yaml`, trading execution, ML / deep learning /
+  reinforcement learning, black-box prediction, signal-generator behavior, or portfolio automation.
+
+## Market Law Emergence Engine v0.9 - 2026-07-06
+
+- Added `ISSUE-2026-033` and `IP-2026-033` for the Market Law Emergence Engine upgrade.
+- Added `runtime/cognition/market_law_emergence_engine.py` with law discovery, adaptive constraint
+  evolution, regime-conditioned law behavior, meta-dynamics, and law consistency checks.
+- Updated `runtime/decision_loop.py` to route cognition through MLE after MPCE and before State
+  Controller, persisting output under `cognition_state.market_laws`.
+- Added Market Law Emergence validation result and Regression Test Case 27.
+- Did not modify Event Fusion Engine, Regime Memory, CDE formulas, Decision Brief strategy logic,
+  `portfolio.local.yaml`, trading execution, Buy / Sell recommendations, ML / deep learning /
+  reinforcement learning, black-box optimization, or portfolio automation.
+
+## Market Physics Constraint Engine v0.8 - 2026-07-06
+
+- Added `ISSUE-2026-032` and `IP-2026-032` for the Market Physics Constraint Engine upgrade.
+- Added `runtime/cognition/market_physics_constraint_engine.py` with conservation laws, entropy
+  modeling, structural invariants, dynamic-system formulation, constraint-driven regime emergence,
+  and system stability monitoring.
+- Updated `runtime/decision_loop.py` to route cognition through MPCE after LMSE and before State
+  Controller, persisting output under `cognition_state.physics_constraints`.
+- Added Market Physics Constraint validation result and Regression Test Case 26.
+- Did not modify Event Fusion Engine, Regime Memory, Causal Intelligence Layer, Latent Market
+  Structure Engine directly, CDE formulas, Decision Brief strategy logic, `portfolio.local.yaml`,
+  trading execution, Buy / Sell recommendations, ML / deep learning / reinforcement learning, or
+  portfolio automation.
+
+## Latent Market Structure Engine v0.7 - 2026-07-06
+
+- Added `ISSUE-2026-031` and `IP-2026-031` for the Latent Market Structure Engine upgrade.
+- Added `runtime/cognition/latent_market_structure_engine.py` with latent variable inference,
+  regime attractor basins, phase space geometry, attention field dynamics, structural evolution,
+  and structural counterfactual simulation.
+- Updated `runtime/decision_loop.py` to route cognition through LMSE after Market World Model and
+  before State Controller, persisting output under `cognition_state.latent_structure`.
+- Added Latent Market Structure validation result and Regression Test Case 25.
+- Did not modify Event Fusion Engine, Regime Memory implementation, Causal Intelligence Layer
+  directly, CDE formulas, Decision Brief strategy logic, `portfolio.local.yaml`, trading execution,
+  Buy / Sell recommendations, ML / deep learning / reinforcement learning, or portfolio automation.
+
+## Market World Model v0.6 - 2026-07-06
+
+- Added `ISSUE-2026-030` and `IP-2026-030` for the Market World Model Layer upgrade.
+- Added `runtime/cognition/world_model_engine.py` with market state space, deterministic state
+  transition, attention-liquidity transformation, regime emergence dynamics, and counterfactual
+  market simulation.
+- Updated `runtime/decision_loop.py` to route cognition through World Model Engine after CIL and
+  before State Controller, persisting output under `cognition_state.world_model`.
+- Added Market World Model validation result and Regression Test Case 24.
+- Did not modify Event Fusion Engine, Regime Memory system, Causal Intelligence Layer directly,
+  CDE formulas, Decision Brief strategy logic, `portfolio.local.yaml`, trading execution, Buy /
+  Sell recommendations, ML / deep learning / reinforcement learning, or portfolio automation.
+
+## Causal Intelligence Layer v0.5 - 2026-07-06
+
+- Added `ISSUE-2026-029` and `IP-2026-029` for the Causal Intelligence Layer upgrade.
+- Added `runtime/cognition/causal_intelligence_layer.py` with symbolic market causal graph,
+  attention meaning resolution, flow propagation, regime emergence reasoning, and lightweight
+  counterfactual tests.
+- Updated `runtime/decision_loop.py` to route cognition through Causal Intelligence Layer after
+  Event Fusion and Regime Memory while preserving State Controller compatibility fields.
+- Added Causal Intelligence Layer validation result and Regression Test Case 23.
+- Fixed the v0.4.1 source-consistency validation fixture to use a fresh timestamp instead of a stale
+  historical timestamp.
+- Did not modify Event Fusion Engine, Regime Memory implementation, Input Router, DSA adapter layer,
+  CDE formulas, Decision Brief strategy logic, `portfolio.local.yaml`, trading execution, Buy /
+  Sell recommendations, machine learning, or portfolio automation.
+
+## Input Abstraction Layer v0.4.1 - 2026-07-06
+
+- Added `ISSUE-2026-028` and `IP-2026-028` for EventStream direct DSA coupling.
+- Added `runtime/adapter/input_router.py` as the source-neutral Input Abstraction Layer.
+- Updated `runtime/event_stream.py` to depend on Input Router instead of `dsa_bridge.py`.
+- Updated `runtime/adapter/dsa_bridge.py` into a compatibility wrapper around Input Router.
+- Updated dashboard infrastructure status to use Input Router diagnostics.
+- Added recursive illegal-field stripping and neutral `market_event` downgrade for poisoned inputs.
+- Added Input Abstraction Layer validation result and Regression Test Case 22.
+- Did not modify cognitive layer logic, CDE formulas, Decision Brief strategy logic,
+  `portfolio.local.yaml`, trading execution, strategy logic, stock-picking functionality, or
+  portfolio automation.
+
+## DSA Infrastructure Adapter v0.4 - 2026-07-06
+
+- Added `ISSUE-2026-027` and `IP-2026-027` for DSA infrastructure adapter integration.
+- Added `runtime/adapter/dsa_bridge.py` with unified Atlas event schema and DSA-style signal
+  normalization.
+- Added `runtime/adapter/data_fetch.py` with optional DSA data-fetch boundary and safe
+  `not_configured` fallback.
+- Updated EventStream inbox ingestion to accept native Atlas events and DSA-style unified events.
+- Added optional LiteLLM backend selection through `ATLAS_LLM_BACKEND=litellm` while preserving
+  native LLM router behavior by default.
+- Added dashboard infrastructure status for adapter, data source, and LLM backend.
+- Added DSA adapter validation script, validation result, and Regression Test Case 21.
+- Did not modify Atlas cognitive core logic, import DSA stock-picking logic, add trading execution,
+  bypass CDE, modify portfolio files, add broker integration, or convert Atlas into a stock
+  analysis bot.
+
+## Cognitive Market OS v0.4 Roadmap - 2026-07-06
+
+- Added proposed Atlas OS v0.4 Cognitive Market OS roadmap.
+- Defined future phases for DSA infrastructure reuse, Atlas Adapter Layer, cognitive stabilization,
+  causal reasoning, regime intelligence, and full Cognitive OS target architecture.
+- Linked the roadmap from Production Trial, README, CDE roadmap, and IP-2026-026.
+- Added roadmap review confirming the change is documentation only.
+- Did not implement a DSA adapter, runtime code, causal engine, regime intelligence, trading
+  execution, CDE bypass, portfolio automation, heavy ML framework, or broker integration.
+
 ## Cognitive Runtime v0.3 - 2026-07-05
 
 - Added cognitive runtime layer under `runtime/cognition/`.

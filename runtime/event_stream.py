@@ -17,12 +17,16 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 try:
+    from runtime.adapter.input_router import route_to_runtime_event
+    from runtime.cognition.bidirectional_perception_engine import perception_feedback_loop
     from runtime.logging import utc_now_iso
     from runtime.state_store import StateStore
 except ModuleNotFoundError:  # pragma: no cover
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from runtime.adapter.input_router import route_to_runtime_event
+    from runtime.cognition.bidirectional_perception_engine import perception_feedback_loop
     from runtime.logging import utc_now_iso
     from runtime.state_store import StateStore
 
@@ -34,6 +38,7 @@ EVENT_NEWS_NARRATIVE_SPIKE = "news_narrative_spike"
 EVENT_PORTFOLIO_DRAWDOWN = "portfolio_drawdown"
 EVENT_LIQUIDITY_SHOCK = "liquidity_shock"
 EVENT_HEARTBEAT = "heartbeat"
+EVENT_MARKET_EVENT = "market_event"
 
 SUPPORTED_EVENT_TYPES = {
     EVENT_MARKET_ANOMALY,
@@ -43,6 +48,7 @@ SUPPORTED_EVENT_TYPES = {
     EVENT_PORTFOLIO_DRAWDOWN,
     EVENT_LIQUIDITY_SHOCK,
     EVENT_HEARTBEAT,
+    EVENT_MARKET_EVENT,
     "market_open",
     "market_close",
     "volatility_spike",
@@ -115,13 +121,38 @@ class EventStream:
         payload: Optional[Dict[str, Any]] = None,
         priority: Optional[int] = None,
         source: str = "runtime",
+        created_at: Optional[str] = None,
     ) -> str:
+        routed = route_to_runtime_event(
+            {
+                "event_type": event_type,
+                "payload": payload or {},
+                "priority": priority if priority is not None else DEFAULT_PRIORITY.get(event_type, 50),
+                "source": source,
+                "created_at": created_at or utc_now_iso(),
+            }
+        )
+        perception = perception_feedback_loop(
+            event={
+                "event_type": routed["event_type"],
+                "payload": routed.get("payload", {}),
+                "priority": routed.get("priority"),
+                "source": routed.get("source", source),
+                "created_at": routed.get("created_at", created_at or utc_now_iso()),
+            },
+            cognition_state=self.store.get_state("cognition_state"),
+            regime_memory=self.store.get_state("regime_memory"),
+        )
+        deformed = perception["deformed_event"]
+        payload_with_perception = dict(deformed.get("payload", {}))
+        payload_with_perception["perception_coupling_metrics"] = perception["coupling_metrics"]
         return self.enqueue(
             RuntimeEvent(
-                event_type=event_type,
-                payload=payload or {},
-                priority=priority,
-                source=source,
+                event_type=deformed["event_type"],
+                payload=payload_with_perception,
+                priority=deformed.get("priority"),
+                source=deformed.get("source", source),
+                created_at=deformed.get("created_at", created_at or utc_now_iso()),
             )
         )
 
@@ -142,11 +173,13 @@ class EventStream:
             if path.suffix.lower() not in {".json", ".jsonl"}:
                 continue
             for item in _read_event_file(path):
+                event = route_to_runtime_event(item)
                 self.enqueue_event(
-                    event_type=item["event_type"],
-                    payload=item.get("payload", {}),
-                    priority=item.get("priority"),
-                    source=item.get("source", f"file:{path.name}"),
+                    event_type=event["event_type"],
+                    payload=event.get("payload", {}),
+                    priority=event.get("priority"),
+                    source=event.get("source", f"file:{path.name}"),
+                    created_at=event.get("created_at"),
                 )
                 count += 1
             processed_path = path.with_suffix(path.suffix + ".processed")
