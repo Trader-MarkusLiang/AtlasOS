@@ -1,5 +1,18 @@
 # Changelog
 
+## Provider Health Visualization - 2026-07-07
+
+- Improved `/settings` provider management with a health overview, per-provider status pills,
+  latency meters, last-check metadata, and compact error summaries.
+- Added `/llm/providers/test_all` for safe bulk provider health checks in both FastAPI and stdlib
+  fallback UI server modes.
+- Preserved provider health states such as `not_configured` instead of collapsing them into
+  generic errors, so the UI can distinguish missing API keys/base URLs from unavailable services.
+- Extended LLM Provider UI i18n validation to cover the provider health visualization structure and
+  bulk test endpoint.
+- Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, Decision Contract semantics, runtime cognition
+  algorithms, trading execution, prediction logic, or private runtime config.
+
 ## LLM Provider Runtime + UI i18n v1.4 - 2026-07-06
 
 - Added `ISSUE-2026-053` and `IP-2026-053` for the LLM provider runtime, UI cognitive redesign,

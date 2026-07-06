@@ -69,8 +69,13 @@ def _assert_ui_i18n() -> None:
     html = render_settings_page(load_user_config("/tmp/atlas-nonexistent-config.json"))
     assert "LLM Providers" in html
     assert "/llm/provider/test" in html
+    assert "/llm/providers/test_all" in html
     assert "settings-language" in html
     assert "provider-card" in html
+    assert "provider-health-overview" in html
+    assert "provider-status-pill" in html
+    assert "provider-latency-bar" in html
+    assert "test-all-providers" in html
 
 
 def _assert_ui_boundary() -> None:
@@ -80,6 +85,7 @@ def _assert_ui_boundary() -> None:
     assert "providers" in state["llm_provider_registry"]
     app_server = (ROOT / "ui/app_server.py").read_text(encoding="utf-8")
     assert "/llm/provider/test" in app_server
+    assert "/llm/providers/test_all" in app_server
     assert "/ui/language" in app_server
 
 

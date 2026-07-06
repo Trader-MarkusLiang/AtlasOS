@@ -19,6 +19,8 @@ layer.
   output for Decision Contract parsing.
 - Settings page supports multi-provider management, fallback chain, provider test action, and
   EN/CN language toggle.
+- Settings page shows provider availability, latency, last-check metadata, and a bulk provider
+  health-test action.
 - Dashboard keeps a single central focus card and reduced inspector clutter.
 - UI/server changes do not modify Event Fusion, CIL, LMSE, MPCE, MLE, or Decision Contract
   semantics.
@@ -42,7 +44,10 @@ Pass.
   `safe_registry_view()`.
 - Provider router returns `ok` or `failsafe` envelopes and includes fallback attempt metadata.
 - `/state` includes `llm_provider_registry` for UI display.
-- `/llm/providers`, `/llm/provider/test`, `/ui/language`, and `/ui/i18n` endpoints are present.
-- Settings render contains provider cards, test-connection action, fallback chain, and language
-  selector.
+- `/llm/providers`, `/llm/provider/test`, `/llm/providers/test_all`, `/ui/language`, and
+  `/ui/i18n` endpoints are present.
+- Settings render contains provider cards, health overview, status pills, latency meters,
+  test-connection actions, fallback chain, and language selector.
+- Local live check on `http://127.0.0.1:8768/llm/providers` showed one healthy local Ollama
+  provider with measured latency and unconfigured providers marked as `not_configured`.
 - No cognitive-core files were changed.

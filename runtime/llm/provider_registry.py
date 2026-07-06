@@ -182,13 +182,14 @@ def record_provider_result(
     ok: bool,
     latency_ms: int,
     error: str = "",
+    health: str | None = None,
     path: str | None = None,
 ) -> None:
     config = _load_config(path)
     registry = _normalize_registry(config.get("llm_registry", default_provider_registry()))
     for provider in registry["providers"]:
         if provider.get("id") == provider_id:
-            provider["health"] = "healthy" if ok else "error"
+            provider["health"] = str(health or ("healthy" if ok else "error"))
             provider["last_latency_ms"] = int(latency_ms)
             provider["last_error"] = str(error)[:240]
             provider["last_checked_at"] = int(time.time())
@@ -231,7 +232,14 @@ def health_check_provider(provider_id: str, path: str | None = None, timeout: fl
         status = "error"
         error = str(exc)[:240]
     latency_ms = int((time.time() - started) * 1000)
-    record_provider_result(provider_id, ok=status in {"healthy", "reachable"}, latency_ms=latency_ms, error=error, path=path)
+    record_provider_result(
+        provider_id,
+        ok=status in {"healthy", "reachable"},
+        latency_ms=latency_ms,
+        error=error,
+        health=status,
+        path=path,
+    )
     return {"provider": provider_id, "status": status, "latency_ms": latency_ms, "error": error}
 
 

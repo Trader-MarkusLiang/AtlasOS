@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import time
 from html import escape
 from pathlib import Path
 from typing import Any, Mapping
@@ -79,7 +80,10 @@ def render_settings_page(config: Mapping[str, Any] | None = None) -> str:
     assets = data["assets"]
     lang = current_language()
     strings = translation_payload(lang)
-    provider_cards = "\n".join(_provider_card(provider, registry["active_provider"]) for provider in registry["providers"])
+    provider_summary = _provider_health_summary(registry["providers"], registry["active_provider"], lang)
+    provider_cards = "\n".join(
+        _provider_card(provider, registry["active_provider"], lang) for provider in registry["providers"]
+    )
     return f"""<!doctype html>
 <html lang="{escape(lang)}">
 <head>
@@ -166,16 +170,142 @@ a {{ color: inherit; text-decoration: none; }}
 }}
 .settings-card-header h3 {{ margin: 0; font-size: 1rem; }}
 .settings-card-body {{ padding: 16px 18px 18px; }}
-.provider-list {{ display: grid; gap: 10px; }}
-.provider-card {{
+.provider-health-overview {{
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr 0.9fr auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
-  align-items: end;
+  margin-bottom: 14px;
+}}
+.provider-health-card {{
+  min-height: 92px;
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.025)),
+    rgba(255, 255, 255, 0.035);
+}}
+.provider-health-card span {{
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+}}
+.provider-health-card strong {{
+  display: block;
+  margin-top: 8px;
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}}
+.provider-list {{ display: grid; gap: 12px; }}
+.provider-card {{
+  display: grid;
+  grid-template-columns: 1.05fr 0.8fr 0.95fr 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(255, 255, 255, 0.035);
+}}
+.provider-card-head {{
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 2px;
+}}
+.provider-title {{
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}}
+.provider-title strong {{
+  overflow-wrap: anywhere;
+}}
+.provider-dot {{
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #64748b;
+  box-shadow: 0 0 0 5px rgba(100, 116, 139, 0.1);
+}}
+.provider-actions {{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}}
+.provider-telemetry {{
+  min-height: 92px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  background: rgba(3, 7, 13, 0.34);
+}}
+.provider-status-pill {{
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 760;
+}}
+.status-healthy .provider-dot,
+.status-reachable .provider-dot {{ background: #86efac; box-shadow: 0 0 0 5px rgba(134, 239, 172, 0.12); }}
+.status-healthy .provider-status-pill,
+.status-reachable .provider-status-pill {{ color: #bbf7d0; border-color: rgba(134, 239, 172, 0.34); }}
+.status-not_configured .provider-dot {{ background: #facc15; box-shadow: 0 0 0 5px rgba(250, 204, 21, 0.12); }}
+.status-not_configured .provider-status-pill {{ color: #fde68a; border-color: rgba(250, 204, 21, 0.34); }}
+.status-error .provider-dot,
+.status-missing .provider-dot {{ background: #fb7185; box-shadow: 0 0 0 5px rgba(251, 113, 133, 0.12); }}
+.status-error .provider-status-pill,
+.status-missing .provider-status-pill {{ color: #fecdd3; border-color: rgba(251, 113, 133, 0.34); }}
+.latency-row {{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}}
+.latency-value {{
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 760;
+}}
+.latency-meter {{
+  height: 6px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+}}
+.latency-meter span {{
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #86efac, #facc15, #fb7185);
+  transition: width 240ms ease;
+}}
+.provider-mini {{
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}}
+.provider-error {{
+  color: #fda4af;
 }}
 label {{ display: block; color: var(--muted); font-size: 0.8rem; }}
 input, select, textarea {{
@@ -221,6 +351,7 @@ button.danger {{ color: #fecdd3; }}
   .settings-shell {{ grid-template-columns: 1fr; }}
   .settings-sidebar {{ border-right: 0; border-bottom: 1px solid var(--line); }}
   .settings-grid {{ grid-template-columns: 1fr; }}
+  .provider-health-overview {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
   .provider-card {{ grid-template-columns: 1fr; }}
 }}
 </style>
@@ -255,9 +386,30 @@ button.danger {{ color: #fecdd3; }}
       <section id="llm-config" class="settings-card">
         <div class="settings-card-header">
           <h3>{escape(t("settings.providers", lang))}</h3>
-          <button id="add-provider" type="button">{escape(t("settings.add_provider", lang))}</button>
+          <div class="provider-actions">
+            <button id="test-all-providers" type="button">{escape(t("provider.test_all", lang))}</button>
+            <button id="add-provider" type="button">{escape(t("settings.add_provider", lang))}</button>
+          </div>
         </div>
         <div class="settings-card-body">
+          <div id="provider-health-overview" class="provider-health-overview">
+            <div class="provider-health-card">
+              <span>{escape(t("provider.online", lang))}</span>
+              <strong id="provider-online-count">{escape(str(provider_summary["online_count"]))}/{escape(str(provider_summary["total_count"]))}</strong>
+            </div>
+            <div class="provider-health-card">
+              <span>{escape(t("provider.fastest", lang))}</span>
+              <strong id="provider-fastest">{escape(provider_summary["fastest_label"])}</strong>
+            </div>
+            <div class="provider-health-card">
+              <span>{escape(t("model.active_provider", lang))}</span>
+              <strong id="provider-active-summary">{escape(provider_summary["active_label"])}</strong>
+            </div>
+            <div class="provider-health-card">
+              <span>{escape(t("provider.last_checked", lang))}</span>
+              <strong id="provider-last-checked">{escape(provider_summary["last_checked"])}</strong>
+            </div>
+          </div>
           <label>{escape(t("model.active_provider", lang))}
             <select id="active-provider">{_provider_options(registry["providers"], registry["active_provider"])}</select>
           </label>
@@ -314,9 +466,19 @@ button.danger {{ color: #fecdd3; }}
 const I18N = {json.dumps(strings, ensure_ascii=False)};
 const providerTypes = {json.dumps(registry["supported_provider_types"], ensure_ascii=False)};
 
+function tx(key) {{
+  return I18N.strings?.[key] || key;
+}}
 function providerTemplate(id, type, label, baseUrl, model) {{
   return `
-    <div class="provider-card" data-provider-card>
+    <div class="provider-card status-unknown" data-provider-card data-provider-id="${{escapeHtml(id)}}">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>${{escapeHtml(label || id)}}</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>${{tx("provider.unknown")}}</span>
+      </div>
       <label>ID<input data-provider-field="id" value="${{escapeHtml(id)}}" readonly></label>
       <label>Type
         <select data-provider-field="type">
@@ -324,12 +486,15 @@ function providerTemplate(id, type, label, baseUrl, model) {{
         </select>
       </label>
       <label>{escape(t("model.model", lang))}<input data-provider-field="model" value="${{escapeHtml(model || "")}}"></label>
-      <div>
+      <div class="provider-telemetry">
         <label>{escape(t("settings.api_key", lang))}<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
-        <span class="provider-status" data-provider-status>${{escapeHtml(label || id)}}</span>
+        <div class="latency-row"><span>${{tx("provider.latency")}}</span><span class="latency-value" data-provider-latency>--</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 0%;"></span></div>
+        <div class="provider-mini" data-provider-checked>${{tx("provider.never_checked")}}</div>
+        <div class="provider-mini provider-error" data-provider-error></div>
       </div>
       <label style="grid-column: 1 / -2;">{escape(t("settings.base_url", lang))}<input data-provider-field="base_url" value="${{escapeHtml(baseUrl || "")}}"></label>
-      <div>
+      <div class="provider-actions">
         <button type="button" data-test-provider>{escape(t("settings.test", lang))}</button>
         <button class="danger" type="button" data-remove-provider>{escape(t("settings.remove", lang))}</button>
       </div>
@@ -386,15 +551,90 @@ async function saveSettings() {{
 async function testProvider(card) {{
   const id = card.querySelector('[data-provider-field="id"]').value;
   const status = card.querySelector("[data-provider-status]");
-  status.textContent = "Testing...";
+  status.textContent = tx("provider.testing");
   await saveSettings();
   const response = await fetch("/llm/provider/test", {{
     method: "POST",
     headers: {{ "content-type": "application/json" }},
     body: JSON.stringify({{ provider_id: id }})
   }});
+  await response.json();
+  await refreshProviderHealth();
+}}
+async function testAllProviders() {{
+  const result = document.getElementById("settings-result");
+  result.textContent = tx("provider.testing");
+  await saveSettings();
+  const response = await fetch("/llm/providers/test_all", {{
+    method: "POST",
+    headers: {{ "content-type": "application/json" }},
+    body: JSON.stringify({{}})
+  }});
   const data = await response.json();
-  status.textContent = `${{data.status}} · ${{data.latency_ms}}ms${{data.error ? " · " + data.error : ""}}`;
+  await refreshProviderHealth(data.registry || null);
+  result.textContent = `${{tx("provider.tested")}} · ${{data.summary?.online_count || 0}}/${{data.summary?.total_count || 0}}`;
+}}
+async function refreshProviderHealth(registry) {{
+  let data = registry;
+  if (!data) {{
+    const response = await fetch("/llm/providers");
+    data = await response.json();
+  }}
+  updateProviderSummary(data);
+  (data.providers || []).forEach(updateProviderCard);
+}}
+function updateProviderSummary(registry) {{
+  const providers = registry.providers || [];
+  const online = providers.filter(item => ["healthy", "reachable"].includes(item.health)).length;
+  const checked = providers
+    .filter(item => item.last_checked_at)
+    .sort((a, b) => Number(b.last_checked_at || 0) - Number(a.last_checked_at || 0));
+  const fastest = providers
+    .filter(item => ["healthy", "reachable"].includes(item.health) && item.last_latency_ms !== null && item.last_latency_ms !== undefined)
+    .sort((a, b) => Number(a.last_latency_ms) - Number(b.last_latency_ms))[0];
+  const active = providers.find(item => item.id === registry.active_provider);
+  document.getElementById("provider-online-count").textContent = `${{online}}/${{providers.length}}`;
+  document.getElementById("provider-fastest").textContent = fastest ? `${{fastest.label || fastest.id}} · ${{fastest.last_latency_ms}}ms` : tx("provider.none");
+  document.getElementById("provider-active-summary").textContent = active ? (active.label || active.id) : (registry.active_provider || "--");
+  document.getElementById("provider-last-checked").textContent = checked[0] ? formatChecked(checked[0].last_checked_at) : tx("provider.never_checked");
+}}
+function updateProviderCard(provider) {{
+  const card = document.querySelector(`[data-provider-card][data-provider-id="${{cssEscape(provider.id)}}"]`);
+  if (!card) return;
+  const health = provider.health || "unknown";
+  card.className = card.className.replace(/status-[a-z_]+/g, "").trim() + " status-" + health;
+  card.querySelector("[data-provider-label]").textContent = provider.label || provider.id;
+  card.querySelector("[data-provider-status]").textContent = healthLabel(health);
+  card.querySelector("[data-provider-latency]").textContent = provider.last_latency_ms === null || provider.last_latency_ms === undefined ? "--" : provider.last_latency_ms + "ms";
+  card.querySelector("[data-provider-latency-bar]").style.width = latencyWidth(provider.last_latency_ms) + "%";
+  card.querySelector("[data-provider-checked]").textContent = provider.last_checked_at ? formatChecked(provider.last_checked_at) : tx("provider.never_checked");
+  card.querySelector("[data-provider-error]").textContent = provider.last_error || "";
+}}
+function healthLabel(health) {{
+  return {{
+    healthy: tx("provider.online"),
+    reachable: tx("provider.reachable"),
+    not_configured: tx("provider.needs_config"),
+    error: tx("provider.error"),
+    missing: tx("provider.error"),
+    unknown: tx("provider.unknown")
+  }}[health || "unknown"] || health;
+}}
+function latencyWidth(value) {{
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return 0;
+  return Math.max(6, Math.min(100, Math.round(Number(value) / 30)));
+}}
+function formatChecked(value) {{
+  const seconds = Math.max(0, Math.round(Date.now() / 1000 - Number(value || 0)));
+  if (seconds < 60) return `${{seconds}}s ago`;
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${{minutes}}m ago`;
+  const hours = Math.round(minutes / 60);
+  return `${{hours}}h ago`;
+}}
+function cssEscape(value) {{
+  if (window.CSS && CSS.escape) return CSS.escape(String(value));
+  return String(value).replace(/[^a-zA-Z0-9_-]/g, "\\\\$&");
 }}
 function bindProviderControls() {{
   document.getElementById("add-provider").addEventListener("click", () => {{
@@ -403,6 +643,7 @@ function bindProviderControls() {{
     const meta = providerTypes[type];
     document.getElementById("provider-list").insertAdjacentHTML("beforeend", providerTemplate(id, type, meta.label, meta.base_url, meta.model));
   }});
+  document.getElementById("test-all-providers").addEventListener("click", testAllProviders);
   document.addEventListener("click", event => {{
     const card = event.target.closest("[data-provider-card]");
     if (!card) return;
@@ -421,30 +662,105 @@ bindProviderControls();
 </html>"""
 
 
-def _provider_card(provider: Mapping[str, Any], active_provider: str) -> str:
+def _provider_card(provider: Mapping[str, Any], active_provider: str, lang: str) -> str:
     provider_id = str(provider.get("id") or "custom")
     provider_type = str(provider.get("type") or provider_id)
     health = str(provider.get("health") or "unknown")
     latency = provider.get("last_latency_ms")
-    status = health + (f" · {latency}ms" if latency is not None else "")
+    latency_text = f"{latency}ms" if latency is not None else "--"
+    checked_text = _format_checked(provider.get("last_checked_at"), lang)
+    error_text = str(provider.get("last_error") or "")
     api_placeholder = "saved" if provider.get("api_key") else "••••••"
     remove_disabled = " disabled" if provider_id == active_provider else ""
     return f"""
-    <div class="provider-card" data-provider-card>
+    <div class="provider-card status-{escape(health)}" data-provider-card data-provider-id="{escape(provider_id)}">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>{escape(str(provider.get("label") or provider_id))}</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>{escape(_health_label(health, lang))}</span>
+      </div>
       <label>ID<input data-provider-field="id" value="{escape(provider_id)}" readonly></label>
       <label>Type<select data-provider-field="type">{_provider_type_options(provider_type)}</select></label>
-      <label>{escape(t("model.model"))}<input data-provider-field="model" value="{escape(str(provider.get("model") or ""))}"></label>
-      <div>
-        <label>{escape(t("settings.api_key"))}<input data-provider-field="api_key" type="password" placeholder="{escape(api_placeholder)}"></label>
-        <span class="provider-status" data-provider-status>{escape(status)}</span>
+      <label>{escape(t("model.model", lang))}<input data-provider-field="model" value="{escape(str(provider.get("model") or ""))}"></label>
+      <div class="provider-telemetry">
+        <label>{escape(t("settings.api_key", lang))}<input data-provider-field="api_key" type="password" placeholder="{escape(api_placeholder)}"></label>
+        <div class="latency-row"><span>{escape(t("provider.latency", lang))}</span><span class="latency-value" data-provider-latency>{escape(latency_text)}</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: {_latency_width(latency)}%;"></span></div>
+        <div class="provider-mini" data-provider-checked>{escape(checked_text)}</div>
+        <div class="provider-mini provider-error" data-provider-error>{escape(error_text)}</div>
       </div>
-      <label style="grid-column: 1 / -2;">{escape(t("settings.base_url"))}<input data-provider-field="base_url" value="{escape(str(provider.get("base_url") or ""))}"></label>
-      <div>
-        <button type="button" data-test-provider>{escape(t("settings.test"))}</button>
-        <button class="danger" type="button" data-remove-provider{remove_disabled}>{escape(t("settings.remove"))}</button>
+      <label style="grid-column: 1 / -2;">{escape(t("settings.base_url", lang))}<input data-provider-field="base_url" value="{escape(str(provider.get("base_url") or ""))}"></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>{escape(t("settings.test", lang))}</button>
+        <button class="danger" type="button" data-remove-provider{remove_disabled}>{escape(t("settings.remove", lang))}</button>
       </div>
     </div>
     """
+
+
+def _provider_health_summary(providers: list[Mapping[str, Any]], active_provider: str, lang: str) -> dict[str, str | int]:
+    online = [item for item in providers if str(item.get("health")) in {"healthy", "reachable"}]
+    fastest = sorted(
+        (
+            item
+            for item in online
+            if item.get("last_latency_ms") is not None
+        ),
+        key=lambda item: int(item.get("last_latency_ms") or 0),
+    )
+    active = next((item for item in providers if str(item.get("id")) == str(active_provider)), None)
+    checked = sorted(
+        (item for item in providers if item.get("last_checked_at")),
+        key=lambda item: int(item.get("last_checked_at") or 0),
+        reverse=True,
+    )
+    fastest_label = t("provider.none", lang)
+    if fastest:
+        fastest_label = f"{fastest[0].get('label') or fastest[0].get('id')} · {fastest[0].get('last_latency_ms')}ms"
+    return {
+        "online_count": len(online),
+        "total_count": len(providers),
+        "fastest_label": fastest_label,
+        "active_label": str((active or {}).get("label") or active_provider or "--"),
+        "last_checked": _format_checked(checked[0].get("last_checked_at") if checked else None, lang),
+    }
+
+
+def _health_label(health: str, lang: str) -> str:
+    labels = {
+        "healthy": t("provider.online", lang),
+        "reachable": t("provider.reachable", lang),
+        "not_configured": t("provider.needs_config", lang),
+        "error": t("provider.error", lang),
+        "missing": t("provider.error", lang),
+        "unknown": t("provider.unknown", lang),
+    }
+    return labels.get(health, health)
+
+
+def _latency_width(value: Any) -> int:
+    try:
+        latency = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return max(6, min(100, round(latency / 30)))
+
+
+def _format_checked(value: Any, lang: str) -> str:
+    if not value:
+        return t("provider.never_checked", lang)
+    try:
+        seconds = max(0, int(time.time() - int(value)))
+    except (TypeError, ValueError):
+        return t("provider.never_checked", lang)
+    if seconds < 60:
+        return f"{seconds}s ago"
+    minutes = round(seconds / 60)
+    if minutes < 60:
+        return f"{minutes}m ago"
+    return f"{round(minutes / 60)}h ago"
 
 
 def _config_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:

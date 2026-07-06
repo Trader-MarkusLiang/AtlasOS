@@ -116,6 +116,20 @@ def create_app() -> Any:
             return JSONResponse({"status": "error", "error": "provider_required"}, status_code=400)
         return JSONResponse(health_check_provider(provider_id))
 
+    @app.post("/llm/providers/test_all")
+    async def llm_providers_test_all() -> Any:
+        registry = safe_registry_view()
+        results = [health_check_provider(str(provider.get("id"))) for provider in registry.get("providers", [])]
+        refreshed = safe_registry_view()
+        return JSONResponse(
+            {
+                "status": "checked",
+                "results": results,
+                "summary": _provider_registry_summary(refreshed),
+                "registry": refreshed,
+            }
+        )
+
     @app.post("/ui/language")
     async def ui_language(request: Request) -> Any:
         payload = await _request_payload(request)
@@ -316,6 +330,25 @@ def _llm_trace_summary(records: list[Dict[str, Any]]) -> Dict[str, Any]:
         "latest_model": latest.get("model"),
         "latest_latency_ms": latest.get("latency_ms"),
         "latest_hallucination_risk_proxy": latest.get("hallucination_risk_proxy"),
+    }
+
+
+def _provider_registry_summary(registry: Dict[str, Any]) -> Dict[str, Any]:
+    providers = registry.get("providers", [])
+    online = [item for item in providers if str(item.get("health")) in {"healthy", "reachable"}]
+    fastest = sorted(
+        (
+            item
+            for item in online
+            if item.get("last_latency_ms") is not None
+        ),
+        key=lambda item: int(item.get("last_latency_ms") or 0),
+    )
+    return {
+        "total_count": len(providers),
+        "online_count": len(online),
+        "fastest_provider": fastest[0].get("id") if fastest else None,
+        "fastest_latency_ms": fastest[0].get("last_latency_ms") if fastest else None,
     }
 
 
@@ -2435,6 +2468,8 @@ class _StdlibHandler(BaseHTTPRequestHandler):
             self._send_html(_system_interface_page())
         elif parsed.path == "/settings":
             self._send_html(render_settings_page(load_user_config(_user_config_path())))
+        elif parsed.path == "/llm/providers":
+            self._send_json(safe_registry_view())
         elif parsed.path == "/workflow":
             self._send_html(_workflow_page(query.get("stage", "event_stream")))
         elif parsed.path == "/roadmap":
@@ -2516,6 +2551,26 @@ class _StdlibHandler(BaseHTTPRequestHandler):
             )
         elif parsed.path == "/settings":
             self._send_json(save_user_config(payload, _user_config_path()))
+        elif parsed.path == "/llm/provider/test":
+            provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
+            if not provider_id:
+                self._send_json({"status": "error", "error": "provider_required"}, status=400)
+                return
+            self._send_json(health_check_provider(provider_id))
+        elif parsed.path == "/llm/providers/test_all":
+            registry = safe_registry_view()
+            results = [health_check_provider(str(provider.get("id"))) for provider in registry.get("providers", [])]
+            refreshed = safe_registry_view()
+            self._send_json(
+                {
+                    "status": "checked",
+                    "results": results,
+                    "summary": _provider_registry_summary(refreshed),
+                    "registry": refreshed,
+                }
+            )
+        elif parsed.path == "/ui/language":
+            self._send_json(set_language(str(payload.get("language") or "en"), _user_config_path()))
         else:
             self.send_error(404)
 

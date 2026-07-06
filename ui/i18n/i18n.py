@@ -77,6 +77,19 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.system": "Atlas System Config",
         "settings.assets": "User Assets Config",
         "settings.notice": "Config is local metadata. It does not execute trades or mutate cognition.",
+        "provider.test_all": "Test all",
+        "provider.online": "Online",
+        "provider.reachable": "Reachable",
+        "provider.needs_config": "Needs config",
+        "provider.error": "Unavailable",
+        "provider.unknown": "Untested",
+        "provider.latency": "Latency",
+        "provider.fastest": "Fastest",
+        "provider.last_checked": "Last checked",
+        "provider.never_checked": "Never checked",
+        "provider.testing": "Testing providers...",
+        "provider.tested": "Provider check complete",
+        "provider.none": "None yet",
     },
     "zh": {
         "app.title": "认知控制中心",
@@ -143,6 +156,19 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.system": "Atlas 系统配置",
         "settings.assets": "用户资产配置",
         "settings.notice": "配置仅为本地元数据，不执行交易，也不修改认知核心。",
+        "provider.test_all": "全部测试",
+        "provider.online": "可用",
+        "provider.reachable": "可达",
+        "provider.needs_config": "未配置",
+        "provider.error": "不可用",
+        "provider.unknown": "未测试",
+        "provider.latency": "延迟",
+        "provider.fastest": "最快 Provider",
+        "provider.last_checked": "最近检测",
+        "provider.never_checked": "尚未检测",
+        "provider.testing": "正在检测 Provider...",
+        "provider.tested": "Provider 检测完成",
+        "provider.none": "暂无",
     },
 }
 
@@ -184,4 +210,3 @@ def _load_config(path: str | None = None) -> dict[str, Any]:
     except (OSError, json.JSONDecodeError):
         return {}
     return data if isinstance(data, dict) else {}
-
