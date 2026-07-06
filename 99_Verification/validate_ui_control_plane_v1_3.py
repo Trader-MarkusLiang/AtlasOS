@@ -51,20 +51,20 @@ def main() -> None:
 
     settings = render_settings_page()
     for text in (
-        "LLM Config",
-        "Provider",
-        "API Key",
+        "LLM Providers",
+        "active-provider",
+        "api_key",
         "Base URL",
-        "Model",
-        "Atlas System Config",
-        "Tick Interval",
-        "Runtime Mode",
-        "Trust Threshold",
-        "Hypothesis Switching Sensitivity",
-        "User Assets Config",
-        "Portfolio JSON",
-        "Asset List",
-        "Optional Weights JSON",
+        'data-provider-field="model"',
+        "fallback-chain",
+        "tick-interval-setting",
+        "runtime-mode-setting",
+        "trust-threshold-setting",
+        "hypothesis-sensitivity-setting",
+        "portfolio-json",
+        "asset-list",
+        "weights-json",
+        "/llm/provider/test",
     ):
         _assert(text in settings, f"settings page should include {text}")
 
@@ -100,13 +100,12 @@ def main() -> None:
     for text in (
         "atlas-v2-shell",
         "v2-control-panel",
-        "Chat Mode",
-        "System Mode",
-        "Workflow Mode",
+        'data-v2-mode="chat"',
+        'data-v2-mode="system"',
+        'data-v2-mode="workflow"',
         "v2-intelligence-panel",
-        "Flow Timeline",
-        "Event -> Decision -> Feedback",
-        "Settings",
+        "v2-execution-timeline",
+        "language-select",
         "workflow-graph",
     ):
         _assert(text in html, f"dashboard should include {text}")

@@ -588,6 +588,42 @@ Fail conditions:
 - CDE formulas or Decision Brief strategy logic are modified.
 - `portfolio.local.yaml` is modified.
 
+## Case 36: LLM Provider Runtime UI i18n v1.4 Keeps Cognition Isolated
+
+Expected output:
+
+1. `runtime/llm/provider_registry.py` supports configurable provider entries for:
+   - OpenAI.
+   - Claude.
+   - Ollama.
+   - MoreCode / cc switch.
+   - ARK Coding.
+   - Volcano Coding.
+   - Custom proxy.
+2. Provider API keys are stored only in local ignored config and masked in UI/API output.
+3. `runtime/llm/provider_router.py` selects the active provider, falls back on failure, and returns
+   a unified response envelope.
+4. `runtime/llm_router.py` delegates native runtime routing to the provider router while preserving
+   raw text output for Decision Contract parsing.
+5. `/settings` supports multi-provider add/remove, API key input, base URL, model, fallback chain,
+   and provider test connection.
+6. `/state` exposes provider status metadata for the UI without exposing secrets.
+7. Dashboard uses a single central focus card and a reduced right-side intelligence panel.
+8. Top bar includes a persistent EN/CN language toggle using `ui/i18n/i18n.py`.
+9. Event Fusion, CIL, LMSE, MPCE, MLE, Decision Contract semantics, and runtime cognition
+   algorithms remain unchanged.
+
+Fail conditions:
+
+- Any cognitive-core layer is modified for provider/UI behavior.
+- Provider key values appear in rendered HTML, state API output, or committed config.
+- LLM provider failure crashes runtime routing instead of returning failsafe output.
+- UI returns to dense debug-style panels or equal-weight layout.
+- EN/CN toggle is missing or not persisted.
+- ML / RL, trading logic, prediction behavior, broker integration, portfolio automation, or CDE
+  bypass is introduced.
+- `portfolio.local.yaml` is modified.
+
 ## Case 24: Market World Model v0.6 Simulates Structural Evolution
 
 Expected output:

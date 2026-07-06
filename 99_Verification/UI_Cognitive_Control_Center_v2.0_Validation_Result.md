@@ -14,7 +14,7 @@ Validate Atlas OS UI v2.0 product-grade cognitive control center redesign.
 - Right intelligence panel provides explanation context.
 - Bottom timeline is compressed and non-debuggy.
 - Navigation is simplified to Dashboard, Workflow, Roadmap, and Settings.
-- Settings page exposes LLM, asset, and runtime parameters.
+- Settings page exposes multi-provider LLM, asset, and runtime parameters.
 - Empty states are guidance language rather than raw `Unknown`.
 - Workflow graph highlights active path and supports node explanation.
 - UI files do not import cognitive modules.
@@ -36,7 +36,9 @@ Pass.
 
 - Dashboard contains `atlas-v2-shell`, `v2-control-panel`, `atlas-v2-focus-zone`,
   `v2-intelligence-panel`, and `v2-execution-timeline`.
-- Settings contains LLM, runtime, and asset configuration fields.
+- Settings contains multi-provider LLM, runtime, and asset configuration fields.
+- Left control panel now uses a compact provider mini view instead of exposing API-key/base-URL
+  fields in the main dashboard.
 - Workflow graph contains minimalist active-path classes and node explanation surface.
 - UI v2 files do not import `runtime.cognition`.
 
@@ -44,3 +46,8 @@ Pass.
 
 No runtime / cognition / decision / trust / causal computation changes were made for this UI v2.0
 redesign.
+
+## v1.4 Compatibility Note
+
+The validation script was updated to accept the v1.4 simplified dashboard surface: provider health
+is shown in a mini view, while full API key and base URL editing lives in `/settings`.

@@ -19,12 +19,14 @@ from typing import Any, Dict, Optional
 
 try:
     from runtime.telemetry.llm_trace_logger import log_llm_trace
+    from runtime.llm.provider_router import route_llm_request
 except ModuleNotFoundError:  # pragma: no cover
     import sys
     from pathlib import Path
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from runtime.telemetry.llm_trace_logger import log_llm_trace
+    from runtime.llm.provider_router import route_llm_request
 
 
 SUPPORTED_PROVIDERS = {
@@ -132,20 +134,19 @@ def call_llm_raw(model: str, prompt: str, context: Dict[str, Any]) -> str:
     try:
         if backend == "litellm":
             output = _call_litellm_backend_raw(model, prompt, context)
-        elif model not in SUPPORTED_PROVIDERS:
-            output = _failsafe_raw_json("unsupported_model")
-        elif config["provider"] == "ollama":
-            output = _call_ollama(config, prompt, context)
-        elif config["provider"] == "proxy":
-            output = _call_proxy(config, prompt, context)
         else:
-            api_key = os.environ.get(config["env_key"])
-            if not api_key:
-                output = _failsafe_raw_json("offline_no_api_key")
-            elif config["provider"] == "anthropic":
-                output = _call_anthropic(config, api_key, prompt, context)
-            else:
-                output = _call_openai_compatible(config, api_key, prompt, context)
+            routed = route_llm_request(
+                prompt=prompt,
+                context=context,
+                provider_id=_provider_id_for_model(model),
+                model=config.get("default_model", model) if model in SUPPORTED_PROVIDERS else None,
+            )
+            output = str(routed.get("content") or _failsafe_raw_json(str(routed.get("error") or "provider_error")))
+            config = {
+                **config,
+                "provider": str(routed.get("provider") or config.get("provider", "unknown")),
+                "default_model": str(routed.get("model") or config.get("default_model", model)),
+            }
     except (urllib.error.URLError, TimeoutError, KeyError, ValueError) as exc:
         output = _failsafe_raw_json(f"provider_error: {exc}")
 
@@ -342,6 +343,20 @@ def provider_metadata(model: str) -> Dict[str, str]:
         "model": config["default_model"],
         "raw_text_only": "true",
     }
+
+
+def _provider_id_for_model(model: str) -> str:
+    alias = str(model or "").strip().lower()
+    return {
+        "gpt": "openai",
+        "gpt-5.5": "openai",
+        "openai": "openai",
+        "claude": "claude",
+        "claude-sonnet": "claude",
+        "local": "ollama",
+        "ollama": "ollama",
+        "proxy": "custom",
+    }.get(alias, alias)
 
 
 def _failsafe_raw_json(reason: str) -> str:

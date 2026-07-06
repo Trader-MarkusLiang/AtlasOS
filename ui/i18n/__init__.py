@@ -1,0 +1,2 @@
+"""Atlas UI internationalization helpers."""
+

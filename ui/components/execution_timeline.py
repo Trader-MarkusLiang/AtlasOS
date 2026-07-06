@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from ui.i18n.i18n import t
+
 
 def render_execution_timeline() -> str:
     """Render a compressed Event -> Decision -> Feedback chain."""
@@ -26,8 +28,8 @@ def render_execution_timeline() -> str:
     <section class="v2-execution-timeline" data-component="execution-timeline">
       <div class="v2-timeline-header">
         <div>
-          <span class="v2-kicker">Flow Timeline</span>
-          <h2>Event -> Decision -> Feedback</h2>
+          <span class="v2-kicker">{t("timeline.kicker")}</span>
+          <h2>{t("timeline.title")}</h2>
         </div>
         <span id="stream-clock" class="v2-stream-clock">Waiting</span>
       </div>

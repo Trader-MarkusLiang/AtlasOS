@@ -1,5 +1,26 @@
 # Changelog
 
+## LLM Provider Runtime + UI i18n v1.4 - 2026-07-06
+
+- Added `ISSUE-2026-053` and `IP-2026-053` for the LLM provider runtime, UI cognitive redesign,
+  and internationalization upgrade.
+- Added `runtime/llm/provider_registry.py` with local provider metadata, masked UI-safe provider
+  views, local API-key encryption, provider health checks, latency tracking, and fallback-chain
+  configuration.
+- Added `runtime/llm/provider_router.py` with active-provider routing, fallback isolation, and a
+  unified raw-text response envelope.
+- Updated `runtime/llm_router.py` to delegate native runtime calls to the provider router while
+  preserving Decision Contract raw-text boundaries.
+- Added `ui/i18n/i18n.py` and EN/CN language toggle support in the UI top bar and settings page.
+- Redesigned `/settings` for multi-provider management, provider connection tests, fallback chain,
+  runtime settings, and asset configuration.
+- Reduced dashboard debug clutter by simplifying the left provider mini view and right intelligence
+  panel while keeping the center workspace as the primary cognitive focus.
+- Added LLM Provider UI i18n validation result and Regression Test Case 36.
+- Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, Decision Contract semantics, runtime
+  cognition algorithms, `portfolio.local.yaml`, trading execution, ML / DL / RL, prediction logic,
+  or broker integration.
+
 ## Bidirectional Perception Loop v1.2 - 2026-07-06
 
 - Added `ISSUE-2026-035` and `IP-2026-035` for the Bidirectional Market Perception Loop upgrade.

@@ -19,6 +19,7 @@ if __package__ in {None, ""}:  # Support `python3 ui/app_server.py`.
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from runtime.logging import utc_now_iso
+from runtime.llm.provider_registry import health_check_provider, safe_registry_view
 from runtime.state_store import StateStore
 from runtime.telemetry.llm_trace_logger import read_llm_traces
 from ui.chat_interface import render_chat_command_center
@@ -35,6 +36,7 @@ from ui.components.system_state_panel import render_system_state_panel
 from ui.components.top_bar import render_top_bar
 from ui.components.structural_drift_timeline import render_structural_drift_timeline
 from ui.components.workflow_graph import infer_active_workflow_stage, render_workflow_graph
+from ui.i18n.i18n import set_language, t, translation_payload
 from ui.pages.dev_registry import load_roadmap, render_dev_registry_page, roadmap_api_payload
 from ui.pages.roadmap import render_roadmap_page
 from ui.pages.settings import load_user_config, render_settings_page, save_user_config
@@ -101,6 +103,27 @@ def create_app() -> Any:
         payload = await _request_payload(request)
         result = save_user_config(payload, _user_config_path())
         return JSONResponse(result)
+
+    @app.get("/llm/providers")
+    async def llm_providers() -> Any:
+        return JSONResponse(safe_registry_view())
+
+    @app.post("/llm/provider/test")
+    async def llm_provider_test(request: Request) -> Any:
+        payload = await _request_payload(request)
+        provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
+        if not provider_id:
+            return JSONResponse({"status": "error", "error": "provider_required"}, status_code=400)
+        return JSONResponse(health_check_provider(provider_id))
+
+    @app.post("/ui/language")
+    async def ui_language(request: Request) -> Any:
+        payload = await _request_payload(request)
+        return JSONResponse(set_language(str(payload.get("language") or "en"), _user_config_path()))
+
+    @app.get("/ui/i18n")
+    async def ui_i18n() -> Any:
+        return JSONResponse(translation_payload())
 
     @app.get("/workflow", response_class=HTMLResponse)
     async def workflow(stage: str = "event_stream") -> Any:
@@ -259,6 +282,7 @@ def state_api() -> Dict[str, Any]:
         "last_decision_packet": metadata.get("decision_packet", {}),
         "last_decision_brief_id": latest_brief.get("id"),
         "llm_trace_summary": llm_summary,
+        "llm_provider_registry": safe_registry_view(),
         "last_event_summary": event_history[0] if event_history else {},
         "tick_counter": len(transitions),
         "dashboard": build_dashboard_state(
@@ -299,7 +323,7 @@ def _system_interface_page() -> Any:
     display_state = state_api()
     shell = (
         '<div class="atlas-v2-shell">'
-        + render_control_panel()
+        + render_control_panel(display_state.get("llm_provider_registry"))
         + '<main class="atlas-v2-main">'
         + render_top_bar()
         + '<div class="atlas-v2-content">'
@@ -572,6 +596,18 @@ button, input, select, textarea { font: inherit; }
   text-transform: uppercase;
 }
 .runtime-controls { flex-wrap: wrap; justify-content: flex-end; }
+.language-switcher {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  color: #8c97a6;
+  font-size: 0.78rem;
+}
 .global-help-bar {
   display: flex;
   align-items: center;
@@ -1104,6 +1140,22 @@ pre {
   margin-bottom: 16px;
   padding: 16px;
 }
+.v2-provider-mini {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.045);
+}
+.v2-provider-mini span {
+  color: #8c97a6;
+  font-size: 0.75rem;
+}
+.v2-provider-mini strong {
+  color: #f4f7fb;
+  overflow-wrap: anywhere;
+}
 .v2-section-title,
 .v2-kicker,
 .v2-focus-kicker {
@@ -1231,7 +1283,8 @@ pre {
 }
 .v2-primary-workspace {
   min-height: min(620px, calc(100vh - 230px));
-  padding: 18px;
+  padding: 22px;
+  border-radius: 28px;
 }
 .v2-mode-switcher {
   display: inline-flex;
@@ -1356,7 +1409,7 @@ pre {
 }
 .v2-system-summary {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-top: 14px;
 }
@@ -1664,6 +1717,7 @@ pre {
     setText("llm-model", (state.llm_trace_summary || {}).latest_model);
     setText("llm-latency", clean((state.llm_trace_summary || {}).latest_latency_ms) + " ms");
     setText("focus-runtime-status", state.tick_counter ? "Runtime loop active" : "Initializing cognition layer");
+    updateProviderMini(state.llm_provider_registry || {});
 
     const trust = typeof state.trust_index === "number" ? Math.max(0, Math.min(1, state.trust_index)) : 0;
     const meter = byId("trust-meter");
@@ -1699,6 +1753,14 @@ pre {
     setText("active-hypothesis", hypothesis.id || hypothesis.name || structural.active_hypothesis_id || "Insufficient system context");
     const shadow = structural.shadow_hypothesis_count || structural.shadow_count || asArray(structural.shadow_hypotheses).length || 0;
     setText("shadow-hypothesis-count", shadow);
+  }
+  function updateProviderMini(registry) {
+    const providers = Array.isArray(registry.providers) ? registry.providers : [];
+    const active = registry.active_provider || "openai";
+    const provider = providers.find(function (item) { return item.id === active; }) || {};
+    setText("active-provider-label", provider.label || active);
+    setText("active-provider-model", provider.model || "System initializing reasoning layer");
+    setText("active-provider-health", provider.health || "unknown");
   }
   function updateDecisionExplanation(state, packet) {
     const factors = dominantFactors(state, packet);
@@ -2041,6 +2103,15 @@ pre {
       try { addChatLine("system", "Tick interval saved: " + clean((await postForm("/control/set_interval", { interval_seconds: interval.value })).tick_interval_seconds) + "s"); }
       catch (error) { addChatLine("system", "Interval update failed: " + error.message); }
     });
+    const language = byId("language-select");
+    if (language) language.addEventListener("change", async function () {
+      try {
+        await postForm("/ui/language", { language: language.value });
+        window.location.reload();
+      } catch (error) {
+        addChatLine("system", "Language update failed: " + error.message);
+      }
+    });
   }
   function bindModeSwitcher() {
     document.querySelectorAll("[data-v2-mode]").forEach(function (button) {
@@ -2122,56 +2193,58 @@ button, input, textarea {{ font: inherit; margin: 0.25rem 0; }}
 
 def _render_primary_workspace(display_state: Dict[str, Any]) -> str:
     active_stage = infer_active_workflow_stage(display_state)
+    chat_placeholder = t("chat.placeholder")
+    chat_send = t("chat.send")
     return f"""
     <section class="v2-primary-workspace" data-component="primary-workspace">
       <div class="v2-mode-switcher" aria-label="Workspace mode switcher">
-        <button class="active" type="button" data-v2-mode="system">System Mode</button>
-        <button type="button" data-v2-mode="chat">Chat Mode</button>
-        <button type="button" data-v2-mode="workflow">Workflow Mode</button>
+        <button class="active" type="button" data-v2-mode="system">{t("workspace.system")}</button>
+        <button type="button" data-v2-mode="chat">{t("workspace.chat")}</button>
+        <button type="button" data-v2-mode="workflow">{t("workspace.workflow")}</button>
       </div>
 
       <div id="mode-system" class="v2-mode-panel active" data-mode-panel="system">
-        <div class="v2-focus-kicker">Current Regime</div>
-        <h1 id="state-regime" class="v2-regime-title">System initializing reasoning layer</h1>
+        <div class="v2-focus-kicker">{t("state.current_regime")}</div>
+        <h1 id="state-regime" class="v2-regime-title">{t("empty.initializing")}</h1>
 
         <section class="v2-trust-hero" aria-label="Trust score gauge">
           <div>
-            <span>Trust Score</span>
-            <strong id="state-trust">Waiting for cognitive signal</strong>
+            <span>{t("state.trust_score")}</span>
+            <strong id="state-trust">{t("empty.signal")}</strong>
           </div>
           <div class="v2-trust-gauge"><span id="trust-meter"></span></div>
         </section>
 
         <section class="v2-active-decision">
-          <span class="v2-kicker">Active Decision</span>
+          <span class="v2-kicker">{t("state.active_decision")}</span>
           <div class="v2-decision-line">
             <strong id="decision-action">neutral</strong>
-            <span id="decision-confidence">Confidence 0.00</span>
+            <span id="decision-confidence">{t("state.confidence")} 0.00</span>
           </div>
-          <p id="decision-summary">System initializing reasoning layer</p>
+          <p id="decision-summary">{t("empty.initializing")}</p>
           <div class="v2-decision-meta">
-            <span>Risk <strong id="decision-risk">Insufficient system context</strong></span>
-            <span>Attention <strong id="decision-attention">Waiting for cognitive signal</strong></span>
-            <span>Liquidity <strong id="decision-liquidity">Waiting for cognitive signal</strong></span>
+            <span>{t("state.risk")} <strong id="decision-risk">{t("empty.context")}</strong></span>
+            <span>{t("state.attention")} <strong id="decision-attention">{t("empty.signal")}</strong></span>
+            <span>{t("state.liquidity")} <strong id="decision-liquidity">{t("empty.signal")}</strong></span>
           </div>
         </section>
 
         <section class="v2-system-summary">
-          <div><span>System Status</span><strong id="focus-runtime-status">Initializing cognition layer</strong></div>
-          <div><span>Tick</span><strong id="state-tick">0</strong></div>
-          <div><span>Liquidity</span><strong id="state-liquidity">Waiting for cognitive signal</strong></div>
-          <div><span>Attention</span><strong id="state-attention">Waiting for cognitive signal</strong></div>
-          <div><span>Volatility</span><strong id="state-volatility">Waiting for cognitive signal</strong></div>
+          <div><span>{t("state.status")}</span><strong id="focus-runtime-status">{t("empty.initializing")}</strong></div>
+          <div><span>{t("state.tick")}</span><strong id="state-tick">0</strong></div>
+          <div><span>{t("state.liquidity")}</span><strong id="state-liquidity">{t("empty.signal")}</strong></div>
+          <div><span>{t("state.attention")}</span><strong id="state-attention">{t("empty.signal")}</strong></div>
+          <div><span>{t("state.volatility")}</span><strong id="state-volatility">{t("empty.signal")}</strong></div>
         </section>
       </div>
 
       <div id="mode-chat" class="v2-mode-panel" data-mode-panel="chat">
         <section class="v2-chat-card">
-          <div class="v2-section-title">Chat Mode</div>
+          <div class="v2-section-title">{t("workspace.chat")}</div>
           <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
           <form id="chat-form" class="chat-form">
-            <textarea id="chat-input" name="message" rows="3" maxlength="2000" placeholder="Send a runtime-safe Atlas query"></textarea>
-            <button class="v2-primary-button" type="submit">Send</button>
+            <textarea id="chat-input" name="message" rows="3" maxlength="2000" placeholder="{chat_placeholder}"></textarea>
+            <button class="v2-primary-button" type="submit">{chat_send}</button>
           </form>
         </section>
       </div>

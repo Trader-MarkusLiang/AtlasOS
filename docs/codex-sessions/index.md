@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-06_2345_llm-provider-ui-i18n-v14.md`
 - `docs/codex-sessions/completed/2026-07-06_2258_commit-accumulated-atlas-changes.md`
 - `docs/codex-sessions/completed/2026-07-06_2236_workflow-roadmap-ui-polish.md`
 - `docs/codex-sessions/completed/2026-07-06_2155_ui-cognitive-control-center-v20.md`

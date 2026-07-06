@@ -10,6 +10,53 @@
     "model": "gpt-5.5",
     "provider": "OpenAI"
   },
+  "llm_registry": {
+    "active_provider": "openai",
+    "fallback_chain": [
+      "openai",
+      "claude",
+      "ollama",
+      "custom"
+    ],
+    "providers": [
+      {
+        "api_key_encrypted": "",
+        "base_url": "https://api.openai.com/v1/chat/completions",
+        "enabled": true,
+        "health": "unknown",
+        "id": "openai",
+        "label": "OpenAI",
+        "last_error": "",
+        "last_latency_ms": null,
+        "model": "gpt-5.5",
+        "type": "openai"
+      },
+      {
+        "api_key_encrypted": "",
+        "base_url": "https://api.anthropic.com/v1/messages",
+        "enabled": false,
+        "health": "unknown",
+        "id": "claude",
+        "label": "Claude",
+        "last_error": "",
+        "last_latency_ms": null,
+        "model": "claude-sonnet-4-20250514",
+        "type": "claude"
+      },
+      {
+        "api_key_encrypted": "",
+        "base_url": "http://localhost:11434/api/generate",
+        "enabled": true,
+        "health": "unknown",
+        "id": "ollama",
+        "label": "Ollama",
+        "last_error": "",
+        "last_latency_ms": null,
+        "model": "llama3.1",
+        "type": "ollama"
+      }
+    ]
+  },
   "metadata": {
     "no_runtime_reload": true,
     "no_trading_execution": true,
@@ -20,5 +67,8 @@
     "runtime_mode": "simulation",
     "tick_interval": 60,
     "trust_threshold": 0.45
+  },
+  "ui": {
+    "language": "en"
   }
 }

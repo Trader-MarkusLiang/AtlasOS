@@ -85,3 +85,8 @@ output.
 and input deformation affect EventStream priority and perception metadata before Fusion, but remain
 bounded observation-layer diagnostics. They are not prediction output, trading authority, CDE
 authority, portfolio automation, Event Fusion core logic changes, or Buy / Sell output.
+
+`IP-2026-053` adds UI/configuration and LLM provider adapter improvements only. Provider health,
+latency, fallback, local API-key storage, and EN/CN UI text are infrastructure and presentation
+metadata. They are not cognition changes, Decision Contract semantic changes, prediction output,
+trading authority, broker integration, CDE authority, or portfolio automation.

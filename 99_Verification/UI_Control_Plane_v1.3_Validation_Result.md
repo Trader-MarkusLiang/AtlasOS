@@ -13,7 +13,7 @@ This validation covers the Atlas OS UI v1.3 production-grade control-plane redes
   - Left system-control navigation for System Status, Model Configuration, API Keys, Runtime
     Settings, Asset Configuration, LLM Providers, Logs, and Roadmap.
 - `ui/pages/settings.py`
-  - LLM config, Atlas system config, and user assets config.
+  - Multi-provider LLM config, Atlas system config, and user assets config.
   - Saves local UI-only config to `runtime/config/user_config.json`.
 - `ui/components/workflow_graph.py`
   - Clickable workflow nodes from Event Stream through Feedback Loop.
@@ -46,7 +46,7 @@ bypass was introduced.
 `99_Verification/validate_ui_control_plane_v1_3.py` checks:
 
 1. Sidebar navigation contains all requested system control sections.
-2. Settings page exposes LLM, system, and user asset config fields.
+2. Settings page exposes multi-provider LLM, system, and user asset config fields.
 3. Settings save persists local JSON and masks API key in response.
 4. Workflow graph renders all requested nodes and active-stage highlighting.
 5. Dashboard renders control-plane shell, mode switcher, inspector, Settings button, and Execution
@@ -68,3 +68,9 @@ settings POST smoke: PASS
 user_config JSON parse: PASS
 boundary scan: PASS
 ```
+
+## v1.4 Compatibility Note
+
+The validation script was updated for the v1.4 provider settings surface. It now checks
+`LLM Providers`, active provider, fallback chain, provider test action, and local key masking rather
+than the older single-provider `LLM Config` wording.

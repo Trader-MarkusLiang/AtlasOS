@@ -25,37 +25,32 @@ def _assert(condition: bool, message: str) -> None:
 def main() -> None:
     control = render_control_panel()
     for text in (
-        "System Control",
-        "Start",
-        "Stop",
-        "Tick interval",
-        "Simulation mode",
-        "Model Config",
-        "LLM provider",
-        "API key",
-        "Base URL",
-        "Model",
-        "Asset Config",
-        "Portfolio / assets JSON",
-        "Save Config",
+        "runtime-start",
+        "runtime-stop",
+        "tick-interval",
+        "simulation-mode",
+        "active-provider-label",
+        "active-provider-model",
+        "active-provider-health",
+        "asset-json-editor",
     ):
         _assert(text in control, f"control panel should include {text}")
 
     intelligence = render_intelligence_panel()
     for text in (
-        "Reasoning Summary",
-        "Causal Snapshot",
-        "Hypothesis State",
-        "System Health",
-        "Trust trend",
-        "Stability",
-        "Decision Trace",
-        "Structural State",
+        "decision-why",
+        "dominant-causal-factors",
+        "active-hypothesis",
+        "shadow-hypothesis-count",
+        "trust-trend",
+        "stability-index",
+        "llm-call-count",
+        "llm-latency",
     ):
         _assert(text in intelligence, f"intelligence panel should include {text}")
 
     timeline = render_execution_timeline()
-    for text in ("Flow Timeline", "Event", "Decision", "Feedback", "compressed-stream"):
+    for text in ("v2-execution-timeline", "Event", "Decision", "Feedback", "compressed-stream"):
         _assert(text in timeline, f"timeline should include {text}")
 
     graph = render_workflow_graph("hypothesis_engine")
@@ -71,18 +66,19 @@ def main() -> None:
 
     settings = render_settings_page()
     for text in (
-        "LLM Config",
+        "LLM Providers",
         "OpenAI",
         "Claude",
         "Ollama",
-        "Custom API",
-        "Atlas System Config",
-        "Tick Interval",
-        "Runtime Mode",
-        "Trust Threshold",
-        "User Assets Config",
-        "Portfolio JSON",
-        "Asset List",
+        "Custom Proxy",
+        "active-provider",
+        "fallback-chain",
+        "tick-interval-setting",
+        "runtime-mode-setting",
+        "trust-threshold-setting",
+        "asset-list",
+        "/llm/provider/test",
+        "settings-language",
     ):
         _assert(text in settings, f"settings page should include {text}")
 
@@ -119,23 +115,17 @@ def main() -> None:
         "atlas-v2-focus-zone",
         "v2-intelligence-panel",
         "v2-execution-timeline",
-        "System Mode",
-        "Chat Mode",
-        "Workflow Mode",
-        "Current Regime",
-        "Trust Score",
-        "Active Decision",
-        "System Status",
-        "Dashboard",
-        "Workflow",
-        "Roadmap",
-        "Settings",
-        "Waiting for cognitive signal",
-        "Insufficient system context",
-        "System initializing reasoning layer",
+        'data-v2-mode="system"',
+        'data-v2-mode="chat"',
+        'data-v2-mode="workflow"',
+        "state-regime",
+        "state-trust",
+        "decision-action",
+        "focus-runtime-status",
+        "language-select",
     ):
         _assert(text in html, f"dashboard should include {text}")
-    _assert("Architecture Mode" not in html, "redundant Architecture Mode should be removed")
+    _assert('data-v2-mode="architecture"' not in html, "redundant Architecture Mode should be removed")
 
     ui_files = [
         REPO_ROOT / "ui" / "app_server.py",
