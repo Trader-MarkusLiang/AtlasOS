@@ -1,12 +1,12 @@
-# LLM Provider UI i18n v1.4 Validation Result
+# LLM Provider UI i18n v1.4 / v1.4.1 Validation Result
 
 Date: 2026-07-06
 Status: Pass
 
 ## Scope
 
-Validate Atlas OS v1.4 provider runtime adapter, settings UI, dashboard simplification, and i18n
-layer.
+Validate Atlas OS v1.4 provider runtime adapter, settings UI, dashboard simplification, i18n layer,
+and the v1.4.1 provider health visualization patch.
 
 ## Required Checks
 

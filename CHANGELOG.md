@@ -1,6 +1,6 @@
 # Changelog
 
-## Provider Health Visualization - 2026-07-07
+## LLM Provider Health Visualization v1.4.1 - 2026-07-07
 
 - Improved `/settings` provider management with a health overview, per-provider status pills,
   latency meters, last-check metadata, and compact error summaries.
