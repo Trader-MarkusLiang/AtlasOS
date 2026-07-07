@@ -98,8 +98,15 @@ portfolio context, normalized market ingestion, and forecast accountability.
 
 ## N. Git Status
 
-Changes are on branch `codex/overnight-productization-sprint`. Checkpoint commit pending at report
-creation time.
+Changes are on branch `codex/overnight-productization-sprint`.
+
+Checkpoint commits:
+
+- `390d00b` — Audit Atlas productization baseline.
+- `be3f606` — Align Atlas roadmap version tracks.
+- `e15c83d` — Add Atlas productization backbone.
+- `1e1d4a7` — Add Keychain-first provider secret storage.
+- `d204ab9` — Add runtime daily cycle metadata.
 
 ## O. Recommended Next Step
 
