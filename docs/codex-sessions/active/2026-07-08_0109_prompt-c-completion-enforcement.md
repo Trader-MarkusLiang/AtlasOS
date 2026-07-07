@@ -41,6 +41,20 @@ broker/trading execution, private wealth storage, CDE bypass, and unsupported pr
   - `99_Verification/Atlas_OS_Prompt_C_Completion_Baseline.md`
 - Created Prompt C completion backlog:
   - `99_Verification/Atlas_OS_Prompt_C_Completion_Backlog.md`
+- Repaired P1 runtime/product gaps:
+  - Market channel statuses now use required completion vocabulary.
+  - Controlled fixture market refresh path added.
+  - Runtime portfolio context now respects `ATLAS_USER_CONFIG`.
+  - Portfolio relevance score added.
+  - Forecast calibration feedback now influences DecisionLoop trust, hypothesis scoring, and
+    structural mutation behavior.
+  - Daily-cycle phase functions now execute read-only tasks and persist evidence.
+  - Daemon now dispatches daily-cycle execution evidence.
+  - UI top bar restored compatibility labels for onboarding regression.
+- Added Prompt C integrated validation:
+  - `99_Verification/validate_prompt_c_completion.py`
+- Added Prompt C required reports and Completion Tribunal.
+- Updated README, VERSION, CHANGELOG, and roadmap truth after Prompt C.
 
 ## Decisions
 
@@ -53,14 +67,24 @@ broker/trading execution, private wealth storage, CDE bypass, and unsupported pr
 
 - Prompt C evidence intake complete.
 - Completion baseline/backlog created.
-- P1 gaps identified for provider E2E, market channel vocabulary/capability truth, portfolio E2E,
-  forecast lifecycle coverage, self-iteration behavior, daily-cycle task execution, recovery, soak,
-  security regression, and tribunal creation.
+- Locally fixable P0/P1 gaps closed in controlled fixtures.
+- Live provider proof and live market freshness remain external/unproven.
 
 ## Verification Results
 
 - Git starting point: `de19343 Morning red-team repair and internal alpha closure`.
 - Working tree was clean at Prompt C start.
+- `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_prompt_c_completion.py` — PASS.
+- Prompt C 500-cycle accelerated soak — PASS, 0 tick errors, 500 decision briefs.
+- Prompt C self-iteration proof — REAL_BEHAVIORAL_LOOP in fixture.
+- Productization backbone regression — PASS.
+- Morning red-team regression — PASS.
+- Morning adversarial cognition regression — PASS.
+- UI runtime/control/control-center/workflow validations — PASS.
+- Provider secret storage and LLM provider UI/i18n validations — PASS.
+- `python3 -m json.tool docs/atlas_roadmap.json` — PASS.
+- `python3 -m py_compile` for modified runtime/UI/validation files — PASS.
+- `git diff --check` — PASS.
 
 ## Resume Instructions
 

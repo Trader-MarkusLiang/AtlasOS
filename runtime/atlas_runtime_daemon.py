@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 try:
-    from runtime.daily_cycle import current_daily_cycle
+    from runtime.daily_cycle import dispatch_current_daily_cycle
     from runtime.decision_loop import DecisionLoop, DecisionLoopConfig
     from runtime.event_source import SimulatedMarketEventSource, event_to_runtime_event
     from runtime.logging import utc_now_iso
@@ -36,7 +36,7 @@ try:
     from runtime.telemetry.state_snapshot import capture_cognitive_snapshot
 except ModuleNotFoundError:  # pragma: no cover
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from runtime.daily_cycle import current_daily_cycle
+    from runtime.daily_cycle import dispatch_current_daily_cycle
     from runtime.decision_loop import DecisionLoop, DecisionLoopConfig
     from runtime.event_source import SimulatedMarketEventSource, event_to_runtime_event
     from runtime.logging import utc_now_iso
@@ -256,7 +256,10 @@ class AtlasRuntimeDaemon:
         return result
 
     def _daily_cycle_status(self) -> Dict[str, Any]:
-        result = current_daily_cycle(db_path=self.config.db_path)
+        result = dispatch_current_daily_cycle(
+            db_path=self.config.db_path,
+            config_path=self.config.market_config_path,
+        )
         self.store.set_state("daily_cycle_state", result)
         return result
 

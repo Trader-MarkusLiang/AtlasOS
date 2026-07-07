@@ -8,9 +8,9 @@ ChatGPT, and future agents.
 
 Current Core stage: v2.1 Production Trial.
 
-Current productization stage: internal alpha hardening after morning red-team validation. Atlas Core remains an
-investment research operating system; the runtime and UI layers are product surfaces around that
-core, not replacements for the reasoning framework or CDE.
+Current productization stage: Prompt C internal alpha completion enforcement. Atlas Core remains
+an investment research operating system; the runtime and UI layers are product surfaces around
+that core, not replacements for the reasoning framework or CDE.
 
 ## Repository Map
 
@@ -41,10 +41,10 @@ Runtime, UI, and Data tracks use separate version labels because they mature ind
 | Track | Current State |
 |---|---|
 | Atlas Core / Knowledge OS | v2.1 RC Production Trial |
-| Atlas Runtime | local daemon / EventStream / DecisionLoop trial; accelerated soak passed, no 24h proof |
+| Atlas Runtime | local daemon / EventStream / DecisionLoop trial; 500-cycle accelerated soak passed, no 24h proof |
 | Atlas Cognitive Overlay | symbolic cognition overlays under validation |
 | Atlas UI / Product | Decision Brief-first Home + control center; browser-level visual QA still pending |
-| Atlas Data / Market Intelligence | price/volume backbone available; breadth/news/macro/narrative channels still partial |
+| Atlas Data / Market Intelligence | controlled price/volume ingestion proof; live provider freshness currently unavailable; breadth/news/macro/narrative channels explicitly not configured |
 
 Latest release tag: ais-v1.0.
 

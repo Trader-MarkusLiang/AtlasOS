@@ -8,6 +8,7 @@ trade instructions.
 from __future__ import annotations
 
 import json
+import os
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Mapping
@@ -121,6 +122,7 @@ def _exposure_map(positions: list[Mapping[str, Any]]) -> dict[str, Any]:
         "role_concentration": _rounded_map(role),
         "liquidity_sensitivity": _liquidity_sensitivity(market),
         "regime_sensitivity": _regime_sensitivity(theme),
+        "portfolio_relevance_score": _portfolio_relevance_score(positions, theme, market),
         "correlated_risk_clusters": clusters,
     }
 
@@ -186,7 +188,8 @@ def _regime_sensitivity(theme: Mapping[str, float]) -> str:
 
 
 def _load_config(path: str | None) -> dict[str, Any]:
-    target = Path(path) if path else DEFAULT_CONFIG_PATH
+    configured = path or os.environ.get("ATLAS_USER_CONFIG")
+    target = Path(configured) if configured else DEFAULT_CONFIG_PATH
     if not target.exists():
         return {}
     try:
@@ -195,3 +198,16 @@ def _load_config(path: str | None) -> dict[str, Any]:
         return {}
     return data if isinstance(data, dict) else {}
 
+
+def _portfolio_relevance_score(
+    positions: list[Mapping[str, Any]],
+    theme: Mapping[str, float],
+    market: Mapping[str, float],
+) -> float:
+    if not positions:
+        return 0.0
+    exposure = min(100.0, sum(float(item.get("portfolio_percentage", 0.0) or 0.0) for item in positions))
+    top_theme = max(theme.values(), default=0.0)
+    top_market = max(market.values(), default=0.0)
+    score = exposure * 0.55 + top_theme * 0.3 + top_market * 0.15
+    return round(max(0.0, min(100.0, score)), 4)

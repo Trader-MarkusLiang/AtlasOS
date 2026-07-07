@@ -12,15 +12,15 @@ Stage: Run First + Capital Deployment Engine
 
 Presentation stage: Decision Experience v1.1 RC
 
-Productization track: Internal alpha hardening after morning red-team validation
+Productization track: Prompt C internal alpha completion enforcement
 
 Parallel version model:
 
 - Atlas Core / Knowledge OS: v2.1 RC
-- Atlas Runtime: local daemon / EventStream / DecisionLoop trial; accelerated soak passed, no 24h proof
+- Atlas Runtime: local daemon / EventStream / DecisionLoop trial; 500-cycle accelerated soak passed, no 24h proof
 - Atlas Cognitive Overlay: symbolic cognition overlays under validation
 - Atlas UI / Product: UI v2.x + provider configuration v1.4.x + Decision Brief-first Home
-- Atlas Data / Market Intelligence: price/volume backbone v0.x, live breadth/news/macro/narrative pending
+- Atlas Data / Market Intelligence: controlled price/volume ingestion proof; live breadth/news/macro/narrative pending
 
 Release lifecycle: Alpha -> RC -> Production Trial -> Final
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 try:
     from runtime.cognition.causal_intelligence_layer import infer_causal_intelligence
@@ -261,6 +261,14 @@ class DecisionLoop:
                 llm_output=decision_packet if isinstance(decision_packet, dict) else {},
                 feedback_delta=feedback_delta,
             )
+            forecast_calibration_feedback = _forecast_calibration_feedback(
+                forecast_calibration_state=self.store.get_state("forecast_calibration_state"),
+                system_trust_state=self.store.get_state("system_trust_state"),
+            )
+            trust_score = _apply_forecast_calibration_to_trust(
+                trust_score=trust_score,
+                calibration_feedback=forecast_calibration_feedback,
+            )
             actual_outcome_state = {
                 "transition": transition,
                 "controller": transition,
@@ -359,6 +367,7 @@ class DecisionLoop:
                 feedback_delta=feedback_delta,
                 regime_volatility=float(fusion.get("stress_score", 0) or 0),
             )
+            system_trust_state["forecast_calibration_feedback"] = forecast_calibration_feedback
             confidence_calibration = calibrate_confidence(
                 (decision_packet or {}).get("confidence") if isinstance(decision_packet, dict) else 0.0,
                 trust_score,
@@ -404,6 +413,7 @@ class DecisionLoop:
             self.store.set_state("llm_feedback_state", llm_feedback)
             cognition_snapshot["llm_feedback"] = llm_feedback
             cognition_snapshot["trust_score"] = trust_score
+            cognition_snapshot["forecast_calibration_feedback"] = forecast_calibration_feedback
             cognition_snapshot["explanation_error"] = explanation_error
             cognition_snapshot["regime_explanation_alignment"] = regime_alignment
             cognition_snapshot["causal_hypotheses"] = causal_hypotheses
@@ -454,6 +464,9 @@ class DecisionLoop:
                     "llm_feedback_freeze": llm_feedback.get("stability", {}).get("freeze_feedback"),
                     "trust_score": trust_score,
                     "system_trust_state": system_trust_state,
+                    "forecast_calibration_feedback_status": forecast_calibration_feedback.get("status"),
+                    "forecast_calibration_feedback_delta": forecast_calibration_feedback.get("trust_delta"),
+                    "forecast_calibration_feedback_source": forecast_calibration_feedback.get("source"),
                     "calibrated_confidence": confidence_calibration["calibrated_confidence"],
                     "confidence_adjustment_factor": confidence_calibration["confidence_adjustment_factor"],
                     "explanation_error_score": explanation_error.get("explanation_error_score"),
@@ -523,3 +536,79 @@ class DecisionLoop:
             source="decision_loop",
         )
         self._last_heartbeat = now
+
+
+def _forecast_calibration_feedback(
+    *,
+    forecast_calibration_state: Dict[str, Any],
+    system_trust_state: Dict[str, Any],
+) -> Dict[str, Any]:
+    calibration = forecast_calibration_state if isinstance(forecast_calibration_state, dict) else {}
+    trust = system_trust_state if isinstance(system_trust_state, dict) else {}
+    latest = trust.get("latest_forecast_calibration", {})
+    latest = latest if isinstance(latest, dict) else {}
+    evaluated = _safe_int(calibration.get("evaluated_count"), 0)
+    if evaluated <= 0 and not latest:
+        return {
+            "status": "not_available",
+            "trust_delta": 0.0,
+            "source": "no_forecast_outcomes",
+            "behavioral_influence": False,
+        }
+
+    mean_error = _safe_float(calibration.get("mean_forecast_error"), 0.0)
+    last_status = str(calibration.get("last_status") or latest.get("status") or "UNKNOWN").upper()
+    if last_status == "INVALIDATED":
+        delta = -min(0.12, 0.04 + mean_error * 0.08)
+    elif last_status == "INCONCLUSIVE":
+        delta = -min(0.05, 0.02 + mean_error * 0.04)
+    elif last_status == "VERIFIED" and mean_error <= 0.35:
+        delta = min(0.04, 0.01 + (1.0 - mean_error) * 0.025)
+    else:
+        delta = -min(0.03, mean_error * 0.03)
+    return {
+        "status": "applied",
+        "trust_delta": round(delta, 4),
+        "source": "forecast_calibration_state",
+        "last_status": last_status,
+        "mean_forecast_error": round(mean_error, 4),
+        "evaluated_count": evaluated,
+        "behavioral_influence": True,
+        "bounded": True,
+    }
+
+
+def _apply_forecast_calibration_to_trust(
+    *,
+    trust_score: Dict[str, float],
+    calibration_feedback: Dict[str, Any],
+) -> Dict[str, float]:
+    adjusted = dict(trust_score)
+    delta = _safe_float(calibration_feedback.get("trust_delta"), 0.0)
+    if not calibration_feedback.get("behavioral_influence"):
+        adjusted["forecast_calibration_adjustment"] = 0.0
+        return adjusted
+    for key in (
+        "llm_trust",
+        "cognitive_trust",
+        "regime_stability_trust",
+        "feedback_consistency_trust",
+        "global_trust_index",
+    ):
+        adjusted[key] = round(max(0.0, min(1.0, _safe_float(adjusted.get(key), 0.5) + delta)), 4)
+    adjusted["forecast_calibration_adjustment"] = round(delta, 4)
+    return adjusted
+
+
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_int(value: Any, default: int = 0) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default

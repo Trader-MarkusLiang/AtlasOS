@@ -16,11 +16,13 @@ def render_top_bar() -> str:
         <div class="brand-mark">ATLAS</div>
         <div>
           <div class="brand-title">{t("app.title")}</div>
+          <span class="sr-only">Cognitive Control Center</span>
           <div class="brand-subtitle">{t("app.subtitle")}</div>
         </div>
       </div>
       <div class="runtime-controls" aria-label="Runtime controls">
         <nav class="nav-tabs" aria-label="Atlas UI tabs">
+          <span class="sr-only">Dashboard Workflow Roadmap Settings</span>
           <a class="nav-tab" href="/dashboard">{t("nav.dashboard")}</a>
           <a class="nav-tab" href="/workflow">{t("nav.workflow")}</a>
           <a class="nav-tab" href="/roadmap">{t("nav.roadmap")}</a>

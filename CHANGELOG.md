@@ -1,5 +1,26 @@
 # Changelog
 
+## Prompt C Completion Enforcement - 2026-07-08
+
+- Added Prompt C baseline, backlog, LLM E2E, market ingestion, portfolio differential, forecast
+  lifecycle, self-iteration proof, daily-cycle, recovery, soak, completion tribunal, and final
+  closure reports under `99_Verification/`.
+- Added `99_Verification/validate_prompt_c_completion.py` for provider fixture E2E, market fixture
+  ingestion, UI-config-to-runtime portfolio cognition, five-case Forecast Ledger lifecycle,
+  before/after self-iteration proof, daily-cycle phase execution, recovery, 500-cycle accelerated
+  soak, and secret-shape scanning.
+- Normalized market channel statuses to `LIVE / DELAYED / CACHED / SIMULATED / NOT_CONFIGURED /
+  FAILED` and added controlled fixture market refresh support.
+- Made runtime portfolio context honor `ATLAS_USER_CONFIG` and added a privacy-preserving
+  portfolio relevance score.
+- Fed forecast calibration feedback into DecisionLoop trust, hypothesis scoring, and structural
+  mutation behavior so realized forecast error can affect later equivalent inputs.
+- Added executable read-only daily-cycle phase functions and daemon dispatch persistence.
+- Repaired UI top-bar compatibility for onboarding regression while preserving the v2 control
+  center layout.
+- Prompt C classification: locally fixable P0/P1 gaps closed in controlled fixtures; still not
+  Release Candidate, not 24-hour stable, and live market/provider proof remains externally blocked.
+
 ## Morning Red-Team Verification + Internal Alpha Closure - 2026-07-08
 
 - Added morning baseline, claim matrix, execution-path audit, ordinary-user acceptance,
