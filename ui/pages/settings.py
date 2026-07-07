@@ -81,9 +81,14 @@ def render_settings_page(config: Mapping[str, Any] | None = None) -> str:
     lang = current_language()
     strings = translation_payload(lang)
     provider_summary = _provider_health_summary(registry["providers"], registry["active_provider"], lang)
-    provider_cards = "\n".join(
-        _provider_card(provider, registry["active_provider"], lang) for provider in registry["providers"]
+    provider_groups = _provider_groups(registry["providers"], registry["active_provider"])
+    available_cards = "\n".join(
+        _provider_card(provider, registry["active_provider"], lang) for provider in provider_groups["available"]
     )
+    secondary_cards = "\n".join(
+        _provider_card(provider, registry["active_provider"], lang) for provider in provider_groups["secondary"]
+    )
+    secondary_open = " open" if not provider_groups["available"] else ""
     return f"""<!doctype html>
 <html lang="{escape(lang)}">
 <head>
@@ -197,6 +202,66 @@ a {{ color: inherit; text-decoration: none; }}
   overflow-wrap: anywhere;
 }}
 .provider-list {{ display: grid; gap: 12px; }}
+.provider-section-label {{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 14px 0 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}}
+.provider-section-count {{
+  min-width: 28px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  text-align: center;
+  color: var(--text);
+}}
+.provider-secondary-details {{
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+}}
+.provider-secondary-details summary {{
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+}}
+.provider-secondary-details summary::-webkit-details-marker {{ display: none; }}
+.provider-secondary-details summary::after {{
+  content: "+";
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+}}
+.provider-secondary-details[open] summary::after {{ content: "-"; }}
+.provider-secondary-details .provider-list {{
+  padding: 0 12px 12px;
+}}
+.provider-empty {{
+  min-height: 70px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.02);
+}}
 .provider-card {{
   display: grid;
   grid-template-columns: 1.05fr 0.8fr 0.95fr 1fr;
@@ -413,7 +478,24 @@ button.danger {{ color: #fecdd3; }}
           <label>{escape(t("model.active_provider", lang))}
             <select id="active-provider">{_provider_options(registry["providers"], registry["active_provider"])}</select>
           </label>
-          <div id="provider-list" class="provider-list">{provider_cards}</div>
+          <div id="provider-list" class="provider-list" data-provider-list-root>
+            <div class="provider-section-label">
+              <span>{escape(t("provider.available_section", lang))}</span>
+              <span id="provider-available-count" class="provider-section-count">{escape(str(len(provider_groups["available"])))}</span>
+            </div>
+            <div id="provider-available-list" class="provider-list" data-provider-available-list>
+              {available_cards or f'<div class="provider-empty">{escape(t("provider.none_available", lang))}</div>'}
+            </div>
+            <details id="provider-secondary-details" class="provider-secondary-details"{secondary_open}>
+              <summary>
+                <span>{escape(t("provider.other_section", lang))}</span>
+                <span id="provider-secondary-count" class="provider-section-count">{escape(str(len(provider_groups["secondary"])))}</span>
+              </summary>
+              <div id="provider-secondary-list" class="provider-list" data-provider-secondary-list>
+                {secondary_cards}
+              </div>
+            </details>
+          </div>
           <label>{escape(t("settings.fallback", lang))}
             <input id="fallback-chain" value="{escape(", ".join(registry["fallback_chain"]))}">
           </label>
@@ -509,7 +591,7 @@ function collectProviders() {{
     card.querySelectorAll("[data-provider-field]").forEach(input => {{
       item[input.getAttribute("data-provider-field")] = input.value;
     }});
-    item.label = providerTypes[item.type]?.label || item.id;
+    item.label = card.querySelector("[data-provider-label]")?.textContent || providerTypes[item.type]?.label || item.id;
     item.enabled = true;
     return item;
   }});
@@ -582,6 +664,7 @@ async function refreshProviderHealth(registry) {{
   }}
   updateProviderSummary(data);
   (data.providers || []).forEach(updateProviderCard);
+  reorderProviderCards(data);
 }}
 function updateProviderSummary(registry) {{
   const providers = registry.providers || [];
@@ -597,6 +680,48 @@ function updateProviderSummary(registry) {{
   document.getElementById("provider-fastest").textContent = fastest ? `${{fastest.label || fastest.id}} · ${{fastest.last_latency_ms}}ms` : tx("provider.none");
   document.getElementById("provider-active-summary").textContent = active ? (active.label || active.id) : (registry.active_provider || "--");
   document.getElementById("provider-last-checked").textContent = checked[0] ? formatChecked(checked[0].last_checked_at) : tx("provider.never_checked");
+}}
+function reorderProviderCards(registry) {{
+  const providers = registry.providers || [];
+  const availableList = document.getElementById("provider-available-list");
+  const secondaryList = document.getElementById("provider-secondary-list");
+  const empty = availableList.querySelector(".provider-empty");
+  if (empty) empty.remove();
+  const ordered = [...providers].sort(providerSort);
+  let availableCount = 0;
+  let secondaryCount = 0;
+  ordered.forEach(provider => {{
+    const card = document.querySelector(`[data-provider-card][data-provider-id="${{cssEscape(provider.id)}}"]`);
+    if (!card) return;
+    if (isAvailableProvider(provider)) {{
+      availableList.appendChild(card);
+      availableCount += 1;
+    }} else {{
+      secondaryList.appendChild(card);
+      secondaryCount += 1;
+    }}
+  }});
+  if (!availableCount) {{
+    const div = document.createElement("div");
+    div.className = "provider-empty";
+    div.textContent = tx("provider.none_available");
+    availableList.appendChild(div);
+  }}
+  document.getElementById("provider-available-count").textContent = availableCount;
+  document.getElementById("provider-secondary-count").textContent = secondaryCount;
+  document.getElementById("provider-secondary-details").open = availableCount === 0;
+}}
+function providerSort(a, b) {{
+  const aAvailable = isAvailableProvider(a);
+  const bAvailable = isAvailableProvider(b);
+  if (aAvailable !== bAvailable) return aAvailable ? -1 : 1;
+  const aLatency = Number(a.last_latency_ms ?? 999999);
+  const bLatency = Number(b.last_latency_ms ?? 999999);
+  if (aAvailable && aLatency !== bLatency) return aLatency - bLatency;
+  return String(a.label || a.id).localeCompare(String(b.label || b.id));
+}}
+function isAvailableProvider(provider) {{
+  return ["healthy", "reachable"].includes(provider.health || "");
 }}
 function updateProviderCard(provider) {{
   const card = document.querySelector(`[data-provider-card][data-provider-id="${{cssEscape(provider.id)}}"]`);
@@ -641,7 +766,9 @@ function bindProviderControls() {{
     const type = "custom";
     const id = "custom_" + Date.now();
     const meta = providerTypes[type];
-    document.getElementById("provider-list").insertAdjacentHTML("beforeend", providerTemplate(id, type, meta.label, meta.base_url, meta.model));
+    document.getElementById("provider-secondary-list").insertAdjacentHTML("beforeend", providerTemplate(id, type, meta.label, meta.base_url, meta.model));
+    document.getElementById("provider-secondary-details").open = true;
+    document.getElementById("provider-secondary-count").textContent = document.querySelectorAll("#provider-secondary-list [data-provider-card]").length;
   }});
   document.getElementById("test-all-providers").addEventListener("click", testAllProviders);
   document.addEventListener("click", event => {{
@@ -698,6 +825,30 @@ def _provider_card(provider: Mapping[str, Any], active_provider: str, lang: str)
       </div>
     </div>
     """
+
+
+def _provider_groups(providers: list[Mapping[str, Any]], active_provider: str) -> dict[str, list[Mapping[str, Any]]]:
+    available = [provider for provider in providers if _is_provider_available(provider)]
+    secondary = [provider for provider in providers if not _is_provider_available(provider)]
+    return {
+        "available": sorted(available, key=lambda item: _provider_sort_key(item, active_provider, available=True)),
+        "secondary": sorted(secondary, key=lambda item: _provider_sort_key(item, active_provider, available=False)),
+    }
+
+
+def _provider_sort_key(provider: Mapping[str, Any], active_provider: str, *, available: bool) -> tuple[Any, ...]:
+    active_rank = 0 if str(provider.get("id")) == str(active_provider) else 1
+    label = str(provider.get("label") or provider.get("id") or "")
+    if available:
+        latency = provider.get("last_latency_ms")
+        latency_rank = int(latency) if latency is not None else 999999
+        return (active_rank, latency_rank, label.lower())
+    status_rank = {"not_configured": 0, "unknown": 1, "error": 2, "missing": 3}.get(str(provider.get("health")), 4)
+    return (status_rank, active_rank, label.lower())
+
+
+def _is_provider_available(provider: Mapping[str, Any]) -> bool:
+    return str(provider.get("health")) in {"healthy", "reachable"}
 
 
 def _provider_health_summary(providers: list[Mapping[str, Any]], active_provider: str, lang: str) -> dict[str, str | int]:

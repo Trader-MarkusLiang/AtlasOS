@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-07_0917_provider-card-priority-collapse.md`
 - `docs/codex-sessions/completed/2026-07-07_0904_sync-ccswitch-providers.md`
 - `docs/codex-sessions/completed/2026-07-07_0905_provider-health-v141-label.md`
 - `docs/codex-sessions/completed/2026-07-07_0845_provider-health-visualization.md`

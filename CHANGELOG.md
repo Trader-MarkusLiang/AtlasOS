@@ -1,5 +1,17 @@
 # Changelog
 
+## LLM Provider Card Prioritization v1.4.3 - 2026-07-07
+
+- Updated `/settings` provider cards so available providers are shown first in an expanded primary
+  section.
+- Moved unavailable, untested, and not-configured providers into a collapsed secondary section.
+- Added live reordering after provider health checks so newly reachable providers move into the
+  available section automatically.
+- Preserved existing encrypted local provider keys when saving settings without re-entering API
+  keys.
+- Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, Decision Contract semantics, runtime cognition
+  algorithms, trading execution, prediction logic, or private runtime config.
+
 ## LLM Provider cc-switch Sync v1.4.2 - 2026-07-07
 
 - Synced local Atlas runtime provider configuration from cc-switch Codex providers for MoreCode and

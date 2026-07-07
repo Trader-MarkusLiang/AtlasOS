@@ -14,6 +14,7 @@ from runtime.llm.provider_registry import (
     default_provider_registry,
     encrypt_api_key,
     load_provider_registry,
+    update_provider_registry,
     safe_registry_view,
     save_provider_registry,
 )
@@ -45,6 +46,22 @@ def _assert_provider_registry() -> None:
         safe = safe_registry_view(loaded)
         assert safe["providers"]
         assert "api_key_encrypted" not in safe["providers"][0]
+    with TemporaryDirectory() as tmp:
+        path = str(Path(tmp) / "user_config.json")
+        registry = default_provider_registry()
+        for provider in registry["providers"]:
+            if provider["id"] == "morecode":
+                provider["api_key_encrypted"] = encrypt_api_key(secret)
+        save_provider_registry(registry, path)
+        safe_payload = safe_registry_view(load_provider_registry(path))
+        for provider in safe_payload["providers"]:
+            provider["api_key"] = ""
+            if provider["id"] == "morecode":
+                provider["model"] = "gpt-5.4"
+        update_provider_registry(safe_payload, path)
+        loaded = load_provider_registry(path)
+        morecode = next(provider for provider in loaded["providers"] if provider["id"] == "morecode")
+        assert decrypt_api_key(morecode["api_key_encrypted"]) == secret
 
 
 def _assert_provider_router() -> None:
@@ -76,6 +93,10 @@ def _assert_ui_i18n() -> None:
     assert "provider-status-pill" in html
     assert "provider-latency-bar" in html
     assert "test-all-providers" in html
+    assert "provider-available-list" in html
+    assert "provider-secondary-details" in html
+    assert "provider-secondary-list" in html
+    assert "provider-available-count" in html
 
 
 def _assert_ui_boundary() -> None:

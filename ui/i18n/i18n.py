@@ -90,6 +90,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "provider.testing": "Testing providers...",
         "provider.tested": "Provider check complete",
         "provider.none": "None yet",
+        "provider.available_section": "Available providers",
+        "provider.other_section": "Unavailable / not configured",
+        "provider.none_available": "No available provider yet",
     },
     "zh": {
         "app.title": "认知控制中心",
@@ -169,6 +172,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "provider.testing": "正在检测 Provider...",
         "provider.tested": "Provider 检测完成",
         "provider.none": "暂无",
+        "provider.available_section": "可用 Provider",
+        "provider.other_section": "不可用 / 未配置",
+        "provider.none_available": "暂无可用 Provider",
     },
 }
 

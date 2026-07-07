@@ -113,6 +113,12 @@ def save_provider_registry(registry: Mapping[str, Any], path: str | None = None)
 
 def update_provider_registry(payload: Mapping[str, Any], path: str | None = None) -> dict[str, Any]:
     incoming = payload.get("llm_registry", payload)
+    existing_registry = _normalize_registry(_load_config(path).get("llm_registry", default_provider_registry()))
+    existing_keys = {
+        str(provider.get("id")): str(provider.get("api_key_encrypted") or "")
+        for provider in existing_registry.get("providers", [])
+        if isinstance(provider, Mapping)
+    }
     raw_keys: dict[str, str] = {}
     if isinstance(incoming, Mapping):
         for provider in incoming.get("providers", []):
@@ -128,6 +134,8 @@ def update_provider_registry(payload: Mapping[str, Any], path: str | None = None
         raw_key = raw_keys.get(str(item.get("id")), "")
         if raw_key and raw_key != "***":
             item["api_key_encrypted"] = encrypt_api_key(raw_key)
+        elif not item.get("api_key_encrypted") and existing_keys.get(str(item.get("id"))):
+            item["api_key_encrypted"] = existing_keys[str(item.get("id"))]
         providers.append(item)
     registry["providers"] = providers
     return save_provider_registry(registry, path)
