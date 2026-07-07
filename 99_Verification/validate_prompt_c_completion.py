@@ -421,11 +421,12 @@ def _soak(root: Path) -> dict[str, Any]:
 
 
 def _security(root: Path) -> dict[str, Any]:
-    tracked = _run(["git", "grep", "-nE", r"sk-[A-Za-z0-9_-]{12,}|Authorization: Bearer", "--", "."], check=False)
+    pattern = r"sk-[A-Za-z0-9_-]{12,}|" + "Authorization: " + "Bearer"
+    tracked = _run(["git", "grep", "-nE", pattern, "--", "."], check=False)
     matches = [
         line
         for line in tracked["stdout"].splitlines()
-        if "git grep -nE" not in line and "Authorization: Bearer' --" not in line
+        if "git grep -nE" not in line and ("Authorization: " + "Bearer' --") not in line
     ]
     assert not matches
     return {
