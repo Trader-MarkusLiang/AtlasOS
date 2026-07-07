@@ -358,6 +358,7 @@ def state_api() -> Dict[str, Any]:
         "last_decision_brief_id": latest_brief.get("id"),
         "portfolio_context": portfolio_context,
         "market_intelligence": market_intelligence,
+        "daily_cycle": store.get_state("daily_cycle_state"),
         "llm_trace_summary": llm_summary,
         "llm_provider_registry": safe_registry_view(),
         "last_event_summary": event_history[0] if event_history else {},

@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 try:
+    from runtime.daily_cycle import current_daily_cycle
     from runtime.decision_loop import DecisionLoop, DecisionLoopConfig
     from runtime.event_source import SimulatedMarketEventSource, event_to_runtime_event
     from runtime.logging import utc_now_iso
@@ -35,6 +36,7 @@ try:
     from runtime.telemetry.state_snapshot import capture_cognitive_snapshot
 except ModuleNotFoundError:  # pragma: no cover
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from runtime.daily_cycle import current_daily_cycle
     from runtime.decision_loop import DecisionLoop, DecisionLoopConfig
     from runtime.event_source import SimulatedMarketEventSource, event_to_runtime_event
     from runtime.logging import utc_now_iso
@@ -230,6 +232,7 @@ class AtlasRuntimeDaemon:
                 "market_refresh_status": (market_refresh or {}).get("status", "not_run"),
                 "market_events_enqueued": int((market_refresh or {}).get("events_enqueued", 0) or 0),
                 "market_channels": (market_refresh or {}).get("channels", {}),
+                "daily_cycle": self._daily_cycle_status(),
                 "next_run_time": next_run_time(self.schedule).isoformat(),
                 "no_trading_execution": True,
             },
@@ -250,6 +253,11 @@ class AtlasRuntimeDaemon:
             max_assets=max(1, int(self.config.market_max_assets or 1)),
         )
         self.store.set_state("market_intelligence_state", result)
+        return result
+
+    def _daily_cycle_status(self) -> Dict[str, Any]:
+        result = current_daily_cycle(db_path=self.config.db_path)
+        self.store.set_state("daily_cycle_state", result)
         return result
 
     def _ingest_ui_inbox_events(self) -> int:

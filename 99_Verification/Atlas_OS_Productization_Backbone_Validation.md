@@ -10,6 +10,7 @@ Validate the first productization backbone slice from the overnight sprint manda
 - Read-only portfolio context from percentage configuration.
 - Normalized market observation routing through Input Router-compatible events.
 - Forecast Ledger creation and outcome evaluation.
+- Daily-cycle metadata and Forecast Ledger review counts.
 - `/state` product fields for portfolio and market intelligence.
 
 ## Commands
@@ -21,6 +22,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile \
   runtime/market_intelligence.py \
   runtime/portfolio_context.py \
   runtime/forecast_ledger.py \
+  runtime/daily_cycle.py \
   runtime/atlas_runtime_daemon.py \
   runtime/orchestrator.py \
   runtime/decision_brief.py \
@@ -42,6 +44,7 @@ PASS:
 - Market observation -> Input Router mapping to `volume_price_breakout`.
 - Degraded market refresh with no configured assets.
 - Forecast Ledger create/evaluate path.
+- Daily-cycle metadata.
 - `/state` portfolio and market-intelligence fields.
 - Product pages render without private config.
 - Roadmap/dev registry regression remains passing.
@@ -60,6 +63,7 @@ PASS:
     "market_router_mapping",
     "market_refresh_degraded_mode",
     "forecast_ledger_evaluation",
+    "daily_cycle_metadata",
     "state_api_product_fields",
     "product_pages_render"
   ]

@@ -29,6 +29,7 @@ PYTHONDONTWRITEBYTECODE=1 ATLAS_USER_CONFIG="$tmpdir/config.json" \
 - Runtime log lines: 2.
 - Market refresh status: `no_configured_assets`.
 - Market events enqueued: 0.
+- Daily cycle phase: `overnight` in the local test run.
 - Daemon did not crash when market refresh was enabled but no assets were configured.
 
 ## Interpretation
@@ -44,4 +45,3 @@ Before claiming long-run stability:
 - Monitor exception count, memory growth, log growth, queue backlog, provider failure rate,
   hypothesis switching, trust drift, and market refresh latency.
 - Include provider/no-provider and configured-asset scenarios.
-

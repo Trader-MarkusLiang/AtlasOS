@@ -32,6 +32,7 @@ portfolio context, normalized market ingestion, and forecast accountability.
 - `runtime/market_intelligence.py`.
 - `runtime/forecast_ledger.py`.
 - Daemon market-refresh integration.
+- Daily-cycle metadata on daemon ticks.
 - Portfolio context integration into runtime Decision Briefs.
 - Standard Atlas action vocabulary in runtime briefs.
 - `/`, `/setup`, `/portfolio`, `/markets`, `/predictions`, `/learning` UI routes.
@@ -71,6 +72,7 @@ portfolio context, normalized market ingestion, and forecast accountability.
 ## J. Autonomous Runtime Status
 
 - Daemon can run accelerated 2-cycle smoke with market refresh enabled and no configured assets.
+- Daemon tick logs include daily-cycle phase metadata and Forecast Ledger review counts.
 - No 24-hour stability claim.
 
 ## K. UI Usability Status
@@ -87,7 +89,7 @@ portfolio context, normalized market ingestion, and forecast accountability.
 - LLM provider UI/i18n regression validation.
 - Roadmap/dev registry regression validation.
 - Python compile validation for modified runtime/UI modules.
-- 2-cycle daemon smoke with market refresh enabled and no configured assets.
+- 2-cycle daemon smoke with market refresh enabled, no configured assets, and daily-cycle metadata.
 
 ## M. Tests Failed
 
@@ -101,5 +103,5 @@ creation time.
 
 ## O. Recommended Next Step
 
-Run a longer daemon soak with one or two configured non-private assets, then implement Keychain
-secret storage before expanding market-intelligence channels.
+Run a longer daemon soak with one or two configured non-private assets, then run a live Keychain
+provider save smoke before expanding market-intelligence channels.

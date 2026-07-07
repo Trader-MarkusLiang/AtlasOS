@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_forecasts
+from runtime.daily_cycle import current_daily_cycle
 from runtime.market_intelligence import market_observation_to_event, refresh_market_intelligence
 from runtime.portfolio_context import build_portfolio_context
 from ui.app_server import state_api
@@ -113,10 +114,14 @@ def main() -> None:
         ledger = list_forecasts(db_path=str(db_path))
         assert ledger["metrics"]["evaluated"] == 1
         assert ledger["metrics"]["minimum_sample_size_met"] is False
+        daily = current_daily_cycle(db_path=str(db_path))
+        assert daily["phase"] in {"morning", "intraday", "post_market", "overnight"}
+        assert daily["forecast_review"]["evaluated"] == 1
 
         state = state_api()
         assert "portfolio_context" in state
         assert "market_intelligence" in state
+        assert "daily_cycle" in state
         assert "Today&apos;s Atlas Brief" in render_home_page(state)
         assert "Portfolio Context" in render_portfolio_page(portfolio)
         assert "Market Intelligence" in render_markets_page(market)
@@ -132,6 +137,7 @@ def main() -> None:
                     "market_router_mapping",
                     "market_refresh_degraded_mode",
                     "forecast_ledger_evaluation",
+                    "daily_cycle_metadata",
                     "state_api_product_fields",
                     "product_pages_render",
                 ],

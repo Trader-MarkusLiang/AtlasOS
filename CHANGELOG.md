@@ -16,6 +16,9 @@
   through Input Router-compatible events.
 - Integrated scheduled market refresh into `runtime/atlas_runtime_daemon.py` with graceful degraded
   mode, cadence controls, telemetry status, and no trading execution.
+- Added `runtime/daily_cycle.py` and daemon daily-cycle metadata so each tick is labeled as morning,
+  intraday, post-market, or overnight with read-only operating tasks and Forecast Ledger review
+  counts.
 - Added `runtime/forecast_ledger.py` for non-binding forecast accountability: open forecasts,
   matured/evaluated outcomes, forecast error, calibration error, and low-sample warnings.
 - Updated `runtime/orchestrator.py` and `runtime/decision_brief.py` so runtime briefs can include
@@ -25,6 +28,8 @@
   `/learning` UI pages, wired through `ui/app_server.py` without importing cognition modules.
 - Added `99_Verification/validate_productization_backbone.py` and productization validation
   reports. Validation used temporary config/database files and did not touch private local config.
+- Accelerated daemon smoke now confirms both market refresh degraded mode and daily-cycle phase
+  metadata are written without crashing.
 - Provider secret-storage validation used a fake key and `ATLAS_DISABLE_KEYCHAIN=1`; real Keychain
   behavior still requires a live local save test before calling the issue fully closed.
 - Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, CDE logic, Decision Contract semantics,

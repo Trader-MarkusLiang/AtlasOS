@@ -40,6 +40,7 @@ use checkpoint commits, and prioritize real evidence over optimistic claims.
   - Added `runtime/market_intelligence.py` for normalized market observations and Input
     Router-compatible events.
   - Added scheduled market-refresh integration to `runtime/atlas_runtime_daemon.py`.
+  - Added `runtime/daily_cycle.py` and daemon tick daily-cycle metadata.
   - Added `runtime/forecast_ledger.py` for non-binding forecast accountability.
   - Updated `runtime/orchestrator.py` and `runtime/decision_brief.py` so runtime briefs include
     read-only portfolio context and use Atlas action vocabulary only.
@@ -80,6 +81,8 @@ use checkpoint commits, and prioritize real evidence over optimistic claims.
 - Accelerated daemon smoke with temporary empty asset config, market refresh enabled, `--max-cycles 2 --no-sleep` — PASS, exit code 0, 2 log lines, `no_configured_assets`, 0 market events enqueued.
 - `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_provider_secret_storage.py` — PASS.
 - `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_llm_provider_ui_i18n_v1_4.py` — PASS.
+- Accelerated daemon smoke after daily-cycle integration — PASS, exit code 0, 2 log lines,
+  `no_configured_assets`, daily-cycle phase `overnight`.
 
 ## Resume Instructions
 
