@@ -19,7 +19,7 @@ if __package__ in {None, ""}:  # Support `python3 ui/app_server.py`.
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from runtime.logging import utc_now_iso
-from runtime.llm.provider_registry import health_check_provider, safe_registry_view
+from runtime.llm.provider_registry import health_check_provider, list_provider_models, safe_registry_view
 from runtime.state_store import StateStore
 from runtime.telemetry.llm_trace_logger import read_llm_traces
 from ui.chat_interface import render_chat_command_center
@@ -115,6 +115,14 @@ def create_app() -> Any:
         if not provider_id:
             return JSONResponse({"status": "error", "error": "provider_required"}, status_code=400)
         return JSONResponse(health_check_provider(provider_id))
+
+    @app.post("/llm/provider/models")
+    async def llm_provider_models(request: Request) -> Any:
+        payload = await _request_payload(request)
+        provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
+        if not provider_id:
+            return JSONResponse({"status": "error", "error": "provider_required"}, status_code=400)
+        return JSONResponse(list_provider_models(provider_id))
 
     @app.post("/llm/providers/test_all")
     async def llm_providers_test_all() -> Any:
@@ -2557,6 +2565,12 @@ class _StdlibHandler(BaseHTTPRequestHandler):
                 self._send_json({"status": "error", "error": "provider_required"}, status=400)
                 return
             self._send_json(health_check_provider(provider_id))
+        elif parsed.path == "/llm/provider/models":
+            provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
+            if not provider_id:
+                self._send_json({"status": "error", "error": "provider_required"}, status=400)
+                return
+            self._send_json(list_provider_models(provider_id))
         elif parsed.path == "/llm/providers/test_all":
             registry = safe_registry_view()
             results = [health_check_provider(str(provider.get("id"))) for provider in registry.get("providers", [])]

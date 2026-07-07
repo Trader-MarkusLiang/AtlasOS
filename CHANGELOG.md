@@ -1,5 +1,19 @@
 # Changelog
 
+## LLM Provider Model Picker v1.4.4 - 2026-07-07
+
+- Added API-backed provider model discovery through `/llm/provider/models`.
+- Updated `/settings` provider cards with editable model pickers: provider-returned model names are
+  shown as dropdown suggestions while custom model names remain allowed.
+- Cached discovered provider model names in local ignored runtime config and surfaced model-list
+  status without exposing provider secrets.
+- Improved provider card layout so model selection has more visual space and clearer custom-input
+  guidance.
+- Preserved local-provider behavior when a model-list endpoint is unavailable; users can still keep
+  manually configured model names.
+- Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, Decision Contract semantics, runtime cognition
+  algorithms, trading execution, prediction logic, or private runtime config.
+
 ## LLM Provider Card Prioritization v1.4.3 - 2026-07-07
 
 - Updated `/settings` provider cards so available providers are shown first in an expanded primary

@@ -93,6 +93,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "provider.available_section": "Available providers",
         "provider.other_section": "Unavailable / not configured",
         "provider.none_available": "No available provider yet",
+        "provider.custom_model_placeholder": "Choose a discovered model or type a custom name",
+        "provider.refresh_models": "Refresh models from provider API",
+        "provider.model_custom_allowed": "API-discovered models appear here; custom model names are allowed but may fail at runtime.",
+        "provider.loading_models": "Loading models...",
+        "provider.models_loaded": "Models loaded",
+        "provider.models_unavailable": "Model list unavailable",
+        "provider.custom_allowed_short": "custom allowed",
     },
     "zh": {
         "app.title": "认知控制中心",
@@ -175,6 +182,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "provider.available_section": "可用 Provider",
         "provider.other_section": "不可用 / 未配置",
         "provider.none_available": "暂无可用 Provider",
+        "provider.custom_model_placeholder": "选择接口返回的模型，或输入自定义模型名",
+        "provider.refresh_models": "从 Provider API 刷新模型列表",
+        "provider.model_custom_allowed": "这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。",
+        "provider.loading_models": "正在加载模型...",
+        "provider.models_loaded": "模型已加载",
+        "provider.models_unavailable": "无法获取模型列表",
+        "provider.custom_allowed_short": "可自定义",
     },
 }
 

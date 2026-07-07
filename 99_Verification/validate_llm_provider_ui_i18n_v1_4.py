@@ -13,6 +13,7 @@ from runtime.llm.provider_registry import (
     decrypt_api_key,
     default_provider_registry,
     encrypt_api_key,
+    list_provider_models,
     load_provider_registry,
     update_provider_registry,
     safe_registry_view,
@@ -62,6 +63,16 @@ def _assert_provider_registry() -> None:
         loaded = load_provider_registry(path)
         morecode = next(provider for provider in loaded["providers"] if provider["id"] == "morecode")
         assert decrypt_api_key(morecode["api_key_encrypted"]) == secret
+    with TemporaryDirectory() as tmp:
+        path = str(Path(tmp) / "user_config.json")
+        registry = default_provider_registry()
+        for provider in registry["providers"]:
+            if provider["id"] == "custom":
+                provider["base_url"] = ""
+        save_provider_registry(registry, path)
+        result = list_provider_models("custom", path=path, timeout=0.1)
+        assert result["status"] == "not_configured"
+        assert result["models"] == []
 
 
 def _assert_provider_router() -> None:
@@ -97,6 +108,12 @@ def _assert_ui_i18n() -> None:
     assert "provider-secondary-details" in html
     assert "provider-secondary-list" in html
     assert "provider-available-count" in html
+    assert "/llm/provider/models" in html
+    assert "data-refresh-models" in html
+    assert "data-provider-model-options" in html
+    assert "data-model-input" in html
+    assert t("provider.refresh_models", "en") == "Refresh models from provider API"
+    assert t("provider.models_unavailable", "zh") == "无法获取模型列表"
 
 
 def _assert_ui_boundary() -> None:
@@ -106,6 +123,7 @@ def _assert_ui_boundary() -> None:
     assert "providers" in state["llm_provider_registry"]
     app_server = (ROOT / "ui/app_server.py").read_text(encoding="utf-8")
     assert "/llm/provider/test" in app_server
+    assert "/llm/provider/models" in app_server
     assert "/llm/providers/test_all" in app_server
     assert "/ui/language" in app_server
 

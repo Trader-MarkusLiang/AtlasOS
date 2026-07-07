@@ -305,6 +305,26 @@ a {{ color: inherit; text-decoration: none; }}
   justify-content: flex-end;
   gap: 8px;
 }}
+.model-picker {{
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+}}
+.model-picker label {{
+  min-width: 0;
+}}
+.model-refresh {{
+  min-width: 42px;
+  padding-inline: 12px;
+}}
+.model-hint {{
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}}
 .provider-telemetry {{
   min-height: 92px;
   padding: 10px;
@@ -418,6 +438,7 @@ button.danger {{ color: #fecdd3; }}
   .settings-grid {{ grid-template-columns: 1fr; }}
   .provider-health-overview {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
   .provider-card {{ grid-template-columns: 1fr; }}
+  .model-picker {{ grid-column: 1 / -1; }}
 }}
 </style>
 </head>
@@ -567,7 +588,14 @@ function providerTemplate(id, type, label, baseUrl, model) {{
           ${{Object.keys(providerTypes).map(key => `<option value="${{key}}" ${{key === type ? "selected" : ""}}>${{providerTypes[key].label}}</option>`).join("")}}
         </select>
       </label>
-      <label>{escape(t("model.model", lang))}<input data-provider-field="model" value="${{escapeHtml(model || "")}}"></label>
+      <div class="model-picker">
+        <label>{escape(t("model.model", lang))}
+          <input data-provider-field="model" data-model-input list="models-${{escapeHtml(id)}}" value="${{escapeHtml(model || "")}}" placeholder="${{tx("provider.custom_model_placeholder")}}">
+          <datalist id="models-${{escapeHtml(id)}}" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="${{tx("provider.refresh_models")}}">↻</button>
+        <div class="model-hint" data-provider-model-hint>${{tx("provider.model_custom_allowed")}}</div>
+      </div>
       <div class="provider-telemetry">
         <label>{escape(t("settings.api_key", lang))}<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
         <div class="latency-row"><span>${{tx("provider.latency")}}</span><span class="latency-value" data-provider-latency>--</span></div>
@@ -592,6 +620,7 @@ function collectProviders() {{
       item[input.getAttribute("data-provider-field")] = input.value;
     }});
     item.label = card.querySelector("[data-provider-label]")?.textContent || providerTypes[item.type]?.label || item.id;
+    item.available_models = Array.from(card.querySelectorAll("[data-provider-model-options] option")).map(option => option.value).filter(Boolean);
     item.enabled = true;
     return item;
   }});
@@ -642,6 +671,22 @@ async function testProvider(card) {{
   }});
   await response.json();
   await refreshProviderHealth();
+}}
+async function refreshModels(card) {{
+  const id = card.querySelector('[data-provider-field="id"]').value;
+  const hint = card.querySelector("[data-provider-model-hint]");
+  hint.textContent = tx("provider.loading_models");
+  await saveSettings();
+  const response = await fetch("/llm/provider/models", {{
+    method: "POST",
+    headers: {{ "content-type": "application/json" }},
+    body: JSON.stringify({{ provider_id: id }})
+  }});
+  const data = await response.json();
+  applyModelOptions(card, data.models || []);
+  hint.textContent = data.status === "ok"
+    ? `${{tx("provider.models_loaded")}} · ${{(data.models || []).length}}`
+    : `${{tx("provider.models_unavailable")}}${{data.error ? " · " + data.error : ""}}`;
 }}
 async function testAllProviders() {{
   const result = document.getElementById("settings-result");
@@ -734,6 +779,21 @@ function updateProviderCard(provider) {{
   card.querySelector("[data-provider-latency-bar]").style.width = latencyWidth(provider.last_latency_ms) + "%";
   card.querySelector("[data-provider-checked]").textContent = provider.last_checked_at ? formatChecked(provider.last_checked_at) : tx("provider.never_checked");
   card.querySelector("[data-provider-error]").textContent = provider.last_error || "";
+  applyModelOptions(card, provider.available_models || []);
+}}
+function applyModelOptions(card, models) {{
+  const datalist = card.querySelector("[data-provider-model-options]");
+  if (!datalist) return;
+  datalist.innerHTML = "";
+  (models || []).forEach(model => {{
+    const option = document.createElement("option");
+    option.value = model;
+    datalist.appendChild(option);
+  }});
+  const hint = card.querySelector("[data-provider-model-hint]");
+  if (hint && (models || []).length) {{
+    hint.textContent = `${{tx("provider.models_loaded")}} · ${{models.length}} · ${{tx("provider.custom_allowed_short")}}`;
+  }}
 }}
 function healthLabel(health) {{
   return {{
@@ -776,6 +836,7 @@ function bindProviderControls() {{
     if (!card) return;
     if (event.target.matches("[data-remove-provider]")) card.remove();
     if (event.target.matches("[data-test-provider]")) testProvider(card);
+    if (event.target.matches("[data-refresh-models]")) refreshModels(card);
   }});
 }}
 document.getElementById("save-settings").addEventListener("click", saveSettings);
@@ -799,6 +860,17 @@ def _provider_card(provider: Mapping[str, Any], active_provider: str, lang: str)
     error_text = str(provider.get("last_error") or "")
     api_placeholder = "saved" if provider.get("api_key") else "••••••"
     remove_disabled = " disabled" if provider_id == active_provider else ""
+    models = provider.get("available_models") if isinstance(provider.get("available_models"), list) else []
+    model_options = "\n".join(
+        f'<option value="{escape(str(model))}"></option>'
+        for model in models
+        if str(model).strip()
+    )
+    model_hint = (
+        f'{t("provider.models_loaded", lang)} · {len(model_options.splitlines())} · {t("provider.custom_allowed_short", lang)}'
+        if model_options
+        else t("provider.model_custom_allowed", lang)
+    )
     return f"""
     <div class="provider-card status-{escape(health)}" data-provider-card data-provider-id="{escape(provider_id)}">
       <div class="provider-card-head">
@@ -810,7 +882,14 @@ def _provider_card(provider: Mapping[str, Any], active_provider: str, lang: str)
       </div>
       <label>ID<input data-provider-field="id" value="{escape(provider_id)}" readonly></label>
       <label>Type<select data-provider-field="type">{_provider_type_options(provider_type)}</select></label>
-      <label>{escape(t("model.model", lang))}<input data-provider-field="model" value="{escape(str(provider.get("model") or ""))}"></label>
+      <div class="model-picker">
+        <label>{escape(t("model.model", lang))}
+          <input data-provider-field="model" data-model-input list="models-{escape(provider_id)}" value="{escape(str(provider.get("model") or ""))}" placeholder="{escape(t("provider.custom_model_placeholder", lang))}">
+          <datalist id="models-{escape(provider_id)}" data-provider-model-options>{model_options}</datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="{escape(t("provider.refresh_models", lang))}">↻</button>
+        <div class="model-hint" data-provider-model-hint>{escape(model_hint)}</div>
+      </div>
       <div class="provider-telemetry">
         <label>{escape(t("settings.api_key", lang))}<input data-provider-field="api_key" type="password" placeholder="{escape(api_placeholder)}"></label>
         <div class="latency-row"><span>{escape(t("provider.latency", lang))}</span><span class="latency-value" data-provider-latency>{escape(latency_text)}</span></div>

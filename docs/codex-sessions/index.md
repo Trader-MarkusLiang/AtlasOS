@@ -4,10 +4,11 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Active Sessions
 
-- None currently.
+None currently.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-07_0927_provider-model-picker.md`
 - `docs/codex-sessions/completed/2026-07-07_0917_provider-card-priority-collapse.md`
 - `docs/codex-sessions/completed/2026-07-07_0904_sync-ccswitch-providers.md`
 - `docs/codex-sessions/completed/2026-07-07_0905_provider-health-v141-label.md`

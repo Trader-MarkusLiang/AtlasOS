@@ -19,6 +19,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any, Mapping
+from urllib.parse import urlsplit, urlunsplit
 
 
 CONFIG_PATH = Path("runtime/config/user_config.json")
@@ -83,6 +84,8 @@ def default_provider_registry() -> dict[str, Any]:
                 "health": "unknown",
                 "last_latency_ms": None,
                 "last_error": "",
+                "available_models": [],
+                "last_models_error": "",
             }
         )
     return {
@@ -251,6 +254,55 @@ def health_check_provider(provider_id: str, path: str | None = None, timeout: fl
     return {"provider": provider_id, "status": status, "latency_ms": latency_ms, "error": error}
 
 
+def list_provider_models(provider_id: str, path: str | None = None, timeout: float = 8.0) -> dict[str, Any]:
+    """Fetch and cache model names exposed by a provider endpoint."""
+
+    provider = get_provider(provider_id, path)
+    if not provider:
+        return {"provider": provider_id, "status": "missing", "models": [], "latency_ms": 0, "error": "provider_not_found"}
+    started = time.time()
+    models: list[str] = []
+    status = "unknown"
+    error = ""
+    try:
+        base_url = str(provider.get("base_url", "") or "")
+        if not base_url:
+            status = "not_configured"
+            error = "base_url_missing"
+        elif provider.get("type") == "ollama":
+            endpoint = base_url.rstrip("/").replace("/api/generate", "/api/tags")
+            with urllib.request.urlopen(endpoint, timeout=timeout) as response:
+                payload = json.loads(response.read().decode("utf-8") or "{}")
+            models = _extract_model_names(payload)
+            status = "ok"
+        elif provider_api_key(provider) or provider.get("type") in {"custom", "morecode"}:
+            endpoint = _models_endpoint(base_url)
+            request = urllib.request.Request(endpoint, headers=_model_request_headers(provider), method="GET")
+            try:
+                with urllib.request.urlopen(request, timeout=timeout) as response:
+                    payload = json.loads(response.read().decode("utf-8") or "{}")
+            except urllib.error.HTTPError as exc:
+                if exc.code != 401 or not _is_local_url(endpoint) or provider.get("type") not in {"custom", "morecode"}:
+                    raise
+                request = urllib.request.Request(endpoint, headers={"Accept": "application/json"}, method="GET")
+                with urllib.request.urlopen(request, timeout=timeout) as response:
+                    payload = json.loads(response.read().decode("utf-8") or "{}")
+            models = _extract_model_names(payload)
+            status = "ok"
+        else:
+            status = "not_configured"
+            error = "api_key_missing"
+    except urllib.error.HTTPError as exc:
+        status = "error"
+        error = f"http_{exc.code}"
+    except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        status = "error"
+        error = str(exc)[:240]
+    latency_ms = int((time.time() - started) * 1000)
+    _record_provider_models(provider_id, models, status=status, latency_ms=latency_ms, error=error, path=path)
+    return {"provider": provider_id, "status": status, "models": models, "latency_ms": latency_ms, "error": error}
+
+
 def encrypt_api_key(value: str) -> str:
     raw = value.encode("utf-8")
     nonce = hashlib.sha256(f"{time.time()}:{os.getpid()}".encode("utf-8")).digest()[:12]
@@ -308,6 +360,8 @@ def _normalize_registry(value: Mapping[str, Any]) -> dict[str, Any]:
                 "health": "unknown",
                 "last_latency_ms": None,
                 "last_error": "",
+                "available_models": [],
+                "last_models_error": "",
             }
         base.update({key: provider[key] for key in provider if key != "api_key"})
         base["id"] = provider_id
@@ -367,6 +421,93 @@ def _legacy_llm_from_registry(registry: Mapping[str, Any]) -> dict[str, Any]:
 def _safe_provider_id(value: str) -> str:
     clean = "".join(ch for ch in value.strip().lower().replace(" ", "_") if ch.isalnum() or ch in {"_", "-"})
     return clean or "custom"
+
+
+def _record_provider_models(
+    provider_id: str,
+    models: list[str],
+    *,
+    status: str,
+    latency_ms: int,
+    error: str,
+    path: str | None = None,
+) -> None:
+    config = _load_config(path)
+    registry = _normalize_registry(config.get("llm_registry", default_provider_registry()))
+    for provider in registry["providers"]:
+        if provider.get("id") == provider_id:
+            if status == "ok":
+                provider["available_models"] = models
+            provider["last_models_status"] = status
+            provider["last_models_latency_ms"] = int(latency_ms)
+            provider["last_models_error"] = str(error)[:240]
+            provider["last_models_checked_at"] = int(time.time())
+            break
+    config["llm_registry"] = registry
+    target = Path(path) if path else CONFIG_PATH
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(config, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _models_endpoint(base_url: str) -> str:
+    url = base_url.rstrip("/")
+    for suffix in ("/chat/completions", "/responses", "/messages", "/generate"):
+        if url.endswith(suffix):
+            url = url[: -len(suffix)]
+            break
+    if url.endswith("/v1") or url.endswith("/v3"):
+        return url + "/models"
+    parsed = urlsplit(url)
+    path = parsed.path.rstrip("/")
+    if path.endswith("/v1") or path.endswith("/v3"):
+        endpoint_path = path + "/models"
+    else:
+        endpoint_path = path + "/models"
+    return urlunsplit((parsed.scheme, parsed.netloc, endpoint_path, "", ""))
+
+
+def _is_local_url(value: str) -> bool:
+    host = urlsplit(value).hostname or ""
+    return host in {"localhost", "127.0.0.1", "::1"}
+
+
+def _model_request_headers(provider: Mapping[str, Any]) -> dict[str, str]:
+    headers = {"Accept": "application/json"}
+    api_key = provider_api_key(provider)
+    if api_key:
+        if provider.get("type") == "claude":
+            headers["x-api-key"] = api_key
+            headers["anthropic-version"] = "2023-06-01"
+        else:
+            headers["Authorization"] = f"Bearer {api_key}"
+    return headers
+
+
+def _extract_model_names(payload: Any) -> list[str]:
+    candidates: list[Any]
+    if isinstance(payload, Mapping):
+        if isinstance(payload.get("data"), list):
+            candidates = payload["data"]
+        elif isinstance(payload.get("models"), list):
+            candidates = payload["models"]
+        elif isinstance(payload.get("tags"), list):
+            candidates = payload["tags"]
+        else:
+            candidates = [payload]
+    elif isinstance(payload, list):
+        candidates = payload
+    else:
+        candidates = []
+    names: list[str] = []
+    for item in candidates:
+        if isinstance(item, Mapping):
+            value = item.get("id") or item.get("name") or item.get("model")
+        else:
+            value = item
+        clean = str(value or "").strip()
+        if clean and clean not in names:
+            names.append(clean[:160])
+    return sorted(names)[:200]
 
 
 def _secret_key() -> bytes:
