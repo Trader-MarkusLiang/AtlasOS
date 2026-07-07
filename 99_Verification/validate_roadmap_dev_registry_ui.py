@@ -44,15 +44,18 @@ def main() -> None:
         _assert(version in versions, f"roadmap should include {version}")
     v07 = next(layer for layer in layers if layer.get("version") == "v0.7")
     v08 = next(layer for layer in layers if layer.get("version") == "v0.8")
-    _assert(v07.get("status") == "completed", "v0.7 should be completed")
+    _assert(v07.get("status") == "implemented", "v0.7 should be implemented")
     _assert(v08.get("status") == "planned", "v0.8 should be planned")
-    _assert(v07.get("validation", {}).get("status") == "PASS", "v0.7 validation should pass")
+    _assert(
+        v07.get("validation", {}).get("status") == "REAL_RUNTIME_PROVEN",
+        "v0.7 validation should expose Prompt D evidence level",
+    )
 
     payload = roadmap_api_payload(str(roadmap_path))
     _assert(payload.get("current_version") == "productization-sprint", "/roadmap payload should expose current version")
     _assert(payload.get("tracks"), "/roadmap payload should expose parallel tracks")
     _assert(payload.get("version_model"), "/roadmap payload should expose version model")
-    _assert(payload.get("completed_layers"), "/roadmap payload should expose completed layers")
+    _assert(payload.get("implemented_layers"), "/roadmap payload should expose implemented layers")
     _assert(payload.get("planned_layers"), "/roadmap payload should expose planned layers")
     _assert("productization" in str(payload.get("active_stage")), "/roadmap payload should expose active stage")
 
@@ -60,7 +63,7 @@ def main() -> None:
     for text in (
         "Version Timeline",
         "Module Evolution Log",
-        "Validation Results",
+        "Evidence Results",
         "Current System State",
         "System Architecture Evolution Graph",
         "Causal Self-Discovery",

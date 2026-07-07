@@ -41,7 +41,7 @@ def main() -> None:
     for text in (
         "Atlas Roadmap",
         "Current Stage",
-        "Release Progress",
+        "Implementation Coverage",
         "Version Timeline",
         "Layer progression",
         "Architecture Evolution",

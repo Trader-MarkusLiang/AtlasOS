@@ -4,11 +4,11 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Active Sessions
 
-- `docs/codex-sessions/active/2026-07-08_0706_prompt-d-real-world-activation.md`
 - `docs/codex-sessions/active/2026-07-08_0020_overnight-productization-sprint.md`
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-08_0706_prompt-d-real-world-activation.md`
 - `docs/codex-sessions/completed/2026-07-08_0109_prompt-c-completion-enforcement.md`
 - `docs/codex-sessions/completed/2026-07-08_0050_morning-final-verification-rc.md`
 - `docs/codex-sessions/completed/2026-07-07_0927_provider-model-picker.md`

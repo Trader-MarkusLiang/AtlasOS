@@ -9,9 +9,15 @@ def render_roadmap_page(payload: Mapping[str, Any]) -> str:
     """Render a browser-first roadmap page from the machine-readable payload."""
 
     layers = [layer for layer in payload.get("layers", []) if isinstance(layer, Mapping)]
-    completed = [layer for layer in layers if layer.get("status") == "completed"]
+    implemented = [layer for layer in layers if layer.get("status") in {"implemented", "completed"}]
     planned = [layer for layer in layers if layer.get("status") == "planned"]
-    completion = int((len(completed) / max(1, len(layers))) * 100)
+    evidence_layers = [
+        layer
+        for layer in layers
+        if isinstance(layer.get("validation"), Mapping)
+        and str(layer.get("validation", {}).get("status", "")).upper() not in {"", "PENDING", "UNKNOWN"}
+    ]
+    completion = int((len(implemented) / max(1, len(layers))) * 100)
     layer_cards = "\n".join(_layer_card(layer) for layer in layers)
     track_cards = "\n".join(_track_card(track) for track in payload.get("tracks", []) if isinstance(track, Mapping))
     version_model = payload.get("version_model", {}) if isinstance(payload.get("version_model"), Mapping) else {}
@@ -33,6 +39,8 @@ def render_roadmap_page(payload: Mapping[str, Any]) -> str:
   --muted: #8c97a6;
   --subtle: #cbd5e1;
   --ok: #d9f99d;
+  --partial: #fbbf24;
+  --live: #93c5fd;
   --pending: #fde68a;
 }}
 * {{ box-sizing: border-box; }}
@@ -147,8 +155,9 @@ h1 {{
   font-size: 0.72rem;
   text-transform: uppercase;
 }}
-.status.completed {{ color: var(--ok); border-color: rgba(217, 249, 157, 0.36); }}
+.status.implemented, .status.completed {{ color: var(--ok); border-color: rgba(217, 249, 157, 0.36); }}
 .status.planned {{ color: var(--pending); border-color: rgba(253, 230, 138, 0.36); }}
+.status.partial {{ color: var(--partial); border-color: rgba(251, 191, 36, 0.36); }}
 .layer-card h3 {{ margin: 14px 0 8px; font-size: 1rem; }}
 .layer-card p {{ margin: 0; color: var(--subtle); line-height: 1.45; }}
 .modules {{ margin-top: 12px; color: var(--muted); font-size: 0.8rem; }}
@@ -199,14 +208,14 @@ h1 {{
       validation evidence, and architecture evolution instead of one misleading version ladder.</p>
     </div>
     <aside class="card summary-card">
-      <div class="kicker">Release Progress</div>
-      <h2>{completion}% completed</h2>
-      <div class="progress" aria-label="Roadmap completion"><span></span></div>
+      <div class="kicker">Implementation Coverage</div>
+      <h2>{completion}% implemented</h2>
+      <div class="progress" aria-label="Roadmap implementation coverage"><span></span></div>
       <div class="metric-grid">
         <div class="metric"><span>Range</span><strong>{_escape(str(payload.get("version", "Unknown")))}</strong></div>
-        <div class="metric"><span>Completed</span><strong>{len(completed)}</strong></div>
+        <div class="metric"><span>Implemented</span><strong>{len(implemented)}</strong></div>
         <div class="metric"><span>Planned</span><strong>{len(planned)}</strong></div>
-        <div class="metric"><span>Trust</span><strong>{_escape(str(payload.get("trust_status", "Unknown")))}</strong></div>
+        <div class="metric"><span>Evidence</span><strong>{len(evidence_layers)} layers classified</strong></div>
       </div>
     </aside>
   </section>
@@ -217,7 +226,7 @@ h1 {{
   <section class="track-grid">{track_cards or '<article class="card track-card"><div class="kicker">Pending</div><h3>No tracks available</h3><p>Roadmap track data is missing.</p></article>'}</section>
 
   <div class="section-head">
-    <div><div class="kicker">Version Timeline</div><h2>Layer progression</h2><p>Completed layers stay visible for traceability; planned layers remain explicit.</p></div>
+    <div><div class="kicker">Version Timeline</div><h2>Layer progression</h2><p>Implemented layers stay visible for traceability; evidence labels separate fixture proof from real runtime proof.</p></div>
   </div>
   <section class="timeline">{layer_cards}</section>
 
@@ -238,6 +247,7 @@ def _layer_card(layer: Mapping[str, Any]) -> str:
     module_count = len(modules) if isinstance(modules, list) else 0
     validation = layer.get("validation", {}) if isinstance(layer.get("validation"), Mapping) else {}
     status = str(layer.get("status", "unknown")).lower()
+    evidence_note = str(validation.get("evidence_note") or "")
     return f"""
     <article class="card layer-card">
       <div class="layer-top">
@@ -245,7 +255,8 @@ def _layer_card(layer: Mapping[str, Any]) -> str:
         <span class="status {status}">{_escape(status)}</span>
       </div>
       <h3>{_escape(str(layer.get("name", "Unknown")))}</h3>
-      <p>{_escape(str(layer.get("category", "uncategorized")))} layer with validation status {_escape(str(validation.get("status", "UNKNOWN")))}.</p>
+      <p>{_escape(str(layer.get("category", "uncategorized")))} layer with evidence status {_escape(str(validation.get("status", "UNKNOWN")))}.</p>
+      {f'<p>{_escape(evidence_note)}</p>' if evidence_note else ''}
       <div class="modules">{module_count} modules added</div>
     </article>
     """

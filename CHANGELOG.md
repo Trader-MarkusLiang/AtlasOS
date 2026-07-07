@@ -1,5 +1,25 @@
 # Changelog
 
+## Prompt D Real-World Activation Hardening - 2026-07-08
+
+- Added Prompt D baseline, fixture-bypass audit, runtime lineage, live provider, live market,
+  real portfolio, runtime forecast, true self-iteration, daily-cycle, real-duration soak, browser
+  acceptance, failure-injection, tribunal, merge-readiness, and final reports under
+  `99_Verification/`.
+- Repaired local OpenAI-compatible provider routing so loopback cc-switch shims can be used without
+  leaking or requiring bearer secrets, while public providers still require configured API keys.
+- Repaired daemon script execution path isolation so `python3 runtime/atlas_runtime_daemon.py`
+  resolves the project `runtime.logging` module instead of shadowing third-party logging.
+- Added non-binding runtime Forecast Ledger registration to normal DecisionLoop cycles with
+  persistent event/brief lineage and no trading authority.
+- Added a supported `/predictions/mature` lifecycle endpoint for UI/API forecast maturity before
+  evaluation.
+- Added controlled daemon daily-cycle timestamp dispatch for validation without changing scheduler
+  semantics.
+- Downgraded Prompt C fixture claims where real daemon/UI/provider/market paths were not proven.
+- Prompt D classification: internal alpha with real-runtime proof in key paths; not RC, not
+  production, not live-market proven, and not 2-hour/24-hour stability proven.
+
 ## Prompt C Completion Enforcement - 2026-07-08
 
 - Added Prompt C baseline, backlog, LLM E2E, market ingestion, portfolio differential, forecast

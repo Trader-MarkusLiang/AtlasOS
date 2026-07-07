@@ -8,9 +8,9 @@ ChatGPT, and future agents.
 
 Current Core stage: v2.1 Production Trial.
 
-Current productization stage: Prompt C internal alpha completion enforcement. Atlas Core remains
-an investment research operating system; the runtime and UI layers are product surfaces around
-that core, not replacements for the reasoning framework or CDE.
+Current productization stage: Prompt D real-world activation hardening. Atlas Core remains an
+investment research operating system; the runtime and UI layers are product surfaces around that
+core, not replacements for the reasoning framework or CDE.
 
 ## Repository Map
 
@@ -41,10 +41,21 @@ Runtime, UI, and Data tracks use separate version labels because they mature ind
 | Track | Current State |
 |---|---|
 | Atlas Core / Knowledge OS | v2.1 RC Production Trial |
-| Atlas Runtime | local daemon / EventStream / DecisionLoop trial; 500-cycle accelerated soak passed, no 24h proof |
-| Atlas Cognitive Overlay | symbolic cognition overlays under validation |
-| Atlas UI / Product | Decision Brief-first Home + control center; browser-level visual QA still pending |
-| Atlas Data / Market Intelligence | controlled price/volume ingestion proof; live provider freshness currently unavailable; breadth/news/macro/narrative channels explicitly not configured |
+| Atlas Runtime | real daemon / EventStream / DecisionLoop path partially proven; short wall-clock soak only, no 2h/24h proof |
+| Atlas Cognitive Overlay | symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence |
+| Atlas UI / Product | control center and settings routes render; browser UX is partial and stale-server risk remains |
+| Atlas Data / Market Intelligence | live market fetch attempted; daemon path currently degraded by provider/rate-limit failures; breadth/news/macro/narrative channels explicitly not configured |
+
+Prompt D evidence levels:
+
+| Area | Current Evidence |
+|---|---|
+| LLM provider inference and fallback | `LIVE_PROVEN` through local cc-switch / ARK-compatible route |
+| Portfolio context runtime path | `REAL_RUNTIME_PROVEN` through UI config -> daemon -> Decision Brief |
+| Forecast lineage and self-iteration | `REAL_RUNTIME_PROVEN` / `LIVE_PROVEN` for treatment-control behavioral delta |
+| Daily cycle dispatch | `REAL_RUNTIME_PROVEN` through daemon phase dispatch |
+| Live market observation | `PARTIAL` / `EXTERNAL_BLOCKER` due provider disconnects and rate limits |
+| Real-duration stability | `PARTIAL`; short soak only, not 2h or 24h |
 
 Latest release tag: ais-v1.0.
 

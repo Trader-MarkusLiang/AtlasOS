@@ -6,21 +6,30 @@ Release candidate: v2.1 RC
 
 Portfolio layer version: Portfolio OS v1.2.1
 
-Date: 2026-06-29
+Date: 2026-07-08
 
 Stage: Run First + Capital Deployment Engine
 
 Presentation stage: Decision Experience v1.1 RC
 
-Productization track: Prompt C internal alpha completion enforcement
+Productization track: Prompt D real-world activation hardening
 
 Parallel version model:
 
 - Atlas Core / Knowledge OS: v2.1 RC
-- Atlas Runtime: local daemon / EventStream / DecisionLoop trial; 500-cycle accelerated soak passed, no 24h proof
-- Atlas Cognitive Overlay: symbolic cognition overlays under validation
-- Atlas UI / Product: UI v2.x + provider configuration v1.4.x + Decision Brief-first Home
-- Atlas Data / Market Intelligence: controlled price/volume ingestion proof; live breadth/news/macro/narrative pending
+- Atlas Runtime: real daemon / EventStream / DecisionLoop path partially proven; short wall-clock soak only, no 2h/24h proof
+- Atlas Cognitive Overlay: symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence
+- Atlas UI / Product: UI v2.x + provider configuration v1.4.x + Decision Brief-first Home; browser UX evidence is partial
+- Atlas Data / Market Intelligence: live market fetch attempted; daemon path currently degraded by provider/rate-limit failures
+
+Prompt D evidence classification:
+
+- Provider inference and fallback: `LIVE_PROVEN`
+- Portfolio context runtime path: `REAL_RUNTIME_PROVEN`
+- Forecast lineage and self-iteration: `REAL_RUNTIME_PROVEN`
+- Daily-cycle dispatch: `REAL_RUNTIME_PROVEN`
+- Live market observation: `PARTIAL` / `EXTERNAL_BLOCKER`
+- Real-duration stability: `PARTIAL`
 
 Release lifecycle: Alpha -> RC -> Production Trial -> Final
 

@@ -26,7 +26,7 @@ def roadmap_api_payload(path: str | None = None) -> dict[str, Any]:
 
     roadmap = load_roadmap(path)
     layers = [layer for layer in roadmap.get("layers", []) if isinstance(layer, dict)]
-    completed = [layer for layer in layers if layer.get("status") == "completed"]
+    implemented = [layer for layer in layers if layer.get("status") in {"implemented", "completed"}]
     planned = [layer for layer in layers if layer.get("status") == "planned"]
     return {
         "version": roadmap.get("version"),
@@ -36,7 +36,8 @@ def roadmap_api_payload(path: str | None = None) -> dict[str, Any]:
         "current_stage": roadmap.get("current_stage"),
         "active_stage": roadmap.get("current_stage"),
         "next_stage": roadmap.get("next_stage"),
-        "completed_layers": completed,
+        "completed_layers": implemented,
+        "implemented_layers": implemented,
         "planned_layers": planned,
         "layers": layers,
         "stability_status": roadmap.get("stability_status"),
@@ -147,8 +148,8 @@ a {{ color: var(--accent); text-decoration: none; }}
   font-size: 0.75rem;
   text-transform: uppercase;
 }}
-.status.completed, .status.pass {{ color: var(--ok); border-color: rgba(134, 239, 172, 0.42); }}
-.status.planned, .status.pending {{ color: var(--warn); border-color: rgba(248, 214, 109, 0.42); }}
+.status.implemented, .status.completed, .status.pass, .status.real_runtime_proven, .status.live_proven {{ color: var(--ok); border-color: rgba(134, 239, 172, 0.42); }}
+.status.partial, .status.controlled_fixture_proven, .status.planned, .status.pending {{ color: var(--warn); border-color: rgba(248, 214, 109, 0.42); }}
 .status.fail {{ color: var(--danger); border-color: rgba(251, 113, 133, 0.42); }}
 table {{ width: 100%; border-collapse: collapse; }}
 th, td {{ padding: 9px 10px; border-bottom: 1px solid rgba(148, 163, 184, 0.14); text-align: left; vertical-align: top; }}
@@ -186,7 +187,7 @@ td {{ color: #dbeafe; }}
 <header class="top">
   <div class="brand">
     <h1>Atlas OS Development Registry</h1>
-    <p>System lifecycle, roadmap, validation, and architecture traceability</p>
+    <p>System lifecycle, roadmap, evidence level, and architecture traceability</p>
   </div>
   <nav class="tabs" aria-label="Atlas UI tabs">
     <a class="tab" href="/dashboard">System</a>
@@ -211,8 +212,8 @@ td {{ color: #dbeafe; }}
     <div class="panel-body"><table><thead><tr><th>Version</th><th>Layer</th><th>Modules</th></tr></thead><tbody>{module_rows}</tbody></table></div>
   </section>
   <section class="panel">
-    <h2>Validation Results</h2>
-    <div class="panel-body"><table><thead><tr><th>Version</th><th>Status</th><th>Result</th></tr></thead><tbody>{validation_rows}</tbody></table></div>
+    <h2>Evidence Results</h2>
+    <div class="panel-body"><table><thead><tr><th>Version</th><th>Evidence</th><th>Result</th></tr></thead><tbody>{validation_rows}</tbody></table></div>
   </section>
   <section class="panel" style="grid-column: 1 / -1;">
     <h2>System Architecture Evolution Graph</h2>
@@ -255,7 +256,10 @@ def _validation_row(layer: Mapping[str, Any]) -> str:
     validation = layer.get("validation", {}) if isinstance(layer.get("validation"), Mapping) else {}
     status = str(validation.get("status", "UNKNOWN")).lower()
     result_file = validation.get("result_file")
+    note = str(validation.get("evidence_note") or "")
     result = _escape(str(result_file)) if result_file else "Pending validation result"
+    if note:
+        result += f'<br><span style="color: var(--muted);">{_escape(note)}</span>'
     return (
         "<tr>"
         f'<td>{_escape(str(layer.get("version", "Unknown")))}</td>'
