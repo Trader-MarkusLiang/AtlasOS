@@ -1,0 +1,220 @@
+"""Forecast ledger for Atlas prediction accountability.
+
+The ledger records non-binding market-structure forecasts and later compares
+them with observed outcomes. It is not a price-target engine and does not
+create trading authority.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import sqlite3
+import uuid
+from pathlib import Path
+from typing import Any, Mapping
+
+try:
+    from runtime.logging import utc_now_iso
+    from runtime.state_store import DEFAULT_DB_PATH
+except ModuleNotFoundError:  # pragma: no cover
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from runtime.logging import utc_now_iso
+    from runtime.state_store import DEFAULT_DB_PATH
+
+
+FORECAST_STATUSES = {"OPEN", "MATURED", "VERIFIED", "INVALIDATED", "INCONCLUSIVE"}
+
+
+def create_forecast(payload: Mapping[str, Any], *, db_path: str | None = None) -> dict[str, Any]:
+    """Persist one forecast after schema normalization."""
+
+    now = utc_now_iso()
+    forecast_id = str(payload.get("forecast_id") or f"forecast-{uuid.uuid4()}")
+    record = {
+        "forecast_id": forecast_id,
+        "created_at": str(payload.get("created_at") or now),
+        "horizon": _text(payload.get("horizon"), "unspecified"),
+        "subject": _text(payload.get("subject"), "market_structure"),
+        "forecast_statement": _text(payload.get("forecast_statement") or payload.get("statement"), "Data Missing"),
+        "expected_direction_state": _text(payload.get("expected_direction_state") or payload.get("expected_direction"), "Unknown"),
+        "confidence": _confidence(payload.get("confidence")),
+        "active_hypothesis": _text(payload.get("active_hypothesis"), "Unknown"),
+        "causal_drivers": _list(payload.get("causal_drivers")),
+        "invalidation_conditions": _list(payload.get("invalidation_conditions")),
+        "expected_observation_window": _text(payload.get("expected_observation_window"), "Unknown"),
+        "actual_outcome": _text(payload.get("actual_outcome"), ""),
+        "outcome_timestamp": _text(payload.get("outcome_timestamp"), ""),
+        "forecast_error": None,
+        "calibration_error": None,
+        "status": "OPEN",
+        "updated_at": now,
+    }
+    _write_record(record, db_path=db_path)
+    return record
+
+
+def list_forecasts(*, db_path: str | None = None, status: str | None = None, limit: int = 100) -> dict[str, Any]:
+    """Return ledger rows and compact accountability metrics."""
+
+    _ensure_schema(db_path)
+    query = "SELECT record_json FROM forecast_ledger"
+    params: list[Any] = []
+    if status:
+        query += " WHERE status = ?"
+        params.append(status.upper())
+    query += " ORDER BY created_at DESC LIMIT ?"
+    params.append(int(limit))
+    with _connect(db_path) as conn:
+        rows = conn.execute(query, params).fetchall()
+    forecasts = [json.loads(row["record_json"]) for row in rows]
+    return {
+        "timestamp": utc_now_iso(),
+        "forecasts": forecasts,
+        "metrics": ledger_metrics(forecasts),
+        "sample_warning": _sample_warning(forecasts),
+        "no_trading_execution": True,
+    }
+
+
+def evaluate_forecast(
+    forecast_id: str,
+    outcome: Mapping[str, Any],
+    *,
+    db_path: str | None = None,
+) -> dict[str, Any]:
+    """Evaluate one forecast against a realized state/outcome."""
+
+    record = get_forecast(forecast_id, db_path=db_path)
+    if not record:
+        return {"status": "error", "error": "forecast_not_found", "forecast_id": forecast_id}
+    actual = _text(outcome.get("actual_outcome") or outcome.get("outcome"), "Unknown")
+    expected = str(record.get("expected_direction_state") or "").strip().lower()
+    actual_norm = actual.strip().lower()
+    if expected and expected != "unknown" and expected in actual_norm:
+        status = "VERIFIED"
+        error = 0.0
+    elif str(outcome.get("status", "")).upper() in FORECAST_STATUSES:
+        status = str(outcome.get("status")).upper()
+        error = 0.5 if status == "INCONCLUSIVE" else 1.0
+    else:
+        status = "INCONCLUSIVE"
+        error = 0.5
+    confidence = _confidence(record.get("confidence"))
+    calibration_error = round(abs(confidence - (1.0 - error)), 4)
+    record.update(
+        {
+            "actual_outcome": actual,
+            "outcome_timestamp": str(outcome.get("outcome_timestamp") or utc_now_iso()),
+            "forecast_error": error,
+            "calibration_error": calibration_error,
+            "status": status,
+            "updated_at": utc_now_iso(),
+        }
+    )
+    _write_record(record, db_path=db_path)
+    return record
+
+
+def get_forecast(forecast_id: str, *, db_path: str | None = None) -> dict[str, Any]:
+    _ensure_schema(db_path)
+    with _connect(db_path) as conn:
+        row = conn.execute("SELECT record_json FROM forecast_ledger WHERE forecast_id = ?", (forecast_id,)).fetchone()
+    return json.loads(row["record_json"]) if row else {}
+
+
+def ledger_metrics(forecasts: list[Mapping[str, Any]]) -> dict[str, Any]:
+    evaluated = [item for item in forecasts if item.get("status") in {"VERIFIED", "INVALIDATED", "INCONCLUSIVE"}]
+    verified = [item for item in evaluated if item.get("status") == "VERIFIED"]
+    errors = [float(item.get("forecast_error")) for item in evaluated if item.get("forecast_error") is not None]
+    calibration = [
+        float(item.get("calibration_error")) for item in evaluated if item.get("calibration_error") is not None
+    ]
+    return {
+        "total": len(forecasts),
+        "open": sum(1 for item in forecasts if item.get("status") == "OPEN"),
+        "evaluated": len(evaluated),
+        "verified": len(verified),
+        "accuracy": round(len(verified) / len(evaluated), 4) if evaluated else None,
+        "mean_forecast_error": round(sum(errors) / len(errors), 4) if errors else None,
+        "mean_calibration_error": round(sum(calibration) / len(calibration), 4) if calibration else None,
+        "minimum_sample_size_met": len(evaluated) >= 20,
+    }
+
+
+def _write_record(record: Mapping[str, Any], *, db_path: str | None = None) -> None:
+    _ensure_schema(db_path)
+    with _connect(db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO forecast_ledger (forecast_id, status, created_at, updated_at, record_json)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(forecast_id) DO UPDATE SET
+                status = excluded.status,
+                updated_at = excluded.updated_at,
+                record_json = excluded.record_json
+            """,
+            (
+                record["forecast_id"],
+                record["status"],
+                record["created_at"],
+                record["updated_at"],
+                json.dumps(record, ensure_ascii=False, sort_keys=True),
+            ),
+        )
+
+
+def _ensure_schema(db_path: str | None) -> None:
+    with _connect(db_path) as conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS forecast_ledger (
+                forecast_id TEXT PRIMARY KEY,
+                status TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                record_json TEXT NOT NULL
+            )
+            """
+        )
+
+
+def _connect(db_path: str | None) -> sqlite3.Connection:
+    configured = db_path or os.environ.get("ATLAS_RUNTIME_DB")
+    path = Path(configured) if configured else DEFAULT_DB_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(path)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def _text(value: Any, fallback: str) -> str:
+    text = str(value if value is not None else fallback).replace("\x00", " ").strip()
+    return (text or fallback)[:1000]
+
+
+def _list(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item).replace("\x00", " ").strip()[:300] for item in value if str(item).strip()]
+    if isinstance(value, str):
+        return [part.strip()[:300] for part in value.split(",") if part.strip()]
+    return []
+
+
+def _confidence(value: Any) -> float:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return 0.0
+    if number > 1:
+        number /= 100
+    return round(max(0.0, min(1.0, number)), 4)
+
+
+def _sample_warning(forecasts: list[Mapping[str, Any]]) -> str:
+    evaluated = [item for item in forecasts if item.get("status") in {"VERIFIED", "INVALIDATED", "INCONCLUSIVE"}]
+    if len(evaluated) < 20:
+        return "Low sample size: calibration is directional only, not statistically reliable."
+    return "Minimum sample size met for basic calibration review."

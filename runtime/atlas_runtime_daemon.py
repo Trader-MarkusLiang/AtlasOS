@@ -27,6 +27,7 @@ try:
     from runtime.decision_loop import DecisionLoop, DecisionLoopConfig
     from runtime.event_source import SimulatedMarketEventSource, event_to_runtime_event
     from runtime.logging import utc_now_iso
+    from runtime.market_intelligence import refresh_market_intelligence
     from runtime.output_logger import RuntimeOutputLogger
     from runtime.scheduler import RuntimeScheduleConfig, next_run_time
     from runtime.state_store import StateStore
@@ -37,6 +38,7 @@ except ModuleNotFoundError:  # pragma: no cover
     from runtime.decision_loop import DecisionLoop, DecisionLoopConfig
     from runtime.event_source import SimulatedMarketEventSource, event_to_runtime_event
     from runtime.logging import utc_now_iso
+    from runtime.market_intelligence import refresh_market_intelligence
     from runtime.output_logger import RuntimeOutputLogger
     from runtime.scheduler import RuntimeScheduleConfig, next_run_time
     from runtime.state_store import StateStore
@@ -55,6 +57,10 @@ class AtlasRuntimeDaemonConfig:
     llm_model: str = "gpt-5.5"
     max_events_per_cycle: int = 10
     no_sleep: bool = False
+    market_refresh_enabled: bool = True
+    market_refresh_every_cycles: int = 5
+    market_config_path: Optional[str] = None
+    market_max_assets: int = 12
 
 
 class AtlasRuntimeDaemon:
@@ -94,9 +100,11 @@ class AtlasRuntimeDaemon:
         error = None
         cycle: Dict[str, Any] = {}
         ui_events_ingested = 0
+        market_refresh: Dict[str, Any] = {}
 
         try:
             ui_events_ingested = self._ingest_ui_inbox_events()
+            market_refresh = self._refresh_market_if_due(tick_index)
             raw_event = self.event_source.get_event()
             runtime_event = event_to_runtime_event(raw_event)
             self.loop.event_stream.enqueue_event(
@@ -120,6 +128,7 @@ class AtlasRuntimeDaemon:
             error=error,
             duration_ms=int((time.time() - started) * 1000),
             ui_events_ingested=ui_events_ingested,
+            market_refresh=market_refresh,
         )
         self._write_telemetry(tick_index, entry)
         self.output_logger.log_tick(entry)
@@ -150,6 +159,7 @@ class AtlasRuntimeDaemon:
         error: Optional[str],
         duration_ms: int,
         ui_events_ingested: int = 0,
+        market_refresh: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         cognition = self.store.get_state("cognition_state")
         latest_brief = self.store.get_latest_decision_brief()
@@ -217,10 +227,30 @@ class AtlasRuntimeDaemon:
                 "duration_ms": duration_ms,
                 "events_processed": cycle.get("raw_events_processed", 0),
                 "ui_events_ingested": int(ui_events_ingested),
+                "market_refresh_status": (market_refresh or {}).get("status", "not_run"),
+                "market_events_enqueued": int((market_refresh or {}).get("events_enqueued", 0) or 0),
+                "market_channels": (market_refresh or {}).get("channels", {}),
                 "next_run_time": next_run_time(self.schedule).isoformat(),
                 "no_trading_execution": True,
             },
         }
+
+    def _refresh_market_if_due(self, tick_index: int) -> Dict[str, Any]:
+        """Optionally enqueue normalized market observations through EventStream."""
+
+        if not self.config.market_refresh_enabled:
+            return {"status": "disabled"}
+        cadence = max(1, int(self.config.market_refresh_every_cycles or 1))
+        if tick_index % cadence != 0:
+            return {"status": "skipped_until_next_cadence", "cadence_cycles": cadence}
+        result = refresh_market_intelligence(
+            config_path=self.config.market_config_path,
+            db_path=self.config.db_path,
+            enqueue=True,
+            max_assets=max(1, int(self.config.market_max_assets or 1)),
+        )
+        self.store.set_state("market_intelligence_state", result)
+        return result
 
     def _ingest_ui_inbox_events(self) -> int:
         """Ingest UI server JSONL events without calling cognition directly."""
@@ -289,6 +319,7 @@ class AtlasRuntimeDaemon:
                 extra={
                     "runtime_status": entry.get("system_metrics", {}).get("status"),
                     "decision_brief_id": entry.get("decision_brief", {}).get("id"),
+                    "market_refresh_status": entry.get("system_metrics", {}).get("market_refresh_status"),
                 },
             )
         except Exception as exc:
@@ -306,6 +337,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ui-inbox-path", default=None)
     parser.add_argument("--llm-model", default="gpt-5.5")
     parser.add_argument("--no-sleep", action="store_true", help="test mode: run cycles without sleeping")
+    parser.add_argument("--disable-market-refresh", action="store_true")
+    parser.add_argument("--market-refresh-every-cycles", type=int, default=5)
+    parser.add_argument("--market-config-path", default=None)
+    parser.add_argument("--market-max-assets", type=int, default=12)
     return parser
 
 
@@ -321,6 +356,10 @@ def main() -> None:
             ui_inbox_path=args.ui_inbox_path,
             llm_model=args.llm_model,
             no_sleep=args.no_sleep,
+            market_refresh_enabled=not args.disable_market_refresh,
+            market_refresh_every_cycles=args.market_refresh_every_cycles,
+            market_config_path=args.market_config_path,
+            market_max_assets=args.market_max_assets,
         )
     )
     signal.signal(signal.SIGINT, daemon.stop)

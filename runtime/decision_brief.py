@@ -11,9 +11,10 @@ from typing import Any, Dict, List, Optional
 
 ALLOWED_ACTION_BIASES = {
     "Hold",
-    "Reduce exposure suggestion",
+    "Reduce",
     "Observe",
-    "Rebalance suggestion",
+    "Build",
+    "Accumulate",
 }
 
 
@@ -74,6 +75,8 @@ def generate_decision_brief(
             f"Source: {portfolio_state.get('source', 'none')}",
             f"Status: {portfolio_state.get('status', 'missing')}",
             f"Privacy: {portfolio_state.get('privacy', 'redacted')}",
+            f"Exposure Sum: {portfolio_state.get('exposure_sum_pct', 'Unknown')}",
+            f"Portfolio Consistency: {portfolio_state.get('portfolio_consistency', 'Unknown')}",
             "",
             "## Risk",
             f"Risk Level: {risk_level}",
@@ -97,7 +100,7 @@ def choose_action_bias(trigger_type: str, risk_level: str) -> str:
     """Choose a conservative non-binding action bias."""
 
     if risk_level in {"High", "Severe"}:
-        return "Reduce exposure suggestion"
+        return "Reduce"
     if trigger_type == "event_trigger":
         return "Observe"
     if trigger_type == "intraday_run":

@@ -22,6 +22,7 @@ try:
     from runtime.decision_brief import choose_action_bias, generate_decision_brief
     from runtime.llm_router import call_llm_raw, provider_metadata
     from runtime.logging import log_execution, utc_now_iso
+    from runtime.portfolio_context import build_portfolio_context
     from runtime.state_machine import route_for_state
     from runtime.state_store import StateStore
 except ModuleNotFoundError:  # pragma: no cover - supports direct script usage
@@ -36,6 +37,7 @@ except ModuleNotFoundError:  # pragma: no cover - supports direct script usage
     from runtime.decision_brief import choose_action_bias, generate_decision_brief
     from runtime.llm_router import call_llm_raw, provider_metadata
     from runtime.logging import log_execution, utc_now_iso
+    from runtime.portfolio_context import build_portfolio_context
     from runtime.state_machine import route_for_state
     from runtime.state_store import StateStore
 
@@ -446,8 +448,12 @@ def _call_atlas_module(module_name: str) -> Dict[str, str]:
     }
 
 
-def _read_portfolio_snapshot() -> Dict[str, str]:
+def _read_portfolio_snapshot() -> Dict[str, Any]:
     """Return read-only portfolio availability without exposing private data."""
+
+    runtime_context = build_portfolio_context()
+    if runtime_context.get("status") == "configured":
+        return runtime_context
 
     local_path = Path("06_Portfolio/portfolio.local.yaml")
     if local_path.exists():
@@ -563,7 +569,7 @@ def _run_decision_contract(
 
 def _packet_action_to_bias(recommended_action: str) -> str:
     if recommended_action == "reduce":
-        return "Reduce exposure suggestion"
+        return "Reduce"
     if recommended_action == "observe":
         return "Observe"
     return "Observe"
@@ -601,7 +607,7 @@ def _build_prompt(trigger_type: str, event_type: Optional[str], pipeline: str) -
             f"Event: {event_type or 'None'}",
             f"Pipeline: {pipeline}",
             "Rules: no trading execution, no portfolio modification, no CDE bypass.",
-            "Allowed action vocabulary: Hold, Reduce exposure suggestion, Observe, Rebalance suggestion.",
+            "Allowed action vocabulary: Observe, Hold, Reduce, Build, Accumulate.",
         ]
     )
 

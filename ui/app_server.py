@@ -19,7 +19,9 @@ if __package__ in {None, ""}:  # Support `python3 ui/app_server.py`.
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from runtime.logging import utc_now_iso
+from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_forecasts
 from runtime.llm.provider_registry import health_check_provider, list_provider_models, safe_registry_view
+from runtime.portfolio_context import build_portfolio_context
 from runtime.state_store import StateStore
 from runtime.telemetry.llm_trace_logger import read_llm_traces
 from ui.chat_interface import render_chat_command_center
@@ -38,8 +40,14 @@ from ui.components.structural_drift_timeline import render_structural_drift_time
 from ui.components.workflow_graph import infer_active_workflow_stage, render_workflow_graph
 from ui.i18n.i18n import set_language, t, translation_payload
 from ui.pages.dev_registry import load_roadmap, render_dev_registry_page, roadmap_api_payload
+from ui.pages.home import render_home_page
+from ui.pages.learning import render_learning_page
+from ui.pages.markets import render_markets_page
+from ui.pages.portfolio import render_portfolio_page
+from ui.pages.predictions import render_predictions_page
 from ui.pages.roadmap import render_roadmap_page
 from ui.pages.settings import load_user_config, render_settings_page, save_user_config
+from ui.pages.setup import render_setup_page
 from ui.pages.system_guide import render_system_guide_page
 from ui.pages.workflow import render_workflow_page
 from ui.replay_console import replay_session
@@ -75,7 +83,15 @@ def create_app() -> Any:
 
     @app.get("/", response_class=HTMLResponse)
     async def landing() -> Any:
-        return _system_interface_page()
+        return render_home_page(state_api())
+
+    @app.get("/home", response_class=HTMLResponse)
+    async def home() -> Any:
+        return render_home_page(state_api())
+
+    @app.get("/setup", response_class=HTMLResponse)
+    async def setup() -> Any:
+        return render_setup_page(load_user_config(_user_config_path()))
 
     @app.get("/chat", response_class=HTMLResponse)
     async def chat_page() -> Any:
@@ -93,6 +109,41 @@ def create_app() -> Any:
     @app.get("/dashboard", response_class=HTMLResponse)
     async def dashboard() -> Any:
         return _system_interface_page()
+
+    @app.get("/portfolio", response_class=HTMLResponse)
+    async def portfolio() -> Any:
+        return render_portfolio_page(build_portfolio_context(config_path=_user_config_path()))
+
+    @app.get("/markets", response_class=HTMLResponse)
+    async def markets(format: str = "html") -> Any:
+        data = _market_intelligence_state()
+        if format.lower() == "json":
+            return JSONResponse(data)
+        return render_markets_page(data)
+
+    @app.get("/predictions", response_class=HTMLResponse)
+    async def predictions(format: str = "html") -> Any:
+        ledger = list_forecasts(db_path=_db_path())
+        if format.lower() == "json":
+            return JSONResponse(ledger)
+        return render_predictions_page(ledger)
+
+    @app.post("/predictions")
+    async def predictions_create(request: Request) -> Any:
+        payload = await _request_payload(request)
+        return JSONResponse(create_forecast(payload, db_path=_db_path()))
+
+    @app.post("/predictions/evaluate")
+    async def predictions_evaluate(request: Request) -> Any:
+        payload = await _request_payload(request)
+        forecast_id = str(payload.get("forecast_id") or "")
+        if not forecast_id:
+            return JSONResponse({"status": "error", "error": "forecast_id_required"}, status_code=400)
+        return JSONResponse(evaluate_forecast(forecast_id, payload, db_path=_db_path()))
+
+    @app.get("/learning", response_class=HTMLResponse)
+    async def learning() -> Any:
+        return render_learning_page(list_forecasts(db_path=_db_path()), state_api())
 
     @app.get("/settings", response_class=HTMLResponse)
     async def settings_page() -> Any:
@@ -291,6 +342,8 @@ def state_api() -> Dict[str, Any]:
     event_history = store.get_event_history(limit=1)
     transitions = store.get_state_transitions(limit=1000)
     llm_summary = _llm_trace_summary(read_llm_traces(log_path=_llm_trace_path(), limit=100))
+    portfolio_context = build_portfolio_context(config_path=_user_config_path())
+    market_intelligence = _market_intelligence_state()
     return {
         "timestamp": utc_now_iso(),
         "regime_state": system_state.get("current_state", "Unknown"),
@@ -303,6 +356,8 @@ def state_api() -> Dict[str, Any]:
         "self_organization_state": store.get_state("self_organization_state"),
         "last_decision_packet": metadata.get("decision_packet", {}),
         "last_decision_brief_id": latest_brief.get("id"),
+        "portfolio_context": portfolio_context,
+        "market_intelligence": market_intelligence,
         "llm_trace_summary": llm_summary,
         "llm_provider_registry": safe_registry_view(),
         "last_event_summary": event_history[0] if event_history else {},
@@ -357,6 +412,32 @@ def _provider_registry_summary(registry: Dict[str, Any]) -> Dict[str, Any]:
         "online_count": len(online),
         "fastest_provider": fastest[0].get("id") if fastest else None,
         "fastest_latency_ms": fastest[0].get("last_latency_ms") if fastest else None,
+    }
+
+
+def _market_intelligence_state() -> Dict[str, Any]:
+    store = StateStore(db_path=_db_path())
+    state = store.get_state("market_intelligence_state")
+    if state:
+        return state
+    return {
+        "timestamp": None,
+        "status": "not_run",
+        "channels": {
+            "price_volume": "missing_or_unconfigured",
+            "market_breadth": "not_implemented",
+            "volatility": "missing_or_unconfigured",
+            "liquidity_proxy": "missing_or_unconfigured",
+            "news_announcement": "not_implemented",
+            "narrative_attention": "not_implemented",
+            "macro_policy": "not_implemented",
+            "portfolio_relevance": "missing_or_unconfigured",
+        },
+        "observations": [],
+        "events_enqueued": 0,
+        "degraded": True,
+        "read_only": True,
+        "no_trading_execution": True,
     }
 
 
@@ -2310,7 +2391,8 @@ def _render_control_plane_toolbar() -> str:
         <button type="button" data-mode="workflow">Workflow Mode</button>
         <button type="button" data-mode="architecture">Architecture Mode</button>
       </div>
-      <a class="settings-link-button" href="/settings" aria-label="Open Settings">⚙ Settings</a>
+      <a class="settings-link-button" href="/" aria-label="Open Home">Home</a>
+      <a class="settings-link-button" href="/settings" aria-label="Open Settings">Settings</a>
     </section>
     """
 
@@ -2469,11 +2551,31 @@ class _StdlibHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         query = {key: values[-1] for key, values in parse_qs(parsed.query).items() if values}
         if parsed.path == "/":
-            self._send_html(_system_interface_page())
+            self._send_html(render_home_page(state_api()))
+        elif parsed.path == "/home":
+            self._send_html(render_home_page(state_api()))
+        elif parsed.path == "/setup":
+            self._send_html(render_setup_page(load_user_config(_user_config_path())))
         elif parsed.path == "/chat":
             self._send_html(_system_interface_page())
         elif parsed.path == "/dashboard":
             self._send_html(_system_interface_page())
+        elif parsed.path == "/portfolio":
+            self._send_html(render_portfolio_page(build_portfolio_context(config_path=_user_config_path())))
+        elif parsed.path == "/markets":
+            data = _market_intelligence_state()
+            if query.get("format") == "json":
+                self._send_json(data)
+            else:
+                self._send_html(render_markets_page(data))
+        elif parsed.path == "/predictions":
+            data = list_forecasts(db_path=_db_path())
+            if query.get("format") == "json":
+                self._send_json(data)
+            else:
+                self._send_html(render_predictions_page(data))
+        elif parsed.path == "/learning":
+            self._send_html(render_learning_page(list_forecasts(db_path=_db_path()), state_api()))
         elif parsed.path == "/settings":
             self._send_html(render_settings_page(load_user_config(_user_config_path())))
         elif parsed.path == "/llm/providers":
@@ -2559,6 +2661,14 @@ class _StdlibHandler(BaseHTTPRequestHandler):
             )
         elif parsed.path == "/settings":
             self._send_json(save_user_config(payload, _user_config_path()))
+        elif parsed.path == "/predictions":
+            self._send_json(create_forecast(payload, db_path=_db_path()))
+        elif parsed.path == "/predictions/evaluate":
+            forecast_id = str(payload.get("forecast_id") or "")
+            if not forecast_id:
+                self._send_json({"status": "error", "error": "forecast_id_required"}, status=400)
+                return
+            self._send_json(evaluate_forecast(forecast_id, payload, db_path=_db_path()))
         elif parsed.path == "/llm/provider/test":
             provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
             if not provider_id:

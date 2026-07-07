@@ -1,5 +1,29 @@
 # Changelog
 
+## Overnight Productization Backbone - 2026-07-08
+
+- Added `ISSUE-2026-054`, `ISSUE-2026-055`, and `ISSUE-2026-056` for verified productization,
+  provider secret-storage, and market-intelligence channel gaps.
+- Added `runtime/portfolio_context.py` with read-only percentage-based exposure mapping,
+  concentration summaries, liquidity/regime sensitivity, and privacy guards that avoid account
+  values, balances, cost basis, broker data, or net worth.
+- Added `runtime/market_intelligence.py` as a normalized market-ingestion backbone that reuses
+  existing market-data utilities, reports missing channels explicitly, and routes observations
+  through Input Router-compatible events.
+- Integrated scheduled market refresh into `runtime/atlas_runtime_daemon.py` with graceful degraded
+  mode, cadence controls, telemetry status, and no trading execution.
+- Added `runtime/forecast_ledger.py` for non-binding forecast accountability: open forecasts,
+  matured/evaluated outcomes, forecast error, calibration error, and low-sample warnings.
+- Updated `runtime/orchestrator.py` and `runtime/decision_brief.py` so runtime briefs can include
+  read-only portfolio context and use Atlas action vocabulary only: Observe, Hold, Reduce, Build,
+  Accumulate.
+- Added Decision Brief-first `/` Home plus `/setup`, `/portfolio`, `/markets`, `/predictions`, and
+  `/learning` UI pages, wired through `ui/app_server.py` without importing cognition modules.
+- Added `99_Verification/validate_productization_backbone.py` and productization validation
+  reports. Validation used temporary config/database files and did not touch private local config.
+- Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, CDE logic, Decision Contract semantics,
+  broker/trading execution, portfolio mutation, ML/DL/RL, or private runtime config.
+
 ## LLM Provider Model Picker v1.4.4 - 2026-07-07
 
 - Added API-backed provider model discovery through `/llm/provider/models`.
