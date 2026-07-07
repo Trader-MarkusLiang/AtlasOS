@@ -47,8 +47,17 @@ def create_forecast(payload: Mapping[str, Any], *, db_path: str | None = None) -
         "expected_observation_window": _text(payload.get("expected_observation_window"), "Unknown"),
         "actual_outcome": _text(payload.get("actual_outcome"), ""),
         "outcome_timestamp": _text(payload.get("outcome_timestamp"), ""),
+        "matured_at": "",
+        "maturity_evidence": {},
+        "prediction_error": None,
         "forecast_error": None,
         "calibration_error": None,
+        "explanation_error": {},
+        "hypothesis_evaluation": {},
+        "trust_update": {},
+        "lineage": [
+            {"event": "created", "timestamp": now, "status": "OPEN"},
+        ],
         "status": "OPEN",
         "updated_at": now,
     }
@@ -93,25 +102,64 @@ def evaluate_forecast(
     actual = _text(outcome.get("actual_outcome") or outcome.get("outcome"), "Unknown")
     expected = str(record.get("expected_direction_state") or "").strip().lower()
     actual_norm = actual.strip().lower()
+    requested_status = str(outcome.get("status", "")).upper()
     if expected and expected != "unknown" and expected in actual_norm:
         status = "VERIFIED"
         error = 0.0
-    elif str(outcome.get("status", "")).upper() in FORECAST_STATUSES:
-        status = str(outcome.get("status")).upper()
+    elif requested_status in {"VERIFIED", "INVALIDATED", "INCONCLUSIVE"}:
+        status = requested_status
         error = 0.5 if status == "INCONCLUSIVE" else 1.0
     else:
         status = "INCONCLUSIVE"
         error = 0.5
     confidence = _confidence(record.get("confidence"))
     calibration_error = round(abs(confidence - (1.0 - error)), 4)
+    now = utc_now_iso()
+    trust_update = _apply_runtime_calibration(record, status, error, db_path=db_path)
+    lineage = list(record.get("lineage", [])) if isinstance(record.get("lineage"), list) else []
+    lineage.append({"event": "evaluated", "timestamp": now, "status": status, "forecast_error": error})
     record.update(
         {
             "actual_outcome": actual,
-            "outcome_timestamp": str(outcome.get("outcome_timestamp") or utc_now_iso()),
+            "outcome_timestamp": str(outcome.get("outcome_timestamp") or now),
+            "prediction_error": error,
             "forecast_error": error,
             "calibration_error": calibration_error,
+            "explanation_error": outcome.get("explanation_error", {}),
+            "hypothesis_evaluation": _hypothesis_evaluation(record, status, error),
+            "trust_update": trust_update,
+            "lineage": lineage,
             "status": status,
-            "updated_at": utc_now_iso(),
+            "updated_at": now,
+        }
+    )
+    _write_record(record, db_path=db_path)
+    return record
+
+
+def mark_forecast_matured(
+    forecast_id: str,
+    evidence: Mapping[str, Any] | None = None,
+    *,
+    db_path: str | None = None,
+) -> dict[str, Any]:
+    """Mark a forecast as matured before final outcome evaluation."""
+
+    record = get_forecast(forecast_id, db_path=db_path)
+    if not record:
+        return {"status": "error", "error": "forecast_not_found", "forecast_id": forecast_id}
+    if record.get("status") != "OPEN":
+        return record
+    now = utc_now_iso()
+    lineage = list(record.get("lineage", [])) if isinstance(record.get("lineage"), list) else []
+    lineage.append({"event": "matured", "timestamp": now, "status": "MATURED"})
+    record.update(
+        {
+            "status": "MATURED",
+            "matured_at": now,
+            "maturity_evidence": dict(evidence or {}),
+            "updated_at": now,
+            "lineage": lineage,
         }
     )
     _write_record(record, db_path=db_path)
@@ -135,6 +183,7 @@ def ledger_metrics(forecasts: list[Mapping[str, Any]]) -> dict[str, Any]:
     return {
         "total": len(forecasts),
         "open": sum(1 for item in forecasts if item.get("status") == "OPEN"),
+        "matured": sum(1 for item in forecasts if item.get("status") == "MATURED"),
         "evaluated": len(evaluated),
         "verified": len(verified),
         "accuracy": round(len(verified) / len(evaluated), 4) if evaluated else None,
@@ -218,3 +267,99 @@ def _sample_warning(forecasts: list[Mapping[str, Any]]) -> str:
     if len(evaluated) < 20:
         return "Low sample size: calibration is directional only, not statistically reliable."
     return "Minimum sample size met for basic calibration review."
+
+
+def _hypothesis_evaluation(record: Mapping[str, Any], status: str, error: float) -> dict[str, Any]:
+    active = str(record.get("active_hypothesis") or "Unknown")
+    if status == "VERIFIED":
+        outcome = "supported"
+    elif status == "INVALIDATED":
+        outcome = "weakened"
+    else:
+        outcome = "inconclusive"
+    return {
+        "active_hypothesis": active,
+        "outcome": outcome,
+        "forecast_error": error,
+        "metadata_only": True,
+    }
+
+
+def _apply_runtime_calibration(
+    record: Mapping[str, Any],
+    status: str,
+    error: float,
+    *,
+    db_path: str | None = None,
+) -> dict[str, Any]:
+    try:
+        from runtime.state_store import StateStore
+    except ModuleNotFoundError:  # pragma: no cover
+        return {"status": "not_applied", "reason": "state_store_unavailable"}
+
+    store = StateStore(db_path=db_path)
+    trust_state = store.get_state("system_trust_state")
+    before = _confidence(trust_state.get("rolling_trust_index", 0.5))
+    confidence = _confidence(record.get("confidence"))
+    if status == "VERIFIED":
+        delta = min(0.05, 0.02 + confidence * 0.03)
+    elif status == "INVALIDATED":
+        delta = -min(0.12, 0.04 + confidence * 0.08)
+    else:
+        delta = -min(0.04, 0.02 + error * 0.04)
+    after = round(max(0.0, min(1.0, before + delta)), 4)
+    updated_trust = {
+        **trust_state,
+        "rolling_trust_index": after,
+        "trust_direction": "improving" if after >= before else "decaying",
+        "trust_adjustment_reason": "forecast_outcome_calibration",
+        "latest_forecast_calibration": {
+            "forecast_id": record.get("forecast_id"),
+            "status": status,
+            "forecast_error": error,
+            "delta": round(delta, 4),
+        },
+    }
+    store.set_state("system_trust_state", updated_trust)
+
+    calibration_state = store.get_state("forecast_calibration_state")
+    count = int(calibration_state.get("evaluated_count", 0)) + 1
+    previous_mean = float(calibration_state.get("mean_forecast_error", 0.0) or 0.0)
+    mean_error = round(((previous_mean * (count - 1)) + error) / count, 4)
+    store.set_state(
+        "forecast_calibration_state",
+        {
+            **calibration_state,
+            "evaluated_count": count,
+            "mean_forecast_error": mean_error,
+            "last_forecast_id": record.get("forecast_id"),
+            "last_status": status,
+            "minimum_sample_size_met": count >= 20,
+        },
+    )
+
+    hypothesis_memory = store.get_state("causal_hypothesis_memory")
+    history = list(hypothesis_memory.get("forecast_outcome_history", [])) if isinstance(hypothesis_memory.get("forecast_outcome_history"), list) else []
+    history.append(
+        {
+            "forecast_id": record.get("forecast_id"),
+            "active_hypothesis": record.get("active_hypothesis"),
+            "status": status,
+            "forecast_error": error,
+        }
+    )
+    store.set_state(
+        "causal_hypothesis_memory",
+        {
+            **hypothesis_memory,
+            "forecast_outcome_history": history[-30:],
+            "last_forecast_outcome": history[-1],
+        },
+    )
+    return {
+        "status": "applied",
+        "rolling_trust_before": before,
+        "rolling_trust_after": after,
+        "delta": round(delta, 4),
+        "bounded": True,
+    }

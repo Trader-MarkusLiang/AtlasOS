@@ -1,5 +1,30 @@
 # Changelog
 
+## Morning Red-Team Verification + Internal Alpha Closure - 2026-07-08
+
+- Added morning baseline, claim matrix, execution-path audit, ordinary-user acceptance,
+  provider red-team, secrets/privacy audit, market reality, portfolio differential,
+  Forecast Ledger E2E, self-iteration reality, adversarial cognition, recovery, final soak,
+  UI acceptance, and final acceptance reports under `99_Verification/`.
+- Added `99_Verification/validate_morning_red_team.py` for executable provider failure injection,
+  Forecast Ledger lifecycle, portfolio differential, market-routing, recovery, UI HTTP, and secret
+  scan checks.
+- Added `99_Verification/validate_morning_adversarial_cognitive.py` for hostile DecisionLoop
+  scenarios.
+- Repaired `runtime/llm/provider_router.py` so empty provider responses trigger fallback instead
+  of being marked `ok`.
+- Repaired `runtime/event_stream.py` so malformed JSON/JSONL inbox lines are skipped without
+  crashing a runtime tick.
+- Extended `runtime/forecast_ledger.py` with `MATURED` lifecycle support, lineage,
+  `prediction_error`, `calibration_error`, bounded trust update metadata, and hypothesis outcome
+  memory.
+- Removed real-looking `sk-` fake key prefixes from validation fixtures to keep secret scanning
+  meaningful.
+- Updated roadmap, README, and VERSION to classify the product as internal-alpha hardening rather
+  than Release Candidate.
+- Release classification after red-team: INTERNAL ALPHA. No 24h stability, live market coverage,
+  full self-iteration behavior, or browser-level UI visual QA is claimed.
+
 ## Overnight Productization Backbone - 2026-07-08
 
 - Added `ISSUE-2026-054`, `ISSUE-2026-055`, and `ISSUE-2026-056` for verified productization,

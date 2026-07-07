@@ -34,7 +34,7 @@ def main() -> None:
 
 
 def _assert_provider_registry() -> None:
-    secret = "sk-local-test-only"
+    secret = "atlas_local_test_secret"
     encrypted = encrypt_api_key(secret)
     assert encrypted != secret
     assert decrypt_api_key(encrypted) == secret

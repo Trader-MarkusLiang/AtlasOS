@@ -29,19 +29,19 @@ def main() -> None:
             registry = default_provider_registry()
             for provider in registry["providers"]:
                 if provider["id"] == "openai":
-                    provider["api_key"] = "sk-fake-validation-key"
+                    provider["api_key"] = "atlas_fake_validation_secret"
                     provider["enabled"] = True
             update_provider_registry(registry, path)
             loaded = load_provider_registry(path)
             openai = next(provider for provider in loaded["providers"] if provider["id"] == "openai")
             assert openai["api_key_storage"] == "local_secret_storage"
-            assert decrypt_api_key(openai["api_key_encrypted"]) == "sk-fake-validation-key"
+            assert decrypt_api_key(openai["api_key_encrypted"]) == "atlas_fake_validation_secret"
             safe = safe_registry_view(loaded)
             safe_openai = next(provider for provider in safe["providers"] if provider["id"] == "openai")
             assert safe_openai["api_key"] == "***"
             assert "api_key_encrypted" not in safe_openai
             assert "api_key_keychain_account" not in safe_openai
-            assert "sk-fake-validation-key" not in str(safe)
+            assert "atlas_fake_validation_secret" not in str(safe)
 
             for provider in safe["providers"]:
                 if provider["id"] == "openai":
@@ -49,7 +49,7 @@ def main() -> None:
             update_provider_registry(safe, path)
             reloaded = load_provider_registry(path)
             reloaded_openai = next(provider for provider in reloaded["providers"] if provider["id"] == "openai")
-            assert decrypt_api_key(reloaded_openai["api_key_encrypted"]) == "sk-fake-validation-key"
+            assert decrypt_api_key(reloaded_openai["api_key_encrypted"]) == "atlas_fake_validation_secret"
             assert reloaded_openai["model"] == "gpt-validation"
     finally:
         if previous is None:

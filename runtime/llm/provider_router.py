@@ -87,6 +87,8 @@ def _call_provider(provider: Mapping[str, Any], prompt: str, context: Mapping[st
             content = _call_proxy(provider, prompt, context)
         else:
             content = _call_openai_compatible(provider, prompt, context)
+        if not str(content or "").strip():
+            raise ValueError("empty_response")
         return {
             "status": "ok",
             "provider": provider_id,
@@ -222,4 +224,3 @@ def _failsafe_raw_json(reason: str) -> str:
         ensure_ascii=False,
         sort_keys=True,
     )
-

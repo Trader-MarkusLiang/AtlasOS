@@ -195,8 +195,21 @@ def _read_event_file(path: Path) -> Iterable[Dict[str, Any]]:
     if not text:
         return []
     if path.suffix.lower() == ".jsonl":
-        return [json.loads(line) for line in text.splitlines() if line.strip()]
-    data = json.loads(text)
+        events = []
+        for line in text.splitlines():
+            if not line.strip():
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(item, dict):
+                events.append(item)
+        return events
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return []
     if isinstance(data, list):
-        return data
-    return [data]
+        return [item for item in data if isinstance(item, dict)]
+    return [data] if isinstance(data, dict) else []
