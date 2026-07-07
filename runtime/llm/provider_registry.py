@@ -223,7 +223,7 @@ def health_check_provider(provider_id: str, path: str | None = None, timeout: fl
                 with urllib.request.urlopen(request, timeout=timeout) as response:
                     status = "healthy" if response.status < 500 else "error"
             except urllib.error.HTTPError as exc:
-                status = "reachable" if exc.code in {401, 403, 404, 405} else "error"
+                status = "reachable" if exc.code in {401, 403, 404, 405, 501} else "error"
                 error = f"http_{exc.code}"
         else:
             status = "not_configured"

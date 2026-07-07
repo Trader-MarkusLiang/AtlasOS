@@ -1,5 +1,18 @@
 # Changelog
 
+## LLM Provider cc-switch Sync v1.4.2 - 2026-07-07
+
+- Synced local Atlas runtime provider configuration from cc-switch Codex providers for MoreCode and
+  ARK Coding / Volcengine.
+- Set Atlas local active provider to MoreCode with fallback through ARK, Volcano, Ollama, OpenAI,
+  Claude, and Custom.
+- Updated local ignored `runtime/config/user_config.json` with encrypted provider keys and
+  cc-switch local shim endpoints; no secrets were committed.
+- Adjusted provider health checks so local cc-switch shims that reject `HEAD` with HTTP 501 are
+  marked reachable instead of unavailable.
+- Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, Decision Contract semantics, runtime cognition
+  algorithms, trading execution, prediction logic, or private portfolio data.
+
 ## LLM Provider Health Visualization v1.4.1 - 2026-07-07
 
 - Improved `/settings` provider management with a health overview, per-provider status pills,
