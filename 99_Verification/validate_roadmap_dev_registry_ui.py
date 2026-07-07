@@ -21,9 +21,22 @@ def _assert(condition: bool, message: str) -> None:
 def main() -> None:
     roadmap_path = REPO_ROOT / "docs" / "atlas_roadmap.json"
     roadmap = json.loads(roadmap_path.read_text(encoding="utf-8"))
-    _assert(roadmap.get("version") == "v0.1 - v0.8", "roadmap version range should be v0.1 - v0.8")
-    _assert(roadmap.get("current_stage") == "v0.7", "current stage should be v0.7")
-    _assert("v0.8" in str(roadmap.get("next_stage", "")), "next stage should point to v0.8 preparation")
+    _assert(roadmap.get("version") == "parallel-track productization roadmap", "roadmap should use parallel-track versioning")
+    _assert("productization" in str(roadmap.get("current_stage", "")), "current stage should focus productization")
+    _assert("forecast accountability" in str(roadmap.get("next_stage", "")), "next stage should include forecast accountability")
+    tracks = roadmap.get("tracks", [])
+    _assert(isinstance(tracks, list) and len(tracks) >= 5, "roadmap should expose parallel tracks")
+    track_names = {track.get("track") for track in tracks if isinstance(track, dict)}
+    for track in {
+        "Atlas Core / Knowledge OS",
+        "Atlas Runtime",
+        "Atlas Cognitive Overlay",
+        "Atlas UI / Product",
+        "Atlas Data / Market Intelligence",
+    }:
+        _assert(track in track_names, f"roadmap should include {track}")
+    model = roadmap.get("version_model", {})
+    _assert("Core v2.x" in str(model.get("why_versions_differ", "")), "roadmap should explain differing version tracks")
     layers = roadmap.get("layers", [])
     _assert(isinstance(layers, list) and len(layers) >= 8, "roadmap should contain version layers")
     versions = {layer.get("version") for layer in layers if isinstance(layer, dict)}
@@ -36,10 +49,12 @@ def main() -> None:
     _assert(v07.get("validation", {}).get("status") == "PASS", "v0.7 validation should pass")
 
     payload = roadmap_api_payload(str(roadmap_path))
-    _assert(payload.get("current_version") == "v0.7", "/roadmap payload should expose current version")
+    _assert(payload.get("current_version") == "productization-sprint", "/roadmap payload should expose current version")
+    _assert(payload.get("tracks"), "/roadmap payload should expose parallel tracks")
+    _assert(payload.get("version_model"), "/roadmap payload should expose version model")
     _assert(payload.get("completed_layers"), "/roadmap payload should expose completed layers")
     _assert(payload.get("planned_layers"), "/roadmap payload should expose planned layers")
-    _assert(payload.get("active_stage") == "v0.7", "/roadmap payload should expose active stage")
+    _assert("productization" in str(payload.get("active_stage")), "/roadmap payload should expose active stage")
 
     page = render_dev_registry_page(load_roadmap(str(roadmap_path)), {"regime_state": "NORMAL", "trust_index": 0.75})
     for text in (
@@ -52,13 +67,14 @@ def main() -> None:
         "Causal Interaction Layer",
     ):
         _assert(text in page, f"dev registry should render {text}")
+    roadmap_page = __import__("ui.pages.roadmap", fromlist=["render_roadmap_page"]).render_roadmap_page(payload)
+    for text in ("Parallel product tracks", "Atlas Runtime", "Atlas UI / Product", "Atlas Data / Market Intelligence"):
+        _assert(text in roadmap_page, f"roadmap page should render {text}")
 
     dashboard = app_server._system_interface_page()
     dashboard_html = dashboard.body.decode("utf-8") if hasattr(dashboard, "body") else str(dashboard)
-    for text in ("Dashboard", "Workflow", "Roadmap", "Settings"):
-        _assert(text in dashboard_html, f"dashboard should include {text} tab")
-    _assert("/roadmap" in dashboard_html, "dashboard should link to /roadmap")
-    _assert("/settings" in dashboard_html, "dashboard should link to /settings")
+    for href in ('href="/dashboard"', 'href="/workflow"', 'href="/roadmap"', 'href="/settings"'):
+        _assert(href in dashboard_html, f"dashboard should include {href} navigation")
 
     app_text = (REPO_ROOT / "ui" / "app_server.py").read_text(encoding="utf-8")
     _assert("@app.get(\"/roadmap\"" in app_text, "FastAPI /roadmap endpoint should exist")

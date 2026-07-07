@@ -28,6 +28,13 @@ use checkpoint commits, and prioritize real evidence over optimistic claims.
 - Executed lightweight checks: provider registry safe view, ignored runtime private files, and
   sample market-data fetch (`000001` A-share available via akshare; `AAPL` unavailable due
   yfinance rate limit).
+- Completed Phase 1 roadmap/version truth alignment.
+- Updated `docs/atlas_roadmap.json` to parallel Core / Runtime / Cognitive Overlay / UI / Data
+  tracks while preserving legacy `layers` compatibility.
+- Updated `/roadmap` rendering to show parallel product tracks.
+- Updated `README.md` and `VERSION.md` to distinguish Atlas Core from runtime/UI/data
+  productization tracks.
+- Updated `99_Verification/validate_roadmap_dev_registry_ui.py` for the new version model.
 
 ## Decisions
 
@@ -38,8 +45,15 @@ use checkpoint commits, and prioritize real evidence over optimistic claims.
 ## Current State
 
 - Phase 0 audit complete.
-- Next phase: align roadmap/version truth into parallel Core / Runtime / Cognitive Overlay / UI /
-  Data tracks.
+- Phase 1 complete.
+- Next phase: implement the highest-priority product slices: Decision Brief-first Home, first-run
+  setup, market ingestion backbone, portfolio context, forecast ledger/accountability.
+
+## Verification Results
+
+- `python3 -m json.tool docs/atlas_roadmap.json` — PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_roadmap_dev_registry_ui.py` — PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile ui/pages/roadmap.py ui/pages/dev_registry.py 99_Verification/validate_roadmap_dev_registry_ui.py` — PASS.
 
 ## Resume Instructions
 

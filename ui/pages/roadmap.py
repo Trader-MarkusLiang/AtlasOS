@@ -13,6 +13,8 @@ def render_roadmap_page(payload: Mapping[str, Any]) -> str:
     planned = [layer for layer in layers if layer.get("status") == "planned"]
     completion = int((len(completed) / max(1, len(layers))) * 100)
     layer_cards = "\n".join(_layer_card(layer) for layer in layers)
+    track_cards = "\n".join(_track_card(track) for track in payload.get("tracks", []) if isinstance(track, Mapping))
+    version_model = payload.get("version_model", {}) if isinstance(payload.get("version_model"), Mapping) else {}
     architecture = "\n".join(_edge_card(edge, index) for index, edge in enumerate(payload.get("architecture_evolution", [])) if isinstance(edge, Mapping))
     return f"""<!doctype html>
 <html lang="en">
@@ -107,6 +109,27 @@ h1 {{
 .metric {{ padding: 12px; border-radius: 16px; background: var(--panel-soft); }}
 .metric span {{ display: block; color: var(--muted); font-size: 0.76rem; }}
 .metric strong {{ display: block; margin-top: 4px; overflow-wrap: anywhere; }}
+.track-grid {{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}}
+.track-card {{ padding: 16px; min-height: 190px; }}
+.track-card h3 {{ margin: 10px 0 8px; font-size: 1rem; }}
+.track-card p {{ margin: 0; color: var(--subtle); line-height: 1.45; }}
+.track-meta {{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}}
+.track-meta span {{
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.74rem;
+}}
 .timeline {{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -172,8 +195,8 @@ h1 {{
     <div class="card hero-main">
       <div class="kicker">Current Stage</div>
       <h1>{_escape(str(payload.get("current_stage", "Unknown")))}</h1>
-      <p>{_escape(str(payload.get("next_stage", "Unknown")))}. Roadmap is shown as lifecycle state,
-      validation evidence, and architecture evolution instead of raw API output.</p>
+      <p>{_escape(str(version_model.get("why_versions_differ") or payload.get("next_stage", "Unknown")))} Roadmap is shown as parallel product tracks, lifecycle state,
+      validation evidence, and architecture evolution instead of one misleading version ladder.</p>
     </div>
     <aside class="card summary-card">
       <div class="kicker">Release Progress</div>
@@ -187,6 +210,11 @@ h1 {{
       </div>
     </aside>
   </section>
+
+  <div class="section-head">
+    <div><div class="kicker">Version Model</div><h2>Parallel product tracks</h2><p>Atlas Core, Runtime, UI, Cognitive Overlay, and Data mature independently.</p></div>
+  </div>
+  <section class="track-grid">{track_cards or '<article class="card track-card"><div class="kicker">Pending</div><h3>No tracks available</h3><p>Roadmap track data is missing.</p></article>'}</section>
 
   <div class="section-head">
     <div><div class="kicker">Version Timeline</div><h2>Layer progression</h2><p>Completed layers stay visible for traceability; planned layers remain explicit.</p></div>
@@ -219,6 +247,21 @@ def _layer_card(layer: Mapping[str, Any]) -> str:
       <h3>{_escape(str(layer.get("name", "Unknown")))}</h3>
       <p>{_escape(str(layer.get("category", "uncategorized")))} layer with validation status {_escape(str(validation.get("status", "UNKNOWN")))}.</p>
       <div class="modules">{module_count} modules added</div>
+    </article>
+    """
+
+
+def _track_card(track: Mapping[str, Any]) -> str:
+    status = str(track.get("status", "unknown")).lower()
+    return f"""
+    <article class="card track-card">
+      <div class="kicker">{_escape(str(track.get("track", "Unknown Track")))}</div>
+      <h3>{_escape(str(track.get("current_version", "Unknown")))}</h3>
+      <p>{_escape(str(track.get("role", "No role description available.")))}</p>
+      <div class="track-meta">
+        <span>{_escape(status)}</span>
+        <span>{_escape(str(track.get("current_focus", "Focus unknown")))}</span>
+      </div>
     </article>
     """
 

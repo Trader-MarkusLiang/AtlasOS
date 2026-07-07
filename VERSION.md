@@ -1,6 +1,6 @@
 # Version
 
-Current version: v2.1 RC
+Current Core version: v2.1 RC
 
 Release candidate: v2.1 RC
 
@@ -11,6 +11,16 @@ Date: 2026-06-29
 Stage: Run First + Capital Deployment Engine
 
 Presentation stage: Decision Experience v1.1 RC
+
+Productization track: Runtime / UI / Data validation
+
+Parallel version model:
+
+- Atlas Core / Knowledge OS: v2.1 RC
+- Atlas Runtime: local daemon / EventStream / DecisionLoop trial
+- Atlas Cognitive Overlay: symbolic cognition overlays under validation
+- Atlas UI / Product: UI v2.x + provider configuration v1.4.x
+- Atlas Data / Market Intelligence: market-data utilities v0.x, scheduled ingestion partial
 
 Release lifecycle: Alpha -> RC -> Production Trial -> Final
 
@@ -28,7 +38,8 @@ Scope:
 - Establish root `AGENTS.md` hard rules and routing rules for Codex conversations.
 - Add repo-scoped Atlas skills for Research, Daily, Portfolio, Repository, and Architecture
   workflows.
-- Keep routing lightweight: no dashboard, crawler, API, database program, automation, or trading bot.
+- Preserve Atlas Core discipline while allowing explicitly requested runtime/UI/data product
+  surfaces around it; no broker integration, trading bot, CDE bypass, or private wealth storage.
 - Establish Decision Engine as a state-machine operating mechanism connecting Research, Trading OS,
   Portfolio, Review, Repository, Daily, and Architecture.
 - Keep Decision Engine separate from Framework: no change to Atlas Principles, Seven Layer

@@ -30,6 +30,8 @@ def roadmap_api_payload(path: str | None = None) -> dict[str, Any]:
     planned = [layer for layer in layers if layer.get("status") == "planned"]
     return {
         "version": roadmap.get("version"),
+        "version_model": roadmap.get("version_model", {}),
+        "tracks": roadmap.get("tracks", []),
         "current_version": roadmap.get("active_version") or roadmap.get("current_stage"),
         "current_stage": roadmap.get("current_stage"),
         "active_stage": roadmap.get("current_stage"),

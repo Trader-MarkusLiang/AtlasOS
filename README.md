@@ -6,10 +6,11 @@ This repository stores the core Atlas framework in Git so the principles, reason
 market maps, trading discipline, and verification cases can be versioned and reused by Codex,
 ChatGPT, and future agents.
 
-Current stage: v2.1 Production Trial.
+Current Core stage: v2.1 Production Trial.
 
-This stage does not build a dashboard, API, database, crawler, agent automation, or complex
-software architecture.
+Current productization stage: parallel Runtime / UI / Data validation. Atlas Core remains an
+investment research operating system; the runtime and UI layers are product surfaces around that
+core, not replacements for the reasoning framework or CDE.
 
 ## Repository Map
 
@@ -33,7 +34,17 @@ software architecture.
 
 ## Version
 
-Current version: v2.1 RC.
+Current Core version: v2.1 RC.
+
+Runtime, UI, and Data tracks use separate version labels because they mature independently:
+
+| Track | Current State |
+|---|---|
+| Atlas Core / Knowledge OS | v2.1 RC Production Trial |
+| Atlas Runtime | local daemon / EventStream / DecisionLoop trial |
+| Atlas Cognitive Overlay | symbolic cognition overlays under validation |
+| Atlas UI / Product | control center + provider configuration, moving toward Decision Brief-first Home |
+| Atlas Data / Market Intelligence | market-data utilities available; scheduled ingestion still partial |
 
 Latest release tag: ais-v1.0.
 
