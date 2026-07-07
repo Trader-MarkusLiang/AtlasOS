@@ -10,6 +10,7 @@ import json
 import time
 import urllib.error
 import urllib.request
+from urllib.parse import urlsplit
 from typing import Any, Mapping
 
 from runtime.llm.provider_registry import (
@@ -112,11 +113,12 @@ def _call_provider(provider: Mapping[str, Any], prompt: str, context: Mapping[st
 
 def _call_openai_compatible(provider: Mapping[str, Any], prompt: str, context: Mapping[str, Any]) -> str:
     api_key = provider_api_key(provider)
-    if not api_key:
-        raise ValueError("api_key_missing")
     endpoint = str(provider.get("base_url") or "")
     if not endpoint:
         raise ValueError("base_url_missing")
+    local_endpoint = _is_loopback_url(endpoint)
+    if not api_key and not local_endpoint:
+        raise ValueError("api_key_missing")
     payload = {
         "model": str(provider.get("model") or "gpt-5.5"),
         "messages": [
@@ -125,15 +127,25 @@ def _call_openai_compatible(provider: Mapping[str, Any], prompt: str, context: M
         ],
         "temperature": 0.2,
     }
+    if local_endpoint:
+        payload["max_tokens"] = int(provider.get("max_tokens") or 2048)
+    headers = {"Content-Type": "application/json"}
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
     request = urllib.request.Request(
         endpoint,
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        headers=headers,
         method="POST",
     )
     with urllib.request.urlopen(request, timeout=30) as response:
         data = json.loads(response.read().decode("utf-8"))
     return str(data["choices"][0]["message"]["content"])
+
+
+def _is_loopback_url(value: str) -> bool:
+    host = urlsplit(value).hostname or ""
+    return host in {"localhost", "127.0.0.1", "::1"}
 
 
 def _call_anthropic(provider: Mapping[str, Any], prompt: str, context: Mapping[str, Any]) -> str:

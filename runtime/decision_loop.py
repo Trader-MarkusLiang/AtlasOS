@@ -35,6 +35,7 @@ try:
     from runtime.cognition.unified_market_intelligence_core import infer_unified_market_intelligence
     from runtime.cognition.world_model_engine import simulate_market_world_model
     from runtime.event_stream import EVENT_HEARTBEAT, EventStream
+    from runtime.forecast_ledger import create_forecast
     from runtime.logging import log_execution, utc_now_iso
     from runtime.orchestrator import run_state_runtime
     from runtime.state_machine import RuntimeStateMachine
@@ -72,6 +73,7 @@ except ModuleNotFoundError:  # pragma: no cover
     from runtime.cognition.unified_market_intelligence_core import infer_unified_market_intelligence
     from runtime.cognition.world_model_engine import simulate_market_world_model
     from runtime.event_stream import EVENT_HEARTBEAT, EventStream
+    from runtime.forecast_ledger import create_forecast
     from runtime.logging import log_execution, utc_now_iso
     from runtime.orchestrator import run_state_runtime
     from runtime.state_machine import RuntimeStateMachine
@@ -410,6 +412,15 @@ class DecisionLoop:
                 if isinstance(previous_self_organization_state, dict)
                 else {},
             )
+            runtime_forecast = _register_runtime_forecast(
+                db_path=self.config.db_path,
+                result=result,
+                events=events,
+                transition=transition,
+                causal=causal,
+                active_causal_structure=active_causal_structure,
+                decision_packet=decision_packet if isinstance(decision_packet, dict) else {},
+            )
             self.store.set_state("llm_feedback_state", llm_feedback)
             cognition_snapshot["llm_feedback"] = llm_feedback
             cognition_snapshot["trust_score"] = trust_score
@@ -454,6 +465,8 @@ class DecisionLoop:
                     ],
                     "result_status": result["status"],
                     "decision_brief_id": result["run_id"],
+                    "forecast_id": runtime_forecast.get("forecast_id"),
+                    "forecast_status": runtime_forecast.get("status"),
                     "decision_packet_action": result.get("decision_packet", {}).get("recommended_action"),
                     "decision_packet_risk": result.get("decision_packet", {}).get("risk_level"),
                     "decision_packet_confidence": result.get("decision_packet", {}).get("confidence"),
@@ -612,3 +625,63 @@ def _safe_int(value: Any, default: int = 0) -> int:
         return int(value)
     except (TypeError, ValueError):
         return default
+
+
+def _register_runtime_forecast(
+    *,
+    db_path: Optional[str],
+    result: Dict[str, Any],
+    events: List[Dict[str, object]],
+    transition: Dict[str, Any],
+    causal: Dict[str, Any],
+    active_causal_structure: Dict[str, Any],
+    decision_packet: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Register a non-binding structural forecast for runtime accountability."""
+
+    run_id = str(result.get("run_id") or "")
+    if not run_id:
+        return {"status": "skipped", "error": "missing_run_id"}
+    drivers = []
+    primary = causal.get("primary_driver")
+    if primary:
+        drivers.append(str(primary))
+    attention = causal.get("attention_meaning")
+    if attention:
+        drivers.append(str(attention))
+    forecast = create_forecast(
+        {
+            "forecast_id": f"runtime-{run_id}",
+            "horizon": "next_runtime_cycle",
+            "subject": "runtime_market_structure",
+            "forecast_statement": (
+                "Non-binding structural runtime forecast: current causal structure remains coherent "
+                "until contradicted by later observed state."
+            ),
+            "expected_direction_state": str(transition.get("proposed_state") or transition.get("current_state") or "Unknown"),
+            "confidence": _safe_float(decision_packet.get("confidence"), 0.0)
+            if isinstance(decision_packet, dict)
+            else 0.0,
+            "active_hypothesis": str(active_causal_structure.get("active_hypothesis_id") or "Unknown"),
+            "causal_drivers": drivers,
+            "invalidation_conditions": [
+                "later_runtime_state_conflicts_with_expected_structure",
+                "forecast_outcome_marked_invalidated_through_supported_lifecycle",
+            ],
+            "expected_observation_window": "next_runtime_cycle_or_user_supported_evaluation",
+            "runtime_lineage": {
+                "cycle_type": "decision_loop_cycle",
+                "event_ids": [str(event.get("event_id")) for event in events],
+                "event_types": [str(event.get("event_type")) for event in events],
+                "decision_brief_id": result.get("run_id"),
+                "system_state": transition.get("current_state"),
+                "proposed_state": transition.get("proposed_state"),
+            },
+        },
+        db_path=db_path,
+    )
+    return {
+        "status": forecast.get("status"),
+        "forecast_id": forecast.get("forecast_id"),
+        "runtime_lineage": forecast.get("runtime_lineage", {}),
+    }

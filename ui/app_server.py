@@ -19,7 +19,7 @@ if __package__ in {None, ""}:  # Support `python3 ui/app_server.py`.
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from runtime.logging import utc_now_iso
-from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_forecasts
+from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_forecasts, mark_forecast_matured
 from runtime.llm.provider_registry import health_check_provider, list_provider_models, safe_registry_view
 from runtime.portfolio_context import build_portfolio_context
 from runtime.state_store import StateStore
@@ -140,6 +140,14 @@ def create_app() -> Any:
         if not forecast_id:
             return JSONResponse({"status": "error", "error": "forecast_id_required"}, status_code=400)
         return JSONResponse(evaluate_forecast(forecast_id, payload, db_path=_db_path()))
+
+    @app.post("/predictions/mature")
+    async def predictions_mature(request: Request) -> Any:
+        payload = await _request_payload(request)
+        forecast_id = str(payload.get("forecast_id") or "")
+        if not forecast_id:
+            return JSONResponse({"status": "error", "error": "forecast_id_required"}, status_code=400)
+        return JSONResponse(mark_forecast_matured(forecast_id, payload, db_path=_db_path()))
 
     @app.get("/learning", response_class=HTMLResponse)
     async def learning() -> Any:
@@ -2670,6 +2678,12 @@ class _StdlibHandler(BaseHTTPRequestHandler):
                 self._send_json({"status": "error", "error": "forecast_id_required"}, status=400)
                 return
             self._send_json(evaluate_forecast(forecast_id, payload, db_path=_db_path()))
+        elif parsed.path == "/predictions/mature":
+            forecast_id = str(payload.get("forecast_id") or "")
+            if not forecast_id:
+                self._send_json({"status": "error", "error": "forecast_id_required"}, status=400)
+                return
+            self._send_json(mark_forecast_matured(forecast_id, payload, db_path=_db_path()))
         elif parsed.path == "/llm/provider/test":
             provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
             if not provider_id:

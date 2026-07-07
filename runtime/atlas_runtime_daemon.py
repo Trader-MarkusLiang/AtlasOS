@@ -20,8 +20,16 @@ import signal
 import sys
 import time
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+_RUNTIME_DIR = Path(__file__).resolve().parent
+if sys.path and Path(sys.path[0]).resolve() == _RUNTIME_DIR:
+    sys.path.pop(0)
+_ROOT_DIR = _RUNTIME_DIR.parent
+if str(_ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(_ROOT_DIR))
 
 try:
     from runtime.daily_cycle import dispatch_current_daily_cycle
@@ -63,6 +71,7 @@ class AtlasRuntimeDaemonConfig:
     market_refresh_every_cycles: int = 5
     market_config_path: Optional[str] = None
     market_max_assets: int = 12
+    daily_cycle_now: Optional[str] = None
 
 
 class AtlasRuntimeDaemon:
@@ -189,9 +198,18 @@ class AtlasRuntimeDaemon:
                         "proposed_state",
                         "transition_allowed",
                         "decision_brief_id",
+                        "forecast_id",
+                        "forecast_status",
+                        "result_status",
                         "decision_packet_action",
                         "decision_packet_risk",
                         "decision_packet_confidence",
+                        "trust_score",
+                        "forecast_calibration_feedback_status",
+                        "forecast_calibration_feedback_delta",
+                        "forecast_calibration_feedback_source",
+                        "active_causal_hypothesis_id",
+                        "causal_hypothesis_score_distribution",
                         "llm_feedback_status",
                         "llm_feedback_attention_delta",
                         "llm_feedback_causal_delta",
@@ -259,6 +277,7 @@ class AtlasRuntimeDaemon:
         result = dispatch_current_daily_cycle(
             db_path=self.config.db_path,
             config_path=self.config.market_config_path,
+            now=_parse_datetime(self.config.daily_cycle_now),
         )
         self.store.set_state("daily_cycle_state", result)
         return result
@@ -352,6 +371,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--market-refresh-every-cycles", type=int, default=5)
     parser.add_argument("--market-config-path", default=None)
     parser.add_argument("--market-max-assets", type=int, default=12)
+    parser.add_argument("--daily-cycle-now", default=None, help="controlled ISO timestamp for daily-cycle validation")
     return parser
 
 
@@ -371,6 +391,7 @@ def main() -> None:
             market_refresh_every_cycles=args.market_refresh_every_cycles,
             market_config_path=args.market_config_path,
             market_max_assets=args.market_max_assets,
+            daily_cycle_now=args.daily_cycle_now,
         )
     )
     signal.signal(signal.SIGINT, daemon.stop)
@@ -382,6 +403,15 @@ def _select(value: Any, keys: list[str]) -> Dict[str, Any]:
     if not isinstance(value, dict):
         return {}
     return {key: value.get(key) for key in keys}
+
+
+def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value)
+    except ValueError:
+        return None
 
 
 if __name__ == "__main__":

@@ -55,6 +55,7 @@ def create_forecast(payload: Mapping[str, Any], *, db_path: str | None = None) -
         "explanation_error": {},
         "hypothesis_evaluation": {},
         "trust_update": {},
+        "runtime_lineage": _mapping(payload.get("runtime_lineage")),
         "lineage": [
             {"event": "created", "timestamp": now, "status": "OPEN"},
         ],
@@ -250,6 +251,10 @@ def _list(value: Any) -> list[str]:
     if isinstance(value, str):
         return [part.strip()[:300] for part in value.split(",") if part.strip()]
     return []
+
+
+def _mapping(value: Any) -> dict[str, Any]:
+    return dict(value) if isinstance(value, Mapping) else {}
 
 
 def _confidence(value: Any) -> float:

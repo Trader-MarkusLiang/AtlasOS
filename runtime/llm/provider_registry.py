@@ -259,7 +259,7 @@ def health_check_provider(provider_id: str, path: str | None = None, timeout: fl
         elif not base_url:
             status = "not_configured"
             error = "base_url_missing"
-        elif provider_api_key(provider) or provider.get("type") in {"custom", "morecode"}:
+        elif provider_api_key(provider) or _is_local_url(base_url) or provider.get("type") in {"custom", "morecode"}:
             request = urllib.request.Request(base_url, method="HEAD")
             try:
                 with urllib.request.urlopen(request, timeout=timeout) as response:
@@ -306,14 +306,14 @@ def list_provider_models(provider_id: str, path: str | None = None, timeout: flo
                 payload = json.loads(response.read().decode("utf-8") or "{}")
             models = _extract_model_names(payload)
             status = "ok"
-        elif provider_api_key(provider) or provider.get("type") in {"custom", "morecode"}:
+        elif provider_api_key(provider) or _is_local_url(base_url) or provider.get("type") in {"custom", "morecode"}:
             endpoint = _models_endpoint(base_url)
             request = urllib.request.Request(endpoint, headers=_model_request_headers(provider), method="GET")
             try:
                 with urllib.request.urlopen(request, timeout=timeout) as response:
                     payload = json.loads(response.read().decode("utf-8") or "{}")
             except urllib.error.HTTPError as exc:
-                if exc.code != 401 or not _is_local_url(endpoint) or provider.get("type") not in {"custom", "morecode"}:
+                if exc.code != 401 or not _is_local_url(endpoint):
                     raise
                 request = urllib.request.Request(endpoint, headers={"Accept": "application/json"}, method="GET")
                 with urllib.request.urlopen(request, timeout=timeout) as response:
