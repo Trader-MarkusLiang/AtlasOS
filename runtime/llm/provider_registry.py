@@ -14,6 +14,7 @@ import hmac
 import json
 import os
 import platform
+import subprocess
 import time
 import urllib.error
 import urllib.request
@@ -81,6 +82,8 @@ def default_provider_registry() -> dict[str, Any]:
                 "base_url": meta["base_url"],
                 "model": meta["model"],
                 "api_key_encrypted": "",
+                "api_key_storage": "none",
+                "api_key_keychain_account": "",
                 "health": "unknown",
                 "last_latency_ms": None,
                 "last_error": "",
@@ -122,6 +125,16 @@ def update_provider_registry(payload: Mapping[str, Any], path: str | None = None
         for provider in existing_registry.get("providers", [])
         if isinstance(provider, Mapping)
     }
+    existing_keychain_refs = {
+        str(provider.get("id")): str(provider.get("api_key_keychain_account") or "")
+        for provider in existing_registry.get("providers", [])
+        if isinstance(provider, Mapping)
+    }
+    existing_storage = {
+        str(provider.get("id")): str(provider.get("api_key_storage") or "none")
+        for provider in existing_registry.get("providers", [])
+        if isinstance(provider, Mapping)
+    }
     raw_keys: dict[str, str] = {}
     if isinstance(incoming, Mapping):
         for provider in incoming.get("providers", []):
@@ -136,9 +149,21 @@ def update_provider_registry(payload: Mapping[str, Any], path: str | None = None
         item = dict(provider)
         raw_key = raw_keys.get(str(item.get("id")), "")
         if raw_key and raw_key != "***":
-            item["api_key_encrypted"] = encrypt_api_key(raw_key)
+            keychain_account = _keychain_account(str(item.get("id")))
+            if _store_keychain_secret(keychain_account, raw_key):
+                item["api_key_encrypted"] = ""
+                item["api_key_keychain_account"] = keychain_account
+                item["api_key_storage"] = "macos_keychain"
+            else:
+                item["api_key_encrypted"] = encrypt_api_key(raw_key)
+                item["api_key_keychain_account"] = ""
+                item["api_key_storage"] = "local_secret_storage"
         elif not item.get("api_key_encrypted") and existing_keys.get(str(item.get("id"))):
             item["api_key_encrypted"] = existing_keys[str(item.get("id"))]
+            item["api_key_storage"] = item.get("api_key_storage") or "local_secret_storage"
+        elif not item.get("api_key_keychain_account") and existing_keychain_refs.get(str(item.get("id"))):
+            item["api_key_keychain_account"] = existing_keychain_refs[str(item.get("id"))]
+            item["api_key_storage"] = existing_storage.get(str(item.get("id")), "macos_keychain")
         providers.append(item)
     registry["providers"] = providers
     return save_provider_registry(registry, path)
@@ -154,6 +179,11 @@ def get_provider(provider_id: str | None = None, path: str | None = None) -> dic
 
 
 def provider_api_key(provider: Mapping[str, Any]) -> str:
+    keychain_account = str(provider.get("api_key_keychain_account", "") or "")
+    if keychain_account:
+        keychain_value = _read_keychain_secret(keychain_account)
+        if keychain_value:
+            return keychain_value
     encrypted = str(provider.get("api_key_encrypted", "") or "")
     if encrypted:
         return decrypt_api_key(encrypted)
@@ -176,8 +206,9 @@ def safe_registry_view(registry: Mapping[str, Any] | None = None) -> dict[str, A
     safe_providers = []
     for provider in normalized["providers"]:
         item = dict(provider)
-        item["api_key"] = "***" if item.get("api_key_encrypted") else ""
+        item["api_key"] = "***" if item.get("api_key_encrypted") or item.get("api_key_keychain_account") else ""
         item.pop("api_key_encrypted", None)
+        item.pop("api_key_keychain_account", None)
         safe_providers.append(item)
     return {
         "active_provider": normalized["active_provider"],
@@ -357,6 +388,8 @@ def _normalize_registry(value: Mapping[str, Any]) -> dict[str, Any]:
                 "base_url": meta["base_url"],
                 "model": meta["model"],
                 "api_key_encrypted": "",
+                "api_key_storage": "none",
+                "api_key_keychain_account": "",
                 "health": "unknown",
                 "last_latency_ms": None,
                 "last_error": "",
@@ -401,6 +434,7 @@ def _registry_from_legacy(legacy: Any) -> dict[str, Any]:
             key = str(legacy.get("api_key") or "")
             if key:
                 provider["api_key_encrypted"] = encrypt_api_key(key)
+                provider["api_key_storage"] = "local_secret_storage"
     return registry
 
 
@@ -412,7 +446,7 @@ def _legacy_llm_from_registry(registry: Mapping[str, Any]) -> dict[str, Any]:
             break
     return {
         "provider": str(provider.get("label") or provider.get("id") or "OpenAI"),
-        "api_key": "***" if provider.get("api_key_encrypted") else "",
+        "api_key": "***" if provider.get("api_key_encrypted") or provider.get("api_key_keychain_account") else "",
         "base_url": str(provider.get("base_url") or ""),
         "model": str(provider.get("model") or ""),
     }
@@ -447,6 +481,61 @@ def _record_provider_models(
     target = Path(path) if path else CONFIG_PATH
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(config, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _keychain_available() -> bool:
+    if os.environ.get("ATLAS_DISABLE_KEYCHAIN") == "1":
+        return False
+    return platform.system() == "Darwin"
+
+
+def _keychain_service() -> str:
+    return os.environ.get("ATLAS_KEYCHAIN_SERVICE", "AtlasOS LLM Providers")
+
+
+def _keychain_account(provider_id: str) -> str:
+    return f"atlas-llm-{_safe_provider_id(provider_id)}"
+
+
+def _store_keychain_secret(account: str, value: str) -> bool:
+    if not _keychain_available() or not value:
+        return False
+    try:
+        subprocess.run(
+            [
+                "security",
+                "add-generic-password",
+                "-a",
+                account,
+                "-s",
+                _keychain_service(),
+                "-w",
+                value,
+                "-U",
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        return True
+    except (OSError, subprocess.CalledProcessError):
+        return False
+
+
+def _read_keychain_secret(account: str) -> str:
+    if not _keychain_available() or not account:
+        return ""
+    try:
+        result = subprocess.run(
+            ["security", "find-generic-password", "-a", account, "-s", _keychain_service(), "-w"],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return ""
+    return result.stdout.strip()
 
 
 def _models_endpoint(base_url: str) -> str:

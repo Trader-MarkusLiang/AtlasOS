@@ -1,7 +1,7 @@
 # ISSUE-2026-055 — Provider Keychain Storage Needed
 
 Date: 2026-07-08
-Status: Open
+Status: Accepted / Partially Implemented
 Category: Engineering
 
 ## Source
@@ -46,9 +46,18 @@ P1
 
 ## Decision
 
-Discuss / Convert to Improvement Proposal after productization backbone validation.
+Implemented Keychain-first storage path for newly saved keys, with local fallback explicitly marked
+as `local_secret_storage`. Validation covers fallback using a fake key and confirms safe UI views do
+not expose secrets. A real macOS Keychain smoke test with an actual provider key remains required
+before closing this Issue.
 
 ## Linked IP
 
 None
 
+## Notes
+
+Validation:
+
+- `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_provider_secret_storage.py` — PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_llm_provider_ui_i18n_v1_4.py` — PASS.

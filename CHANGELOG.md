@@ -4,6 +4,10 @@
 
 - Added `ISSUE-2026-054`, `ISSUE-2026-055`, and `ISSUE-2026-056` for verified productization,
   provider secret-storage, and market-intelligence channel gaps.
+- Updated `runtime/llm/provider_registry.py` to use macOS Keychain first for newly saved provider
+  API keys, with explicit `local_secret_storage` fallback when Keychain is unavailable or disabled.
+- Added `99_Verification/validate_provider_secret_storage.py` to verify masked safe views and
+  fallback preservation with fake keys and no real Keychain access.
 - Added `runtime/portfolio_context.py` with read-only percentage-based exposure mapping,
   concentration summaries, liquidity/regime sensitivity, and privacy guards that avoid account
   values, balances, cost basis, broker data, or net worth.
@@ -21,6 +25,8 @@
   `/learning` UI pages, wired through `ui/app_server.py` without importing cognition modules.
 - Added `99_Verification/validate_productization_backbone.py` and productization validation
   reports. Validation used temporary config/database files and did not touch private local config.
+- Provider secret-storage validation used a fake key and `ATLAS_DISABLE_KEYCHAIN=1`; real Keychain
+  behavior still requires a live local save test before calling the issue fully closed.
 - Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, CDE logic, Decision Contract semantics,
   broker/trading execution, portfolio mutation, ML/DL/RL, or private runtime config.
 

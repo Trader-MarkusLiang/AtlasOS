@@ -45,6 +45,8 @@ PASS:
 - `/state` portfolio and market-intelligence fields.
 - Product pages render without private config.
 - Roadmap/dev registry regression remains passing.
+- Provider secret-storage fallback validation remains passing with fake keys and no real Keychain
+  access.
 
 ## Evidence
 
@@ -76,4 +78,3 @@ PASS:
 - Market breadth, news/announcement, narrative/attention, macro/policy, and deeper liquidity
   adapters remain missing or partial and are tracked by `ISSUE-2026-056`.
 - Provider key storage still needs a macOS Keychain upgrade and is tracked by `ISSUE-2026-055`.
-

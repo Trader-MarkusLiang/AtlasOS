@@ -45,8 +45,10 @@ portfolio context, normalized market ingestion, and forecast accountability.
 
 ## F. Security Risks
 
-- Provider key storage remains local app storage rather than macOS Keychain. Tracked by
-  `ISSUE-2026-055`.
+- Provider key storage now attempts macOS Keychain first for newly saved keys and explicitly falls
+  back to `local_secret_storage` when Keychain is unavailable. Tracked by `ISSUE-2026-055`.
+- Real Keychain behavior still needs a live local save test with an actual provider key before the
+  issue can be closed.
 - No raw secrets were committed or exposed by the new validation.
 
 ## G. Data Risks
@@ -81,6 +83,8 @@ portfolio context, normalized market ingestion, and forecast accountability.
 ## L. Tests Passed
 
 - Productization backbone validation.
+- Provider secret-storage fallback validation.
+- LLM provider UI/i18n regression validation.
 - Roadmap/dev registry regression validation.
 - Python compile validation for modified runtime/UI modules.
 - 2-cycle daemon smoke with market refresh enabled and no configured assets.
@@ -99,4 +103,3 @@ creation time.
 
 Run a longer daemon soak with one or two configured non-private assets, then implement Keychain
 secret storage before expanding market-intelligence channels.
-

@@ -48,6 +48,9 @@ use checkpoint commits, and prioritize real evidence over optimistic claims.
   - Added Issues `ISSUE-2026-054`, `ISSUE-2026-055`, and `ISSUE-2026-056`.
   - Added productization validation, long-run smoke, and overnight handoff reports under
     `99_Verification/`.
+- Implemented Keychain-first provider key storage in `runtime/llm/provider_registry.py` with
+  explicit `local_secret_storage` fallback and masked safe views.
+- Added `99_Verification/validate_provider_secret_storage.py`.
 
 ## Decisions
 
@@ -56,6 +59,8 @@ use checkpoint commits, and prioritize real evidence over optimistic claims.
 - Use checkpoint commits after major safe phases.
 - Keep Forecast Ledger as accountability infrastructure, not a price-target or trading engine.
 - Label the daemon stability check as accelerated smoke only, not 24-hour proof.
+- Treat Keychain support as code-path implemented but not fully closed until a real local Keychain
+  save test is run.
 
 ## Current State
 
@@ -73,6 +78,8 @@ use checkpoint commits, and prioritize real evidence over optimistic claims.
 - `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_productization_backbone.py` — PASS.
 - `PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile runtime/market_intelligence.py runtime/portfolio_context.py runtime/forecast_ledger.py runtime/atlas_runtime_daemon.py runtime/orchestrator.py runtime/decision_brief.py ui/app_server.py ui/pages/home.py ui/pages/setup.py ui/pages/portfolio.py ui/pages/markets.py ui/pages/predictions.py ui/pages/learning.py 99_Verification/validate_productization_backbone.py` — PASS.
 - Accelerated daemon smoke with temporary empty asset config, market refresh enabled, `--max-cycles 2 --no-sleep` — PASS, exit code 0, 2 log lines, `no_configured_assets`, 0 market events enqueued.
+- `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_provider_secret_storage.py` — PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 99_Verification/validate_llm_provider_ui_i18n_v1_4.py` — PASS.
 
 ## Resume Instructions
 
@@ -80,11 +87,11 @@ use checkpoint commits, and prioritize real evidence over optimistic claims.
 2. Read `99_Verification/Atlas_OS_Overnight_Baseline_Audit.md`.
 3. Read `99_Verification/Atlas_OS_Overnight_Productization_Report.md`.
 4. Continue mandate phases conservatively; do not modify cognition core without explicit evidence.
-5. Next safe work: Keychain secret storage, longer daemon soak, and staged market-intelligence
+5. Next safe work: real local Keychain smoke, longer daemon soak, and staged market-intelligence
    channels from `ISSUE-2026-055` / `ISSUE-2026-056`.
 
 ## Open Questions
 
 - Full 24-hour stability is not proven.
 - Market breadth/news/narrative/macro channels are not implemented.
-- Provider secret storage needs macOS Keychain upgrade.
+- Provider secret storage needs real Keychain smoke before closing the Issue.
