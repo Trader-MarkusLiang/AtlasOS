@@ -162,7 +162,7 @@ def main() -> int:
     ]
     final_classification = _final_classification(failures, tribunal)
     result = {
-        "date": datetime.now(timezone.utc).isoformat(),
+        "date": status.get("last_updated") or datetime.now(timezone.utc).isoformat(),
         "status": "PASS" if not failures else "FAIL",
         "final_classification": final_classification,
         "checks": checks,
