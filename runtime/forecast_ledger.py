@@ -33,6 +33,8 @@ def create_forecast(payload: Mapping[str, Any], *, db_path: str | None = None) -
 
     now = utc_now_iso()
     forecast_id = str(payload.get("forecast_id") or f"forecast-{uuid.uuid4()}")
+    if get_forecast(forecast_id, db_path=db_path):
+        return {"status": "error", "error": "forecast_already_exists", "forecast_id": forecast_id}
     record = {
         "forecast_id": forecast_id,
         "created_at": str(payload.get("created_at") or now),
@@ -100,6 +102,14 @@ def evaluate_forecast(
     record = get_forecast(forecast_id, db_path=db_path)
     if not record:
         return {"status": "error", "error": "forecast_not_found", "forecast_id": forecast_id}
+    current_status = str(record.get("status") or "").upper()
+    if current_status != "MATURED":
+        return {
+            "status": "error",
+            "error": "forecast_not_matured",
+            "forecast_id": forecast_id,
+            "current_status": current_status or "Unknown",
+        }
     actual = _text(outcome.get("actual_outcome") or outcome.get("outcome"), "Unknown")
     expected = str(record.get("expected_direction_state") or "").strip().lower()
     actual_norm = actual.strip().lower()
