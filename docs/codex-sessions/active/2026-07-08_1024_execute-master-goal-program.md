@@ -135,6 +135,19 @@ v0.8.
   - updated GOAL 03 evidence and status so current execution advances to
     `GOAL_04_PORTFOLIO_COGNITION`.
   - committed GOAL 03 completion as `989868bf1d02ba41498a97e84887fa3ce5987974`.
+- 2026-07-08 11:47 CST GOAL 04 portfolio cognition:
+  - inspected `docs/goals/GOAL_04_PORTFOLIO_COGNITION.md`,
+    `docs/goals/evidence/GOAL_04_EVIDENCE.md`, Prompt D real portfolio reports,
+    `runtime/portfolio_context.py`, runtime portfolio snapshot hooks, Settings/Setup/Portfolio UI,
+    and prior validation scripts;
+  - added and ran `99_Verification/validate_goal_04_portfolio_cognition.py`;
+  - validator used UI `/settings` to save four temporary portfolio cases, ran the same fixed
+    runtime event for each case, and checked Decision Brief plus `/portfolio` UI output;
+  - proved Portfolio A, B, C, and no-portfolio cases produce different exposure, relevance,
+    theme concentration, and regime sensitivity under the same market state;
+  - added `99_Verification/GOAL_04_Portfolio_Cognition_Report.md` and differential artifact;
+  - updated GOAL 04 evidence and status so current execution advances to
+    `GOAL_05_FORECAST_ACCOUNTABILITY`.
 
 ## Files Changed
 
@@ -166,6 +179,10 @@ v0.8.
 - `99_Verification/validate_goal_03_market_intelligence.py`
 - `99_Verification/artifacts/goal_03_market_intelligence/`
 - `docs/goals/evidence/GOAL_03_EVIDENCE.md`
+- `99_Verification/GOAL_04_Portfolio_Cognition_Report.md`
+- `99_Verification/validate_goal_04_portfolio_cognition.py`
+- `99_Verification/artifacts/goal_04_portfolio_cognition/`
+- `docs/goals/evidence/GOAL_04_EVIDENCE.md`
 
 ## Decisions
 
@@ -194,6 +211,8 @@ v0.8.
   `GOAL_03_MARKET_INTELLIGENCE`.
 - GOAL 03 is now reconciled as `PROVEN_COMPLETE`; `GOAL_STATUS.json` current cursor is
   `GOAL_04_PORTFOLIO_COGNITION`.
+- GOAL 04 is now reconciled as `PROVEN_COMPLETE`; `GOAL_STATUS.json` current cursor is
+  `GOAL_05_FORECAST_ACCOUNTABILITY`.
 - A temporary UI server process is still visible on port `8876`; stop or reuse it intentionally
   before further browser tests.
 
@@ -216,14 +235,15 @@ v0.8.
 - GOAL 03 first validator run: FAIL due all live providers unavailable in that moment.
 - GOAL 03 repaired provider fallback and UI freshness view.
 - GOAL 03 validator rerun: PASS.
+- GOAL 04 validator: PASS.
 
 ## Resume Instructions
 
 1. Read `docs/goals/status/GOAL_STATUS.json`.
-2. Confirm `current_goal` is `GOAL_04_PORTFOLIO_COGNITION`.
-3. Read `docs/goals/GOAL_04_PORTFOLIO_COGNITION.md` and
-   `docs/goals/evidence/GOAL_04_EVIDENCE.md`.
-4. Audit existing portfolio differential proof and create GOAL 04 report/validator if needed.
+2. Confirm `current_goal` is `GOAL_05_FORECAST_ACCOUNTABILITY`.
+3. Read `docs/goals/GOAL_05_FORECAST_ACCOUNTABILITY.md` and
+   `docs/goals/evidence/GOAL_05_EVIDENCE.md`.
+4. Audit Forecast Ledger lifecycle and create GOAL 05 report/validator if needed.
 5. Preserve hard boundaries: no broker/trading execution, no cognition rewrites, no speculative
    engines, no private config commits.
 

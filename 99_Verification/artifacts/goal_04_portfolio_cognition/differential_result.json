@@ -1,0 +1,83 @@
+{
+  "date": "2026-07-08",
+  "validator": "99_Verification/validate_goal_04_portfolio_cognition.py",
+  "status": "PASS",
+  "same_market_state": "FixedEventSource attention event",
+  "cases": {
+    "portfolio_a_ai_hardware": {
+      "context_status": "configured",
+      "exposure_sum_pct": 65.0,
+      "theme_concentration": {
+        "AI Hardware": 65.0
+      },
+      "market_concentration": {
+        "US": 65.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 65.0,
+      "risk_cluster_count": 1,
+      "brief_portfolio_line_present": true,
+      "portfolio_page_visible": true
+    },
+    "portfolio_b_cash_proxy": {
+      "context_status": "configured",
+      "exposure_sum_pct": 8.0,
+      "theme_concentration": {
+        "Cash Proxy": 8.0
+      },
+      "market_concentration": {
+        "US": 8.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "broad_or_unclassified",
+      "portfolio_relevance_score": 8.0,
+      "risk_cluster_count": 1,
+      "brief_portfolio_line_present": true,
+      "portfolio_page_visible": true
+    },
+    "portfolio_c_single_theme": {
+      "context_status": "configured",
+      "exposure_sum_pct": 70.0,
+      "theme_concentration": {
+        "Single Theme": 70.0
+      },
+      "market_concentration": {
+        "US": 70.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 70.0,
+      "risk_cluster_count": 1,
+      "brief_portfolio_line_present": true,
+      "portfolio_page_visible": true
+    },
+    "no_portfolio": {
+      "context_status": "missing",
+      "exposure_sum_pct": 0,
+      "theme_concentration": {},
+      "market_concentration": {},
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "broad_or_unclassified",
+      "portfolio_relevance_score": 0.0,
+      "risk_cluster_count": 0,
+      "brief_portfolio_line_present": true,
+      "portfolio_page_visible": true
+    }
+  },
+  "checks": {
+    "portfolio_outputs_differ": true,
+    "relevance_differs": true,
+    "regime_sensitivity_differs": true,
+    "no_portfolio_missing": true,
+    "required_outputs_present": true,
+    "no_private_amounts": true,
+    "no_buy_sell_language": true
+  },
+  "safety": {
+    "percentage_only": true,
+    "no_exact_amounts": true,
+    "no_broker_data": true,
+    "no_trading_execution": true
+  }
+}

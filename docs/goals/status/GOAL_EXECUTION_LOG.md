@@ -350,3 +350,77 @@ Evidence level: `LIVE_PROVEN`
 
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading, broker,
 prediction, or portfolio-mutation logic was changed.
+
+## 2026-07-08 - GOAL 04 Portfolio Cognition Completed
+
+### Summary
+
+Executed GOAL 04 after GOAL 03. A new temporary-state validator proved the UI-configured
+portfolio path changes normal runtime output under the same fixed event, without exact private
+amounts or trading execution.
+
+### Validation
+
+Command:
+
+```text
+python3 99_Verification/validate_goal_04_portfolio_cognition.py
+```
+
+Result: `PASS`
+
+### Differential Evidence
+
+| Case | Status | Exposure | Regime sensitivity | Relevance |
+|---|---|---:|---|---:|
+| Portfolio A AI Hardware | configured | 65.0 | `single_theme_regime_sensitive` | 65.0 |
+| Portfolio B Cash Proxy | configured | 8.0 | `broad_or_unclassified` | 8.0 |
+| Portfolio C Single Theme | configured | 70.0 | `single_theme_regime_sensitive` | 70.0 |
+| No portfolio | missing | 0 | `broad_or_unclassified` | 0.0 |
+
+### Runtime Path
+
+```text
+UI /settings
+-> local config
+-> runtime load
+-> portfolio context
+-> DecisionLoop
+-> Decision Brief
+-> UI /portfolio
+```
+
+### Required Outputs
+
+Validated for configured portfolios:
+
+- asset concentration;
+- theme concentration;
+- market concentration;
+- liquidity sensitivity;
+- regime sensitivity;
+- correlated risk clusters;
+- portfolio relevance.
+
+### Files Updated
+
+- `99_Verification/validate_goal_04_portfolio_cognition.py`
+- `99_Verification/GOAL_04_Portfolio_Cognition_Report.md`
+- `99_Verification/artifacts/goal_04_portfolio_cognition/differential_result.json`
+- `docs/goals/evidence/GOAL_04_EVIDENCE.md`
+- `docs/goals/status/GOAL_STATUS.json`
+
+### Classification
+
+GOAL 04 classification: `PROVEN_COMPLETE`
+
+Evidence level: `REAL_RUNTIME_PROVEN`
+
+### Transition
+
+`GOAL_STATUS.json` now records `current_goal: GOAL_05_FORECAST_ACCOUNTABILITY`.
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading, broker,
+prediction, exact private wealth storage, or portfolio mutation was changed.

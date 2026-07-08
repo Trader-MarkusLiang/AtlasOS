@@ -22,7 +22,7 @@ production, not live-market proven, and not 2h/24h stable.
 - Ordinary-user activation through UI/config/runtime path.
 - Live LLM provider inference and fallback through GOAL 02.
 - Live market price/volume observation through daemon/runtime/UI path through GOAL 03.
-- Portfolio context runtime path.
+- Portfolio cognition differential through UI/runtime path through GOAL 04.
 - Forecast lineage through normal DecisionLoop.
 - Self-iteration treatment/control behavior.
 - Daily-cycle daemon dispatch.
@@ -37,7 +37,7 @@ production, not live-market proven, and not 2h/24h stable.
 ## Next Evidence To Collect
 
 1. 2h wall-clock soak report.
-2. Portfolio cognition GOAL 04 report reconciliation.
+2. Forecast accountability GOAL 05 report reconciliation.
 3. Provider stability evidence during GOAL 07 soak.
 4. Release tribunal after the remaining blockers close.
 
