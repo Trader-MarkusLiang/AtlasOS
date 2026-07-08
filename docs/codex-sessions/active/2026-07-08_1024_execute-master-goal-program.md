@@ -202,6 +202,7 @@ v0.8.
   - updated GOAL 07 evidence, master evidence, status registry, and execution log;
   - GOAL 07 remains `PROVEN_PARTIAL`; `GOAL_STATUS.json` stays on
     `GOAL_07_AUTONOMOUS_OPERATIONS` because 2h/24h wall-clock stability is not proven.
+  - committed GOAL 07 partial proof as `d6511725fd916be325de89356aa3160f292db014`.
 
 ## Files Changed
 
