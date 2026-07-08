@@ -4,11 +4,11 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Active Sessions
 
-- `docs/codex-sessions/active/2026-07-08_1024_execute-master-goal-program.md`
 - `docs/codex-sessions/active/2026-07-08_0020_overnight-productization-sprint.md`
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-08_1024_execute-master-goal-program.md`
 - `docs/codex-sessions/completed/2026-07-08_0955_goal-orchestration-plan.md`
 - `docs/codex-sessions/completed/2026-07-08_0951_push-goal-files.md`
 - `docs/codex-sessions/completed/2026-07-08_0938-fill-goal-08.md`
