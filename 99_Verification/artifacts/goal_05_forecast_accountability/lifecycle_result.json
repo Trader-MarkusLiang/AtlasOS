@@ -1,0 +1,121 @@
+{
+  "cases": {
+    "goal05_high_confidence_miss": {
+      "calibration_error": 0.95,
+      "created_status": "OPEN",
+      "final_status": "INVALIDATED",
+      "lineage_events": [
+        "created",
+        "matured",
+        "evaluated"
+      ],
+      "matured_status": "MATURED",
+      "prediction_error": 1.0
+    },
+    "goal05_hit": {
+      "calibration_error": 0.3,
+      "created_status": "OPEN",
+      "final_status": "VERIFIED",
+      "lineage_events": [
+        "created",
+        "matured",
+        "evaluated"
+      ],
+      "matured_status": "MATURED",
+      "prediction_error": 0.0
+    },
+    "goal05_inconclusive": {
+      "calibration_error": 0.0,
+      "created_status": "OPEN",
+      "final_status": "INCONCLUSIVE",
+      "lineage_events": [
+        "created",
+        "matured",
+        "evaluated"
+      ],
+      "matured_status": "MATURED",
+      "prediction_error": 0.5
+    },
+    "goal05_low_confidence_hit": {
+      "calibration_error": 0.8,
+      "created_status": "OPEN",
+      "final_status": "VERIFIED",
+      "lineage_events": [
+        "created",
+        "matured",
+        "evaluated"
+      ],
+      "matured_status": "MATURED",
+      "prediction_error": 0.0
+    },
+    "goal05_miss": {
+      "calibration_error": 0.6,
+      "created_status": "OPEN",
+      "final_status": "INVALIDATED",
+      "lineage_events": [
+        "created",
+        "matured",
+        "evaluated"
+      ],
+      "matured_status": "MATURED",
+      "prediction_error": 1.0
+    }
+  },
+  "checks": {
+    "daemon_tick_success": true,
+    "goal05_high_confidence_miss_created_open": true,
+    "goal05_high_confidence_miss_evaluated": true,
+    "goal05_high_confidence_miss_fields_present": true,
+    "goal05_high_confidence_miss_lineage_complete": true,
+    "goal05_high_confidence_miss_matured": true,
+    "goal05_hit_created_open": true,
+    "goal05_hit_evaluated": true,
+    "goal05_hit_fields_present": true,
+    "goal05_hit_lineage_complete": true,
+    "goal05_hit_matured": true,
+    "goal05_inconclusive_created_open": true,
+    "goal05_inconclusive_evaluated": true,
+    "goal05_inconclusive_fields_present": true,
+    "goal05_inconclusive_lineage_complete": true,
+    "goal05_inconclusive_matured": true,
+    "goal05_low_confidence_hit_created_open": true,
+    "goal05_low_confidence_hit_evaluated": true,
+    "goal05_low_confidence_hit_fields_present": true,
+    "goal05_low_confidence_hit_lineage_complete": true,
+    "goal05_low_confidence_hit_matured": true,
+    "goal05_miss_created_open": true,
+    "goal05_miss_evaluated": true,
+    "goal05_miss_fields_present": true,
+    "goal05_miss_lineage_complete": true,
+    "goal05_miss_matured": true,
+    "high_confidence_miss_error": true,
+    "hit_verified": true,
+    "inconclusive_recorded": true,
+    "ledger_metrics_evaluated": true,
+    "low_confidence_hit_recorded": true,
+    "miss_invalidated": true,
+    "no_buy_sell_language": true,
+    "no_trading_execution": true,
+    "predictions_ui_visible": true,
+    "runtime_forecast_created_open": true,
+    "runtime_forecast_has_lineage": true
+  },
+  "failures": [],
+  "metrics": {
+    "accuracy": 0.4,
+    "evaluated": 5,
+    "matured": 0,
+    "mean_calibration_error": 0.53,
+    "mean_forecast_error": 0.5,
+    "minimum_sample_size_met": false,
+    "open": 1,
+    "total": 6,
+    "verified": 2
+  },
+  "runtime_forecast": {
+    "decision_brief_id": "c1e49c0a-46f3-4812-b4d9-63fd02992c08",
+    "forecast_id": "runtime-c1e49c0a-46f3-4812-b4d9-63fd02992c08",
+    "status": "OPEN"
+  },
+  "status": "PASS"
+}

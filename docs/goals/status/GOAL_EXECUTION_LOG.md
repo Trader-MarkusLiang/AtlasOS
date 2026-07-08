@@ -424,3 +424,81 @@ Evidence level: `REAL_RUNTIME_PROVEN`
 
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading, broker,
 prediction, exact private wealth storage, or portfolio mutation was changed.
+
+## 2026-07-08 - GOAL 05 Forecast Accountability Completed
+
+### Summary
+
+Executed GOAL 05 after GOAL 04. A runtime-supported validator proved that Atlas can record
+forecasts before outcomes, mature them, attach outcomes, compute prediction error, compute
+calibration error, and preserve final statuses without creating trading authority.
+
+### Validation
+
+Command:
+
+```text
+python3 -m py_compile 99_Verification/validate_goal_05_forecast_accountability.py
+python3 99_Verification/validate_goal_05_forecast_accountability.py
+```
+
+Result: `PASS`
+
+### Runtime-Supported Path
+
+```text
+AtlasRuntimeDaemon tick
+-> DecisionLoop
+-> Forecast Ledger runtime forecast registration
+-> UI/API /predictions forecast creation
+-> UI/API /predictions/mature
+-> UI/API /predictions/evaluate
+-> Forecast Ledger metrics
+-> Predictions UI listing
+```
+
+### Required Cases
+
+| Case | Final status | Prediction error | Calibration error |
+|---|---|---:|---:|
+| hit | `VERIFIED` | 0.0 | 0.3 |
+| miss | `INVALIDATED` | 1.0 | 0.6 |
+| inconclusive | `INCONCLUSIVE` | 0.5 | 0.0 |
+| high-confidence miss | `INVALIDATED` | 1.0 | 0.95 |
+| low-confidence hit | `VERIFIED` | 0.0 | 0.8 |
+
+### Ledger Metrics
+
+- total forecasts: 6
+- open forecasts: 1
+- evaluated forecasts: 5
+- verified forecasts: 2
+- accuracy: 0.4
+- mean forecast error: 0.5
+- mean calibration error: 0.53
+- minimum sample size met: false
+
+### Files Updated
+
+- `99_Verification/validate_goal_05_forecast_accountability.py`
+- `99_Verification/GOAL_05_Forecast_Accountability_Report.md`
+- `99_Verification/artifacts/goal_05_forecast_accountability/lifecycle_result.json`
+- `docs/goals/evidence/GOAL_05_EVIDENCE.md`
+- `docs/goals/evidence/ATLAS_MASTER_EVIDENCE.md`
+- `docs/goals/status/GOAL_STATUS.json`
+
+### Classification
+
+GOAL 05 classification: `PROVEN_COMPLETE`
+
+Evidence level: `REAL_RUNTIME_PROVEN`
+
+### Transition
+
+`GOAL_STATUS.json` now records `current_goal: GOAL_06_SELF_ITERATION_REALITY`.
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading, broker,
+prediction, or portfolio-mutation logic was changed. Forecasts remain non-binding accountability
+records and do not create trading authority.

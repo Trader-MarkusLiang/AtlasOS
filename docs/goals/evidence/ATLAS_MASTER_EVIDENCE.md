@@ -16,6 +16,7 @@ production, not live-market proven, and not 2h/24h stable.
 | Merge readiness | `99_Verification/Atlas_OS_Merge_Readiness_Report.md` | `INTERNAL_ALPHA_MERGEABLE` |
 | Roadmap truth model | `docs/atlas_roadmap.json` | evidence-gated |
 | Goal status registry | `docs/goals/status/GOAL_STATUS.json` | active |
+| GOAL 05 forecast accountability | `99_Verification/GOAL_05_Forecast_Accountability_Report.md` | `REAL_RUNTIME_PROVEN` |
 
 ## Proven Areas
 
@@ -23,7 +24,7 @@ production, not live-market proven, and not 2h/24h stable.
 - Live LLM provider inference and fallback through GOAL 02.
 - Live market price/volume observation through daemon/runtime/UI path through GOAL 03.
 - Portfolio cognition differential through UI/runtime path through GOAL 04.
-- Forecast lineage through normal DecisionLoop.
+- Forecast accountability lifecycle through normal runtime-supported paths through GOAL 05.
 - Self-iteration treatment/control behavior.
 - Daily-cycle daemon dispatch.
 - Failure recovery for tested cases.
@@ -37,7 +38,7 @@ production, not live-market proven, and not 2h/24h stable.
 ## Next Evidence To Collect
 
 1. 2h wall-clock soak report.
-2. Forecast accountability GOAL 05 report reconciliation.
+2. GOAL 06 self-iteration repeatability proof.
 3. Provider stability evidence during GOAL 07 soak.
 4. Release tribunal after the remaining blockers close.
 
