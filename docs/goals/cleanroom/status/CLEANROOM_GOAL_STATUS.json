@@ -3,22 +3,23 @@
   "status": "IN_PROGRESS",
   "candidate_branch": "codex/overnight-productization-sprint",
   "candidate_commit": "ed63678793bdc5d10c1469433e461a6c20db7927",
-  "current_goal": "CR_GOAL_04_LIVE_MARKET_BLACKBOX",
+  "current_goal": "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
   "current_goal_status": "NOT_STARTED",
   "completed_goals": [
     "CR_GOAL_00_FRESH_CLONE_BASELINE",
     "CR_GOAL_01_BOOTSTRAP_FROM_ZERO",
     "CR_GOAL_02_FIRST_TIME_USER_BLACKBOX",
-    "CR_GOAL_03_LIVE_LLM_BLACKBOX"
+    "CR_GOAL_03_LIVE_LLM_BLACKBOX",
+    "CR_GOAL_04_LIVE_MARKET_BLACKBOX"
   ],
   "partial_goals": [],
   "failed_goals": [],
   "blocked_goals": [],
-  "next_goal": "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
+  "next_goal": "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
   "stop_allowed": false,
-  "last_updated": "2026-07-08T16:28:00+08:00",
-  "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr03-20260708-161754",
-  "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr03-20260708-161754",
+  "last_updated": "2026-07-08T16:34:00+08:00",
+  "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr04-20260708-162357",
+  "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr04-20260708-162357",
   "evidence_level": "LIVE_PROVEN",
   "goal_results": [
     {
@@ -67,6 +68,24 @@
       "fallback_to_live_provider_proven": true,
       "failure_isolation_proven": true,
       "secret_leak_scan_clean": true
+    },
+    {
+      "goal": "CR_GOAL_04_LIVE_MARKET_BLACKBOX",
+      "status": "PROVEN_COMPLETE",
+      "evidence_level": "LIVE_PROVEN",
+      "coverage_level": "PARTIAL",
+      "report": "99_Verification/cleanroom/CR_GOAL_04_Live_Market_Blackbox_Report.md",
+      "clone_path": "/tmp/atlas-cleanroom-cr04-20260708-162357",
+      "state_path": "/tmp/atlas-cleanroom-state-cr04-20260708-162357",
+      "live_source": "yahoo_chart",
+      "live_assets": [
+        "NVDA",
+        "AAPL"
+      ],
+      "price_volume_live": true,
+      "runtime_eventstream_proven": true,
+      "ui_freshness_proven": true,
+      "missing_channels_explicit": true
     }
   ],
   "evidence_levels": [

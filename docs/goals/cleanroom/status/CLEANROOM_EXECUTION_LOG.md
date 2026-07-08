@@ -66,6 +66,53 @@ CR_GOAL_01_BOOTSTRAP_FROM_ZERO
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, runtime cognition,
 trading execution, broker integration, or portfolio holdings were modified.
 
+## 2026-07-08 - CR_GOAL_04 Live Market Black-Box Completed
+
+### Summary
+
+Proved that real market data reaches the fresh-clone runtime and remains visible through the UI
+without pretending missing channels are live.
+
+### Evidence
+
+- Fresh clone: `/tmp/atlas-cleanroom-cr04-20260708-162357`
+- Clean runtime state: `/tmp/atlas-cleanroom-state-cr04-20260708-162357`
+- Commit: `497be7074e57e328a666d1783af6f603a3741f1a`
+- Report:
+  `99_Verification/cleanroom/CR_GOAL_04_Live_Market_Blackbox_Report.md`
+- Artifacts:
+  `99_Verification/cleanroom/artifacts/cr_goal_04/live_market_path/`
+
+### Proven Path
+
+- `yahoo_chart` returned available price/volume data for public tickers.
+- `refresh_market_intelligence()` normalized NVDA and AAPL observations.
+- Input Router converted observations into `volume_price_breakout` runtime events.
+- EventStream handled both market events.
+- Daemon persisted market state with `price_volume: LIVE`.
+- `/markets?format=json` and `/state` showed the same freshness classification.
+
+### Classification
+
+CR_GOAL_04 classification: `PROVEN_COMPLETE`
+
+Evidence level: `LIVE_PROVEN`
+
+Coverage level: `PARTIAL`
+
+### Transition
+
+`CLEANROOM_GOAL_STATUS.json` now records current goal:
+
+```text
+CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX
+```
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, runtime cognition,
+trading execution, broker integration, or portfolio holdings were modified.
+
 ## 2026-07-08 - CR_GOAL_03 Live LLM Black-Box Completed
 
 ### Summary

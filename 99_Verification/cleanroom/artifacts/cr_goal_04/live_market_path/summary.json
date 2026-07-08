@@ -1,0 +1,154 @@
+{
+  "clone_path": "/tmp/atlas-cleanroom-cr04-20260708-162357",
+  "state_path": "/tmp/atlas-cleanroom-state-cr04-20260708-162357",
+  "commit": "497be7074e57e328a666d1783af6f603a3741f1a",
+  "market_intelligence_state": {
+    "status": "ok",
+    "channels": {
+      "liquidity_proxy": "SIMULATED",
+      "macro_policy": "NOT_CONFIGURED",
+      "market_breadth": "NOT_CONFIGURED",
+      "narrative_attention": "NOT_CONFIGURED",
+      "news_announcement": "NOT_CONFIGURED",
+      "portfolio_relevance": "LIVE",
+      "price_volume": "LIVE",
+      "volatility": "SIMULATED"
+    },
+    "proof_mode": "LIVE_OR_PROVIDER_PROOF",
+    "events_prepared": 2,
+    "events_enqueued": 2,
+    "observations": [
+      {
+        "asset": "NVDA",
+        "source": "yahoo_chart",
+        "source_type": "market_data_provider",
+        "timestamp": "2026-07-07T13:30:00+00:00",
+        "data_quality_status": "Available",
+        "freshness": "Available",
+        "latest_price_available": true,
+        "volume": 123810500.0,
+        "daily_change_pct": 0.7056965494693257,
+        "change_5d_pct": 1.0052784750508525,
+        "change_20d_pct": -3.983429149003004,
+        "missing_fields": [
+          "turnover",
+          "market_cap (optional)",
+          "pe (optional)",
+          "pb (optional)"
+        ],
+        "errors": []
+      },
+      {
+        "asset": "AAPL",
+        "source": "yahoo_chart",
+        "source_type": "market_data_provider",
+        "timestamp": "2026-07-07T13:30:00+00:00",
+        "data_quality_status": "Available",
+        "freshness": "Available",
+        "latest_price_available": true,
+        "volume": 42426500.0,
+        "daily_change_pct": -0.6396724801939757,
+        "change_5d_pct": 10.264788255183888,
+        "change_20d_pct": 1.080239267188876,
+        "missing_fields": [
+          "turnover",
+          "market_cap (optional)",
+          "pe (optional)",
+          "pb (optional)"
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "handled_market_events": [
+    {
+      "event_type": "volume_price_breakout",
+      "status": "handled",
+      "source": "yahoo_chart",
+      "created_at": "2026-07-07T13:30:00+00:00",
+      "asset": "AAPL",
+      "data_quality_status": "Available",
+      "freshness": "Available",
+      "provider": "yahoo_chart",
+      "volume": 42426500.0
+    },
+    {
+      "event_type": "volume_price_breakout",
+      "status": "handled",
+      "source": "yahoo_chart",
+      "created_at": "2026-07-07T13:30:00+00:00",
+      "asset": "NVDA",
+      "data_quality_status": "Available",
+      "freshness": "Available",
+      "provider": "yahoo_chart",
+      "volume": 123810500.0
+    }
+  ],
+  "runtime_tick": {
+    "status": "success",
+    "events_processed": 4,
+    "market_refresh_status": "ok",
+    "market_events_enqueued": 2,
+    "market_channels": {
+      "liquidity_proxy": "SIMULATED",
+      "macro_policy": "NOT_CONFIGURED",
+      "market_breadth": "NOT_CONFIGURED",
+      "narrative_attention": "NOT_CONFIGURED",
+      "news_announcement": "NOT_CONFIGURED",
+      "portfolio_relevance": "LIVE",
+      "price_volume": "LIVE",
+      "volatility": "SIMULATED"
+    },
+    "no_trading_execution": true
+  },
+  "ui_freshness": {
+    "ui_markets.json": {
+      "status": "ok",
+      "channels": {
+        "liquidity_proxy": "SIMULATED",
+        "macro_policy": "NOT_CONFIGURED",
+        "market_breadth": "NOT_CONFIGURED",
+        "narrative_attention": "NOT_CONFIGURED",
+        "news_announcement": "NOT_CONFIGURED",
+        "portfolio_relevance": "LIVE",
+        "price_volume": "LIVE",
+        "volatility": "SIMULATED"
+      },
+      "proof_mode": "LIVE_OR_PROVIDER_PROOF",
+      "events_enqueued": 2,
+      "portfolio_context_status": "configured",
+      "regime_state": null,
+      "tick_counter": null
+    },
+    "ui_state.json": {
+      "status": null,
+      "channels": null,
+      "proof_mode": null,
+      "events_enqueued": null,
+      "portfolio_context_status": null,
+      "regime_state": "ATTENTION_EXPANSION",
+      "tick_counter": 1,
+      "market_channels": {
+        "liquidity_proxy": "SIMULATED",
+        "macro_policy": "NOT_CONFIGURED",
+        "market_breadth": "NOT_CONFIGURED",
+        "narrative_attention": "NOT_CONFIGURED",
+        "news_announcement": "NOT_CONFIGURED",
+        "portfolio_relevance": "LIVE",
+        "price_volume": "LIVE",
+        "volatility": "SIMULATED"
+      },
+      "market_proof_mode": "LIVE_OR_PROVIDER_PROOF"
+    }
+  },
+  "channel_attempts": {
+    "price_volume": "LIVE",
+    "market_breadth": "NOT_CONFIGURED",
+    "volatility": "SIMULATED",
+    "liquidity_proxy": "SIMULATED",
+    "news_announcement": "NOT_CONFIGURED",
+    "narrative_attention": "NOT_CONFIGURED",
+    "macro_policy": "NOT_CONFIGURED",
+    "portfolio_relevance": "LIVE"
+  }
+}

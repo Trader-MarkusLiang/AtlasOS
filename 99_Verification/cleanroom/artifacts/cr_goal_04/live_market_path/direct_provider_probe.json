@@ -1,0 +1,61 @@
+{
+  "probes": [
+    {
+      "ticker": "NVDA",
+      "market": "US",
+      "source": "yahoo_chart",
+      "timestamp": "2026-07-07T13:30:00+00:00",
+      "latest_price": 196.92999267578125,
+      "daily_change_pct": 0.7056965494693257,
+      "volume": 123810500.0,
+      "change_5d_pct": 1.0052784750508525,
+      "change_20d_pct": -3.983429149003004,
+      "data_status": "Available",
+      "missing_fields": [
+        "turnover",
+        "market_cap (optional)",
+        "pe (optional)",
+        "pb (optional)"
+      ],
+      "errors": []
+    },
+    {
+      "ticker": "AAPL",
+      "market": "US",
+      "source": "yahoo_chart",
+      "timestamp": "2026-07-07T13:30:00+00:00",
+      "latest_price": 310.6600036621094,
+      "daily_change_pct": -0.6396724801939757,
+      "volume": 42426500.0,
+      "change_5d_pct": 10.264788255183888,
+      "change_20d_pct": 1.080239267188876,
+      "data_status": "Available",
+      "missing_fields": [
+        "turnover",
+        "market_cap (optional)",
+        "pe (optional)",
+        "pb (optional)"
+      ],
+      "errors": []
+    },
+    {
+      "ticker": "MSFT",
+      "market": "US",
+      "source": "yahoo_chart",
+      "timestamp": "2026-07-07T13:30:00+00:00",
+      "latest_price": 388.8399963378906,
+      "daily_change_pct": 0.5430020573365058,
+      "volume": 29209100.0,
+      "change_5d_pct": 5.499630629423691,
+      "change_20d_pct": -6.679150453112815,
+      "data_status": "Available",
+      "missing_fields": [
+        "turnover",
+        "market_cap (optional)",
+        "pe (optional)",
+        "pb (optional)"
+      ],
+      "errors": []
+    }
+  ]
+}
