@@ -24,6 +24,7 @@ from runtime.llm.provider_registry import health_check_provider, list_provider_m
 from runtime.portfolio_context import build_portfolio_context
 from runtime.state_store import StateStore
 from runtime.telemetry.llm_trace_logger import read_llm_traces
+from ui.components.app_shell import render_app_shell
 from ui.chat_interface import render_chat_command_center
 from ui.components.causal_graph_viewer import render_causal_graph_viewer
 from ui.components.control_panel import render_control_panel
@@ -50,6 +51,22 @@ from ui.pages.settings import load_user_config, render_settings_page, save_user_
 from ui.pages.setup import render_setup_page
 from ui.pages.system_guide import render_system_guide_page
 from ui.pages.workflow import render_workflow_page
+from ui.pages.product_views import (
+    ask_content,
+    control_content,
+    dev_registry_content,
+    home_content,
+    learning_content,
+    markets_content,
+    portfolio_content,
+    predictions_content,
+    replay_content,
+    roadmap_content,
+    settings_content,
+    setup_content,
+    system_guide_content,
+    workflow_content,
+)
 from ui.replay_console import replay_session
 from ui.state_visual_dashboard import build_dashboard_state
 from ui.system_control_panel import (
@@ -84,19 +101,25 @@ def create_app() -> Any:
 
     @app.get("/", response_class=HTMLResponse)
     async def landing() -> Any:
-        return render_home_page(state_api())
+        state = state_api()
+        return _product_shell("home", home_content(state), state)
 
     @app.get("/home", response_class=HTMLResponse)
     async def home() -> Any:
-        return render_home_page(state_api())
+        state = state_api()
+        return _product_shell("home", home_content(state), state)
 
     @app.get("/setup", response_class=HTMLResponse)
     async def setup() -> Any:
-        return render_setup_page(load_user_config(_user_config_path()))
+        state = state_api()
+        content, script = setup_content(load_user_config(_user_config_path()))
+        return _product_shell("setup", content, state, page_script=script)
 
     @app.get("/chat", response_class=HTMLResponse)
     async def chat_page() -> Any:
-        return _system_interface_page()
+        state = state_api()
+        content, script = ask_content(state)
+        return _product_shell("ask", content, state, page_script=script)
 
     @app.post("/chat/send")
     async def chat_send(request: Request) -> Any:
@@ -109,25 +132,30 @@ def create_app() -> Any:
 
     @app.get("/dashboard", response_class=HTMLResponse)
     async def dashboard() -> Any:
-        return _system_interface_page()
+        state = state_api()
+        content, script = ask_content(state)
+        return _product_shell("ask", content, state, page_script=script)
 
     @app.get("/portfolio", response_class=HTMLResponse)
     async def portfolio() -> Any:
-        return render_portfolio_page(build_portfolio_context(config_path=_user_config_path()))
+        state = state_api()
+        return _product_shell("portfolio", portfolio_content(state), state)
 
     @app.get("/markets", response_class=HTMLResponse)
     async def markets(format: str = "html") -> Any:
         data = _market_intelligence_state()
         if format.lower() == "json":
             return JSONResponse(data)
-        return render_markets_page(data)
+        state = state_api()
+        return _product_shell("markets", markets_content(state), state)
 
     @app.get("/predictions", response_class=HTMLResponse)
     async def predictions(format: str = "html") -> Any:
         ledger = list_forecasts(db_path=_db_path())
         if format.lower() == "json":
             return JSONResponse(ledger)
-        return render_predictions_page(ledger)
+        state = state_api()
+        return _product_shell("predictions", predictions_content(ledger), state)
 
     @app.post("/predictions")
     async def predictions_create(request: Request) -> Any:
@@ -152,11 +180,14 @@ def create_app() -> Any:
 
     @app.get("/learning", response_class=HTMLResponse)
     async def learning() -> Any:
-        return render_learning_page(list_forecasts(db_path=_db_path()), state_api())
+        state = state_api()
+        return _product_shell("learning", learning_content(list_forecasts(db_path=_db_path()), state), state)
 
     @app.get("/settings", response_class=HTMLResponse)
     async def settings_page() -> Any:
-        return render_settings_page(load_user_config(_user_config_path()))
+        state = state_api()
+        content, script = settings_content(load_user_config(_user_config_path()), state)
+        return _product_shell("settings", content, state, page_script=script)
 
     @app.post("/settings")
     async def settings_save(request: Request) -> Any:
@@ -212,14 +243,17 @@ def create_app() -> Any:
 
     @app.get("/workflow", response_class=HTMLResponse)
     async def workflow(stage: str = "event_stream") -> Any:
-        return _workflow_page(stage)
+        state = state_api()
+        content, script = workflow_content(state)
+        return _product_shell("workflow", content, state, page_script=script)
 
     @app.get("/roadmap", response_class=HTMLResponse)
     async def roadmap(format: str = "html") -> Any:
         payload = roadmap_api_payload(_roadmap_path())
         if format.lower() == "json":
             return JSONResponse(payload)
-        return render_roadmap_page(payload)
+        state = state_api()
+        return _product_shell("roadmap", roadmap_content(payload), state)
 
     @app.get("/roadmap.json")
     async def roadmap_json() -> Any:
@@ -227,11 +261,13 @@ def create_app() -> Any:
 
     @app.get("/dev-registry", response_class=HTMLResponse)
     async def dev_registry() -> Any:
-        return render_dev_registry_page(load_roadmap(_roadmap_path()), state_api())
+        state = state_api()
+        return _product_shell("dev_registry", dev_registry_content(load_roadmap(_roadmap_path()), state), state)
 
     @app.get("/system-guide", response_class=HTMLResponse)
     async def system_guide() -> Any:
-        return render_system_guide_page()
+        state = state_api()
+        return _product_shell("system_guide", system_guide_content(), state)
 
     @app.get("/state")
     async def state() -> Any:
@@ -248,48 +284,14 @@ def create_app() -> Any:
         )
         if format.lower() == "json":
             return JSONResponse(replay_data)
-        rows = "\n".join(
-            "<tr>"
-            f"<td>{_escape(str(item.get('tick')))}</td>"
-            f"<td>{_escape(str(item.get('regime_state')))}</td>"
-            f"<td>{_escape(str(item.get('decision_packet', {}).get('recommended_action')))}</td>"
-            "</tr>"
-            for item in replay_data.get("decision_timeline", [])
-        )
-        return _html_page(
-            "Atlas Replay",
-            f"""
-            <h1>Replay</h1>
-            <form method="get" action="/replay">
-              <input name="start_tick" value="{int(start_tick)}">
-              <input name="end_tick" value="{int(end_tick)}">
-              <button type="submit">Replay</button>
-            </form>
-            <table><thead><tr><th>Tick</th><th>Regime</th><th>Action</th></tr></thead><tbody>{rows}</tbody></table>
-            <h2>LLM Trace Summary</h2>
-            <pre>{_escape(json.dumps(replay_data.get('llm_trace_summary', {}), ensure_ascii=False, indent=2))}</pre>
-            """,
-        )
+        state = state_api()
+        return _product_shell("workflow", replay_content(replay_data), state)
 
     @app.get("/control", response_class=HTMLResponse)
     async def control() -> Any:
         panel = control_panel_state(db_path=_db_path(), pid_file=_pid_file())
-        return _html_page(
-            "Atlas Control",
-            f"""
-            <h1>Control Panel</h1>
-            <form method="post" action="/control/start"><button type="submit">Start</button></form>
-            <form method="post" action="/control/stop"><button type="submit">Stop</button></form>
-            <form method="post" action="/control/set_interval">
-              <input name="interval_seconds" value="60"><button type="submit">Set Interval</button>
-            </form>
-            <form method="post" action="/control/set_llm_provider">
-              <input name="provider" value="runtime"><input name="model" value="gpt-5.5">
-              <button type="submit">Set LLM Provider</button>
-            </form>
-            <pre>{_escape(json.dumps(panel, ensure_ascii=False, indent=2))}</pre>
-            """,
-        )
+        state = state_api()
+        return _product_shell("settings", control_content(panel), state)
 
     @app.post("/control/start")
     async def control_start() -> Any:
@@ -461,6 +463,24 @@ def _market_intelligence_state() -> Dict[str, Any]:
         "read_only": True,
         "no_trading_execution": True,
     }
+
+
+def _product_shell(
+    active: str,
+    content: str,
+    state: Optional[Dict[str, Any]] = None,
+    *,
+    page_script: str = "",
+    include_inspector: bool = True,
+) -> str:
+    display_state = state if isinstance(state, dict) else state_api()
+    return render_app_shell(
+        active=active,
+        content=content,
+        state=display_state,
+        page_script=page_script,
+        include_inspector=include_inspector,
+    )
 
 
 def _system_interface_page() -> Any:
@@ -2600,49 +2620,68 @@ class _StdlibHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         query = {key: values[-1] for key, values in parse_qs(parsed.query).items() if values}
         if parsed.path == "/":
-            self._send_html(render_home_page(state_api()))
+            state = state_api()
+            self._send_html(_product_shell("home", home_content(state), state))
         elif parsed.path == "/home":
-            self._send_html(render_home_page(state_api()))
+            state = state_api()
+            self._send_html(_product_shell("home", home_content(state), state))
         elif parsed.path == "/setup":
-            self._send_html(render_setup_page(load_user_config(_user_config_path())))
+            state = state_api()
+            content, script = setup_content(load_user_config(_user_config_path()))
+            self._send_html(_product_shell("setup", content, state, page_script=script))
         elif parsed.path == "/chat":
-            self._send_html(_system_interface_page())
+            state = state_api()
+            content, script = ask_content(state)
+            self._send_html(_product_shell("ask", content, state, page_script=script))
         elif parsed.path == "/dashboard":
-            self._send_html(_system_interface_page())
+            state = state_api()
+            content, script = ask_content(state)
+            self._send_html(_product_shell("ask", content, state, page_script=script))
         elif parsed.path == "/portfolio":
-            self._send_html(render_portfolio_page(build_portfolio_context(config_path=_user_config_path())))
+            state = state_api()
+            self._send_html(_product_shell("portfolio", portfolio_content(state), state))
         elif parsed.path == "/markets":
             data = _market_intelligence_state()
             if query.get("format") == "json":
                 self._send_json(data)
             else:
-                self._send_html(render_markets_page(data))
+                state = state_api()
+                self._send_html(_product_shell("markets", markets_content(state), state))
         elif parsed.path == "/predictions":
             data = list_forecasts(db_path=_db_path())
             if query.get("format") == "json":
                 self._send_json(data)
             else:
-                self._send_html(render_predictions_page(data))
+                state = state_api()
+                self._send_html(_product_shell("predictions", predictions_content(data), state))
         elif parsed.path == "/learning":
-            self._send_html(render_learning_page(list_forecasts(db_path=_db_path()), state_api()))
+            state = state_api()
+            self._send_html(_product_shell("learning", learning_content(list_forecasts(db_path=_db_path()), state), state))
         elif parsed.path == "/settings":
-            self._send_html(render_settings_page(load_user_config(_user_config_path())))
+            state = state_api()
+            content, script = settings_content(load_user_config(_user_config_path()), state)
+            self._send_html(_product_shell("settings", content, state, page_script=script))
         elif parsed.path == "/llm/providers":
             self._send_json(_safe_provider_registry())
         elif parsed.path == "/workflow":
-            self._send_html(_workflow_page(query.get("stage", "event_stream")))
+            state = state_api()
+            content, script = workflow_content(state)
+            self._send_html(_product_shell("workflow", content, state, page_script=script))
         elif parsed.path == "/roadmap":
             payload = roadmap_api_payload(_roadmap_path())
             if query.get("format", "").lower() == "json":
                 self._send_json(payload)
             else:
-                self._send_html(render_roadmap_page(payload))
+                state = state_api()
+                self._send_html(_product_shell("roadmap", roadmap_content(payload), state))
         elif parsed.path == "/roadmap.json":
             self._send_json(roadmap_api_payload(_roadmap_path()))
         elif parsed.path == "/dev-registry":
-            self._send_html(render_dev_registry_page(load_roadmap(_roadmap_path()), state_api()))
+            state = state_api()
+            self._send_html(_product_shell("dev_registry", dev_registry_content(load_roadmap(_roadmap_path()), state), state))
         elif parsed.path == "/system-guide":
-            self._send_html(render_system_guide_page())
+            state = state_api()
+            self._send_html(_product_shell("system_guide", system_guide_content(), state))
         elif parsed.path == "/state":
             self._send_json(state_api())
         elif parsed.path == "/replay":
@@ -2658,14 +2697,11 @@ class _StdlibHandler(BaseHTTPRequestHandler):
             if query.get("format") == "json":
                 self._send_json(data)
             else:
-                self._send_html(_html_page("Atlas Replay", f"<h1>Replay</h1><pre>{_escape(json.dumps(data, ensure_ascii=False, indent=2))}</pre>"))
+                state = state_api()
+                self._send_html(_product_shell("workflow", replay_content(data), state))
         elif parsed.path == "/control":
-            self._send_html(
-                _html_page(
-                    "Atlas Control",
-                    f"<h1>Control</h1><pre>{_escape(json.dumps(control_panel_state(db_path=_db_path(), pid_file=_pid_file()), ensure_ascii=False, indent=2))}</pre>",
-                )
-            )
+            state = state_api()
+            self._send_html(_product_shell("settings", control_content(control_panel_state(db_path=_db_path(), pid_file=_pid_file())), state))
         else:
             self.send_error(404)
 

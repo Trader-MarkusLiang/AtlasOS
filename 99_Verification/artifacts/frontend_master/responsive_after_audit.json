@@ -1,0 +1,382 @@
+[
+  {
+    "width": 1280,
+    "name": "after_home",
+    "route": "/",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "Atlas 正在等待可靠的市场变化。",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1768,
+      "scrollWidth": 1280,
+      "svgCount": 2,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_dashboard",
+    "route": "/dashboard",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "询问 Atlas 市场、组合、风险、预测，或今天发生了什么变化。",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1346,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_portfolio",
+    "route": "/portfolio",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "尚未配置组合百分比",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1368,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_markets",
+    "route": "/markets",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "Atlas 正在等待可靠的市场变化。",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1606,
+      "scrollWidth": 1280,
+      "svgCount": 2,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_predictions",
+    "route": "/predictions",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "结果摘要",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1212,
+      "scrollWidth": 1280,
+      "svgCount": 1,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_learning",
+    "route": "/learning",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "之前 -> 现实 -> 错误 -> 更新 -> 现在",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1096,
+      "scrollWidth": 1280,
+      "svgCount": 3,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_workflow",
+    "route": "/workflow",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "最近 Tick 传播",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1123,
+      "scrollWidth": 1280,
+      "svgCount": 1,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_roadmap",
+    "route": "/roadmap",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "Production Trial Candidate",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1381,
+      "scrollWidth": 1280,
+      "svgCount": 1,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_settings",
+    "route": "/settings",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "Provider 控制",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 4499,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "after_setup",
+    "route": "/setup",
+    "metrics": {
+      "clientWidth": 1280,
+      "h1": "设置 Atlas OS",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 2227,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_home",
+    "route": "/",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "Atlas 正在等待可靠的市场变化。",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 2303,
+      "scrollWidth": 1024,
+      "svgCount": 2,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_dashboard",
+    "route": "/dashboard",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "询问 Atlas 市场、组合、风险、预测，或今天发生了什么变化。",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1575,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_portfolio",
+    "route": "/portfolio",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "尚未配置组合百分比",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1765,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_markets",
+    "route": "/markets",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "Atlas 正在等待可靠的市场变化。",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1933,
+      "scrollWidth": 1024,
+      "svgCount": 2,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_predictions",
+    "route": "/predictions",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "结果摘要",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1657,
+      "scrollWidth": 1024,
+      "svgCount": 1,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_learning",
+    "route": "/learning",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "之前 -> 现实 -> 错误 -> 更新 -> 现在",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1489,
+      "scrollWidth": 1024,
+      "svgCount": 3,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_workflow",
+    "route": "/workflow",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "最近 Tick 传播",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1536,
+      "scrollWidth": 1024,
+      "svgCount": 1,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_roadmap",
+    "route": "/roadmap",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "Production Trial Candidate",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 1745,
+      "scrollWidth": 1024,
+      "svgCount": 1,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_settings",
+    "route": "/settings",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "Provider 控制",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 4995,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "after_setup",
+    "route": "/setup",
+    "metrics": {
+      "clientWidth": 1024,
+      "h1": "设置 Atlas OS",
+      "hasHorizontalOverflow": false,
+      "hasShell": true,
+      "scrollHeight": 2593,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  }
+]

@@ -45,6 +45,15 @@ or v0.8 implementation.
 - Captured 1280px and 1024px responsive metrics under
   `99_Verification/artifacts/frontend_master/responsive_audit.json`.
 - Created `99_Verification/Atlas_OS_Frontend_Master_Baseline.md`.
+- Implemented shared product shell, sidebar, topbar, runtime status, language toggle, inspector,
+  design tokens, and product page views.
+- Rewired primary FastAPI and stdlib fallback HTML routes through the shared shell.
+- Expanded EN/CN i18n keys for the product shell and primary pages.
+- Captured after screenshots and responsive metrics under
+  `99_Verification/artifacts/frontend_master/`.
+- Validated language toggle, chat queue, provider test, runtime start, runtime stop, and PID cleanup.
+- Created frontend IA, visual system, bilingual, accessibility, browser E2E, and final acceptance
+  reports under `99_Verification/`.
 
 ## Decisions
 
@@ -54,9 +63,10 @@ or v0.8 implementation.
 
 ## Current State
 
-- Completed: actual frontend truth audit and baseline report.
-- In progress: prepare information architecture and shared app-shell design.
-- Pending: implement unified app shell and page rebuilds after the baseline-driven design step.
+- Completed: actual frontend truth audit, baseline report, shared shell implementation, primary
+  page rebuilds, screenshots, responsive checks, bilingual smoke, browser E2E smoke, and final
+  acceptance report.
+- Pending: commit implementation checkpoint.
 - Risk: current worktree has unrelated dirty/untracked verification artifacts that must not be
   included in frontend commits.
 
