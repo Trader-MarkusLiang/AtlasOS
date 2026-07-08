@@ -1,0 +1,180 @@
+[
+  {
+    "step": "01_home_initial",
+    "path": "/",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/01_home_initial.html",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": false
+  },
+  {
+    "step": "02_setup_initial",
+    "path": "/setup",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/02_setup_initial.html",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": true
+  },
+  {
+    "step": "language_zh",
+    "status": 200,
+    "response": "{\"language\": \"zh\", \"status\": \"saved\"}"
+  },
+  {
+    "step": "language_en",
+    "status": 200,
+    "response": "{\"language\": \"en\", \"status\": \"saved\"}"
+  },
+  {
+    "step": "03_settings_saved",
+    "path": "/settings",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/03_settings_saved.json"
+  },
+  {
+    "step": "04_interval_saved",
+    "path": "/control/set_interval",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/04_interval_saved.json"
+  },
+  {
+    "step": "05_provider_models",
+    "path": "/llm/provider/models",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/05_provider_models.json",
+    "models_count": 5,
+    "has_qwen3_coder": true
+  },
+  {
+    "step": "06_provider_health",
+    "path": "/llm/provider/test",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/06_provider_health.json",
+    "provider_status": "healthy",
+    "latency_ms": 2,
+    "error": ""
+  },
+  {
+    "step": "07_runtime_start",
+    "path": "/control/start",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/07_runtime_start.json",
+    "runtime_status": "started",
+    "pid": 76922
+  },
+  {
+    "step": "08_home_after_start",
+    "path": "/",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/08_home_after_start.html",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": false
+  },
+  {
+    "step": "09_dashboard_after_start",
+    "path": "/dashboard",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/09_dashboard_after_start.html",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": false
+  },
+  {
+    "step": "10_markets",
+    "path": "/markets",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/10_markets.html",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": false
+  },
+  {
+    "step": "11_portfolio",
+    "path": "/portfolio",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/11_portfolio.html",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": false
+  },
+  {
+    "step": "12_predictions",
+    "path": "/predictions",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/12_predictions.html",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": true
+  },
+  {
+    "step": "13_learning",
+    "path": "/learning",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/13_learning.html",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": false
+  },
+  {
+    "step": "14_state_after_start",
+    "path": "/state",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/14_state_after_start.json",
+    "visible_raw_json_pre": false,
+    "visible_raw_dict_marker": false
+  },
+  {
+    "step": "15_chat_send",
+    "path": "/chat/send",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/15_chat_send.json"
+  },
+  {
+    "step": "16_state_after_chat_tick",
+    "path": "/state",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/16_state_after_chat_tick.json"
+  },
+  {
+    "step": "17_stop_runtime",
+    "path": "/control/stop",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/17_runtime_stop.json",
+    "stop_status": "stopped",
+    "stop_running": false,
+    "pid_before_stop": 76922,
+    "pid_status_after_stop": "",
+    "pid_file_exists_after_stop": false,
+    "state_runtime": {
+      "feedback_stability_index": 0.8944,
+      "pid": null,
+      "pid_file": "/tmp/atlas-cleanroom-state-cr02-final-20260708-161259/runtime/state/atlas_ui_runtime.pid",
+      "rolling_trust_index": 0.4836,
+      "running": false
+    },
+    "state_artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/18_state_after_stop.json"
+  },
+  {
+    "step": "telemetry_decision_trace.jsonl",
+    "exists": true,
+    "bytes": 2522,
+    "lines": 2,
+    "path": "/tmp/atlas-cleanroom-state-cr02-final-20260708-161259/runtime/telemetry/decision_trace.jsonl"
+  },
+  {
+    "step": "telemetry_llm_trace.jsonl",
+    "exists": true,
+    "bytes": 2995,
+    "lines": 2,
+    "path": "/tmp/atlas-cleanroom-state-cr02-final-20260708-161259/runtime/telemetry/llm_trace.jsonl"
+  },
+  {
+    "step": "telemetry_cognitive_snapshot.jsonl",
+    "exists": true,
+    "bytes": 27556,
+    "lines": 2,
+    "path": "/tmp/atlas-cleanroom-state-cr02-final-20260708-161259/runtime/telemetry/cognitive_snapshot.jsonl"
+  },
+  {
+    "step": "runtime_log",
+    "exists": true,
+    "bytes": 20461,
+    "lines": 6,
+    "path": "/tmp/atlas-cleanroom-state-cr02-final-20260708-161259/runtime/logs/atlas_runtime.log"
+  }
+]

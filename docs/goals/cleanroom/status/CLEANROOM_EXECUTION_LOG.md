@@ -66,6 +66,61 @@ CR_GOAL_01_BOOTSTRAP_FROM_ZERO
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, runtime cognition,
 trading execution, broker integration, or portfolio holdings were modified.
 
+## 2026-07-08 - CR_GOAL_02 First-Time User Black-Box Completed
+
+### Summary
+
+Executed the first-time user path from fresh clean-room clones and repaired locally fixable P1
+defects found under black-box pressure.
+
+### Final Evidence
+
+- Final fresh clone: `/tmp/atlas-cleanroom-cr02-final-20260708-161259`
+- Final clean runtime state: `/tmp/atlas-cleanroom-state-cr02-final-20260708-161259`
+- Final commit: `f15370019467e28d1f78df765598de718e25efd0`
+- Final artifacts:
+  `99_Verification/cleanroom/artifacts/cr_goal_02/rerun_final/`
+- Report:
+  `99_Verification/cleanroom/CR_GOAL_02_First_Time_User_Blackbox_Report.md`
+
+### Proven User Path
+
+- Home and setup rendered from clean state.
+- Language switched zh -> en.
+- Settings saved active Ollama provider and 3 percentage-based assets.
+- Provider model list returned 5 models and included `qwen3-coder:30b`.
+- Provider health returned `healthy`.
+- UI start launched daemon.
+- Runtime generated decision trace, LLM trace, cognitive snapshot, runtime log, and forecast
+  ledger state.
+- Chat message entered `/chat/send`, was queued, and was processed by the next runtime tick.
+- UI stop returned `stopped`; PID file was removed and `/state.runtime.running` became false.
+
+### Repairs
+
+- `e5c8fa6` repaired first-user raw state/trace leakage.
+- `752c6eb` repaired active provider routing and Ollama selected-model health.
+- `f153700` repaired runtime stop/PID cleanup and exposed read-only runtime status in `/state`.
+
+### Classification
+
+CR_GOAL_02 classification: `PROVEN_COMPLETE`
+
+Evidence level: `BLACKBOX_PROVEN`
+
+### Transition
+
+`CLEANROOM_GOAL_STATUS.json` now records current goal:
+
+```text
+CR_GOAL_03_LIVE_LLM_BLACKBOX
+```
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, runtime cognition,
+trading execution, broker integration, or portfolio holdings were modified.
+
 ## 2026-07-08 - CR_GOAL_01 Bootstrap From Zero Completed
 
 ### Summary

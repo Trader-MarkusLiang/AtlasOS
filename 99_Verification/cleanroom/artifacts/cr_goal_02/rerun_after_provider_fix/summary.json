@@ -1,0 +1,158 @@
+[
+  {
+    "step": "01_home_initial",
+    "path": "/",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/01_home_initial.html",
+    "contains_raw_dict": false,
+    "contains_json_block": false
+  },
+  {
+    "step": "02_setup_initial",
+    "path": "/setup",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/02_setup_initial.html",
+    "contains_raw_dict": true,
+    "contains_json_block": false
+  },
+  {
+    "step": "language_zh",
+    "path": "/ui/language",
+    "status": 200,
+    "body": "{\"language\": \"zh\", \"status\": \"saved\"}"
+  },
+  {
+    "step": "language_en",
+    "path": "/ui/language",
+    "status": 200,
+    "body": "{\"language\": \"en\", \"status\": \"saved\"}"
+  },
+  {
+    "step": "save_settings",
+    "path": "/settings",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/03_settings_saved.json",
+    "secret_leak_shape": false
+  },
+  {
+    "step": "set_interval",
+    "path": "/control/set_interval",
+    "status": 200,
+    "body": "{\"status\": \"saved_for_next_start\", \"tick_interval_seconds\": 10}"
+  },
+  {
+    "step": "provider_models",
+    "path": "/llm/provider/models",
+    "status": 200,
+    "models_count": 5,
+    "has_selected_model": true,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/04_provider_models.json"
+  },
+  {
+    "step": "provider_test",
+    "path": "/llm/provider/test",
+    "status": 200,
+    "provider_status": "healthy",
+    "latency_ms": 2,
+    "error": "",
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/05_provider_health.json"
+  },
+  {
+    "step": "start_runtime",
+    "path": "/control/start",
+    "status": 200,
+    "runtime_status": "started",
+    "pid": 74462,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/06_runtime_start.json"
+  },
+  {
+    "step": "07_home_after_start",
+    "path": "/",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/07_home_after_start.html",
+    "contains_raw_dict": false,
+    "contains_debug_json_pre": false,
+    "contains_unknown_literal": false
+  },
+  {
+    "step": "08_dashboard_after_start",
+    "path": "/dashboard",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/08_dashboard_after_start.html",
+    "contains_raw_dict": false,
+    "contains_debug_json_pre": false,
+    "contains_unknown_literal": true
+  },
+  {
+    "step": "09_markets",
+    "path": "/markets",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/09_markets.html",
+    "contains_raw_dict": false,
+    "contains_debug_json_pre": false,
+    "contains_unknown_literal": false
+  },
+  {
+    "step": "10_portfolio",
+    "path": "/portfolio",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/10_portfolio.html",
+    "contains_raw_dict": false,
+    "contains_debug_json_pre": false,
+    "contains_unknown_literal": false
+  },
+  {
+    "step": "11_predictions",
+    "path": "/predictions",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/11_predictions.html",
+    "contains_raw_dict": true,
+    "contains_debug_json_pre": false,
+    "contains_unknown_literal": false
+  },
+  {
+    "step": "12_learning",
+    "path": "/learning",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/12_learning.html",
+    "contains_raw_dict": false,
+    "contains_debug_json_pre": false,
+    "contains_unknown_literal": false
+  },
+  {
+    "step": "13_state_after_start",
+    "path": "/state",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/13_state_after_start.json",
+    "contains_raw_dict": false,
+    "contains_debug_json_pre": false,
+    "contains_unknown_literal": false
+  },
+  {
+    "step": "chat_send",
+    "path": "/chat/send",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/14_chat_send.json",
+    "body": "{\"event\": {\"content\": \"What changed in the current Atlas state?\", \"source\": \"ui_chat\", \"timestamp\": \"2026-07-08T08:10:04.072451+00:00\", \"type\": \"user_query\"}, \"status\": \"queued\"}"
+  },
+  {
+    "step": "state_after_chat_tick",
+    "path": "/state",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/15_state_after_chat_tick.json"
+  },
+  {
+    "step": "stop_runtime",
+    "path": "/control/stop",
+    "status": 200,
+    "runtime_status": "stop_requested",
+    "running": false,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/16_runtime_stop.json"
+  },
+  {
+    "step": "state_after_stop",
+    "path": "/state",
+    "status": 200,
+    "artifact": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_02/rerun_after_provider_fix/17_state_after_stop.json"
+  }
+]
