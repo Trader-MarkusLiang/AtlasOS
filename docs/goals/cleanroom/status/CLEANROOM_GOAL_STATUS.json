@@ -3,7 +3,7 @@
   "status": "IN_PROGRESS",
   "candidate_branch": "codex/overnight-productization-sprint",
   "candidate_commit": "ed63678793bdc5d10c1469433e461a6c20db7927",
-  "current_goal": "CR_GOAL_08_RECOVERY_AND_SOAK",
+  "current_goal": "CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE",
   "current_goal_status": "NOT_STARTED",
   "completed_goals": [
     "CR_GOAL_00_FRESH_CLONE_BASELINE",
@@ -15,15 +15,17 @@
     "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
     "CR_GOAL_07_SELF_ITERATION_BLACKBOX"
   ],
-  "partial_goals": [],
+  "partial_goals": [
+    "CR_GOAL_08_RECOVERY_AND_SOAK"
+  ],
   "failed_goals": [],
   "blocked_goals": [],
-  "next_goal": "CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE",
+  "next_goal": null,
   "stop_allowed": false,
-  "last_updated": "2026-07-08T16:54:44+08:00",
-  "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr07-20260708-164741",
-  "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr07-treatment-20260708-164741",
-  "evidence_level": "REAL_RUNTIME_PROVEN",
+  "last_updated": "2026-07-08T17:05:07+08:00",
+  "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr08-20260708-165652",
+  "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr08-20260708-165652",
+  "evidence_level": "ACCELERATED_ONLY",
   "goal_results": [
     {
       "goal": "CR_GOAL_00_FRESH_CLONE_BASELINE",
@@ -143,6 +145,26 @@
       "hypothesis_scores_changed": true,
       "action_bias_changed": false,
       "active_hypothesis_changed": false,
+      "secret_shape_scan_clean": true
+    },
+    {
+      "goal": "CR_GOAL_08_RECOVERY_AND_SOAK",
+      "status": "PROVEN_PARTIAL",
+      "evidence_level": "ACCELERATED_ONLY",
+      "report": "99_Verification/cleanroom/CR_GOAL_08_Recovery_And_Soak_Report.md",
+      "clone_path": "/tmp/atlas-cleanroom-cr08-20260708-165652",
+      "state_path": "/tmp/atlas-cleanroom-state-cr08-20260708-165652",
+      "accelerated_soak_state_path": "/tmp/atlas-cleanroom-state-cr08-accelerated-nomarket-20260708-170130",
+      "failure_injections_recovered": true,
+      "accelerated_505_completed": true,
+      "accelerated_505_tick_errors": 0,
+      "accelerated_505_peak_rss_kb": 34640,
+      "accelerated_505_db_size_bytes": 7917568,
+      "accelerated_505_log_size_bytes": 4621055,
+      "market_failure_explicit": true,
+      "market_failure_slow_tick_risk": true,
+      "real_duration_2h_met": false,
+      "short_real_duration_seconds": 18.643,
       "secret_shape_scan_clean": true
     }
   ],

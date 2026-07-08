@@ -1,0 +1,296 @@
+{
+  "accelerated_505_nomarket": {
+    "db_size_bytes": 7917568,
+    "duration_sec": 16.4445,
+    "event_status_counts": {
+      "handled": 506
+    },
+    "first_tick": 0,
+    "forecast_status_counts": {
+      "OPEN": 505
+    },
+    "last_tick": 504,
+    "log_size_bytes": 4621055,
+    "peak_rss_kb": 34640,
+    "returncode": 0,
+    "samples": [
+      {
+        "cpu_pct": 0.0,
+        "rss_kb": 2032,
+        "t": 0.004
+      },
+      {
+        "cpu_pct": 0.0,
+        "rss_kb": 25584,
+        "t": 0.11
+      },
+      {
+        "cpu_pct": 33.7,
+        "rss_kb": 26176,
+        "t": 0.214
+      },
+      {
+        "cpu_pct": 52.6,
+        "rss_kb": 26672,
+        "t": 0.322
+      },
+      {
+        "cpu_pct": 65.4,
+        "rss_kb": 26848,
+        "t": 0.429
+      },
+      {
+        "cpu_pct": 83.8,
+        "rss_kb": 33584,
+        "t": 15.915
+      },
+      {
+        "cpu_pct": 82.9,
+        "rss_kb": 33968,
+        "t": 16.022
+      },
+      {
+        "cpu_pct": 82.9,
+        "rss_kb": 33664,
+        "t": 16.125
+      },
+      {
+        "cpu_pct": 80.4,
+        "rss_kb": 33552,
+        "t": 16.234
+      },
+      {
+        "cpu_pct": 81.4,
+        "rss_kb": 33664,
+        "t": 16.339
+      }
+    ],
+    "sqlite_integrity": "ok",
+    "state_path": "/tmp/atlas-cleanroom-state-cr08-accelerated-nomarket-20260708-170130",
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "tick_entries_counted": 505,
+    "tick_errors": 0
+  },
+  "accelerated_nomarket_state_path": "/tmp/atlas-cleanroom-state-cr08-accelerated-nomarket-20260708-170130",
+  "acceptance": {
+    "accelerated_505_completed": true,
+    "corrupt_telemetry_replay_served": true,
+    "daemon_kill_recovered": true,
+    "daemon_restart_recovered": true,
+    "malformed_jsonl_skipped": true,
+    "market_failure_explicit": true,
+    "missing_optional_dependency_fallback": true,
+    "provider_failure_isolated": true,
+    "real_duration_2h_met": false,
+    "stale_pid_removed": true,
+    "ui_restart_recovered": true
+  },
+  "classification": "ACCELERATED_ONLY",
+  "clone_path": "/tmp/atlas-cleanroom-cr08-20260708-165652",
+  "commit": "f9a24ecbc835e8af18cf4f88e1cb738102317be9",
+  "failure_injections": {
+    "corrupt_telemetry_final_line": {
+      "replay_keys": [
+        "cognitive_state_evolution",
+        "decision_timeline",
+        "llm_trace_summary",
+        "read_only_replay"
+      ],
+      "replay_status": 200
+    },
+    "daemon_kill": {
+      "returncode": 0,
+      "sqlite_after": {
+        "event_status_counts": {
+          "handled": 4
+        },
+        "exists": true,
+        "forecast_status_counts": {
+          "OPEN": 2
+        },
+        "integrity": "ok",
+        "tables": [
+          "attention_history",
+          "decision_briefs",
+          "events",
+          "forecast_ledger",
+          "kv_state",
+          "sqlite_sequence",
+          "state_transitions",
+          "system_logs"
+        ]
+      },
+      "status": "terminated"
+    },
+    "daemon_restart": {
+      "sqlite_after": {
+        "event_status_counts": {
+          "handled": 6
+        },
+        "exists": true,
+        "forecast_status_counts": {
+          "OPEN": 3
+        },
+        "integrity": "ok",
+        "tables": [
+          "attention_history",
+          "decision_briefs",
+          "events",
+          "forecast_ledger",
+          "kv_state",
+          "sqlite_sequence",
+          "state_transitions",
+          "system_logs"
+        ]
+      },
+      "tick": {
+        "duration_sec": 0.0943,
+        "label": "cr08_daemon_restart_tick",
+        "returncode": 0,
+        "stderr_tail": "",
+        "stdout_tail": ""
+      }
+    },
+    "malformed_inbox_jsonl": {
+      "processed_file_exists": true,
+      "sqlite_after": {
+        "event_status_counts": {
+          "handled": 9
+        },
+        "exists": true,
+        "forecast_status_counts": {
+          "OPEN": 4
+        },
+        "integrity": "ok",
+        "tables": [
+          "attention_history",
+          "decision_briefs",
+          "events",
+          "forecast_ledger",
+          "kv_state",
+          "sqlite_sequence",
+          "state_transitions",
+          "system_logs"
+        ]
+      },
+      "tick": {
+        "duration_sec": 0.1066,
+        "label": "cr08_malformed_inbox_tick",
+        "returncode": 0,
+        "stderr_tail": "",
+        "stdout_tail": ""
+      }
+    },
+    "market_provider_failure": {
+      "market_channels": {
+        "liquidity_proxy": "NOT_CONFIGURED",
+        "macro_policy": "NOT_CONFIGURED",
+        "market_breadth": "NOT_CONFIGURED",
+        "narrative_attention": "NOT_CONFIGURED",
+        "news_announcement": "NOT_CONFIGURED",
+        "portfolio_relevance": "LIVE",
+        "price_volume": "FAILED",
+        "volatility": "NOT_CONFIGURED"
+      },
+      "market_refresh_status": "ok",
+      "status": "success",
+      "tick": {
+        "duration_sec": 13.2712,
+        "label": "cr08_market_provider_failure_tick",
+        "returncode": 0,
+        "stderr_tail": "/Users/markus/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020\n  warnings.warn(\n",
+        "stdout_tail": ""
+      }
+    },
+    "missing_optional_dependency_mode": {
+      "state_status": 200,
+      "status": "served_without_site_packages"
+    },
+    "provider_failure": {
+      "decision_packet": {
+        "attention_state": "unknown",
+        "causal_summary": "LLM reasoning unavailable or invalid.",
+        "confidence": 0.0,
+        "liquidity_state": "unknown",
+        "reasoning_trace": "all_providers_failed",
+        "recommended_action": "neutral",
+        "regime_state": "unknown",
+        "risk_level": "unknown"
+      },
+      "status": "success",
+      "tick": {
+        "duration_sec": 0.0987,
+        "label": "cr08_provider_failure_tick",
+        "returncode": 0,
+        "stderr_tail": "",
+        "stdout_tail": ""
+      }
+    },
+    "stale_pid_precise": {
+      "pid_file_existed_before_state": true,
+      "pid_file_exists_after_state": false,
+      "port": 19200,
+      "state_runtime": {
+        "feedback_stability_index": 0.92,
+        "pid": 999999,
+        "pid_file": "/tmp/atlas-cleanroom-state-cr08-20260708-165652/runtime/atlas_runtime.pid",
+        "rolling_trust_index": 0.5142,
+        "running": false
+      },
+      "state_status_code": 200
+    },
+    "ui_restart_and_stale_process": {
+      "down_after_stop": true,
+      "first_state": 200,
+      "port": 19080,
+      "second_state": 200
+    }
+  },
+  "goal": "CR_GOAL_08_RECOVERY_AND_SOAK",
+  "market_enabled_aborted_soak_observation": {
+    "duration_sec": 131.1733,
+    "market_failed_tick_entries": 11,
+    "reason": "invalid market provider path averaged multiple seconds per tick; terminated to avoid turning accelerated soak into long external timeout test",
+    "stderr_tail": "/Users/markus/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020\n  warnings.warn(\nFailed to get ticker 'INVALID_ATLAS_CR08_XYZ' reason: Failed to perform, curl: (28) Connection timed out after 10002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\nFailed to get ticker 'INVALID_ATLAS_CR08_XYZ' reason: Failed to perform, curl: (28) Connection timed out after 10001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n",
+    "tick_entries_counted_corrected": 18
+  },
+  "notes": [
+    "505-cycle accelerated daemon stability proven with market refresh disabled",
+    "market provider failure remained explicit but materially slowed ticks",
+    "2h cleanroom real-duration soak not run in this pass"
+  ],
+  "primary_state_path": "/tmp/atlas-cleanroom-state-cr08-20260708-165652",
+  "real_duration_status": "PARTIAL_LT_2H",
+  "short_real_duration": {
+    "target_2h_met": false,
+    "tick_result": {
+      "duration_sec": 18.6426,
+      "label": "cr08_short_real_duration_soak_2_cycles",
+      "returncode": 0,
+      "stderr_tail": "/Users/markus/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020\n  warnings.warn(\n",
+      "stdout_tail": ""
+    },
+    "wall_duration_sec": 18.643
+  },
+  "sqlite_final_primary": {
+    "event_status_counts": {
+      "handled": 38
+    },
+    "exists": true,
+    "forecast_status_counts": {
+      "OPEN": 18
+    },
+    "integrity": "ok",
+    "tables": [
+      "attention_history",
+      "decision_briefs",
+      "events",
+      "forecast_ledger",
+      "kv_state",
+      "sqlite_sequence",
+      "state_transitions",
+      "system_logs"
+    ]
+  }
+}

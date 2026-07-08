@@ -109,6 +109,27 @@ execute independent black-box validation without accepting prior Master Goal art
 - Updated `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json` to advance to
   `CR_GOAL_08_RECOVERY_AND_SOAK`.
 - Appended CR07 completion to `docs/goals/cleanroom/status/CLEANROOM_EXECUTION_LOG.md`.
+- Created fresh CR08 clone `/tmp/atlas-cleanroom-cr08-20260708-165652`.
+- Ran CR08 recovery injections against `/tmp/atlas-cleanroom-state-cr08-20260708-165652`:
+  daemon kill/restart, UI restart/stale process, stale PID cleanup, malformed inbox JSONL, corrupt
+  telemetry replay, provider failure, market provider failure, and missing optional dependency
+  fallback.
+- Found market-provider failure remains honest (`price_volume: FAILED`) but can slow runtime ticks
+  materially; an attempted market-enabled 505-cycle soak was terminated after `131.1733` seconds and
+  `18` corrected daemon tick entries because provider timeouts made it unsuitable for accelerated
+  soak.
+- Ran a separate clean no-market accelerated soak at
+  `/tmp/atlas-cleanroom-state-cr08-accelerated-nomarket-20260708-170130`:
+  `505` ticks, `0` tick errors, SQLite integrity `ok`, peak RSS `34640 KB`, DB size `7917568`
+  bytes, log size `4621055` bytes.
+- Ran a short real-duration scheduler-sleep soak: `2` cycles over `18.643` seconds; 2-hour target
+  was not met.
+- Classified CR08 as `PROVEN_PARTIAL` with evidence level `ACCELERATED_ONLY`.
+- Added CR08 artifacts under `99_Verification/cleanroom/artifacts/cr_goal_08/`.
+- Wrote `99_Verification/cleanroom/CR_GOAL_08_Recovery_And_Soak_Report.md`.
+- Updated `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json` to advance to
+  `CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE`.
+- Appended CR08 completion to `docs/goals/cleanroom/status/CLEANROOM_EXECUTION_LOG.md`.
 
 ## Decisions
 
@@ -120,8 +141,10 @@ execute independent black-box validation without accepting prior Master Goal art
 ## Current State
 
 - CR_GOAL_00 through CR_GOAL_07 are complete.
-- Current cleanroom goal is `CR_GOAL_08_RECOVERY_AND_SOAK`.
-- Latest completed commit before CR08 is `ba7dc81944604198ffb428fbb41c304031b22283`.
+- CR_GOAL_08 is partial (`ACCELERATED_ONLY`) because 2-hour clean-room real-duration soak was not
+  run.
+- Current cleanroom goal is `CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE`.
+- Latest completed commit before CR09 is `f9a24ec857d0867b6b0a5dc6b617f9f53431fad6`.
 - There is one unrelated untracked stale artifact directory:
   `99_Verification/artifacts/goal_01_user_activation/`. Do not stage it unless the user explicitly
   asks.
@@ -129,14 +152,14 @@ execute independent black-box validation without accepting prior Master Goal art
 ## Resume Instructions
 
 1. Read `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json`.
-2. Continue from `CR_GOAL_08_RECOVERY_AND_SOAK`.
+2. Continue from `CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE`.
 3. Start from current branch `codex/cleanroom-verification` at or after commit
-   `ba7dc81944604198ffb428fbb41c304031b22283`.
-4. Create a fresh CR08 clone and empty runtime state root before testing; do not reuse CR07 state.
+   `f9a24ec857d0867b6b0a5dc6b617f9f53431fad6`.
+4. Use only fresh CR_GOAL_00 through CR_GOAL_08 clean-room evidence for tribunal classifications.
 5. Use fresh clean-room evidence only for final classifications.
-6. CR_GOAL_08 must run failure injections plus accelerated 500+ cycles and the longest practical
-   real-duration soak.
-7. Record CR08 evidence under `99_Verification/cleanroom/artifacts/cr_goal_08/`.
+6. Do not treat prior Master Goal reports or prior tribunal artifacts as proof.
+7. CR09 should create `Atlas_OS_Cleanroom_Final_Tribunal.md`,
+   `Atlas_OS_Cleanroom_Final_Report.md`, and `cleanroom_tribunal_result.json`.
 
 ## Open Questions
 

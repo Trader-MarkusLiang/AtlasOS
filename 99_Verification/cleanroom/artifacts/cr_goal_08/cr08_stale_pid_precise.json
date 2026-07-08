@@ -1,0 +1,13 @@
+{
+  "pid_file_existed_before_state": true,
+  "pid_file_exists_after_state": false,
+  "port": 19200,
+  "state_runtime": {
+    "feedback_stability_index": 0.92,
+    "pid": 999999,
+    "pid_file": "/tmp/atlas-cleanroom-state-cr08-20260708-165652/runtime/atlas_runtime.pid",
+    "rolling_trust_index": 0.5142,
+    "running": false
+  },
+  "state_status_code": 200
+}

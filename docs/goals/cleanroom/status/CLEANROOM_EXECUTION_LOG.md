@@ -255,6 +255,83 @@ CR_GOAL_08_RECOVERY_AND_SOAK
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
 integration, portfolio mutation, prediction behavior, or private holdings were modified.
 
+## 2026-07-08 - CR_GOAL_08 Recovery and Soak Partially Completed
+
+### Summary
+
+Completed clean-room recovery injections and a 505-cycle accelerated no-market soak. Did not
+complete the 2-hour clean-room real-duration soak.
+
+### Evidence
+
+- Fresh clone: `/tmp/atlas-cleanroom-cr08-20260708-165652`
+- Primary state: `/tmp/atlas-cleanroom-state-cr08-20260708-165652`
+- Accelerated no-market soak state:
+  `/tmp/atlas-cleanroom-state-cr08-accelerated-nomarket-20260708-170130`
+- Commit: `f9a24ec857d0867b6b0a5dc6b617f9f53431fad6`
+- Report:
+  `99_Verification/cleanroom/CR_GOAL_08_Recovery_And_Soak_Report.md`
+- Artifacts:
+  `99_Verification/cleanroom/artifacts/cr_goal_08/`
+
+### Recovery Tests
+
+Recovered or degraded honestly for:
+
+- daemon kill and restart;
+- UI restart and stale UI process;
+- stale PID cleanup;
+- malformed inbox JSONL;
+- corrupt telemetry final line during replay;
+- provider failure;
+- market provider failure;
+- missing optional dependency fallback.
+
+### Soak
+
+Accelerated no-market soak:
+
+- ticks counted: `505`;
+- tick errors: `0`;
+- duration: `16.4445` seconds;
+- peak RSS: `34640 KB`;
+- SQLite integrity: `ok`;
+- DB size: `7917568` bytes;
+- log size: `4621055` bytes.
+
+Short real-duration soak:
+
+- cycles: `2`;
+- wall duration: `18.643` seconds;
+- return code: `0`;
+- 2-hour target: not met.
+
+### Finding
+
+Market-provider failure remained explicit (`price_volume: FAILED`) but materially slowed ticks.
+The attempted market-enabled accelerated soak was terminated after `131.1733` seconds and `18`
+corrected daemon tick entries because invalid market-provider timeouts were turning the test into a
+long external timeout run.
+
+### Classification
+
+CR_GOAL_08 classification: `PROVEN_PARTIAL`
+
+Evidence level: `ACCELERATED_ONLY`
+
+### Transition
+
+`CLEANROOM_GOAL_STATUS.json` now records current goal:
+
+```text
+CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE
+```
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
+integration, portfolio mutation, prediction behavior, or private holdings were modified.
+
 ## 2026-07-08 - CR_GOAL_04 Live Market Black-Box Completed
 
 ### Summary
