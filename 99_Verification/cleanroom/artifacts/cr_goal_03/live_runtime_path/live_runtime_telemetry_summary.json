@@ -1,0 +1,134 @@
+{
+  "clone_path": "/tmp/atlas-cleanroom-cr03-20260708-161754",
+  "state_path": "/tmp/atlas-cleanroom-state-cr03-20260708-161754",
+  "commit": "04b0a152f610f681df7444987e6c9f8fa7025a47",
+  "llm_trace": [
+    {
+      "provider": "ollama",
+      "model": "qwen3-coder:30b",
+      "latency_ms": 2671,
+      "prompt_hash": "9b73030c5f9ac81c01c2f471a450c6fea66d13b9d0f9be3076642d83b1c61a08",
+      "output_raw_prefix": "{\n  \"regime_state\": \"ATTENTION_EXPANSION / Runtime State Context\",\n  \"confidence\": 0.15,\n  \"risk_level\": \"low\",\n  \"attention_state\": \"retail narrative attention\",\n  \"liquidity_state\": \"Neutral\",\n  \"causal_summary\": \"Attention-Liquidity Divergence driven by Narrative -> Retail Flow with secondary driver Narrative Crowding.\",\n  \"recommended_action\": \"observe\",\n  \"reasoning_trace\": \"Cognition layer confirms ATTENTION_EXPANSION state with high attention pressure (85) and neutral liquidity conditions",
+      "feedback_applied": false,
+      "hallucination_risk_proxy": 0.0
+    }
+  ],
+  "decision_trace": [
+    {
+      "tick": 0,
+      "regime_state": "ATTENTION_EXPANSION",
+      "causal_summary": "Attention-Liquidity Divergence",
+      "decision_packet_provider_observed": true,
+      "decision_packet": {
+        "attention_state": "retail narrative attention",
+        "causal_summary": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow with secondary driver Narrative Crowding.",
+        "confidence": 0.15,
+        "liquidity_state": "Neutral",
+        "reasoning_trace": "Cognition layer confirms ATTENTION_EXPANSION state with high attention pressure (85) and neutral liquidity conditions. The regime transition probability is 85, indicating strong momentum in the current attention-driven expansion. Market data is confidence-limited, and the system is operating under a fused market reality framework with no predictive authority. Portfolio is fully concentrated in NVDA with no trading execution allowed.",
+        "recommended_action": "observe",
+        "regime_state": "ATTENTION_EXPANSION / Runtime State Context",
+        "risk_level": "low"
+      }
+    }
+  ],
+  "runtime_log_tail": [
+    {
+      "timestamp": "2026-07-08T08:18:44.587580+00:00",
+      "event_type": "fused_market_reality",
+      "decision_packet_action": "observe",
+      "llm_provider": "ollama",
+      "system_metrics": {}
+    },
+    {
+      "timestamp": "2026-07-08T08:18:47.268880+00:00",
+      "event_type": null,
+      "decision_packet_action": null,
+      "llm_provider": null,
+      "system_metrics": {}
+    },
+    {
+      "timestamp": "2026-07-08T08:18:47.270069+00:00",
+      "event_type": "attention_spike",
+      "decision_packet_action": "observe",
+      "llm_provider": null,
+      "system_metrics": {
+        "daily_cycle": {
+          "execution": {
+            "completed_at": "2026-07-08T08:18:47.270566+00:00",
+            "degraded_capabilities": {},
+            "errors": [],
+            "inputs": {
+              "forecast_metrics": {
+                "accuracy": null,
+                "evaluated": 0,
+                "matured": 0,
+                "mean_calibration_error": null,
+                "mean_forecast_error": null,
+                "minimum_sample_size_met": false,
+                "open": 1,
+                "total": 1,
+                "verified": 0
+              },
+              "market_status": "not_run",
+              "portfolio_status": "not_loaded",
+              "timestamp": "2026-07-08T08:18:47.270565+00:00"
+            },
+            "no_trading_execution": true,
+            "outputs": {
+              "closing_state_synthesis": "forecast_review_only",
+              "forecast_maturity_check": {
+                "evaluated": 0,
+                "matured": 0,
+                "open": 1
+              },
+              "outcome_evaluation_queue": 0,
+              "produced_brief_id": "daily-cycle-post_market-2026-07-08T08:18:47.270563+00:00"
+            },
+            "phase": "post_market",
+            "produced_brief_id": "daily-cycle-post_market-2026-07-08T08:18:47.270563+00:00",
+            "read_only": true,
+            "started_at": "2026-07-08T08:18:47.270565+00:00",
+            "status": "completed"
+          },
+          "forecast_review": {
+            "evaluated": 0,
+            "minimum_sample_size_met": false,
+            "open": 1,
+            "sample_warning": "Low sample size: calibration is directional only, not statistically reliable."
+          },
+          "no_trading_execution": true,
+          "phase": "post_market",
+          "read_only": true,
+          "tasks": [
+            "closing_state_synthesis",
+            "forecast_maturation_check",
+            "outcome_evaluation_queue",
+            "decision_brief_archive"
+          ],
+          "timestamp": "2026-07-08T16:18:47.270185+08:00",
+          "timezone": "Asia/Shanghai"
+        },
+        "duration_ms": 9218,
+        "error": null,
+        "events_processed": 3,
+        "market_channels": {
+          "liquidity_proxy": "SIMULATED",
+          "macro_policy": "NOT_CONFIGURED",
+          "market_breadth": "NOT_CONFIGURED",
+          "narrative_attention": "NOT_CONFIGURED",
+          "news_announcement": "NOT_CONFIGURED",
+          "portfolio_relevance": "LIVE",
+          "price_volume": "LIVE",
+          "volatility": "SIMULATED"
+        },
+        "market_events_enqueued": 1,
+        "market_refresh_status": "ok",
+        "next_run_time": "2026-07-08T08:18:57.272237+00:00",
+        "no_trading_execution": true,
+        "status": "success",
+        "tick_index": 0,
+        "ui_events_ingested": 0
+      }
+    }
+  ]
+}

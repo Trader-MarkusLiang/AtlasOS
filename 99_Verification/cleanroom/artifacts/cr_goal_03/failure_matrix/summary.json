@@ -1,0 +1,159 @@
+{
+  "mock_base_url": "http://127.0.0.1:51581",
+  "live_provider": "ollama",
+  "live_model": "qwen3-coder:30b",
+  "cases": [
+    {
+      "case": "valid_openai_compatible_fixture",
+      "status": "ok",
+      "provider": "custom",
+      "model": "fixture-model",
+      "latency_ms": 5,
+      "error": "",
+      "fallback_attempts": [],
+      "packet_recommended_action": "neutral",
+      "packet_risk_level": "unknown",
+      "packet_failsafe": false,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-_hz6ht_h/user_config.json"
+    },
+    {
+      "case": "401",
+      "status": "failsafe",
+      "provider": "custom",
+      "model": "",
+      "latency_ms": 0,
+      "error": "all_providers_failed",
+      "fallback_attempts": [
+        {
+          "provider": "custom",
+          "error": "HTTP Error 401: Unauthorized"
+        }
+      ],
+      "packet_recommended_action": "neutral",
+      "packet_risk_level": "unknown",
+      "packet_failsafe": true,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-teafpkts/user_config.json"
+    },
+    {
+      "case": "429",
+      "status": "failsafe",
+      "provider": "custom",
+      "model": "",
+      "latency_ms": 0,
+      "error": "all_providers_failed",
+      "fallback_attempts": [
+        {
+          "provider": "custom",
+          "error": "HTTP Error 429: Too Many Requests"
+        }
+      ],
+      "packet_recommended_action": "neutral",
+      "packet_risk_level": "unknown",
+      "packet_failsafe": true,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-1iqckh1b/user_config.json"
+    },
+    {
+      "case": "empty",
+      "status": "failsafe",
+      "provider": "custom",
+      "model": "",
+      "latency_ms": 0,
+      "error": "all_providers_failed",
+      "fallback_attempts": [
+        {
+          "provider": "custom",
+          "error": "empty_response"
+        }
+      ],
+      "packet_recommended_action": "neutral",
+      "packet_risk_level": "unknown",
+      "packet_failsafe": true,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-gqzrhxkf/user_config.json"
+    },
+    {
+      "case": "malformed",
+      "status": "failsafe",
+      "provider": "custom",
+      "model": "",
+      "latency_ms": 0,
+      "error": "all_providers_failed",
+      "fallback_attempts": [
+        {
+          "provider": "custom",
+          "error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+        }
+      ],
+      "packet_recommended_action": "neutral",
+      "packet_risk_level": "unknown",
+      "packet_failsafe": true,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-jmhkxvsq/user_config.json"
+    },
+    {
+      "case": "timeout",
+      "status": "failsafe",
+      "provider": "custom",
+      "model": "",
+      "latency_ms": 0,
+      "error": "all_providers_failed",
+      "fallback_attempts": [
+        {
+          "provider": "custom",
+          "error": "timed out"
+        }
+      ],
+      "packet_recommended_action": "neutral",
+      "packet_risk_level": "unknown",
+      "packet_failsafe": true,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-botivc0q/user_config.json"
+    },
+    {
+      "case": "fallback_429_to_live_ollama",
+      "status": "ok",
+      "provider": "ollama",
+      "model": "qwen3-coder:30b",
+      "latency_ms": 482,
+      "error": "",
+      "fallback_attempts": [
+        {
+          "provider": "custom",
+          "error": "HTTP Error 429: Too Many Requests"
+        }
+      ],
+      "packet_recommended_action": "neutral",
+      "packet_risk_level": "unknown",
+      "packet_failsafe": true,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-jlhvyd6d/user_config.json"
+    },
+    {
+      "case": "model_not_found",
+      "health_status": "model_not_found",
+      "health_error": "model_not_found:atlas-cleanroom-missing-model",
+      "status": "failsafe",
+      "provider": "ollama",
+      "model": "",
+      "error": "all_providers_failed",
+      "fallback_attempts": [
+        {
+          "provider": "ollama",
+          "error": "HTTP Error 404: Not Found"
+        }
+      ],
+      "packet_failsafe": true,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-qjdvyqu0/user_config.json"
+    },
+    {
+      "case": "call_llm_raw_default_alias_uses_active_ollama",
+      "status": "raw",
+      "provider": "call_llm_raw",
+      "model": "gpt-5.5",
+      "latency_ms": 446,
+      "error": "",
+      "fallback_attempts": [],
+      "packet_recommended_action": "neutral",
+      "packet_risk_level": "unknown",
+      "packet_failsafe": true,
+      "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-config-55ecyqp7/user_config.json"
+    }
+  ],
+  "no_secret_values_recorded": true
+}

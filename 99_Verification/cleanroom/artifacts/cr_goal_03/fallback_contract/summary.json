@@ -1,0 +1,43 @@
+{
+  "fallback": {
+    "status": "ok",
+    "provider": "ollama",
+    "model": "qwen3-coder:30b",
+    "latency_ms": 690,
+    "error": "",
+    "fallback_attempts": [
+      {
+        "provider": "custom",
+        "error": "HTTP Error 429: Too Many Requests"
+      }
+    ]
+  },
+  "fallback_packet_failsafe": false,
+  "fallback_packet": {
+    "regime_state": "unknown",
+    "confidence": 0.0,
+    "risk_level": "unknown",
+    "attention_state": "unknown",
+    "liquidity_state": "unknown",
+    "causal_summary": "Fallback LLM response normalized through Atlas contract.",
+    "recommended_action": "neutral",
+    "reasoning_trace": "Primary provider failed and fallback provider produced a safe neutral response."
+  },
+  "alias_metadata": {
+    "provider": "ollama",
+    "model": "qwen3-coder:30b",
+    "raw_text_only": "true"
+  },
+  "alias_packet_failsafe": false,
+  "alias_packet": {
+    "regime_state": "unknown",
+    "confidence": 0.0,
+    "risk_level": "unknown",
+    "attention_state": "unknown",
+    "liquidity_state": "unknown",
+    "causal_summary": "Fallback LLM response normalized through Atlas contract.",
+    "recommended_action": "neutral",
+    "reasoning_trace": "Primary provider failed and fallback provider produced a safe neutral response."
+  },
+  "config_path": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-cr03-fallback-contract-giengxu9/user_config.json"
+}
