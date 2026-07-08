@@ -111,7 +111,7 @@ def save_provider_registry(registry: Mapping[str, Any], path: str | None = None)
     normalized = _normalize_registry(registry)
     config["llm_registry"] = normalized
     config["llm"] = _legacy_llm_from_registry(normalized)
-    target = Path(path) if path else CONFIG_PATH
+    target = _config_path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(config, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return safe_registry_view(normalized)
@@ -237,7 +237,7 @@ def record_provider_result(
             provider["last_checked_at"] = int(time.time())
             break
     config["llm_registry"] = registry
-    target = Path(path) if path else CONFIG_PATH
+    target = _config_path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(config, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
@@ -358,7 +358,7 @@ def decrypt_api_key(value: str) -> str:
 
 
 def _load_config(path: str | None = None) -> dict[str, Any]:
-    target = Path(path) if path else CONFIG_PATH
+    target = _config_path(path)
     if not target.exists():
         return {}
     try:
@@ -478,9 +478,14 @@ def _record_provider_models(
             provider["last_models_checked_at"] = int(time.time())
             break
     config["llm_registry"] = registry
-    target = Path(path) if path else CONFIG_PATH
+    target = _config_path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(config, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _config_path(path: str | None = None) -> Path:
+    configured = path or os.environ.get("ATLAS_USER_CONFIG")
+    return Path(configured) if configured else CONFIG_PATH
 
 
 def _keychain_available() -> bool:

@@ -29,6 +29,8 @@ def start_runtime_daemon(
     db_path: Optional[str] = None,
     log_path: Optional[str] = None,
     inbox_dir: Optional[str] = None,
+    ui_inbox_path: Optional[str] = None,
+    market_config_path: Optional[str] = None,
     llm_model: str = "gpt-5.5",
     pid_file: Optional[str] = None,
 ) -> Dict[str, Any]:
@@ -54,6 +56,10 @@ def start_runtime_daemon(
         cmd.extend(["--log-path", log_path])
     if inbox_dir:
         cmd.extend(["--inbox-dir", inbox_dir])
+    if ui_inbox_path:
+        cmd.extend(["--ui-inbox-path", ui_inbox_path])
+    if market_config_path:
+        cmd.extend(["--market-config-path", market_config_path])
     process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     pid_path.parent.mkdir(parents=True, exist_ok=True)
     pid_path.write_text(str(process.pid), encoding="utf-8")
@@ -171,4 +177,3 @@ def _write_config(config: Dict[str, Any], config_path: Optional[str]) -> None:
     path = _config_path(config_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(config, ensure_ascii=False, sort_keys=True), encoding="utf-8")
-

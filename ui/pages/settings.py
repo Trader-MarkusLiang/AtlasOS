@@ -1025,7 +1025,7 @@ def _config_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
     except json.JSONDecodeError:
         weights = {}
     registry = default_provider_registry()
-    registry["active_provider"] = str(payload.get("provider") or "openai").lower()
+    registry["active_provider"] = str(payload.get("provider") or payload.get("active_provider") or "openai").lower()
     for provider in registry["providers"]:
         if provider.get("id") == registry["active_provider"]:
             provider["api_key"] = str(payload.get("api_key") or "")

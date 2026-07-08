@@ -20,7 +20,7 @@ if __package__ in {None, ""}:  # Support `python3 ui/app_server.py`.
 
 from runtime.logging import utc_now_iso
 from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_forecasts, mark_forecast_matured
-from runtime.llm.provider_registry import health_check_provider, list_provider_models, safe_registry_view
+from runtime.llm.provider_registry import health_check_provider, list_provider_models, load_provider_registry, safe_registry_view
 from runtime.portfolio_context import build_portfolio_context
 from runtime.state_store import StateStore
 from runtime.telemetry.llm_trace_logger import read_llm_traces
@@ -165,7 +165,7 @@ def create_app() -> Any:
 
     @app.get("/llm/providers")
     async def llm_providers() -> Any:
-        return JSONResponse(safe_registry_view())
+        return JSONResponse(_safe_provider_registry())
 
     @app.post("/llm/provider/test")
     async def llm_provider_test(request: Request) -> Any:
@@ -173,7 +173,7 @@ def create_app() -> Any:
         provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
         if not provider_id:
             return JSONResponse({"status": "error", "error": "provider_required"}, status_code=400)
-        return JSONResponse(health_check_provider(provider_id))
+        return JSONResponse(health_check_provider(provider_id, path=_user_config_path()))
 
     @app.post("/llm/provider/models")
     async def llm_provider_models(request: Request) -> Any:
@@ -181,13 +181,16 @@ def create_app() -> Any:
         provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
         if not provider_id:
             return JSONResponse({"status": "error", "error": "provider_required"}, status_code=400)
-        return JSONResponse(list_provider_models(provider_id))
+        return JSONResponse(list_provider_models(provider_id, path=_user_config_path()))
 
     @app.post("/llm/providers/test_all")
     async def llm_providers_test_all() -> Any:
-        registry = safe_registry_view()
-        results = [health_check_provider(str(provider.get("id"))) for provider in registry.get("providers", [])]
-        refreshed = safe_registry_view()
+        registry = _safe_provider_registry()
+        results = [
+            health_check_provider(str(provider.get("id")), path=_user_config_path())
+            for provider in registry.get("providers", [])
+        ]
+        refreshed = _safe_provider_registry()
         return JSONResponse(
             {
                 "status": "checked",
@@ -295,6 +298,8 @@ def create_app() -> Any:
                 db_path=_db_path(),
                 log_path=_runtime_log_path(),
                 inbox_dir=_event_inbox_dir(),
+                ui_inbox_path=_ui_inbox_path(),
+                market_config_path=_user_config_path(),
                 pid_file=_pid_file(),
             )
         )
@@ -368,7 +373,7 @@ def state_api() -> Dict[str, Any]:
         "market_intelligence": market_intelligence,
         "daily_cycle": store.get_state("daily_cycle_state"),
         "llm_trace_summary": llm_summary,
-        "llm_provider_registry": safe_registry_view(),
+        "llm_provider_registry": _safe_provider_registry(),
         "last_event_summary": event_history[0] if event_history else {},
         "tick_counter": len(transitions),
         "dashboard": build_dashboard_state(
@@ -403,6 +408,12 @@ def _llm_trace_summary(records: list[Dict[str, Any]]) -> Dict[str, Any]:
         "latest_latency_ms": latest.get("latency_ms"),
         "latest_hallucination_risk_proxy": latest.get("hallucination_risk_proxy"),
     }
+
+
+def _safe_provider_registry() -> Dict[str, Any]:
+    """Return provider registry from the active UI config without exposing secrets."""
+
+    return safe_registry_view(load_provider_registry(_user_config_path()))
 
 
 def _provider_registry_summary(registry: Dict[str, Any]) -> Dict[str, Any]:
@@ -2588,7 +2599,7 @@ class _StdlibHandler(BaseHTTPRequestHandler):
         elif parsed.path == "/settings":
             self._send_html(render_settings_page(load_user_config(_user_config_path())))
         elif parsed.path == "/llm/providers":
-            self._send_json(safe_registry_view())
+            self._send_json(_safe_provider_registry())
         elif parsed.path == "/workflow":
             self._send_html(_workflow_page(query.get("stage", "event_stream")))
         elif parsed.path == "/roadmap":
@@ -2665,6 +2676,8 @@ class _StdlibHandler(BaseHTTPRequestHandler):
                     db_path=_db_path(),
                     log_path=_runtime_log_path(),
                     inbox_dir=_event_inbox_dir(),
+                    ui_inbox_path=_ui_inbox_path(),
+                    market_config_path=_user_config_path(),
                     pid_file=_pid_file(),
                 )
             )
@@ -2689,17 +2702,20 @@ class _StdlibHandler(BaseHTTPRequestHandler):
             if not provider_id:
                 self._send_json({"status": "error", "error": "provider_required"}, status=400)
                 return
-            self._send_json(health_check_provider(provider_id))
+            self._send_json(health_check_provider(provider_id, path=_user_config_path()))
         elif parsed.path == "/llm/provider/models":
             provider_id = str(payload.get("provider_id") or payload.get("provider") or "")
             if not provider_id:
                 self._send_json({"status": "error", "error": "provider_required"}, status=400)
                 return
-            self._send_json(list_provider_models(provider_id))
+            self._send_json(list_provider_models(provider_id, path=_user_config_path()))
         elif parsed.path == "/llm/providers/test_all":
-            registry = safe_registry_view()
-            results = [health_check_provider(str(provider.get("id"))) for provider in registry.get("providers", [])]
-            refreshed = safe_registry_view()
+            registry = _safe_provider_registry()
+            results = [
+                health_check_provider(str(provider.get("id")), path=_user_config_path())
+                for provider in registry.get("providers", [])
+            ]
+            refreshed = _safe_provider_registry()
             self._send_json(
                 {
                     "status": "checked",

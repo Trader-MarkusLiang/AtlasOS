@@ -112,3 +112,45 @@ Evidence level: `REAL_RUNTIME_PROVEN`
 
 No cognition, CDE, Event Fusion, trading, broker, prediction, or portfolio-mutation logic was
 changed.
+
+## 2026-07-08 - GOAL 01 First Repair Pass
+
+### Summary
+
+Started GOAL 01 ordinary-user activation after GOAL 00. Audited Setup, Settings, Home, provider
+configuration, chat, and runtime-control paths.
+
+### Repairs
+
+- Setup no longer requires a user to enter portfolio JSON.
+- Setup provider test now saves current form values before testing.
+- Settings legacy parser accepts `active_provider`.
+- Provider registry respects `ATLAS_USER_CONFIG`.
+- Provider endpoints use the current UI config path.
+- UI runtime start passes current UI inbox and market/user config path to the daemon.
+- Home summarizes market channels instead of printing a raw dict.
+- Setup result is human-readable instead of raw JSON.
+
+### Validation
+
+Temporary HTTP flow passed:
+
+- `GET /setup`
+- `POST /settings`
+- `GET /llm/providers`
+- `POST /llm/provider/test`
+- `POST /chat/send`
+- `POST /control/start`
+- `POST /control/stop`
+
+The provider test intentionally used an unreachable local endpoint and returned an honest error
+without leaking the submitted test key.
+
+### Classification
+
+GOAL 01 remains `PROVEN_PARTIAL`.
+
+### Next Work
+
+Run browser-level first-user journey and verify the first Decision Brief appears after a fresh
+runtime tick. Do not advance to GOAL 02 yet.

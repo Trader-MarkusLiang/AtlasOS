@@ -57,6 +57,15 @@ v0.8.
   - Forecast lifecycle `OPEN -> MATURED -> VERIFIED`.
   - all four daily-cycle phases.
   - live AAPL market attempt, which degraded honestly with `price_volume: FAILED`.
+- Started GOAL 01 audit and repair:
+  - replaced Setup JSON-only asset entry with ordinary asset fields;
+  - made Setup provider test save current values before testing;
+  - repaired legacy settings save to honor `active_provider`;
+  - made provider registry and UI provider endpoints respect `ATLAS_USER_CONFIG`;
+  - passed UI inbox and market config paths from UI start to daemon;
+  - removed raw JSON/dict default displays from Setup/Home;
+  - validated `/setup`, `/settings`, `/llm/providers`, `/llm/provider/test`, `/chat/send`,
+    `/control/start`, and `/control/stop` through a temporary HTTP server.
 
 ## Files Changed
 
@@ -67,6 +76,14 @@ v0.8.
 - `docs/codex-sessions/active/2026-07-08_1024_execute-master-goal-program.md`
 - `docs/codex-sessions/index.md`
 - `/Users/markus/.codex/project-registry.md`
+- `99_Verification/GOAL_01_User_Activation_Report.md`
+- `runtime/llm/provider_registry.py`
+- `ui/app_server.py`
+- `ui/system_control_panel.py`
+- `ui/pages/setup.py`
+- `ui/pages/home.py`
+- `ui/pages/settings.py`
+- `docs/goals/evidence/GOAL_01_EVIDENCE.md`
 
 ## Decisions
 
@@ -83,6 +100,7 @@ v0.8.
 - Current execution cursor is `GOAL_01_USER_ACTIVATION`.
 - Master Goal remains active.
 - GOAL 01 still needs browser/user-journey validation and likely UI repair work.
+- GOAL 01 first repair pass is complete but still `PROVEN_PARTIAL`.
 
 ## Verification Results
 
@@ -91,13 +109,15 @@ v0.8.
 - session-log/index consistency check: PASS
 - GOAL 00 runtime probes: PASS for baseline mapping; live market remains degraded and explicitly
   partial.
+- GOAL 01 temporary HTTP flow: PASS for setup save, provider test failure visibility, chat queue,
+  start/stop control, config isolation, and no secret echo.
 
 ## Resume Instructions
 
 1. Read `docs/goals/status/GOAL_STATUS.json`.
 2. Confirm `current_goal` is `GOAL_01_USER_ACTIVATION`.
 3. Read `docs/goals/GOAL_01_USER_ACTIVATION.md` and `docs/goals/evidence/GOAL_01_EVIDENCE.md`.
-4. Start GOAL 01 with a browser/UI first-user journey audit:
+4. Continue GOAL 01 with a browser/UI first-user journey audit:
    - open Atlas
    - understand Atlas
    - select language

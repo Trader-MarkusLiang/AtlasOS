@@ -68,7 +68,8 @@
       "status": "in_progress",
       "classification": "PROVEN_PARTIAL",
       "evidence_level": "PARTIAL",
-      "next_action": "Run full browser click-path study and add stale-server guard."
+      "report": "99_Verification/GOAL_01_User_Activation_Report.md",
+      "next_action": "Run browser-level first-user journey and verify first Decision Brief visibility."
     },
     {
       "id": "GOAL_02",
@@ -153,6 +154,7 @@
   ],
   "source_reports": [
     "99_Verification/GOAL_00_Truth_Baseline_Report.md",
+    "99_Verification/GOAL_01_User_Activation_Report.md",
     "99_Verification/Atlas_OS_Real_World_Activation_Tribunal.md",
     "99_Verification/Atlas_OS_Prompt_D_Final_Report.md",
     "99_Verification/Atlas_OS_Merge_Readiness_Report.md"

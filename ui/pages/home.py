@@ -11,8 +11,10 @@ def render_home_page(state: Mapping[str, Any]) -> str:
     packet = state.get("last_decision_packet") if isinstance(state.get("last_decision_packet"), Mapping) else {}
     portfolio = state.get("portfolio_context") if isinstance(state.get("portfolio_context"), Mapping) else {}
     market = state.get("market_intelligence") if isinstance(state.get("market_intelligence"), Mapping) else {}
+    channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
     action = str(packet.get("recommended_action") or "neutral").upper()
     summary = str(packet.get("causal_summary") or "Atlas is waiting for sufficient cognitive signal.")
+    channel_summary = _channel_summary(channels)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -55,7 +57,7 @@ pre {{ margin:10px 0 0; max-height:230px; overflow:auto; white-space:pre-wrap; c
     <article class="card">
       <span class="kicker">Current Market Context</span>
       <strong>{escape(str(market.get("status") or "Waiting for market refresh"))}</strong>
-      <p>{escape(str(market.get("channels") or {}))}</p>
+      <p>{escape(channel_summary)}</p>
     </article>
     <article class="card">
       <span class="kicker">Portfolio Impact</span>
@@ -80,3 +82,22 @@ pre {{ margin:10px 0 0; max-height:230px; overflow:auto; white-space:pre-wrap; c
 </main>
 </body>
 </html>"""
+
+
+def _channel_summary(channels: Mapping[str, Any]) -> str:
+    if not channels:
+        return "Waiting for market channels."
+    live = [key for key, value in channels.items() if str(value) == "LIVE"]
+    simulated = [key for key, value in channels.items() if str(value) == "SIMULATED"]
+    failed = [key for key, value in channels.items() if str(value) in {"FAILED", "RATE_LIMITED"}]
+    missing = [key for key, value in channels.items() if str(value) == "NOT_CONFIGURED"]
+    parts = []
+    if live:
+        parts.append("Live: " + ", ".join(live))
+    if simulated:
+        parts.append("Simulated: " + ", ".join(simulated))
+    if failed:
+        parts.append("Needs attention: " + ", ".join(failed))
+    if missing:
+        parts.append("Not configured: " + ", ".join(missing[:4]))
+    return " · ".join(parts) or "Waiting for sufficient market signal."
