@@ -20,7 +20,7 @@ production, not live-market proven, and not 2h/24h stable.
 ## Proven Areas
 
 - Ordinary-user activation through UI/config/runtime path.
-- LLM provider inference and fallback.
+- Live LLM provider inference and fallback through GOAL 02.
 - Portfolio context runtime path.
 - Forecast lineage through normal DecisionLoop.
 - Self-iteration treatment/control behavior.
@@ -31,13 +31,13 @@ production, not live-market proven, and not 2h/24h stable.
 
 - Stable live market daemon ingestion.
 - 2h and 24h real-duration soak.
-- MoreCode authorization or explicit permanent downgrade.
+- Provider long-run stability sample remains small.
 
 ## Next Evidence To Collect
 
 1. 2h wall-clock soak report.
 2. Stable live market price/volume daemon path proof.
-3. Provider timeout/fallback evidence for active provider.
+3. Provider stability evidence during GOAL 07 soak.
 4. Release tribunal after the remaining blockers close.
 
 ## Non-Evidence

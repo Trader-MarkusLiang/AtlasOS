@@ -1,0 +1,37 @@
+{
+  "date": "2026-07-08",
+  "classification": "LIVE_PROVEN",
+  "active_chain_smoke": {
+    "status": "ok",
+    "provider": "volcano",
+    "model": "kimi-k2.6",
+    "latency_ms": 27236,
+    "fallback_attempts": [
+      {
+        "provider": "morecode",
+        "error": "HTTP Error 401: Unauthorized"
+      },
+      {
+        "provider": "ark",
+        "error": "timed out"
+      }
+    ],
+    "decision_contract_packet_valid": true,
+    "note": "Active chain proved MoreCode failure visibility, ARK timeout visibility, and Volcano fallback success. The route summary did not persist raw provider output."
+  },
+  "direct_live_contract_smoke": {
+    "packet_valid": true,
+    "is_contract_failsafe": false,
+    "packet_confidence": 0.64,
+    "trace_provider": "volcano",
+    "trace_model": "kimi-k2.6",
+    "trace_latency_ms": 19499,
+    "trace_decision_packet_id": "goal-02-live-volcano-contract",
+    "trace_has_output_raw": true
+  },
+  "security": {
+    "raw_secret_printed": false,
+    "raw_secret_committed": false,
+    "raw_provider_output_in_artifact": false
+  }
+}

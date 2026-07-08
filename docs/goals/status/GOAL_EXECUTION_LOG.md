@@ -206,3 +206,73 @@ Evidence level: `REAL_RUNTIME_PROVEN`
 
 This does not claim live LLM provider success, live market completeness, release readiness, broker
 integration, trading execution, or 2h/24h runtime stability.
+
+## 2026-07-08 - GOAL 02 Live LLM Activation Completed
+
+### Summary
+
+Executed GOAL 02 after GOAL 01. Current live provider checks proved the configured LLM route can
+reach a live provider through Atlas provider routing and Decision Contract parsing. A repeatable
+temporary fixture validator covered the required failure matrix without exposing secrets.
+
+### Live Evidence
+
+- Active chain route:
+  - `morecode -> HTTP 401`
+  - `ark -> timed out`
+  - `volcano -> ok`
+  - model: `kimi-k2.6`
+  - latency: `27236 ms`
+- Direct telemetry contract smoke:
+  - provider: `volcano`
+  - model: `kimi-k2.6`
+  - latency: `19499 ms`
+  - decision packet id: `goal-02-live-volcano-contract`
+  - Decision Contract parsed provider output without failsafe.
+
+### Failure Matrix
+
+Command:
+
+```text
+python3 99_Verification/validate_goal_02_live_llm_activation.py
+```
+
+Result: `PASS`
+
+Covered:
+
+- valid provider
+- 401
+- 429
+- timeout
+- empty response
+- malformed response
+- fallback
+- model not found
+- secret masking
+- telemetry without fixture secret
+
+### Files Updated
+
+- `99_Verification/GOAL_02_Live_LLM_Report.md`
+- `99_Verification/validate_goal_02_live_llm_activation.py`
+- `99_Verification/artifacts/goal_02_live_llm_activation/live_smoke_result.json`
+- `99_Verification/artifacts/goal_02_live_llm_activation/failure_matrix_result.json`
+- `docs/goals/evidence/GOAL_02_EVIDENCE.md`
+- `docs/goals/status/GOAL_STATUS.json`
+
+### Classification
+
+GOAL 02 classification: `PROVEN_COMPLETE`
+
+Evidence level: `LIVE_PROVEN`
+
+### Transition
+
+`GOAL_STATUS.json` now records `current_goal: GOAL_03_MARKET_INTELLIGENCE`.
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading, broker,
+prediction, or portfolio-mutation logic was changed.

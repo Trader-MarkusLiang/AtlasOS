@@ -101,6 +101,21 @@ v0.8.
     `docs/goals/status/GOAL_EXECUTION_LOG.md` so GOAL 01 is `PROVEN_COMPLETE` and current
     execution advances to `GOAL_02_LIVE_LLM_ACTIVATION`.
   - committed GOAL 01 completion as `bbfd2c058d183aaa8061376e627533aaab06ac19`.
+- 2026-07-08 11:25 CST GOAL 02 live LLM activation:
+  - inspected `docs/goals/GOAL_02_LIVE_LLM_ACTIVATION.md`,
+    `docs/goals/evidence/GOAL_02_EVIDENCE.md`, Prompt D live LLM reports, provider router,
+    provider registry, LLM router, and Decision Contract files;
+  - read the safe provider registry view only, without printing secrets;
+  - ran a current live active-chain route proving `morecode -> HTTP 401`, `ark -> timed out`, and
+    `volcano -> ok` with model `kimi-k2.6`;
+  - ran a direct live `call_llm_raw("volcano")` telemetry contract smoke that parsed as a valid
+    provider DecisionPacket without Decision Contract failsafe;
+  - added and ran `99_Verification/validate_goal_02_live_llm_activation.py`, covering valid
+    provider, 401, 429, timeout, empty response, malformed response, fallback, model not found,
+    secret masking, and telemetry-no-secret checks;
+  - added `99_Verification/GOAL_02_Live_LLM_Report.md` and GOAL 02 artifacts;
+  - updated GOAL 02 evidence and status so current execution advances to
+    `GOAL_03_MARKET_INTELLIGENCE`.
 
 ## Files Changed
 
@@ -122,6 +137,10 @@ v0.8.
 - `docs/goals/evidence/ATLAS_MASTER_EVIDENCE.md`
 - `99_Verification/validate_goal_01_user_activation.py`
 - `99_Verification/artifacts/goal_01_user_activation_fixed/`
+- `99_Verification/GOAL_02_Live_LLM_Report.md`
+- `99_Verification/validate_goal_02_live_llm_activation.py`
+- `99_Verification/artifacts/goal_02_live_llm_activation/`
+- `docs/goals/evidence/GOAL_02_EVIDENCE.md`
 
 ## Decisions
 
@@ -146,6 +165,8 @@ v0.8.
   evidence levels and current uncommitted GOAL 01 work.
 - GOAL 01 is now reconciled as `PROVEN_COMPLETE`; `GOAL_STATUS.json` current cursor is
   `GOAL_02_LIVE_LLM_ACTIVATION`.
+- GOAL 02 is now reconciled as `PROVEN_COMPLETE`; `GOAL_STATUS.json` current cursor is
+  `GOAL_03_MARKET_INTELLIGENCE`.
 - A temporary UI server process is still visible on port `8876`; stop or reuse it intentionally
   before further browser tests.
 
@@ -162,15 +183,17 @@ v0.8.
   goal files were changed.
 - GOAL 01 validator rerun: PASS.
 - GOAL 01 compile check: PASS.
+- GOAL 02 live active-chain smoke: `morecode -> HTTP 401`, `ark -> timed out`, `volcano -> ok`.
+- GOAL 02 live telemetry contract smoke: PASS.
+- GOAL 02 failure-matrix validator: PASS.
 
 ## Resume Instructions
 
 1. Read `docs/goals/status/GOAL_STATUS.json`.
-2. Confirm `current_goal` is `GOAL_02_LIVE_LLM_ACTIVATION`.
-3. Read `docs/goals/GOAL_02_LIVE_LLM_ACTIVATION.md` and
-   `docs/goals/evidence/GOAL_02_EVIDENCE.md`.
-4. Inspect existing Prompt D live LLM evidence and determine whether a GOAL-specific report
-   `99_Verification/GOAL_02_Live_LLM_Report.md` is still needed.
+2. Confirm `current_goal` is `GOAL_03_MARKET_INTELLIGENCE`.
+3. Read `docs/goals/GOAL_03_MARKET_INTELLIGENCE.md` and
+   `docs/goals/evidence/GOAL_03_EVIDENCE.md`.
+4. Re-test one live price/volume daemon path and preserve missing-channel statuses honestly.
 5. Preserve hard boundaries: no broker/trading execution, no cognition rewrites, no speculative
    engines, no private config commits.
 
