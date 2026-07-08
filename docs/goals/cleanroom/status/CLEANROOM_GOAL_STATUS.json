@@ -1,10 +1,10 @@
 {
   "program": "Atlas OS Independent Clean-Room Verification",
-  "status": "IN_PROGRESS",
+  "status": "COMPLETE_WITH_EVIDENCE_LIMITATIONS",
   "candidate_branch": "codex/overnight-productization-sprint",
   "candidate_commit": "ed63678793bdc5d10c1469433e461a6c20db7927",
   "current_goal": "CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE",
-  "current_goal_status": "NOT_STARTED",
+  "current_goal_status": "PROVEN_COMPLETE",
   "completed_goals": [
     "CR_GOAL_00_FRESH_CLONE_BASELINE",
     "CR_GOAL_01_BOOTSTRAP_FROM_ZERO",
@@ -13,7 +13,8 @@
     "CR_GOAL_04_LIVE_MARKET_BLACKBOX",
     "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
     "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
-    "CR_GOAL_07_SELF_ITERATION_BLACKBOX"
+    "CR_GOAL_07_SELF_ITERATION_BLACKBOX",
+    "CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE"
   ],
   "partial_goals": [
     "CR_GOAL_08_RECOVERY_AND_SOAK"
@@ -21,11 +22,13 @@
   "failed_goals": [],
   "blocked_goals": [],
   "next_goal": null,
-  "stop_allowed": false,
-  "last_updated": "2026-07-08T17:05:07+08:00",
+  "stop_allowed": true,
+  "last_updated": "2026-07-08T17:09:12+08:00",
   "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr08-20260708-165652",
   "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr08-20260708-165652",
-  "evidence_level": "ACCELERATED_ONLY",
+  "evidence_level": "PARTIAL",
+  "final_maturity": "CONDITIONAL_PRODUCTION_TRIAL_CANDIDATE",
+  "merge_readiness": "CONDITIONAL_TRIAL_MERGE_READY",
   "goal_results": [
     {
       "goal": "CR_GOAL_00_FRESH_CLONE_BASELINE",
@@ -166,6 +169,18 @@
       "real_duration_2h_met": false,
       "short_real_duration_seconds": 18.643,
       "secret_shape_scan_clean": true
+    },
+    {
+      "goal": "CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE",
+      "status": "PROVEN_COMPLETE",
+      "evidence_level": "PARTIAL",
+      "final_maturity": "CONDITIONAL_PRODUCTION_TRIAL_CANDIDATE",
+      "merge_readiness": "CONDITIONAL_TRIAL_MERGE_READY",
+      "release_candidate": false,
+      "tribunal": "99_Verification/cleanroom/Atlas_OS_Cleanroom_Final_Tribunal.md",
+      "final_report": "99_Verification/cleanroom/Atlas_OS_Cleanroom_Final_Report.md",
+      "result_json": "99_Verification/cleanroom/cleanroom_tribunal_result.json",
+      "cr08_partial_blocks_release_candidate": true
     }
   ],
   "evidence_levels": [

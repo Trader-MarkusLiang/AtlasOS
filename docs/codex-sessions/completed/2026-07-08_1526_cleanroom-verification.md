@@ -7,7 +7,7 @@
 - Project: Atlas OS
 - Workspace: `/Users/markus/AtlasOS`
 - Task: Execute Atlas OS clean-room independent verification goal program
-- Status: active
+- Status: completed
 - Branch: `codex/cleanroom-verification`
 
 ## User Request Summary
@@ -127,6 +127,15 @@ execute independent black-box validation without accepting prior Master Goal art
 - Classified CR08 as `PROVEN_PARTIAL` with evidence level `ACCELERATED_ONLY`.
 - Added CR08 artifacts under `99_Verification/cleanroom/artifacts/cr_goal_08/`.
 - Wrote `99_Verification/cleanroom/CR_GOAL_08_Recovery_And_Soak_Report.md`.
+- Completed CR09 final tribunal from fresh clean-room evidence only.
+- Wrote:
+  - `99_Verification/cleanroom/Atlas_OS_Cleanroom_Final_Tribunal.md`;
+  - `99_Verification/cleanroom/Atlas_OS_Cleanroom_Final_Report.md`;
+  - `99_Verification/cleanroom/cleanroom_tribunal_result.json`.
+- Final maturity: `CONDITIONAL_PRODUCTION_TRIAL_CANDIDATE`.
+- Merge readiness: `CONDITIONAL_TRIAL_MERGE_READY`, not Release Candidate.
+- Updated `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json` to
+  `COMPLETE_WITH_EVIDENCE_LIMITATIONS`.
 - Updated `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json` to advance to
   `CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE`.
 - Appended CR08 completion to `docs/goals/cleanroom/status/CLEANROOM_EXECUTION_LOG.md`.
@@ -140,11 +149,11 @@ execute independent black-box validation without accepting prior Master Goal art
 
 ## Current State
 
-- CR_GOAL_00 through CR_GOAL_07 are complete.
-- CR_GOAL_08 is partial (`ACCELERATED_ONLY`) because 2-hour clean-room real-duration soak was not
-  run.
-- Current cleanroom goal is `CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE`.
-- Latest completed commit before CR09 is `f9a24ec857d0867b6b0a5dc6b617f9f53431fad6`.
+- Clean-room program CR_GOAL_00 through CR_GOAL_09 is complete with evidence limitations.
+- CR_GOAL_08 remains partial (`ACCELERATED_ONLY`) because 2-hour clean-room real-duration soak was
+  not run.
+- Final maturity is `CONDITIONAL_PRODUCTION_TRIAL_CANDIDATE`.
+- Latest commit before final CR09 commit is `8ad4b28`.
 - There is one unrelated untracked stale artifact directory:
   `99_Verification/artifacts/goal_01_user_activation/`. Do not stage it unless the user explicitly
   asks.
@@ -152,14 +161,10 @@ execute independent black-box validation without accepting prior Master Goal art
 ## Resume Instructions
 
 1. Read `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json`.
-2. Continue from `CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE`.
-3. Start from current branch `codex/cleanroom-verification` at or after commit
-   `f9a24ec857d0867b6b0a5dc6b617f9f53431fad6`.
-4. Use only fresh CR_GOAL_00 through CR_GOAL_08 clean-room evidence for tribunal classifications.
-5. Use fresh clean-room evidence only for final classifications.
-6. Do not treat prior Master Goal reports or prior tribunal artifacts as proof.
-7. CR09 should create `Atlas_OS_Cleanroom_Final_Tribunal.md`,
-   `Atlas_OS_Cleanroom_Final_Report.md`, and `cleanroom_tribunal_result.json`.
+2. Read `99_Verification/cleanroom/Atlas_OS_Cleanroom_Final_Tribunal.md`.
+3. Next recommended task is a new issue/repair for market-provider timeout/circuit-breaker behavior
+   followed by a fresh 2-hour clean-room soak.
+4. Do not claim RC or 24-hour stability from this session.
 
 ## Open Questions
 
