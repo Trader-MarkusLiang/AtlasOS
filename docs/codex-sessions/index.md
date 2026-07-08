@@ -8,6 +8,19 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-08_0951_push-goal-files.md`
+- `docs/codex-sessions/completed/2026-07-08_0938-fill-goal-08.md`
+- `docs/codex-sessions/completed/2026-07-08_0936-fill-goal-07.md`
+- `docs/codex-sessions/completed/2026-07-08_0934-fill-goal-06.md`
+- `docs/codex-sessions/completed/2026-07-08_0932-fill-goal-05.md`
+- `docs/codex-sessions/completed/2026-07-08_0930-fill-goal-04.md`
+- `docs/codex-sessions/completed/2026-07-08_0926-fill-goal-03.md`
+- `docs/codex-sessions/completed/2026-07-08_0924-fill-goal-02.md`
+- `docs/codex-sessions/completed/2026-07-08_0921-fill-goal-01.md`
+- `docs/codex-sessions/completed/2026-07-08_0919-fill-goal-00.md`
+- `docs/codex-sessions/completed/2026-07-08_0915-fill-master-goal.md`
+- `docs/codex-sessions/completed/2026-07-08_0915_goal-evidence-index.md`
+- `docs/codex-sessions/completed/2026-07-08_0906_goal-registry-docs.md`
 - `docs/codex-sessions/completed/2026-07-08_0706_prompt-d-real-world-activation.md`
 - `docs/codex-sessions/completed/2026-07-08_0109_prompt-c-completion-enforcement.md`
 - `docs/codex-sessions/completed/2026-07-08_0050_morning-final-verification-rc.md`

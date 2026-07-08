@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "2026-07-08",
+  "project": "Atlas OS",
+  "branch": "codex/overnight-productization-sprint",
+  "release_position": "internal_alpha_real_world_activation_hardening",
+  "evidence_directory": "docs/goals/evidence/",
+  "master_goal": {
+    "id": "ATLAS_MASTER_GOAL",
+    "file": "docs/goals/ATLAS_MASTER_GOAL.md",
+    "evidence_index": "docs/goals/evidence/ATLAS_MASTER_EVIDENCE.md",
+    "status": "active",
+    "classification": "PARTIAL",
+    "summary": "Move Atlas from controlled-fixture internal alpha toward real-world production trial readiness through evidence-gated goals."
+  },
+  "evidence_labels": [
+    "LIVE_PROVEN",
+    "REAL_RUNTIME_PROVEN",
+    "CONTROLLED_FIXTURE_PROVEN",
+    "ACCELERATED_ONLY",
+    "PARTIAL",
+    "EXTERNAL_BLOCKER",
+    "DISCONNECTED",
+    "FAILED"
+  ],
+  "goals": [
+    {
+      "id": "GOAL_00",
+      "name": "Truth Baseline",
+      "file": "docs/goals/GOAL_00_TRUTH_BASELINE.md",
+      "evidence_index": "docs/goals/evidence/GOAL_00_EVIDENCE.md",
+      "status": "active",
+      "classification": "REAL_RUNTIME_PROVEN",
+      "next_action": "Keep public claims synchronized with Prompt D evidence."
+    },
+    {
+      "id": "GOAL_01",
+      "name": "User Activation",
+      "file": "docs/goals/GOAL_01_USER_ACTIVATION.md",
+      "evidence_index": "docs/goals/evidence/GOAL_01_EVIDENCE.md",
+      "status": "active",
+      "classification": "PARTIAL",
+      "next_action": "Run full browser click-path study and add stale-server guard."
+    },
+    {
+      "id": "GOAL_02",
+      "name": "Live LLM Activation",
+      "file": "docs/goals/GOAL_02_LIVE_LLM_ACTIVATION.md",
+      "evidence_index": "docs/goals/evidence/GOAL_02_EVIDENCE.md",
+      "status": "active",
+      "classification": "LIVE_PROVEN",
+      "next_action": "Resolve MoreCode authorization or keep it explicitly blocked."
+    },
+    {
+      "id": "GOAL_03",
+      "name": "Market Intelligence",
+      "file": "docs/goals/GOAL_03_MARKET_INTELLIGENCE.md",
+      "evidence_index": "docs/goals/evidence/GOAL_03_EVIDENCE.md",
+      "status": "blocked_external",
+      "classification": "PARTIAL",
+      "secondary_classification": "EXTERNAL_BLOCKER",
+      "next_action": "Stabilize one live price/volume daemon path."
+    },
+    {
+      "id": "GOAL_04",
+      "name": "Portfolio Cognition",
+      "file": "docs/goals/GOAL_04_PORTFOLIO_COGNITION.md",
+      "evidence_index": "docs/goals/evidence/GOAL_04_EVIDENCE.md",
+      "status": "active",
+      "classification": "REAL_RUNTIME_PROVEN",
+      "next_action": "Keep percentage-only local config and privacy validation."
+    },
+    {
+      "id": "GOAL_05",
+      "name": "Forecast Accountability",
+      "file": "docs/goals/GOAL_05_FORECAST_ACCOUNTABILITY.md",
+      "evidence_index": "docs/goals/evidence/GOAL_05_EVIDENCE.md",
+      "status": "active",
+      "classification": "REAL_RUNTIME_PROVEN",
+      "next_action": "Grow live forecast sample size through normal runtime use."
+    },
+    {
+      "id": "GOAL_06",
+      "name": "Self-Iteration Reality",
+      "file": "docs/goals/GOAL_06_SELF_ITERATION_REALITY.md",
+      "evidence_index": "docs/goals/evidence/GOAL_06_EVIDENCE.md",
+      "status": "active",
+      "classification": "LIVE_PROVEN",
+      "sample_warning": "low_sample",
+      "next_action": "Repeat treatment/control experiments across more event types."
+    },
+    {
+      "id": "GOAL_07",
+      "name": "Autonomous Operations",
+      "file": "docs/goals/GOAL_07_AUTONOMOUS_OPERATIONS.md",
+      "evidence_index": "docs/goals/evidence/GOAL_07_EVIDENCE.md",
+      "status": "active",
+      "classification": "PARTIAL",
+      "next_action": "Run 2h real-duration soak before stronger operations claims."
+    },
+    {
+      "id": "GOAL_08",
+      "name": "Release Readiness",
+      "file": "docs/goals/GOAL_08_RELEASE_READINESS.md",
+      "evidence_index": "docs/goals/evidence/GOAL_08_EVIDENCE.md",
+      "status": "not_ready",
+      "classification": "PARTIAL",
+      "merge_readiness": "INTERNAL_ALPHA_MERGEABLE",
+      "next_action": "Keep release status at internal alpha until live market and soak blockers close."
+    }
+  ],
+  "source_reports": [
+    "99_Verification/Atlas_OS_Real_World_Activation_Tribunal.md",
+    "99_Verification/Atlas_OS_Prompt_D_Final_Report.md",
+    "99_Verification/Atlas_OS_Merge_Readiness_Report.md"
+  ]
+}
