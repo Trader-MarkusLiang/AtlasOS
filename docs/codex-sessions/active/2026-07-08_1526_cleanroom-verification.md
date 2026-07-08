@@ -31,6 +31,13 @@ execute independent black-box validation without accepting prior Master Goal art
   - `99_Verification/Release_Gate.md`
 - Created branch `codex/cleanroom-verification`.
 - Began creating `docs/goals/cleanroom/` and `99_Verification/cleanroom/`.
+- Created and committed the clean-room goal program.
+- Verified remote `codex/overnight-productization-sprint` points to candidate commit
+  `ed63678793bdc5d10c1469433e461a6c20db7927`.
+- First SSH fresh clone attempt stalled and disconnected; recorded as a failed attempt.
+- HTTPS fresh clone succeeded at `/tmp/atlas-cleanroom-20260708-153302`.
+- Created independent runtime-state root `/tmp/atlas-cleanroom-state-20260708-153302`.
+- Completed CR_GOAL_00 report and advanced status to `CR_GOAL_01_BOOTSTRAP_FROM_ZERO`.
 
 ## Decisions
 
@@ -41,15 +48,17 @@ execute independent black-box validation without accepting prior Master Goal art
 
 ## Current State
 
-- Clean-room program setup in progress.
+- CR_GOAL_00 is complete.
+- Current cleanroom goal is `CR_GOAL_01_BOOTSTRAP_FROM_ZERO`.
 
 ## Resume Instructions
 
 1. Read `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json`.
-2. Continue from the recorded `current_goal`.
-3. Use fresh clean-room evidence only for final classifications.
+2. Continue from `CR_GOAL_01_BOOTSTRAP_FROM_ZERO`.
+3. Use `/tmp/atlas-cleanroom-20260708-153302` as the fresh clone and
+   `/tmp/atlas-cleanroom-state-20260708-153302` for runtime state.
+4. Use fresh clean-room evidence only for final classifications.
 
 ## Open Questions
 
 - None yet.
-
