@@ -1875,11 +1875,14 @@ pre {
       risk: packet.risk_level || "unknown"
     };
     const decisionNode = byId("decision-trace");
-    if (decisionNode) decisionNode.textContent = JSON.stringify(decisionTrace, null, 2);
+    if (decisionNode) {
+      decisionNode.textContent = "tick " + decisionTrace.tick + ", regime " + clean(decisionTrace.regime) + ", decision " + clean(decisionTrace.action);
+    }
 
     const structuralNode = byId("structural-state");
     if (structuralNode) {
-      structuralNode.textContent = JSON.stringify(state.structural_coevolution_state || state.self_organization_state || {}, null, 2);
+      const structuralSummary = summarizeStructure(state.structural_coevolution_state || state.self_organization_state || {});
+      structuralNode.textContent = structuralSummary;
     }
     updateHypothesisState(state);
     updateDecisionExplanation(state, packet);
@@ -1895,6 +1898,17 @@ pre {
     setText("active-hypothesis", hypothesis.id || hypothesis.name || structural.active_hypothesis_id || "Insufficient system context");
     const shadow = structural.shadow_hypothesis_count || structural.shadow_count || asArray(structural.shadow_hypotheses).length || 0;
     setText("shadow-hypothesis-count", shadow);
+  }
+  function summarizeStructure(value) {
+    const structural = asObject(value);
+    if (!Object.keys(structural).length) return "No structural drift summary yet";
+    const mutation = asObject(structural.mutated_graph || structural.causal_graph_mutation || structural);
+    const drift = asObject(structural.applied_drift || structural.drift_summary || structural);
+    const pieces = [];
+    if (mutation.structural_shift_index !== undefined) pieces.push("shift " + clean(mutation.structural_shift_index));
+    if (mutation.mutation_intensity !== undefined) pieces.push("mutation " + clean(mutation.mutation_intensity));
+    if (drift.bounded !== undefined) pieces.push(drift.bounded ? "bounded" : "needs review");
+    return pieces.join(" · ") || "Structural state summarized";
   }
   function updateProviderMini(registry) {
     const providers = Array.isArray(registry.providers) ? registry.providers : [];
@@ -2232,12 +2246,25 @@ pre {
     }
     const start = byId("runtime-start");
     if (start) start.addEventListener("click", async function () {
-      try { addChatLine("system", "Start: " + clean((await postForm("/control/start", {})).status)); }
+      try {
+        const result = await postForm("/control/start", {});
+        addChatLine("system", "Start: " + clean(result.status));
+        await refreshState();
+      }
       catch (error) { addChatLine("system", "Start failed: " + error.message); }
     });
     const stop = byId("runtime-stop");
     if (stop) stop.addEventListener("click", async function () {
-      try { addChatLine("system", "Stop: " + clean((await postForm("/control/stop", {})).status)); }
+      try {
+        const result = await postForm("/control/stop", {});
+        addChatLine("system", "Stop: " + clean(result.status));
+        const pill = byId("runtime-status-pill");
+        if (pill) {
+          pill.textContent = "STOPPED";
+          pill.className = "status-pill status-stopped";
+        }
+        await refreshState();
+      }
       catch (error) { addChatLine("system", "Stop failed: " + error.message); }
     });
     const interval = byId("tick-interval");

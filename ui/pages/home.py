@@ -18,6 +18,7 @@ def render_home_page(state: Mapping[str, Any]) -> str:
     summary = str(packet.get("causal_summary") or t("home.waiting_summary", lang))
     channel_summary = _channel_summary(channels, lang)
     trigger_trace = str(packet.get("reasoning_trace") or t("home.trace_placeholder", lang))
+    freshness_note = _freshness_note(market.get("degraded"), lang)
     return f"""<!doctype html>
 <html lang="{escape(lang)}">
 <head>
@@ -70,7 +71,7 @@ pre {{ margin:10px 0 0; max-height:230px; overflow:auto; white-space:pre-wrap; c
     <article class="card">
       <span class="kicker">{escape(t("home.data_freshness", lang))}</span>
       <strong>{escape(str(market.get("timestamp") or t("empty.context", lang)))}</strong>
-      <p>{escape(str(market.get("degraded", t("empty.context", lang))))}</p>
+      <p>{escape(freshness_note)}</p>
     </article>
     <article class="card wide">
       <span class="kicker">{escape(t("home.trigger_conditions", lang))}</span>
@@ -104,3 +105,11 @@ def _channel_summary(channels: Mapping[str, Any], lang: str = "en") -> str:
     if missing:
         parts.append(f"{t('home.not_configured', lang)}: " + ", ".join(missing[:4]))
     return " · ".join(parts) or t("home.waiting_signal", lang)
+
+
+def _freshness_note(degraded: Any, lang: str = "en") -> str:
+    if degraded is True:
+        return "Degraded data path: some channels need attention."
+    if degraded is False:
+        return "Freshness check passed for configured channels."
+    return t("empty.context", lang)
