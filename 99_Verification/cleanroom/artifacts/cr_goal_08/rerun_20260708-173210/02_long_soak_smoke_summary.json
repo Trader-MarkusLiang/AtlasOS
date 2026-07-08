@@ -1,0 +1,9 @@
+{
+  "classification": "REAL_DURATION_2H_PROVEN",
+  "elapsed_seconds": 15.0333,
+  "no_trading_execution": true,
+  "returncode": 0,
+  "runtime_log_lines": 2,
+  "status": "PASS",
+  "tick_errors": 0
+}

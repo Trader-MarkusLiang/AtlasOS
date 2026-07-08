@@ -1,0 +1,95 @@
+{
+  "classification": "REAL_DURATION_2H_PROVEN",
+  "command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "runtime/atlas_runtime_daemon.py",
+    "--interval",
+    "10",
+    "--max-cycles",
+    "2",
+    "--db-path",
+    "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-long-soak-i2hm18af/runtime/state/atlas_long_soak.sqlite",
+    "--log-path",
+    "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-long-soak-i2hm18af/runtime/logs/atlas_long_soak.jsonl",
+    "--inbox-dir",
+    "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-long-soak-i2hm18af/runtime/events/inbox",
+    "--ui-inbox-path",
+    "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-long-soak-i2hm18af/runtime/inbox/user_event.jsonl",
+    "--market-config-path",
+    "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-long-soak-i2hm18af/runtime/config/user_config.json",
+    "--market-refresh-every-cycles",
+    "1",
+    "--market-max-assets",
+    "1"
+  ],
+  "daily_cycle_phases": {
+    "post_market": 2
+  },
+  "db_counts": {
+    "attention_history": 0,
+    "decision_briefs": 2,
+    "events": 5,
+    "forecast_ledger": 2,
+    "kv_state": 14,
+    "state_transitions": 2,
+    "system_logs": 6
+  },
+  "db_size_bytes": 323584,
+  "elapsed_seconds": 15.0333,
+  "ended_at": "2026-07-08T09:33:17.378398+00:00",
+  "hypothesis_switches": 0,
+  "interrupted": false,
+  "interval_seconds": 10,
+  "market_failure_ticks": 0,
+  "max_cpu_pct": 0.0,
+  "max_rss_kb": 23584,
+  "min_seconds": 10.0,
+  "no_trading_execution": true,
+  "pending_queue_depth": 0,
+  "pid": 36444,
+  "provider_failures": 2,
+  "raw_log_lines": 6,
+  "raw_logs_committed": false,
+  "returncode": 0,
+  "runtime_log_lines": 2,
+  "runtime_root": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-long-soak-i2hm18af",
+  "sample_count": 3,
+  "samples": [
+    {
+      "cpu_pct": 0.0,
+      "elapsed_seconds": 0.0,
+      "etime": "00:00",
+      "pid": 36444,
+      "rss_kb": 1888,
+      "timestamp": "2026-07-08T09:33:02.345719+00:00"
+    },
+    {
+      "cpu_pct": 0.0,
+      "elapsed_seconds": 5.01,
+      "etime": "00:05",
+      "pid": 36444,
+      "rss_kb": 23584,
+      "timestamp": "2026-07-08T09:33:07.352021+00:00"
+    },
+    {
+      "cpu_pct": 0.0,
+      "elapsed_seconds": 10.02,
+      "etime": "00:10",
+      "pid": 36444,
+      "rss_kb": 23584,
+      "timestamp": "2026-07-08T09:33:12.365188+00:00"
+    }
+  ],
+  "started_at": "2026-07-08T09:33:02.344014+00:00",
+  "status": "PASS",
+  "target_cycles": 2,
+  "tick_errors": 0,
+  "trust_drift": {
+    "available": true,
+    "delta": -0.1042,
+    "first": 0.7123,
+    "last": 0.6081,
+    "max": 0.7123,
+    "min": 0.6081
+  }
+}

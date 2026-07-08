@@ -2,21 +2,20 @@
 
 Date: 2026-07-08
 
-Final clean-room maturity: `CONDITIONAL_PRODUCTION_TRIAL_CANDIDATE`
+Final clean-room maturity: `PRODUCTION_TRIAL_CANDIDATE`
 
 Final readiness: not Release Candidate.
 
 ## Executive Summary
 
-Atlas OS survived independent clean-room verification better than an internal alpha, but it is not
-release-ready. The system can be used as a conditional production-trial candidate if the remaining
-stability and market-data risks are stated clearly.
+Atlas OS completed the independent clean-room verification program with evidence limitations that
+are now explicit rather than hidden. The prior CR08 blocker was repaired and rerun from a fresh
+clone. The system completed 721 real scheduler-sleep runtime ticks over `16533.5355` seconds with
+0 tick errors, queue depth 0, and no trading execution.
 
-The strongest fresh proofs are live LLM routing, first-user operation, live market path,
-portfolio-aware runtime output, forecast accountability, and a real runtime self-iteration loop.
-
-The main blocker is operational maturity: no fresh 2-hour clean-room real-duration soak, partial
-market coverage, and slow market-provider timeout behavior under failure.
+Atlas is therefore suitable for production-trial use, but not Release Candidate status. Remaining
+limits are market coverage breadth, exhaustive bilingual parity, full security audit, and 24-hour
+unattended stability.
 
 ## Goal Results
 
@@ -30,7 +29,24 @@ market coverage, and slow market-provider timeout behavior under failure.
 | CR_GOAL_05 Portfolio Cognition Black-Box | PROVEN_COMPLETE | REAL_RUNTIME_PROVEN |
 | CR_GOAL_06 Forecast Accountability Black-Box | PROVEN_COMPLETE | REAL_RUNTIME_PROVEN |
 | CR_GOAL_07 Self-Iteration Black-Box | PROVEN_COMPLETE | REAL_RUNTIME_PROVEN |
-| CR_GOAL_08 Recovery and Soak | PROVEN_PARTIAL | ACCELERATED_ONLY |
+| CR_GOAL_08 Recovery and Soak | PROVEN_COMPLETE | REAL_RUNTIME_PROVEN |
+| CR_GOAL_09 Final Tribunal and Merge Gate | PROVEN_COMPLETE | PARTIAL |
+
+## Fresh CR08 Rerun
+
+Key evidence:
+
+- Commit tested: `08574039784047357a82da3d4b5475d03f790576`.
+- Fresh clone: `/tmp/atlas-cleanroom-cr08-rerun-20260708-173210`.
+- Fresh artifacts:
+  `99_Verification/cleanroom/artifacts/cr_goal_08/rerun_20260708-173210/`.
+- Accelerated regression: 500 cycles, 0 tick errors.
+- Real-duration soak: 721 runtime ticks, `16533.5355` seconds, 0 tick errors.
+- DB rows: 721 decision briefs, 721 forecast ledger rows, 721 state transitions.
+- Queue depth: 0.
+- Max RSS: 33312 KB.
+- Max CPU sample: 15.4%.
+- Secret-shaped artifact scan: clean.
 
 ## Evidence Files
 
@@ -48,34 +64,33 @@ market coverage, and slow market-provider timeout behavior under failure.
 
 ## Final Verdict
 
-Atlas OS is conditionally ready for production-trial use, not release-candidate use.
+Atlas OS is ready for production-trial use, not release-candidate use.
 
-The system has enough real runtime proof to continue trial usage:
+The system has real runtime proof for:
 
 - fresh clone operation;
 - ordinary user flow;
 - live LLM inference;
-- live market path;
+- live market price/volume path;
 - portfolio cognition;
 - forecast accountability;
 - real self-iteration;
-- recovery injection tolerance.
+- recovery injection tolerance;
+- 2-hour-plus clean-room real-duration stability.
 
 The system does not have enough clean-room proof for Release Candidate:
 
-- no clean-room 2-hour real-duration soak;
 - no 24-hour stability proof;
 - no full market coverage;
 - no exhaustive bilingual parity;
 - no complete security audit.
 
-## Required Next Repairs
+## Required Next Work
 
-1. Add market-provider timeout/circuit-breaker behavior so invalid or unavailable providers cannot
-   stretch runtime ticks by multiple seconds repeatedly.
-2. Run a fresh 2-hour clean-room soak after the timeout fix.
-3. Expand market channels or keep missing channels explicitly visible.
-4. Complete bilingual parity and security audits.
+1. Expand market channels or keep missing channels explicitly visible.
+2. Complete bilingual parity and security audits.
+3. Run 24-hour unattended stability before any RC claim.
+4. Keep production-trial issue discipline: no Issue, no iteration.
 
 ## Boundary
 

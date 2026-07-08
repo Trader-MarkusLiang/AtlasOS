@@ -1,5 +1,20 @@
 # Changelog
 
+## Clean-Room CR08 Real-Duration Soak Closure - 2026-07-08
+
+- Repaired provider outage latency so failed LLM and market-provider paths degrade within bounded
+  time during runtime ticks.
+- Added a fresh CR08 clean-room rerun from commit `0857403`, with isolated clone/state/artifacts.
+- Proved 721 scheduler-sleep runtime ticks over `16533.5355` seconds with 0 tick errors, queue
+  depth 0, 721 Decision Briefs, 721 forecast ledger rows, and no trading execution.
+- Updated clean-room status, final report, tribunal, and machine-readable result to classify CR08
+  as `PROVEN_COMPLETE` / `REAL_RUNTIME_PROVEN`.
+- Final clean-room maturity is now `PRODUCTION_TRIAL_CANDIDATE`, not Release Candidate; 24-hour
+  stability, full market coverage, exhaustive bilingual parity, and full security audit remain
+  unproven.
+- Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading
+  execution, prediction behavior, or portfolio mutation.
+
 ## GOAL 08 Release Readiness Tribunal - 2026-07-08
 
 - Added GOAL 08 release-readiness validator and final tribunal artifact.

@@ -1,104 +1,29 @@
 {
-  "program": "Atlas OS Independent Clean-Room Verification",
-  "tribunal_date": "2026-07-08",
   "branch": "codex/cleanroom-verification",
-  "tribunal_commit": "8ad4b28",
   "candidate_branch": "codex/overnight-productization-sprint",
-  "original_candidate_commit": "ed63678793bdc5d10c1469433e461a6c20db7927",
-  "evidence_scope": "CR_GOAL_00_through_CR_GOAL_08_fresh_cleanroom_evidence_only",
-  "final_maturity": "CONDITIONAL_PRODUCTION_TRIAL_CANDIDATE",
-  "merge_readiness": "CONDITIONAL_TRIAL_MERGE_READY",
-  "release_candidate": false,
-  "goal_results": [
-    {
-      "goal": "CR_GOAL_00_FRESH_CLONE_BASELINE",
-      "status": "PROVEN_COMPLETE",
-      "evidence_level": "BLACKBOX_PROVEN"
-    },
-    {
-      "goal": "CR_GOAL_01_BOOTSTRAP_FROM_ZERO",
-      "status": "PROVEN_COMPLETE",
-      "evidence_level": "BLACKBOX_PROVEN"
-    },
-    {
-      "goal": "CR_GOAL_02_FIRST_TIME_USER_BLACKBOX",
-      "status": "PROVEN_COMPLETE",
-      "evidence_level": "BLACKBOX_PROVEN"
-    },
-    {
-      "goal": "CR_GOAL_03_LIVE_LLM_BLACKBOX",
-      "status": "PROVEN_COMPLETE",
-      "evidence_level": "LIVE_PROVEN"
-    },
-    {
-      "goal": "CR_GOAL_04_LIVE_MARKET_BLACKBOX",
-      "status": "PROVEN_COMPLETE",
-      "evidence_level": "LIVE_PROVEN",
-      "coverage_level": "PARTIAL"
-    },
-    {
-      "goal": "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
-      "status": "PROVEN_COMPLETE",
-      "evidence_level": "REAL_RUNTIME_PROVEN"
-    },
-    {
-      "goal": "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
-      "status": "PROVEN_COMPLETE",
-      "evidence_level": "REAL_RUNTIME_PROVEN"
-    },
-    {
-      "goal": "CR_GOAL_07_SELF_ITERATION_BLACKBOX",
-      "status": "PROVEN_COMPLETE",
-      "evidence_level": "REAL_RUNTIME_PROVEN",
-      "loop_classification": "REAL_RUNTIME_BEHAVIORAL_LOOP"
-    },
-    {
-      "goal": "CR_GOAL_08_RECOVERY_AND_SOAK",
-      "status": "PROVEN_PARTIAL",
-      "evidence_level": "ACCELERATED_ONLY",
-      "real_duration_2h_met": false
-    }
-  ],
-  "tribunal_classification": {
-    "fresh_clone_bootstrap": "BLACKBOX_PROVEN",
-    "first_time_user_usability": "BLACKBOX_PROVEN",
-    "live_llm_inference": "LIVE_PROVEN",
-    "provider_fallback": "LIVE_PROVEN",
-    "live_market_path": "LIVE_PROVEN",
-    "market_coverage": "PARTIAL",
-    "market_freshness": "LIVE_PROVEN",
-    "portfolio_cognition": "REAL_RUNTIME_PROVEN",
-    "forecast_accountability": "REAL_RUNTIME_PROVEN",
-    "prediction_error": "REAL_RUNTIME_PROVEN",
-    "self_iteration": "REAL_RUNTIME_PROVEN",
-    "daily_operations": "ACCELERATED_ONLY",
-    "recovery": "REAL_RUNTIME_PROVEN",
-    "stability": "ACCELERATED_ONLY",
-    "bilingual_parity": "PARTIAL",
-    "security": "PARTIAL",
-    "documentation_truth": "PARTIAL",
-    "merge_readiness": "PARTIAL"
-  },
   "confirmed_claims": [
-    "fresh_clone_startup",
+    "accelerated_500_fresh_clone_soak_zero_tick_errors",
+    "accelerated_505_no_market_soak_zero_tick_errors",
     "first_user_setup_start_ask_stop",
-    "live_llm_inference",
-    "provider_fallback",
-    "live_price_volume_market_path",
-    "portfolio_context_changes_runtime_output",
     "forecast_lifecycle_error_calibration",
     "forecast_miss_changes_later_runtime_behavior",
-    "recovery_injections_preserve_sqlite_integrity",
-    "accelerated_505_no_market_soak_zero_tick_errors"
+    "fresh_clone_startup",
+    "live_llm_inference",
+    "live_price_volume_market_path",
+    "portfolio_context_changes_runtime_output",
+    "provider_fallback",
+    "provider_outage_latency_bounded",
+    "real_duration_721_cycle_cleanroom_soak_zero_tick_errors",
+    "recovery_injections_preserve_sqlite_integrity"
   ],
-  "downgraded_claims": [
-    "full_market_intelligence_coverage",
-    "release_candidate_readiness",
-    "two_hour_cleanroom_stability",
-    "twenty_four_hour_stability",
-    "market_enabled_accelerated_stability_under_provider_failure",
-    "exhaustive_bilingual_parity",
-    "complete_security_audit"
+  "cr08_rerun_artifact_dir": "99_Verification/cleanroom/artifacts/cr_goal_08/rerun_20260708-173210",
+  "defects_fixed": [
+    "0857403_provider_outage_latency_bounds",
+    "1a812b1_portfolio_context_preservation",
+    "4280a5a_forecast_lifecycle_boundaries",
+    "752c6eb_active_provider_model_health",
+    "e5c8fa6_first_user_raw_state_trace_leakage",
+    "f153700_runtime_stop_pid_cleanup"
   ],
   "defects_found": [
     "first_user_raw_state_trace_leakage",
@@ -109,19 +34,96 @@
     "forecast_duplicate_id_overwrite_bypass",
     "market_provider_failure_slow_tick_risk"
   ],
-  "defects_fixed": [
-    "e5c8fa6_first_user_raw_state_trace_leakage",
-    "752c6eb_active_provider_model_health",
-    "f153700_runtime_stop_pid_cleanup",
-    "1a812b1_portfolio_context_preservation",
-    "4280a5a_forecast_lifecycle_boundaries"
+  "downgraded_claims": [
+    "full_market_intelligence_coverage",
+    "release_candidate_readiness",
+    "twenty_four_hour_stability",
+    "exhaustive_bilingual_parity",
+    "complete_security_audit"
   ],
+  "evidence_scope": "CR_GOAL_00_through_CR_GOAL_08_cleanroom_evidence_plus_CR08_fresh_rerun",
+  "final_maturity": "PRODUCTION_TRIAL_CANDIDATE",
+  "goal_results": [
+    {
+      "evidence_level": "BLACKBOX_PROVEN",
+      "goal": "CR_GOAL_00_FRESH_CLONE_BASELINE",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence_level": "BLACKBOX_PROVEN",
+      "goal": "CR_GOAL_01_BOOTSTRAP_FROM_ZERO",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence_level": "BLACKBOX_PROVEN",
+      "goal": "CR_GOAL_02_FIRST_TIME_USER_BLACKBOX",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence_level": "LIVE_PROVEN",
+      "goal": "CR_GOAL_03_LIVE_LLM_BLACKBOX",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "coverage_level": "PARTIAL",
+      "evidence_level": "LIVE_PROVEN",
+      "goal": "CR_GOAL_04_LIVE_MARKET_BLACKBOX",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence_level": "REAL_RUNTIME_PROVEN",
+      "goal": "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence_level": "REAL_RUNTIME_PROVEN",
+      "goal": "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence_level": "REAL_RUNTIME_PROVEN",
+      "goal": "CR_GOAL_07_SELF_ITERATION_BLACKBOX",
+      "loop_classification": "REAL_RUNTIME_BEHAVIORAL_LOOP",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence_level": "REAL_RUNTIME_PROVEN",
+      "goal": "CR_GOAL_08_RECOVERY_AND_SOAK",
+      "real_duration_2h_met": true,
+      "status": "PROVEN_COMPLETE"
+    }
+  ],
+  "merge_readiness": "TRIAL_MERGE_READY_WITH_LIMITATIONS",
+  "original_candidate_commit": "ed63678793bdc5d10c1469433e461a6c20db7927",
+  "program": "Atlas OS Independent Clean-Room Verification",
+  "recommendation": "Proceed as production-trial candidate; do not tag RC.",
+  "release_candidate": false,
   "remaining_blockers": [
-    "fresh_two_hour_cleanroom_soak_not_run",
-    "market_provider_timeout_circuit_breaker_needed",
     "market_coverage_partial",
     "bilingual_parity_partial",
-    "security_audit_partial"
+    "security_audit_partial",
+    "twenty_four_hour_stability_not_proven"
   ],
-  "recommendation": "Proceed only as conditional production-trial candidate; do not tag RC."
+  "tribunal_classification": {
+    "bilingual_parity": "PARTIAL",
+    "daily_operations": "REAL_RUNTIME_PROVEN",
+    "documentation_truth": "PARTIAL",
+    "first_time_user_usability": "BLACKBOX_PROVEN",
+    "forecast_accountability": "REAL_RUNTIME_PROVEN",
+    "fresh_clone_bootstrap": "BLACKBOX_PROVEN",
+    "live_llm_inference": "LIVE_PROVEN",
+    "live_market_path": "LIVE_PROVEN",
+    "market_coverage": "PARTIAL",
+    "market_freshness": "LIVE_PROVEN",
+    "merge_readiness": "PARTIAL",
+    "portfolio_cognition": "REAL_RUNTIME_PROVEN",
+    "prediction_error": "REAL_RUNTIME_PROVEN",
+    "provider_fallback": "LIVE_PROVEN",
+    "recovery": "REAL_RUNTIME_PROVEN",
+    "security": "PARTIAL",
+    "self_iteration": "REAL_RUNTIME_PROVEN",
+    "stability": "REAL_RUNTIME_PROVEN"
+  },
+  "tribunal_commit": "0857403",
+  "tribunal_date": "2026-07-08"
 }

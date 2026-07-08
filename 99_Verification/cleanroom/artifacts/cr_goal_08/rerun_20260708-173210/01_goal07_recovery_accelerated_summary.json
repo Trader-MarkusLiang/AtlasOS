@@ -1,0 +1,19 @@
+{
+  "accelerated_cycles": 500,
+  "accelerated_elapsed_seconds": 14.8991,
+  "accelerated_tick_errors": 0,
+  "checks_all_true": true,
+  "classification": "PROVEN_PARTIAL",
+  "evidence_level": "ACCELERATED_ONLY_WITH_SHORT_REAL_DURATION",
+  "no_trading_execution": true,
+  "real_duration_seconds": 10.0643,
+  "recovery_statuses": {
+    "daemon_restart": "passed",
+    "malformed_jsonl": "passed",
+    "market_outage": "passed",
+    "provider_outage": "passed",
+    "stale_pid": "passed",
+    "ui_restart": "passed"
+  },
+  "status": "PASS"
+}

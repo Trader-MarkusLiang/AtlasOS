@@ -1,0 +1,209 @@
+{
+  "accelerated_soak": {
+    "accelerated": true,
+    "cpu_seconds": 13.958,
+    "cycles": 500,
+    "db_counts": {
+      "attention_history": 0,
+      "decision_briefs": 500,
+      "events": 1001,
+      "forecast_ledger": 500,
+      "kv_state": 14,
+      "state_transitions": 500,
+      "system_logs": 1500
+    },
+    "db_growth_bytes": 8552448,
+    "db_size_after_bytes": 8552448,
+    "db_size_before_bytes": 0,
+    "elapsed_seconds": 14.8991,
+    "hypothesis_switches": 0,
+    "max_rss_after": 39239680,
+    "max_rss_before": 28065792,
+    "no_trading_execution": true,
+    "pending_queue_depth": 0,
+    "provider_failures": 500,
+    "rss_growth": 11173888,
+    "runtime_log_lines": 500,
+    "tick_errors": 0,
+    "trust_drift": {
+      "available": true,
+      "delta": -0.0213,
+      "first": 0.7063,
+      "last": 0.685,
+      "max": 0.7119,
+      "min": 0.549
+    }
+  },
+  "checks": {
+    "accelerated_500_cycles": true,
+    "accelerated_decision_briefs": true,
+    "accelerated_queue_bounded": true,
+    "accelerated_zero_tick_errors": true,
+    "daily_all_phases_completed": true,
+    "daily_artifacts_persisted": true,
+    "daily_outputs_are_meaningful": true,
+    "no_trading_execution": true,
+    "real_duration_used_sleep": true,
+    "real_duration_zero_tick_errors": true,
+    "recovery_daemon_restart": true,
+    "recovery_malformed_jsonl": true,
+    "recovery_market_outage": true,
+    "recovery_provider_outage": true,
+    "recovery_stale_pid": true,
+    "recovery_ui_restart": true
+  },
+  "classification": "PROVEN_PARTIAL",
+  "daily_cycles": {
+    "intraday": {
+      "next_run_time": "2026-07-08T09:32:35.093284+00:00",
+      "no_trading_execution": true,
+      "output_keys": [
+        "anomaly_check",
+        "attention_regime_update",
+        "portfolio_relevance_triggers",
+        "produced_brief_id",
+        "refresh_status"
+      ],
+      "persisted": true,
+      "required_outputs_present": true,
+      "resolved_phase": "intraday",
+      "status": "completed"
+    },
+    "morning": {
+      "next_run_time": "2026-07-08T09:32:35.070726+00:00",
+      "no_trading_execution": true,
+      "output_keys": [
+        "freshness_check",
+        "open_forecast_count",
+        "overnight_signal_synthesis",
+        "portfolio_relevance",
+        "produced_brief_id"
+      ],
+      "persisted": true,
+      "required_outputs_present": true,
+      "resolved_phase": "morning",
+      "status": "completed"
+    },
+    "overnight": {
+      "next_run_time": "2026-07-08T09:32:35.140040+00:00",
+      "no_trading_execution": true,
+      "output_keys": [
+        "hypothesis_review",
+        "next_day_watch_conditions",
+        "produced_brief_id",
+        "world_model_delta"
+      ],
+      "persisted": true,
+      "required_outputs_present": true,
+      "resolved_phase": "overnight",
+      "status": "completed"
+    },
+    "post_market": {
+      "next_run_time": "2026-07-08T09:32:35.116241+00:00",
+      "no_trading_execution": true,
+      "output_keys": [
+        "closing_state_synthesis",
+        "forecast_maturity_check",
+        "outcome_evaluation_queue",
+        "produced_brief_id"
+      ],
+      "persisted": true,
+      "required_outputs_present": true,
+      "resolved_phase": "post_market",
+      "status": "completed"
+    }
+  },
+  "evidence_level": "ACCELERATED_ONLY_WITH_SHORT_REAL_DURATION",
+  "failures": [],
+  "long_duration_claim": {
+    "reason": "GOAL 07 validator runs accelerated 500-cycle proof plus a short real-duration sleep proof only.",
+    "twenty_four_hour_stability": "NOT_PROVEN",
+    "two_hour_stability": "NOT_PROVEN"
+  },
+  "real_duration_soak": {
+    "claim_limit": "short_real_duration_only_not_2h_or_24h",
+    "cycles": 2,
+    "db_counts": {
+      "attention_history": 0,
+      "decision_briefs": 2,
+      "events": 5,
+      "forecast_ledger": 2,
+      "kv_state": 14,
+      "state_transitions": 2,
+      "system_logs": 6
+    },
+    "elapsed_seconds": 10.0643,
+    "no_sleep": false,
+    "no_trading_execution": true,
+    "tick_errors": 0
+  },
+  "recovery": {
+    "daemon_restart": {
+      "db_counts": {
+        "attention_history": 0,
+        "decision_briefs": 2,
+        "events": 5,
+        "forecast_ledger": 2,
+        "kv_state": 14,
+        "state_transitions": 2,
+        "system_logs": 6
+      },
+      "status": "passed"
+    },
+    "malformed_jsonl": {
+      "ingested": 1,
+      "pending_event_types": [
+        "attention_spike"
+      ],
+      "processed_file_exists": true,
+      "status": "passed"
+    },
+    "market_outage": {
+      "channels": {
+        "liquidity_proxy": "NOT_CONFIGURED",
+        "macro_policy": "NOT_CONFIGURED",
+        "market_breadth": "NOT_CONFIGURED",
+        "narrative_attention": "NOT_CONFIGURED",
+        "news_announcement": "NOT_CONFIGURED",
+        "portfolio_relevance": "SIMULATED",
+        "price_volume": "FAILED",
+        "volatility": "NOT_CONFIGURED"
+      },
+      "degraded": true,
+      "events_enqueued": 1,
+      "market_status": "ok",
+      "proof_mode": "CONTROLLED_FIXTURE_PROOF",
+      "status": "passed"
+    },
+    "provider_outage": {
+      "error": "all_providers_failed",
+      "fallback_attempts": [
+        {
+          "error": "timed out",
+          "provider": "down"
+        }
+      ],
+      "router_status": "failsafe",
+      "status": "passed"
+    },
+    "stale_pid": {
+      "pid_file_exists_after": false,
+      "runtime_status": {
+        "feedback_stability_index": null,
+        "pid": 99999999,
+        "pid_file": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-inaq5cr4/recovery/stale_pid/stale.pid",
+        "rolling_trust_index": null,
+        "running": false
+      },
+      "status": "passed"
+    },
+    "ui_restart": {
+      "starts": [
+        "ok",
+        "ok"
+      ],
+      "status": "passed"
+    }
+  },
+  "status": "PASS"
+}

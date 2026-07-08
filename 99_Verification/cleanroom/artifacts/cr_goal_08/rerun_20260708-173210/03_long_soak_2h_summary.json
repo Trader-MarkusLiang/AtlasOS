@@ -1,0 +1,40 @@
+{
+  "artifact_dir": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_08/rerun_20260708-173210",
+  "classification": "REAL_DURATION_2H_PROVEN",
+  "daily_cycle_phases": {
+    "overnight": 205,
+    "post_market": 516
+  },
+  "db_counts": {
+    "attention_history": 0,
+    "decision_briefs": 721,
+    "events": 1486,
+    "forecast_ledger": 721,
+    "kv_state": 15,
+    "state_transitions": 721,
+    "system_logs": 2163
+  },
+  "db_size_bytes": 12099584,
+  "elapsed_seconds": 16533.5355,
+  "hypothesis_switches": 0,
+  "market_failure_ticks": 0,
+  "max_cpu_pct": 15.4,
+  "max_rss_kb": 33312,
+  "no_trading_execution": true,
+  "pending_queue_depth": 0,
+  "provider_failures": 721,
+  "raw_logs_committed": false,
+  "returncode": 0,
+  "runtime_log_lines": 721,
+  "status": "PASS",
+  "target_cycles": 721,
+  "tick_errors": 0,
+  "trust_drift": {
+    "available": true,
+    "delta": 0.0023,
+    "first": 0.705,
+    "last": 0.7073,
+    "max": 0.7236,
+    "min": 0.5226
+  }
+}

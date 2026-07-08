@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-08_1715_cleanroom-validation-plan.md`
 - `docs/codex-sessions/completed/2026-07-08_1526_cleanroom-verification.md`
 - `docs/codex-sessions/completed/2026-07-08_1024_execute-master-goal-program.md`
 - `docs/codex-sessions/completed/2026-07-08_0955_goal-orchestration-plan.md`

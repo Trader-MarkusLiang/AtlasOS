@@ -1,0 +1,21 @@
+{
+  "artifact_dir": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_08/rerun_20260708-173210",
+  "branch": "",
+  "clone_path": "/tmp/atlas-cleanroom-cr08-rerun-20260708-173210",
+  "commit": "08574039784047357a82da3d4b5475d03f790576",
+  "env_names": [
+    "ATLAS_USER_CONFIG",
+    "ATLAS_RUNTIME_DB",
+    "ATLAS_RUNTIME_LOG",
+    "ATLAS_LLM_PROVIDER_TIMEOUT_SECONDS",
+    "ATLAS_MARKET_PROVIDER_TIMEOUT_SECONDS",
+    "ATLAS_DISABLE_KEYCHAIN"
+  ],
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "prior_browser_artifacts_reused": false,
+  "prior_runtime_state_reused": false,
+  "prior_telemetry_reused": false,
+  "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "state_path": "/tmp/atlas-cleanroom-state-cr08-rerun-20260708-173210",
+  "timestamp": "20260708-173210"
+}

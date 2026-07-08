@@ -1,0 +1,76 @@
+{
+  "checks": {
+    "all_goals_completed": true,
+    "cr08_real_duration_2h_met": true,
+    "cr08_real_runtime_proven": true,
+    "merge_readiness_classified": true,
+    "no_partial_failed_blocked_goals": true,
+    "no_trading_execution": true,
+    "required_reports_exist": true,
+    "secret_scan_clean": true,
+    "status_complete": true,
+    "tribunal_complete": true
+  },
+  "cr08_soak_summary": {
+    "artifact_dir": "/Users/markus/AtlasOS/99_Verification/cleanroom/artifacts/cr_goal_08/rerun_20260708-173210",
+    "classification": "REAL_DURATION_2H_PROVEN",
+    "daily_cycle_phases": {
+      "overnight": 205,
+      "post_market": 516
+    },
+    "db_counts": {
+      "attention_history": 0,
+      "decision_briefs": 721,
+      "events": 1486,
+      "forecast_ledger": 721,
+      "kv_state": 15,
+      "state_transitions": 721,
+      "system_logs": 2163
+    },
+    "db_size_bytes": 12099584,
+    "elapsed_seconds": 16533.5355,
+    "hypothesis_switches": 0,
+    "market_failure_ticks": 0,
+    "max_cpu_pct": 15.4,
+    "max_rss_kb": 33312,
+    "no_trading_execution": true,
+    "pending_queue_depth": 0,
+    "provider_failures": 721,
+    "raw_logs_committed": false,
+    "returncode": 0,
+    "runtime_log_lines": 721,
+    "status": "PASS",
+    "target_cycles": 721,
+    "tick_errors": 0,
+    "trust_drift": {
+      "available": true,
+      "delta": 0.0023,
+      "first": 0.705,
+      "last": 0.7073,
+      "max": 0.7236,
+      "min": 0.5226
+    }
+  },
+  "final_maturity": "PRODUCTION_TRIAL_CANDIDATE",
+  "release_candidate": false,
+  "remaining_limitations": [
+    "market_coverage_partial",
+    "bilingual_parity_partial",
+    "security_audit_partial",
+    "twenty_four_hour_stability_not_proven"
+  ],
+  "required_goals": [
+    "CR_GOAL_00_FRESH_CLONE_BASELINE",
+    "CR_GOAL_01_BOOTSTRAP_FROM_ZERO",
+    "CR_GOAL_02_FIRST_TIME_USER_BLACKBOX",
+    "CR_GOAL_03_LIVE_LLM_BLACKBOX",
+    "CR_GOAL_04_LIVE_MARKET_BLACKBOX",
+    "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
+    "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
+    "CR_GOAL_07_SELF_ITERATION_BLACKBOX",
+    "CR_GOAL_08_RECOVERY_AND_SOAK",
+    "CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE"
+  ],
+  "status": "PASS",
+  "timestamp": "2026-07-08T22:10:45+08:00"
+}

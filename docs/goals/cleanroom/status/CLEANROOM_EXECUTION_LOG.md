@@ -66,6 +66,78 @@ CR_GOAL_01_BOOTSTRAP_FROM_ZERO
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, runtime cognition,
 trading execution, broker integration, or portfolio holdings were modified.
 
+## 2026-07-08 - CR_GOAL_08 Recovery and Soak Rerun Completed
+
+### Summary
+
+Closed the prior CR08 `ACCELERATED_ONLY` gap with a fresh-clone rerun after bounding provider
+outage latency.
+
+### Repair
+
+Committed `0857403 cleanroom: bound provider outage latency`.
+
+The repair added runtime resilience only:
+
+- configurable LLM provider call timeouts;
+- configurable market provider attempt timeouts;
+- subprocess isolation for market providers that can hang in third-party code.
+
+### Evidence
+
+- Fresh clone: `/tmp/atlas-cleanroom-cr08-rerun-20260708-173210`
+- Fresh runtime state: `/tmp/atlas-cleanroom-state-cr08-rerun-20260708-173210`
+- Artifact directory:
+  `99_Verification/cleanroom/artifacts/cr_goal_08/rerun_20260708-173210/`
+- Report:
+  `99_Verification/cleanroom/CR_GOAL_08_Recovery_And_Soak_Report.md`
+
+### Result
+
+- Recovery and accelerated regression: PASS.
+- Accelerated cycles: 500.
+- Accelerated tick errors: 0.
+- Real-duration soak classification: `REAL_DURATION_2H_PROVEN`.
+- Real-duration elapsed seconds: `16533.5355`.
+- Runtime tick entries: 721.
+- Tick errors: 0.
+- Queue depth: 0.
+- DB rows: 721 decision briefs, 721 forecast ledger rows, 721 state transitions.
+- No trading execution: true.
+- Secret-shaped artifact scan: clean.
+
+### Classification
+
+CR_GOAL_08 classification: `PROVEN_COMPLETE`
+
+Evidence level: `REAL_RUNTIME_PROVEN`
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution,
+broker integration, portfolio mutation, prediction behavior, or private holdings were modified.
+
+## 2026-07-08 - CR_GOAL_09 Final Tribunal Updated
+
+### Summary
+
+Updated the final tribunal from the fresh CR08 rerun evidence.
+
+### Classification
+
+Final maturity: `PRODUCTION_TRIAL_CANDIDATE`
+
+Merge readiness: `TRIAL_MERGE_READY_WITH_LIMITATIONS`
+
+Release Candidate: false
+
+### Remaining Limits
+
+- 24-hour unattended stability is not proven.
+- Full market coverage is not proven.
+- Bilingual parity remains partial.
+- Security review remains partial.
+
 ## 2026-07-08 - CR_GOAL_05 Portfolio Cognition Black-Box Completed
 
 ### Summary
@@ -255,7 +327,7 @@ CR_GOAL_08_RECOVERY_AND_SOAK
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
 integration, portfolio mutation, prediction behavior, or private holdings were modified.
 
-## 2026-07-08 - CR_GOAL_08 Recovery and Soak Partially Completed
+## 2026-07-08 - CR_GOAL_08 Recovery and Soak Partially Completed (Superseded)
 
 ### Summary
 
@@ -315,9 +387,12 @@ long external timeout run.
 
 ### Classification
 
-CR_GOAL_08 classification: `PROVEN_PARTIAL`
+CR_GOAL_08 classification at that time: `PROVEN_PARTIAL`
 
-Evidence level: `ACCELERATED_ONLY`
+Evidence level at that time: `ACCELERATED_ONLY`
+
+This entry is superseded by the later CR08 rerun entry that repaired provider outage latency and
+proved a 721-cycle real-duration clean-room soak.
 
 ### Transition
 
@@ -332,7 +407,7 @@ CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
 integration, portfolio mutation, prediction behavior, or private holdings were modified.
 
-## 2026-07-08 - CR_GOAL_09 Final Tribunal Completed
+## 2026-07-08 - CR_GOAL_09 Final Tribunal Completed (Superseded)
 
 ### Summary
 
@@ -346,13 +421,13 @@ Built the final independent tribunal from CR_GOAL_00 through CR_GOAL_08 fresh cl
 
 ### Final Classification
 
-Final maturity:
+Final maturity at that time:
 
 ```text
 CONDITIONAL_PRODUCTION_TRIAL_CANDIDATE
 ```
 
-Merge readiness:
+Merge readiness at that time:
 
 ```text
 CONDITIONAL_TRIAL_MERGE_READY
@@ -366,10 +441,8 @@ false
 
 ### Core Reason
 
-Fresh clean-room evidence proves live/runtime behavior for first-user flow, live LLM, live market
-path, portfolio cognition, forecast accountability, and self-iteration. CR08 remains partial:
-accelerated recovery and 505-cycle no-market soak were proven, but the 2-hour clean-room
-real-duration soak was not run and market-provider failure can slow ticks materially.
+This tribunal entry is superseded by the later CR08 rerun and updated final tribunal. The final
+current maturity is `PRODUCTION_TRIAL_CANDIDATE`, while Release Candidate remains false.
 
 ### Boundary
 
