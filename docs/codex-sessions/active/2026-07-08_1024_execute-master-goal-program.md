@@ -211,7 +211,8 @@ v0.8.
   - reconciled GOAL 07 report, GOAL 07 evidence, master evidence, GOAL 08 evidence, status
     registry, execution log, README, VERSION, CHANGELOG, and roadmap truth so they state:
     2-hour real-duration daemon stability is proven, 24-hour unattended stability is not proven;
-  - advanced `GOAL_STATUS.json` current cursor to `GOAL_08_RELEASE_READINESS`.
+  - advanced `GOAL_STATUS.json` current cursor to `GOAL_08_RELEASE_READINESS`;
+  - committed GOAL 07 two-hour proof as `951e0f6908f234f1b847526217660231c226d7da`.
 
 ## Files Changed
 
@@ -307,8 +308,8 @@ v0.8.
 - GOAL 07 has target-level partial proof for scheduled cycles, 500-cycle accelerated stability,
   short real-duration sleep, and recovery. It remains active until longer wall-clock stability is
   proven or explicitly accepted as a release blocker.
-- GOAL 07 now has two-hour real-duration daemon proof and is ready to be committed as
-  `PROVEN_COMPLETE`; the execution cursor is `GOAL_08_RELEASE_READINESS`.
+- GOAL 07 now has two-hour real-duration daemon proof and is committed as `PROVEN_COMPLETE`; the
+  execution cursor is `GOAL_08_RELEASE_READINESS`.
 - A temporary UI server process is still visible on port `8876`; stop or reuse it intentionally
   before further browser tests.
 

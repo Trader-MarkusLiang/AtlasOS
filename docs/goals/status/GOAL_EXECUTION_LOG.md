@@ -750,6 +750,12 @@ Evidence level: `REAL_RUNTIME_PROVEN`
 
 `GOAL_STATUS.json` now records `current_goal: GOAL_08_RELEASE_READINESS`.
 
+Commit recorded:
+
+```text
+951e0f6908f234f1b847526217660231c226d7da goal-07: prove two-hour autonomous operations
+```
+
 ### Boundary
 
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading, broker,
