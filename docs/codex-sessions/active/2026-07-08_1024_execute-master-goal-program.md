@@ -184,6 +184,7 @@ v0.8.
     `99_Verification/artifacts/goal_06_self_iteration_reality/treatment_control_result.json`;
   - updated GOAL 06 evidence, master evidence, status registry, and execution log;
   - `GOAL_STATUS.json` now records `current_goal: GOAL_07_AUTONOMOUS_OPERATIONS`.
+  - committed GOAL 06 completion as `d5e3fb3b67f282514e802fb2201d804d05968c68`.
 
 ## Files Changed
 
