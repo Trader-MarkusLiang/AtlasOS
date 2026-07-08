@@ -93,6 +93,20 @@ def _positions_from_assets(assets: Mapping[str, Any]) -> list[dict[str, Any]]:
                 "user_thesis": "",
                 "risk_note": "",
             }
+        existing = by_asset.get(record["asset"])
+        if existing:
+            if not float(existing.get("portfolio_percentage", 0.0) or 0.0) and record["portfolio_percentage"]:
+                existing["portfolio_percentage"] = record["portfolio_percentage"]
+            for key, default in (
+                ("market", "US"),
+                ("theme", "Unspecified"),
+                ("role", "Unspecified"),
+                ("user_thesis", ""),
+                ("risk_note", ""),
+            ):
+                if existing.get(key) == default and record.get(key) != default:
+                    existing[key] = record[key]
+            continue
         by_asset[record["asset"]] = record
     return list(by_asset.values())
 
