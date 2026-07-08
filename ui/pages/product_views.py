@@ -906,6 +906,20 @@ def _metric(label: str, value: str, note: str) -> str:
     return f'<article class="metric-card"><span>{escape(label)}</span><strong>{escape(value)}</strong><p>{escape(note)}</p></article>'
 
 
+def _viz_shell(viz_id: str, question_key: str, inner_html: str) -> str:
+    lang = current_language()
+    question = t(question_key, lang)
+    return (
+        f'<div class="viz-frame" data-viz-id="{escape(viz_id)}" '
+        f'data-viz-question="{escape(question)}" tabindex="0" role="button" '
+        f'aria-pressed="false" aria-label="{escape(question)}">'
+        f'<div class="viz-question">{escape(question)}</div>'
+        f'{inner_html}'
+        f'<div class="viz-feedback" data-viz-feedback>{escape(t("viz.inspect_hint", lang))}</div>'
+        f'</div>'
+    )
+
+
 def _list_items(items: Iterable[str]) -> str:
     return "".join(f"<li>{escape(str(item))}</li>" for item in items)
 
@@ -935,11 +949,12 @@ def _portfolio_bubbles(positions: list[Any], compact: bool = False) -> str:
         color = ["#dbeafe", "#9ee6b8", "#f6d77a", "#9fd3ff", "#f4a5b3"][index % 5]
         label = escape(str(item.get("asset") or "Asset")[:10])
         circles.append(f'<g tabindex="0"><circle cx="{x}" cy="{y}" r="{radius}" fill="{color}" fill-opacity="0.26" stroke="{color}"/><text x="{x}" y="{y}" text-anchor="middle" fill="#f4f7fb" font-size="13">{label}</text><text x="{x}" y="{y+18}" text-anchor="middle" fill="#9aa5b5" font-size="11">{weight:.1f}%</text></g>')
-    return f'<svg class="atlas-viz" viewBox="0 0 {width} {height}" role="img" aria-label="Portfolio exposure map">{"".join(circles)}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 {width} {height}" role="img" aria-label="Portfolio exposure map">{"".join(circles)}</svg>'
+    return _viz_shell("portfolio_exposure", "viz.portfolio_exposure", svg)
 
 
 def _empty_portfolio_svg() -> str:
-    return """
+    svg = """
     <svg class="atlas-viz" viewBox="0 0 520 210" role="img" aria-label="Portfolio exposure map waiting for assets">
       <circle cx="140" cy="105" r="56" fill="#dbeafe" fill-opacity=".12" stroke="#dbeafe" stroke-dasharray="6 6"/>
       <circle cx="260" cy="105" r="42" fill="#9ee6b8" fill-opacity=".1" stroke="#9ee6b8" stroke-dasharray="6 6"/>
@@ -947,23 +962,24 @@ def _empty_portfolio_svg() -> str:
       <text x="260" y="186" text-anchor="middle" fill="#9aa5b5" font-size="13">Add your first asset to see portfolio impact.</text>
     </svg>
     """
+    return _viz_shell("portfolio_exposure", "viz.portfolio_exposure", svg)
 
 
-def _theme_bars(values: Any) -> str:
+def _theme_bars(values: Any, viz_id: str = "theme_concentration", question_key: str = "viz.theme_concentration") -> str:
     data = values if isinstance(values, Mapping) else {}
     if not data:
-        return '<div class="empty-state">Add assets with themes to see concentration.</div>'
+        return _viz_shell(viz_id, question_key, '<div class="empty-state">Add assets with themes to see concentration.</div>')
     bars = []
     for index, (label, value) in enumerate(list(data.items())[:6]):
         pct = max(0, min(100, _num(value, 0)))
         bars.append(f'<div class="metric-card"><span>{escape(str(label))}</span><strong>{pct:.1f}%</strong><div style="height:8px;border-radius:999px;background:rgba(255,255,255,.08);margin-top:10px;"><i style="display:block;width:{pct}%;height:100%;border-radius:999px;background:#dbeafe;"></i></div></div>')
-    return "".join(bars)
+    return _viz_shell(viz_id, question_key, "".join(bars))
 
 
 def _risk_cluster_graph(clusters: Any) -> str:
     data = clusters if isinstance(clusters, list) else []
     if not data:
-        return '<div class="empty-state">No correlated risk cluster yet.</div>'
+        return _viz_shell("risk_cluster_graph", "viz.risk_cluster", '<div class="empty-state">No correlated risk cluster yet.</div>')
     nodes = []
     edges = []
     for index, item in enumerate(data[:5]):
@@ -975,7 +991,8 @@ def _risk_cluster_graph(clusters: Any) -> str:
         nodes.append(f'<circle cx="{x}" cy="{y}" r="{26 + _num(item.get("exposure_pct"), 0) / 4}" fill="{color}" fill-opacity=".18" stroke="{color}"/><text x="{x}" y="{y+4}" text-anchor="middle" fill="#f4f7fb" font-size="11">{escape(str(item.get("cluster"))[:10])}</text>')
         if index:
             edges.append(f'<line x1="{x-92}" y1="{90 + (28 if (index-1) % 2 else -18)}" x2="{x}" y2="{y}" stroke="rgba(255,255,255,.18)"/>')
-    return f'<svg class="atlas-viz" viewBox="0 0 540 180" role="img" aria-label="Risk cluster graph">{"".join(edges)}{"".join(nodes)}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 540 180" role="img" aria-label="Risk cluster graph">{"".join(edges)}{"".join(nodes)}</svg>'
+    return _viz_shell("risk_cluster_graph", "viz.risk_cluster", svg)
 
 
 def _regime_trajectory(state: Mapping[str, Any]) -> str:
@@ -990,7 +1007,8 @@ def _regime_trajectory(state: Mapping[str, Any]) -> str:
         points = [(30, 130), (110, 112), (190, 120), (270, 88), (350, 96), (430, 68)]
     path = " ".join(("M" if i == 0 else "L") + f"{x},{y}" for i, (x, y) in enumerate(points))
     dots = "".join(f'<circle cx="{x}" cy="{y}" r="5" fill="#dbeafe"/>' for x, y in points)
-    return f'<svg class="atlas-viz" viewBox="0 0 500 170" role="img" aria-label="Market regime trajectory"><path d="{path}" fill="none" stroke="#dbeafe" stroke-width="3"/>{dots}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 500 170" role="img" aria-label="Market regime trajectory"><path d="{path}" fill="none" stroke="#dbeafe" stroke-width="3"/>{dots}</svg>'
+    return _viz_shell("market_regime_trajectory", "viz.regime_trajectory", svg)
 
 
 def _attention_liquidity_phase(state: Mapping[str, Any]) -> str:
@@ -1006,7 +1024,8 @@ def _attention_liquidity_phase(state: Mapping[str, Any]) -> str:
         points = [(60, 132), (120, 118), (190, 98), (250, 118), (340, 76), (420, 60)]
     path = " ".join(("M" if i == 0 else "Q" if i == 2 else "L") + f"{x},{y}" for i, (x, y) in enumerate(points))
     dots = "".join(f'<circle cx="{x}" cy="{y}" r="5" fill="#9ee6b8"/>' for x, y in points)
-    return f'<svg class="atlas-viz" viewBox="0 0 500 180" role="img" aria-label="Attention liquidity phase space"><line x1="35" y1="150" x2="465" y2="150" stroke="rgba(255,255,255,.18)"/><line x1="35" y1="25" x2="35" y2="150" stroke="rgba(255,255,255,.18)"/><path d="{path}" fill="none" stroke="#9ee6b8" stroke-width="3"/>{dots}<text x="360" y="170" fill="#9aa5b5" font-size="12">attention</text><text x="8" y="35" fill="#9aa5b5" font-size="12">liquidity</text></svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 500 180" role="img" aria-label="Attention liquidity phase space"><line x1="35" y1="150" x2="465" y2="150" stroke="rgba(255,255,255,.18)"/><line x1="35" y1="25" x2="35" y2="150" stroke="rgba(255,255,255,.18)"/><path d="{path}" fill="none" stroke="#9ee6b8" stroke-width="3"/>{dots}<text x="360" y="170" fill="#9aa5b5" font-size="12">attention</text><text x="8" y="35" fill="#9aa5b5" font-size="12">liquidity</text></svg>'
+    return _viz_shell("attention_liquidity", "viz.attention_liquidity", svg)
 
 
 def _theme_landscape(state: Mapping[str, Any]) -> str:
@@ -1015,14 +1034,14 @@ def _theme_landscape(state: Mapping[str, Any]) -> str:
     themes = exposure.get("theme_concentration") if isinstance(exposure.get("theme_concentration"), Mapping) else {}
     if not themes:
         themes = {"early discovery": 18, "crowded": 36, "fading": 14, "accelerating": 28}
-    return _theme_bars(themes)
+    return _theme_bars(themes, "theme_landscape", "viz.theme_concentration")
 
 
 def _freshness_map(market: Mapping[str, Any]) -> str:
     channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
     if not channels:
-        return '<div class="empty-state">Live market data is unavailable. Atlas is running in degraded mode.</div>'
-    return '<div class="pill-row">' + _channel_pills(channels) + "</div>"
+        return _viz_shell("data_freshness_map", "viz.data_freshness", '<div class="empty-state">Live market data is unavailable. Atlas is running in degraded mode.</div>')
+    return _viz_shell("data_freshness_map", "viz.data_freshness", '<div class="pill-row">' + _channel_pills(channels) + "</div>")
 
 
 def _channel_pills(channels: Mapping[str, Any]) -> str:
@@ -1038,13 +1057,14 @@ def _trust_trend(state: Mapping[str, Any]) -> str:
     latest = _num(state.get("trust_index"), 0.45)
     points = [(30, 130), (105, 118), (180, 124), (255, 92), (330, 102), (430, 145 - latest * 110)]
     path = " ".join(("M" if i == 0 else "L") + f"{x},{y}" for i, (x, y) in enumerate(points))
-    return f'<svg class="atlas-viz" viewBox="0 0 500 170" role="img" aria-label="Trust trend"><path d="{path}" fill="none" stroke="#f6d77a" stroke-width="3"/><circle cx="{points[-1][0]}" cy="{points[-1][1]}" r="7" fill="#f6d77a"/><text x="30" y="156" fill="#9aa5b5" font-size="12">trust</text></svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 500 170" role="img" aria-label="Trust trend"><path d="{path}" fill="none" stroke="#f6d77a" stroke-width="3"/><circle cx="{points[-1][0]}" cy="{points[-1][1]}" r="7" fill="#f6d77a"/><text x="30" y="156" fill="#9aa5b5" font-size="12">trust</text></svg>'
+    return _viz_shell("trust_evolution", "viz.trust_evolution", svg)
 
 
 def _calibration_chart(forecasts: list[Any]) -> str:
     evaluated = [f for f in forecasts if isinstance(f, Mapping) and f.get("status") in {"VERIFIED", "INVALIDATED", "INCONCLUSIVE"}]
     if len(evaluated) < 3:
-        return '<div class="empty-state">Atlas has not recorded enough prediction outcomes yet.</div>'
+        return _viz_shell("prediction_calibration", "viz.prediction_calibration", '<div class="empty-state">Atlas has not recorded enough prediction outcomes yet.</div>')
     dots = []
     for item in evaluated[:20]:
         conf = _num(item.get("confidence"), 0.5)
@@ -1053,20 +1073,22 @@ def _calibration_chart(forecasts: list[Any]) -> str:
         y = 150 - (1 - err) * 120
         color = "#9ee6b8" if item.get("status") == "VERIFIED" else "#f4a5b3"
         dots.append(f'<circle cx="{x}" cy="{y}" r="6" fill="{color}" fill-opacity=".85"/>')
-    return f'<svg class="atlas-viz" viewBox="0 0 500 180" role="img" aria-label="Prediction calibration chart"><line x1="45" y1="150" x2="455" y2="30" stroke="rgba(255,255,255,.18)" stroke-dasharray="5 5"/>{dots}<text x="330" y="170" fill="#9aa5b5" font-size="12">confidence</text></svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 500 180" role="img" aria-label="Prediction calibration chart"><line x1="45" y1="150" x2="455" y2="30" stroke="rgba(255,255,255,.18)" stroke-dasharray="5 5"/>{dots}<text x="330" y="170" fill="#9aa5b5" font-size="12">confidence</text></svg>'
+    return _viz_shell("prediction_calibration", "viz.prediction_calibration", svg)
 
 
 def _forecast_timeline(forecasts: list[Any]) -> str:
     valid = [f for f in forecasts if isinstance(f, Mapping)]
     if not valid:
-        return '<div class="empty-state">Atlas has not recorded enough predictions yet.</div>'
+        return _viz_shell("forecast_timeline", "viz.forecast_timeline", '<div class="empty-state">Atlas has not recorded enough predictions yet.</div>')
     nodes = []
     for index, item in enumerate(valid[:8]):
         x = 45 + index * 56
         status = str(item.get("status") or "OPEN")
         color = {"OPEN": "#dbeafe", "MATURED": "#f6d77a", "VERIFIED": "#9ee6b8", "INVALIDATED": "#f4a5b3"}.get(status, "#9fd3ff")
         nodes.append(f'<g><circle cx="{x}" cy="82" r="16" fill="{color}" fill-opacity=".25" stroke="{color}"/><text x="{x}" y="124" text-anchor="middle" fill="#9aa5b5" font-size="10">{escape(status[:8])}</text></g>')
-    return f'<svg class="atlas-viz" viewBox="0 0 520 150" role="img" aria-label="Forecast timeline"><line x1="45" y1="82" x2="455" y2="82" stroke="rgba(255,255,255,.16)"/>{"".join(nodes)}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 520 150" role="img" aria-label="Forecast timeline"><line x1="45" y1="82" x2="455" y2="82" stroke="rgba(255,255,255,.16)"/>{"".join(nodes)}</svg>'
+    return _viz_shell("forecast_timeline", "viz.forecast_timeline", svg)
 
 
 def _forecast_rows(forecasts: list[Any], *, empty: str) -> str:
@@ -1085,7 +1107,8 @@ def _hypothesis_competition(state: Mapping[str, Any]) -> str:
     bars = []
     for index, value in enumerate(values):
         bars.append(f'<rect x="50" y="{30 + index*34}" width="{value*8}" height="18" rx="8" fill="#dbeafe" fill-opacity="{0.7 - index*0.12}"/><text x="50" y="{24 + index*34}" fill="#9aa5b5" font-size="11">{labels[index]}</text>')
-    return f'<svg class="atlas-viz" viewBox="0 0 500 180" role="img" aria-label="Hypothesis competition">{"".join(bars)}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 500 180" role="img" aria-label="Hypothesis competition">{"".join(bars)}</svg>'
+    return _viz_shell("hypothesis_competition", "viz.hypothesis_competition", svg)
 
 
 def _learning_flow(items: list[Any], lang: str) -> str:
@@ -1098,7 +1121,8 @@ def _learning_flow(items: list[Any], lang: str) -> str:
         cards.append(f'<g tabindex="0"><rect x="{x}" y="45" width="76" height="70" rx="14" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)"/><text x="{x+38}" y="84" text-anchor="middle" fill="#f4f7fb" font-size="12">{escape(label)}</text></g>')
         if index < len(labels) - 1:
             cards.append(f'<line x1="{x+78}" y1="80" x2="{x+92}" y2="80" stroke="#dbeafe"/>')
-    return f'<svg class="atlas-viz" viewBox="0 0 520 155" role="img" aria-label="Learning evolution flow">{"".join(cards)}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 520 155" role="img" aria-label="Learning evolution flow">{"".join(cards)}</svg>'
+    return _viz_shell("learning_evolution_flow", "viz.learning_flow", svg)
 
 
 def _workflow_svg(active: str) -> str:
@@ -1132,10 +1156,11 @@ def _workflow_svg(active: str) -> str:
         cls = "active" if index <= active_index else ""
         fill = "#dbeafe" if index <= active_index else "rgba(255,255,255,.05)"
         text = "#0b0f14" if index <= active_index else "#cbd5e1"
-        parts.append(f'<g data-workflow-node="{key}" data-label="{escape(label)}" data-description="{escape(desc)}" style="cursor:pointer"><rect x="{x}" y="{y}" width="70" height="48" rx="12" fill="{fill}" fill-opacity="{1 if index <= active_index else .7}" stroke="rgba(255,255,255,.16)"/><text x="{x+35}" y="{y+28}" text-anchor="middle" fill="{text}" font-size="9">{escape(label[:14])}</text></g>')
+        parts.append(f'<g data-workflow-node="{key}" data-label="{escape(label)}" data-description="{escape(desc)}" tabindex="0" role="button" style="cursor:pointer"><rect x="{x}" y="{y}" width="70" height="48" rx="12" fill="{fill}" fill-opacity="{1 if index <= active_index else .7}" stroke="rgba(255,255,255,.16)"/><text x="{x+35}" y="{y+28}" text-anchor="middle" fill="{text}" font-size="9">{escape(label[:14])}</text></g>')
         if index < len(nodes) - 1 and col < 5:
             parts.append(f'<line x1="{x+70}" y1="{y+24}" x2="{x+82}" y2="{y+24}" stroke="rgba(219,234,254,.35)"/>')
-    return f'<svg class="atlas-viz" viewBox="0 0 540 280" role="img" aria-label="Global system workflow">{"".join(parts)}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 540 280" role="img" aria-label="Global system workflow">{"".join(parts)}</svg>'
+    return _viz_shell("workflow_graph", "viz.workflow_graph", svg)
 
 
 def _active_workflow(state: Mapping[str, Any]) -> str:
@@ -1164,7 +1189,8 @@ def _roadmap_swimlanes(tracks: list[Any], layers: list[Any]) -> str:
         label = str(track.get("track") or "Track")
         status = str(track.get("status") or track.get("current_focus") or "partial")
         lane_parts.append(f'<text x="20" y="{y+6}" fill="#cbd5e1" font-size="12">{escape(label[:18])}</text><line x1="150" y1="{y}" x2="480" y2="{y}" stroke="rgba(255,255,255,.16)"/><circle cx="{240 + row*42}" cy="{y}" r="12" fill="#dbeafe" fill-opacity=".28" stroke="#dbeafe"/><text x="500" y="{y+5}" fill="#9aa5b5" font-size="11">{escape(status[:18])}</text>')
-    return f'<svg class="atlas-viz" viewBox="0 0 620 250" role="img" aria-label="Roadmap swimlanes">{"".join(lane_parts)}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 620 250" role="img" aria-label="Roadmap swimlanes">{"".join(lane_parts)}</svg>'
+    return _viz_shell("roadmap_swimlanes", "viz.roadmap_swimlanes", svg)
 
 
 def _roadmap_layer_rows(layers: list[Any]) -> str:
@@ -1181,7 +1207,8 @@ def _capability_evolution(layers: list[Any]) -> str:
     count = len([item for item in layers if isinstance(item, Mapping)])
     points = [(35 + i * 42, 145 - min(110, i * 9)) for i in range(max(3, min(count, 11)))]
     path = " ".join(("M" if i == 0 else "L") + f"{x},{y}" for i, (x, y) in enumerate(points))
-    return f'<svg class="atlas-viz" viewBox="0 0 520 170" role="img" aria-label="Capability evolution"><path d="{path}" fill="none" stroke="#9ee6b8" stroke-width="3"/><text x="35" y="160" fill="#9aa5b5" font-size="12">{count} layers</text></svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 520 170" role="img" aria-label="Capability evolution"><path d="{path}" fill="none" stroke="#9ee6b8" stroke-width="3"/><text x="35" y="160" fill="#9aa5b5" font-size="12">{count} layers</text></svg>'
+    return _viz_shell("capability_evolution", "viz.capability_evolution", svg)
 
 
 def _validation_history(layers: list[Any]) -> str:
@@ -1193,7 +1220,8 @@ def _validation_history(layers: list[Any]) -> str:
         status = str(validation.get("status") or item.get("status") or "partial")
         color = "#9ee6b8" if "PROVEN" in status.upper() or status in {"completed", "implemented"} else "#f6d77a"
         bars.append(f'<rect x="{45 + index*54}" y="60" width="28" height="70" rx="8" fill="{color}" fill-opacity=".45"/><text x="{59 + index*54}" y="145" text-anchor="middle" fill="#9aa5b5" font-size="9">{escape(str(item.get("version") or "")[:5])}</text>')
-    return f'<svg class="atlas-viz" viewBox="0 0 520 170" role="img" aria-label="Validation history">{"".join(bars)}</svg>'
+    svg = f'<svg class="atlas-viz" viewBox="0 0 520 170" role="img" aria-label="Validation history">{"".join(bars)}</svg>'
+    return _viz_shell("validation_history", "viz.validation_history", svg)
 
 
 def _provider_cards(providers: list[Any], active: str, lang: str) -> str:

@@ -1,79 +1,56 @@
 # Atlas OS Frontend Final Acceptance Report
 
-Date: 2026-07-08
+Date: 2026-07-09
+Branch: `codex/frontend-master-upgrade`
 
-## Acceptance Matrix
+## Verdict
 
-| Requirement | Result |
+FRONTEND_PRODUCTION_TRIAL_CANDIDATE
+
+## Hard Stop Conditions
+
+| Condition | Status |
 |---|---|
-| Frontend truth audit created first | PASS |
 | Unified App Shell exists | PASS |
-| Home no longer uses giant `NEUTRAL` hero | PASS |
-| Sidebar/navigation is consistent | PASS |
-| Runtime status globally visible | PASS |
-| Provider globally visible | PASS |
-| Data freshness globally visible | PASS |
-| Language toggle globally visible | PASS |
-| Setup requires no JSON in primary path | PASS |
+| Every primary page uses shell | PASS |
+| Home no longer centers giant NEUTRAL/action hero | PASS |
+| Home is decision-first | PASS |
 | Portfolio is visual-first | PASS |
 | Markets is visual-first | PASS |
-| Predictions exposes accountability visually | PASS |
-| Learning explains belief changes | PASS |
-| Workflow gives global system view | PASS |
-| Roadmap is discoverable and visual | PASS |
-| At least 8 meaningful visualizations exist | PASS |
-| Technical text density reduced on primary pages | PASS |
-| Raw JSON/dict/trace hidden by default | PASS |
-| zh/en parity works on primary pages | PASS |
-| Browser journey passes | PASS |
-| Responsive checks pass at 1440/1280/1024 | PASS |
-| Accessibility report exists | PASS |
-| No cognition/core backend modification | PASS |
+| Predictions is accountability-first | PASS |
+| Learning explains belief change | PASS |
+| Workflow gives global interactive understanding | PASS |
+| Roadmap is first-class and visual | PASS |
+| Settings and Setup are ordinary-user usable | PASS |
+| Global language toggle exists | PASS |
+| zh/en parity is proven | PASS |
+| At least 8 interactive visualizations pass | PASS: 13/13 |
+| Exact 24-step browser E2E passes | PASS |
+| Responsive tests pass | PASS |
+| Accessibility audit completes | PASS_WITH_TOOL_NOTE |
+| Stale UI server risk handled | PASS: 8765 restarted to latest PID |
+| Locally fixable P0/P1/P2 UX defects closed | PASS |
+| Remote branch pushed | PENDING UNTIL GIT PUSH STEP |
 
-## Files Implemented
+## Evidence Index
 
-- `ui/design/__init__.py`
-- `ui/design/tokens.py`
-- `ui/components/app_shell.py`
-- `ui/components/global_sidebar.py`
-- `ui/components/global_topbar.py`
-- `ui/components/runtime_status_indicator.py`
-- `ui/components/language_toggle.py`
-- `ui/components/context_inspector.py`
-- `ui/pages/product_views.py`
-- `ui/app_server.py`
-- `ui/i18n/i18n.py`
+- Baseline: `99_Verification/Atlas_OS_Frontend_Execution_Baseline.md`
+- Product audit: `99_Verification/artifacts/frontend_master/exact_product_audit.json`
+- Bilingual audit: `99_Verification/artifacts/frontend_master/exact_bilingual_audit.json`
+- Interactive matrix: `99_Verification/artifacts/frontend_master/exact_interactive_visualization_matrix.json`
+- Browser E2E: `99_Verification/artifacts/frontend_master/exact_24_step_e2e.json`
+- Responsive: `99_Verification/artifacts/frontend_master/exact_responsive_audit.json`
+- Accessibility: `99_Verification/artifacts/frontend_master/exact_accessibility_audit.json`
 
-## Evidence
+## Validation Commands
 
-- `99_Verification/Atlas_OS_Frontend_Master_Baseline.md`
-- `99_Verification/Atlas_OS_Frontend_Information_Architecture_Report.md`
-- `99_Verification/Atlas_OS_Frontend_Visual_System_Report.md`
-- `99_Verification/Atlas_OS_Frontend_Bilingual_Report.md`
-- `99_Verification/Atlas_OS_Frontend_Accessibility_Report.md`
-- `99_Verification/Atlas_OS_Frontend_Browser_E2E_Report.md`
-- `99_Verification/Atlas_OS_Frontend_Master_Current_Completion_Audit.md`
-- `99_Verification/artifacts/frontend_master/browser_visual_after_1440.json`
-- `99_Verification/artifacts/frontend_master/responsive_after_audit.json`
-- `99_Verification/artifacts/frontend_master/current_browser_product_audit.json`
-- `99_Verification/artifacts/frontend_master/current_responsive_audit.json`
-- `99_Verification/artifacts/frontend_master/current_browser_e2e_journey.json`
+- `python3 -m py_compile ui/pages/product_views.py ui/i18n/i18n.py ui/app_server.py ui/components/app_shell.py ui/components/global_sidebar.py ui/components/global_topbar.py ui/components/context_inspector.py ui/design/tokens.py`
+- `git diff --check`
+- HTTP route smoke against `http://127.0.0.1:8765`
+- Browser E2E against isolated `http://127.0.0.1:8777`
 
-## Current Closure Evidence
+## Remaining Product Risks
 
-Fresh browser validation after the final UX fixes produced:
-
-- 13 product routes checked with shared shell, sidebar, topbar, and no visible raw `None` / `null`
-  / `{}` / `[]` literals.
-- 27 responsive checks across 1440px, 1280px, and 1024px with no horizontal overflow.
-- Browser E2E user journey through Chinese setup, provider test failure visibility, 3-asset setup,
-  runtime start, page navigation, Ask Atlas queueing, and runtime stop.
-- Current product-audit SVG count: 16 total visualizations across primary routes; table count: 0.
-
-## Final Verdict
-
-`FRONTEND_MASTER_GOAL_LOCALLY_ACCEPTED`
-
-The frontend now behaves as a cohesive cognitive control center rather than a set of disconnected
-engineering pages. Remaining work is visual polish and deeper formal accessibility measurement, not
-a blocking P0/P1 product-architecture gap.
+1. Some primary product copy still mixes Atlas/provider product labels intentionally; future copy review can polish tone further.
+2. Browser automation Tab focus evidence is affected by tool behavior; manual keyboard QA remains useful before public release.
+3. Frontend is production-trial ready, but release maturity still depends on backend/live-data/LLM evidence outside this UI-only scope.

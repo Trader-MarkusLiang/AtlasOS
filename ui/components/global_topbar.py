@@ -23,6 +23,7 @@ PAGE_TITLES = {
     "settings": "page.settings",
     "setup": "page.setup",
     "system_guide": "page.system_guide",
+    "system_status": "page.system_status",
 }
 
 
@@ -43,6 +44,7 @@ def render_global_topbar(active: str, state: Mapping[str, Any], lang: str) -> st
         <span class="mini-pill">{escape(t("model.active_provider", lang))}: <strong data-provider-name>{escape(provider)}</strong></span>
         <span class="mini-pill">{escape(t("status.freshness", lang))}: <strong data-freshness>{escape(freshness)}</strong></span>
         <span class="mini-pill">{escape(t("state.tick", lang))}: <strong data-tick-counter>{escape(last_tick)}</strong></span>
+        <a class="mini-pill topbar-link" href="/settings">{escape(t("nav.settings", lang))}</a>
         {render_language_toggle(lang)}
       </div>
     </header>

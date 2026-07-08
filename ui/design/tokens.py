@@ -153,6 +153,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--subtle);
   font-size: 0.78rem;
 }
+.topbar-link:hover { border-color: var(--line-strong); background: var(--surface-strong); }
 .status-dot {
   width: 8px;
   height: 8px;
@@ -294,6 +295,37 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   min-height: 160px;
   display: block;
 }
+.viz-frame {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r12);
+  background: rgba(255,255,255,0.025);
+  transition: border-color var(--fast), background var(--fast), transform var(--fast);
+}
+.viz-frame:hover, .viz-frame:focus-visible, .viz-frame.viz-selected {
+  border-color: rgba(219, 234, 254, 0.45);
+  background: rgba(219, 234, 254, 0.055);
+}
+.viz-frame:focus-visible {
+  outline: 2px solid rgba(219, 234, 254, 0.8);
+  outline-offset: 2px;
+}
+.viz-question {
+  color: var(--subtle);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.viz-feedback {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.viz-selected .viz-feedback { color: var(--accent); }
 .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .tag, .signal-pill {
   display: inline-flex;
@@ -419,6 +451,14 @@ textarea { resize: vertical; min-height: 96px; }
   33% { content: "."; }
   66% { content: ".."; }
   100% { content: "..."; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 @media (max-width: 1180px) {
   .workspace { grid-template-columns: 1fr; }

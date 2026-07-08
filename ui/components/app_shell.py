@@ -123,6 +123,40 @@ SHELL_JS = """
       window.location.reload();
     });
   }
+  function activateViz(target) {
+    if (!target) return;
+    document.querySelectorAll("[data-viz-id]").forEach(function (node) {
+      node.classList.remove("viz-selected");
+      node.setAttribute("aria-pressed", "false");
+    });
+    target.classList.add("viz-selected");
+    target.setAttribute("aria-pressed", "true");
+    document.body.dataset.selectedViz = target.dataset.vizId || "";
+    const question = target.dataset.vizQuestion || target.getAttribute("aria-label") || "Visualization";
+    const feedback = target.querySelector("[data-viz-feedback]");
+    if (feedback) feedback.textContent = question;
+    const inspector = document.querySelector("[data-viz-global-feedback]");
+    if (inspector) inspector.textContent = question;
+  }
+  document.addEventListener("click", function (event) {
+    const target = event.target.closest && event.target.closest("[data-viz-id]");
+    if (target) activateViz(target);
+  });
+  document.addEventListener("focusin", function (event) {
+    const target = event.target.closest && event.target.closest("[data-viz-id]");
+    if (target) activateViz(target);
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const target = event.target.closest && event.target.closest("[data-viz-id]");
+    if (!target) return;
+    event.preventDefault();
+    activateViz(target);
+    if (target.querySelector("[data-workflow-node]")) {
+      const first = target.querySelector("[data-workflow-node]");
+      if (first && first.dispatchEvent) first.dispatchEvent(new Event("click", { bubbles: true }));
+    }
+  });
   setInterval(refreshTopbar, 2000);
 })();
 """

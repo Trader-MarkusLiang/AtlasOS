@@ -1,0 +1,231 @@
+{
+  "target": "http://127.0.0.1:8777",
+  "generated_at": "2026-07-08T23:32:02.431Z",
+  "total": 13,
+  "passed_count": 13,
+  "required_minimum": 8,
+  "passed": true,
+  "results": [
+    {
+      "route": "/portfolio",
+      "id": "portfolio_exposure",
+      "name": "Portfolio exposure map",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "portfolio_exposure",
+        "global_feedback": "我集中在哪里？",
+        "local_feedback": "我集中在哪里？",
+        "question": "我集中在哪里？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/portfolio",
+      "id": "theme_concentration",
+      "name": "Theme concentration",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "theme_concentration",
+        "global_feedback": "哪些主题主导了我的暴露？",
+        "local_feedback": "哪些主题主导了我的暴露？",
+        "question": "哪些主题主导了我的暴露？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/portfolio",
+      "id": "risk_cluster_graph",
+      "name": "Risk cluster graph",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "risk_cluster_graph",
+        "global_feedback": "哪些风险在资产之间重叠？",
+        "local_feedback": "哪些风险在资产之间重叠？",
+        "question": "哪些风险在资产之间重叠？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/markets",
+      "id": "market_regime_trajectory",
+      "name": "Market regime trajectory",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "market_regime_trajectory",
+        "global_feedback": "市场正在形成什么转换？",
+        "local_feedback": "市场正在形成什么转换？",
+        "question": "市场正在形成什么转换？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/markets",
+      "id": "attention_liquidity",
+      "name": "Attention vs liquidity",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "attention_liquidity",
+        "global_feedback": "注意力与流动性如何相互作用？",
+        "local_feedback": "注意力与流动性如何相互作用？",
+        "question": "注意力与流动性如何相互作用？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/markets",
+      "id": "data_freshness_map",
+      "name": "Data freshness map",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "data_freshness_map",
+        "global_feedback": "哪些数据通道现在可靠？",
+        "local_feedback": "哪些数据通道现在可靠？",
+        "question": "哪些数据通道现在可靠？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/predictions",
+      "id": "prediction_calibration",
+      "name": "Prediction calibration",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "prediction_calibration",
+        "global_feedback": "Atlas 的置信度是否经过校准？",
+        "local_feedback": "Atlas 的置信度是否经过校准？",
+        "question": "Atlas 的置信度是否经过校准？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/predictions",
+      "id": "forecast_timeline",
+      "name": "Forecast timeline",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "forecast_timeline",
+        "global_feedback": "哪些预测仍然开放、成熟或已验证？",
+        "local_feedback": "哪些预测仍然开放、成熟或已验证？",
+        "question": "哪些预测仍然开放、成熟或已验证？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/learning",
+      "id": "trust_evolution",
+      "name": "Trust evolution",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "trust_evolution",
+        "global_feedback": "Atlas 的可靠性是在上升还是下降？",
+        "local_feedback": "Atlas 的可靠性是在上升还是下降？",
+        "question": "Atlas 的可靠性是在上升还是下降？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/learning",
+      "id": "hypothesis_competition",
+      "name": "Hypothesis competition",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "hypothesis_competition",
+        "global_feedback": "哪个因果解释正在领先？",
+        "local_feedback": "哪个因果解释正在领先？",
+        "question": "哪个因果解释正在领先？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/learning",
+      "id": "learning_evolution_flow",
+      "name": "Learning evolution flow",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "learning_evolution_flow",
+        "global_feedback": "Atlas 改变了什么想法？",
+        "local_feedback": "Atlas 改变了什么想法？",
+        "question": "Atlas 改变了什么想法？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/workflow",
+      "id": "workflow_graph",
+      "name": "Workflow graph",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "workflow_graph",
+        "global_feedback": "信息如何变成决策简报？",
+        "local_feedback": "信息如何变成决策简报？",
+        "question": "信息如何变成决策简报？",
+        "selected_class": true
+      }
+    },
+    {
+      "route": "/roadmap",
+      "id": "roadmap_swimlanes",
+      "name": "Roadmap swimlanes",
+      "count": 1,
+      "result": "PASS",
+      "error": "",
+      "interaction": "click",
+      "observed": {
+        "aria_pressed": "true",
+        "body_selected_viz": "roadmap_swimlanes",
+        "global_feedback": "Atlas 如何沿产品轨道演进？",
+        "local_feedback": "Atlas 如何沿产品轨道演进？",
+        "question": "Atlas 如何沿产品轨道演进？",
+        "selected_class": true
+      }
+    }
+  ]
+}

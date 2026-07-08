@@ -291,7 +291,7 @@ def create_app() -> Any:
     async def control() -> Any:
         panel = control_panel_state(db_path=_db_path(), pid_file=_pid_file())
         state = state_api()
-        return _product_shell("settings", control_content(panel), state)
+        return _product_shell("system_status", control_content(panel), state)
 
     @app.post("/control/start")
     async def control_start() -> Any:
@@ -2701,7 +2701,7 @@ class _StdlibHandler(BaseHTTPRequestHandler):
                 self._send_html(_product_shell("workflow", replay_content(data), state))
         elif parsed.path == "/control":
             state = state_api()
-            self._send_html(_product_shell("settings", control_content(control_panel_state(db_path=_db_path(), pid_file=_pid_file())), state))
+            self._send_html(_product_shell("system_status", control_content(control_panel_state(db_path=_db_path(), pid_file=_pid_file())), state))
         else:
             self.send_error(404)
 

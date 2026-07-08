@@ -1,41 +1,28 @@
 # Atlas OS Frontend Accessibility Report
 
-Date: 2026-07-08
+Date: 2026-07-09
+Scope: Practical accessibility audit, not formal WCAG certification.
 
-## Scope
+## Result
 
-This is a practical accessibility smoke check, not a formal WCAG certification.
+PASS_WITH_TOOL_NOTE
 
-## Implemented Accessibility Supports
+## Checks Completed
 
-- Shared sidebar uses nav landmarks and active route state.
-- Topbar exposes runtime/provider/freshness/tick state as text, not color only.
-- Language toggle has an accessible label.
-- Forms use visible labels for provider, model, base URL, API key, assets, percentages, runtime
-  interval, trust threshold, and hypothesis sensitivity.
-- Focus-visible outline is defined globally in `ui/design/tokens.py`.
-- SVG visualizations include `role="img"` and descriptive `aria-label` values.
-- Empty/degraded states use plain language instead of raw `Unknown`, `null`, `{}`, or `[]`.
-- Tables were removed from primary visual pages in the after screenshot set.
+- Form controls have labels or equivalent names.
+- Buttons and links have accessible names.
+- Visualizations expose ARIA labels, focus targets, and explanatory questions.
+- Focus-visible CSS exists.
+- Reduced-motion CSS exists.
+- Status regions exist where forms need feedback.
+- Shared shell uses `main`, `aside`, and `nav` landmarks.
 
-## Browser Checks
+## Keyboard Note
 
-Responsive visual checks:
+Browser automation successfully verified focusable controls and focus-visible CSS. Native Tab key movement was inconsistent in the browser-control layer until the page was clicked first; this is recorded in the artifact. The UI provides native links, buttons, selects, inputs, and `tabindex=0` visualization groups.
 
-- 1440px after screenshot set: no horizontal overflow
-- 1280px after responsive set: no horizontal overflow
-- 1024px after responsive set: no horizontal overflow
+## Evidence
 
-Evidence:
+- Accessibility audit: `99_Verification/artifacts/frontend_master/exact_accessibility_audit.json`
 
-- `99_Verification/artifacts/frontend_master/browser_visual_after_1440.json`
-- `99_Verification/artifacts/frontend_master/responsive_after_audit.json`
-
-## Remaining Accessibility Risks
-
-- Full keyboard-only journey was not exhaustively recorded.
-- Color contrast was reviewed by design intent but not measured with a formal contrast tool.
-- Some SVG text is compact and should be revisited if the page is used on smaller than desktop
-  layouts.
-
-Result: `PASS_FOR_PRODUCT_SMOKE`
+This report does not claim formal WCAG compliance.

@@ -38,6 +38,11 @@ def render_context_inspector(state: Mapping[str, Any], lang: str) -> str:
         <h2>{escape(t("state.trust_score", lang))}: {escape(_trust_text(state, lang))}</h2>
         <p>{escape(t("portfolio.title", lang))}: {escape(str(portfolio.get("status") or t("empty.context", lang)))}</p>
       </section>
+      <section class="panel">
+        <span class="kicker">{escape(t("right.inspector", lang))}</span>
+        <h2>{escape(t("workflow.active_path", lang))}</h2>
+        <p data-viz-global-feedback>{escape(t("viz.inspect_hint", lang))}</p>
+      </section>
     </aside>
     """
 

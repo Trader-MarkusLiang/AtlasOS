@@ -24,6 +24,7 @@ SECONDARY_NAV = [
     ("settings", "/settings", "nav.settings"),
     ("setup", "/setup", "nav.setup"),
     ("system_guide", "/system-guide", "nav.system_guide"),
+    ("system_status", "/control", "nav.system_status"),
 ]
 
 

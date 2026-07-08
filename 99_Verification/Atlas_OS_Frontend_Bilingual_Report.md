@@ -1,47 +1,48 @@
 # Atlas OS Frontend Bilingual Report
 
-Date: 2026-07-08
+Date: 2026-07-09
+Scope: EN/ZH primary UI parity.
+
+## Result
+
+PASS
 
 ## Implementation
 
-Expanded `ui/i18n/i18n.py` with global shell, navigation, status, page, flow, inspector, product
-page, visualization, setup, and settings strings for English and Chinese.
+The shared language system remains in `ui/i18n/i18n.py`.
 
-Global language toggle is rendered in `ui/components/language_toggle.py` and persists through:
+Closure additions:
 
-`POST /ui/language`
+- `nav.system_status`
+- `page.system_status`
+- visualization question strings for EN/ZH
+- inspection hint strings for EN/ZH
 
-## Validation
+## Verified Routes
 
-Executed language smoke:
+30 route-language checks passed across EN and ZH:
 
-- `POST /ui/language {"language":"en"}` -> `{"status":"saved","language":"en"}`
-- `/` H1 in English: `Atlas is waiting for a reliable market change.`
-- `/settings` H1 in English: `Provider Control`
-- `POST /ui/language {"language":"zh"}` -> `{"status":"saved","language":"zh"}`
-- `/` H1 in Chinese: `Atlas 正在等待可靠的市场变化。`
-- `/settings` H1 in Chinese: `Provider 控制`
+- `/`
+- `/home`
+- `/setup`
+- `/dashboard`
+- `/chat`
+- `/portfolio`
+- `/markets`
+- `/predictions`
+- `/learning`
+- `/workflow`
+- `/roadmap`
+- `/dev-registry`
+- `/settings`
+- `/system-guide`
+- `/control`
 
-## Coverage
+## Evidence
 
-Primary navigation and page titles now have EN/CN parity:
+- Bilingual audit: `99_Verification/artifacts/frontend_master/exact_bilingual_audit.json`
 
-- Home
-- Ask Atlas
-- Portfolio
-- Markets
-- Predictions
-- Learning
-- Workflow
-- Roadmap
-- Dev Registry
-- Settings
-- Setup
-- System Guide
+Notes:
 
-## Remaining Risk
-
-Some technical provider names, model IDs, runtime statuses, and evidence labels intentionally remain
-as configured/provider-origin text. They are data values, not UI copy.
-
-Result: `PASS`
+- Brand names such as Atlas OS remain intentionally untranslated.
+- Provider names remain product/provider labels.

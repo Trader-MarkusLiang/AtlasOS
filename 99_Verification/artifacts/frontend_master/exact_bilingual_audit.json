@@ -1,0 +1,278 @@
+{
+  "target": "http://127.0.0.1:8777",
+  "generated_at": "2026-07-09T07:15:00+08:00",
+  "checks": 30,
+  "passed": true,
+  "results": [
+    {
+      "language": "en",
+      "route": "/",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/home",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/setup",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/dashboard",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/chat",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/portfolio",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/markets",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/predictions",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/learning",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/workflow",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/roadmap",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/dev-registry",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/settings",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/system-guide",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "en",
+      "route": "/control",
+      "html_lang": "en",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/home",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/setup",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/dashboard",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/chat",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/portfolio",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/markets",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/predictions",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/learning",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/workflow",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/roadmap",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/dev-registry",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/settings",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/system-guide",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    },
+    {
+      "language": "zh",
+      "route": "/control",
+      "html_lang": "zh",
+      "expected_nav_visible": true,
+      "page_structure_ok": true,
+      "mixed_primary_ui": false,
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "target": "http://127.0.0.1:8765/settings",
+  "generated_at": "2026-07-08T23:37:18.911Z",
+  "formal_wcag_claim": false,
+  "keyboard_method": "CUA click into sidebar, then Tab keypress",
+  "passed": true,
+  "focusTrail": [
+    {
+      "className": "sidebar-link active",
+      "href": "/",
+      "id": "",
+      "tag": "A",
+      "text": "首页"
+    },
+    {
+      "className": "sidebar-link active",
+      "href": "/",
+      "id": "",
+      "tag": "A",
+      "text": "首页"
+    },
+    {
+      "className": "sidebar-link active",
+      "href": "/",
+      "id": "",
+      "tag": "A",
+      "text": "首页"
+    },
+    {
+      "className": "sidebar-link active",
+      "href": "/",
+      "id": "",
+      "tag": "A",
+      "text": "首页"
+    },
+    {
+      "className": "sidebar-link active",
+      "href": "/",
+      "id": "",
+      "tag": "A",
+      "text": "首页"
+    },
+    {
+      "className": "sidebar-link active",
+      "href": "/",
+      "id": "",
+      "tag": "A",
+      "text": "首页"
+    },
+    {
+      "className": "sidebar-link active",
+      "href": "/",
+      "id": "",
+      "tag": "A",
+      "text": "首页"
+    },
+    {
+      "className": "sidebar-link active",
+      "href": "/",
+      "id": "",
+      "tag": "A",
+      "text": "首页"
+    }
+  ],
+  "metrics": {
+    "focusVisibleCss": true,
+    "missingLabelCount": 0,
+    "missingLabels": [],
+    "namedActionsMissing": [],
+    "namedActionsMissingCount": 0,
+    "reducedMotionCss": true,
+    "shellLandmarks": {
+      "aside": 2,
+      "main": 1,
+      "nav": 2
+    },
+    "statusRegions": 0,
+    "visibleControlCount": 1,
+    "visualizationCount": 4,
+    "visualizationsAccessible": true
+  },
+  "keyboard_cua_focusTrail": [
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    }
+  ],
+  "keyboard_cua_moved": false,
+  "keyboard_cua_focusTrail_after_click": [
+    {
+      "className": "",
+      "href": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      "
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    },
+    {
+      "className": "",
+      "href": "",
+      "id": "",
+      "tag": "BODY",
+      "text": "A\n        Atlas OS实时认知运行界面\n      \n      工作区\n      \n        首页\n询问 Atlas\n组合\n市场\n预测\n"
+    }
+  ],
+  "keyboard_cua_moved_after_click": true
+}

@@ -1,54 +1,28 @@
 # Atlas OS Frontend Information Architecture Report
 
-Date: 2026-07-08
+Date: 2026-07-09
+Scope: Unified App Shell and primary page migration.
 
-Branch: `codex/frontend-master-upgrade`
+## Result
 
-Commit baseline: `3f8d6e7 frontend: audit current product experience`
+PASS
 
-## Scope
+## Implemented Architecture
 
-This report documents the IA repair after the frontend baseline. The work is UI-only and keeps
-runtime/cognition boundaries intact.
+All primary HTML pages render through `ui/components/app_shell.py` and share:
 
-## New Product Shell
+- Global sidebar
+- Global topbar
+- Runtime/provider/freshness/tick status
+- Language toggle
+- Context inspector
+- Execution timeline
 
-Implemented shared product shell components:
-
-- `ui/components/app_shell.py`
-- `ui/components/global_sidebar.py`
-- `ui/components/global_topbar.py`
-- `ui/components/runtime_status_indicator.py`
-- `ui/components/language_toggle.py`
-- `ui/components/context_inspector.py`
-- `ui/design/tokens.py`
-
-## Global Navigation
-
-Primary:
-
-- Home
-- Ask Atlas
-- Portfolio
-- Markets
-- Predictions
-- Learning
-- Workflow
-- Roadmap
-
-Secondary:
-
-- Dev Registry
-- Settings
-- Setup
-- System Guide
-
-## Route Mapping
-
-All HTML routes now render through the shared shell:
+Primary routes verified:
 
 - `/`
 - `/home`
+- `/setup`
 - `/dashboard`
 - `/chat`
 - `/portfolio`
@@ -59,32 +33,21 @@ All HTML routes now render through the shared shell:
 - `/roadmap`
 - `/dev-registry`
 - `/settings`
-- `/setup`
 - `/system-guide`
-- `/replay`
 - `/control`
 
-JSON routes remain JSON-only:
+## Closure Changes
 
-- `/state`
-- `/roadmap?format=json`
-- `/roadmap.json`
-- `/markets?format=json`
-- `/predictions?format=json`
+- Added explicit System Status to secondary navigation.
+- Added explicit Settings entry to the global topbar.
+- Set `/control` active route to `system_status` in both FastAPI and stdlib fallback paths.
+- Preserved `/dashboard` and `/chat` as Ask Atlas workspace aliases.
+
+## Evidence
+
+- Product audit: `99_Verification/artifacts/frontend_master/exact_product_audit.json`
+- Route smoke: 16/16 routes returned 200; all HTML routes contained `atlas-shell`.
 
 ## Boundary Check
 
-`rg` found no direct `runtime.cognition` imports under `ui/`.
-
-The UI continues to consume runtime state, portfolio context, market state, forecast ledger, LLM
-provider registry, and telemetry readers as read-only product surfaces.
-
-## IA Result
-
-Result: `PASS`
-
-Primary pages now share one app shell, sidebar, topbar, language toggle, runtime status, provider
-status, freshness indicator, and contextual inspector.
-
-Remaining risk: `ui/app_server.py` is still large and should eventually be split further, but the
-route-level shell inconsistency is closed.
+No cognition/runtime semantics changed.
