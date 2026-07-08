@@ -7,7 +7,7 @@
 - Project: Atlas OS
 - Workspace: `/Users/markus/AtlasOS`
 - Task: Frontend Master Goal truth audit and product-grade UI rebuild
-- Status: active
+- Status: completed
 - Branch: `codex/frontend-master-upgrade`
 
 ## User Request Summary
@@ -66,24 +66,21 @@ or v0.8 implementation.
 - Completed: actual frontend truth audit, baseline report, shared shell implementation, primary
   page rebuilds, screenshots, responsive checks, bilingual smoke, browser E2E smoke, and final
   acceptance report.
-- Pending: commit implementation checkpoint.
+- Completed commits:
+  - `3f8d6e7 frontend: audit current product experience`
+  - `be2dfde frontend: establish unified product shell`
+- Pending: none for this frontend master pass.
 - Risk: current worktree has unrelated dirty/untracked verification artifacts that must not be
   included in frontend commits.
 
 ## Resume Instructions
 
-1. Read this log and `99_Verification/Atlas_OS_Frontend_Master_Baseline.md` if it exists.
-2. Continue auditing:
-   - `ui/app_server.py`
-   - `ui/pages/`
-   - `ui/components/`
-   - `ui/i18n/i18n.py`
-   - relevant runtime read-only state APIs.
-3. Start UI on a free port and capture fresh evidence under
-   `99_Verification/artifacts/frontend_master/`.
-4. Classify `/`, `/setup`, `/dashboard`, `/portfolio`, `/markets`, `/predictions`, `/learning`,
-   `/workflow`, `/roadmap`, `/dev-registry`, `/settings`, and `/system-guide`.
-5. Do not begin UI implementation until the baseline is written.
+1. Read this log and the frontend report set under `99_Verification/`.
+2. Start UI with `python3 ui/app_server.py` and open `http://127.0.0.1:8765/`.
+3. If continuing polish, begin from `ui/pages/product_views.py`, `ui/design/tokens.py`, and
+   `ui/components/app_shell.py`.
+4. Preserve the UI-only boundary: do not modify cognition core, CDE, Decision Contract semantics,
+   trading execution, broker integration, or runtime scheduler semantics.
 
 ## Open Questions
 
