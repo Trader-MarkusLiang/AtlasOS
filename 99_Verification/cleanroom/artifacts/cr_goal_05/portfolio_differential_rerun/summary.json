@@ -1,0 +1,147 @@
+{
+  "clone_path": "/tmp/atlas-cleanroom-cr05-rerun-20260708-163116",
+  "state_root": "/tmp/atlas-cleanroom-state-cr05-rerun-20260708-163116",
+  "commit": "1a812b120bece456f144d2aa8d165ac7208ea309",
+  "same_market_input": "daemon first simulated attention tick, market refresh disabled",
+  "cases": [
+    {
+      "case": "portfolio_a_ai_hardware_concentrated",
+      "status": "configured",
+      "exposure_sum_pct": 95.0,
+      "cash_or_unassigned_pct": 5.0,
+      "asset_concentration": [
+        {
+          "asset": "NVDA",
+          "exposure_pct": 55.0
+        },
+        {
+          "asset": "TSM",
+          "exposure_pct": 25.0
+        },
+        {
+          "asset": "AVGO",
+          "exposure_pct": 15.0
+        }
+      ],
+      "theme_concentration": {
+        "AI hardware": 95.0
+      },
+      "market_concentration": {
+        "US": 70.0,
+        "TW": 25.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 91.25,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "AI hardware",
+          "exposure_pct": 95.0,
+          "risk": "high_concentration"
+        }
+      ],
+      "packet_risk_level": "low",
+      "packet_confidence": 0.15,
+      "packet_summary_prefix": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver Narrative Crowding. Fusion stress is low."
+    },
+    {
+      "case": "portfolio_b_high_cash_low_exposure",
+      "status": "configured",
+      "exposure_sum_pct": 25.0,
+      "cash_or_unassigned_pct": 75.0,
+      "asset_concentration": [
+        {
+          "asset": "AAPL",
+          "exposure_pct": 15.0
+        },
+        {
+          "asset": "MSFT",
+          "exposure_pct": 10.0
+        }
+      ],
+      "theme_concentration": {
+        "platform quality": 15.0,
+        "AI software": 10.0
+      },
+      "market_concentration": {
+        "US": 25.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "broad_or_unclassified",
+      "portfolio_relevance_score": 22.0,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "platform quality",
+          "exposure_pct": 15.0,
+          "risk": "low"
+        },
+        {
+          "cluster": "AI software",
+          "exposure_pct": 10.0,
+          "risk": "low"
+        }
+      ],
+      "packet_risk_level": "low",
+      "packet_confidence": 0.15,
+      "packet_summary_prefix": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver of Narrative Crowding"
+    },
+    {
+      "case": "portfolio_c_single_theme_concentration",
+      "status": "configured",
+      "exposure_sum_pct": 90.0,
+      "cash_or_unassigned_pct": 10.0,
+      "asset_concentration": [
+        {
+          "asset": "TSM",
+          "exposure_pct": 35.0
+        },
+        {
+          "asset": "ASML",
+          "exposure_pct": 30.0
+        },
+        {
+          "asset": "AMAT",
+          "exposure_pct": 25.0
+        }
+      ],
+      "theme_concentration": {
+        "semiconductor manufacturing": 90.0
+      },
+      "market_concentration": {
+        "TW": 35.0,
+        "EU": 30.0,
+        "US": 25.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 81.75,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "semiconductor manufacturing",
+          "exposure_pct": 90.0,
+          "risk": "high_concentration"
+        }
+      ],
+      "packet_risk_level": "low",
+      "packet_confidence": 0.25,
+      "packet_summary_prefix": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver of Narrative Crowding. Fusion stress is low."
+    },
+    {
+      "case": "portfolio_d_no_portfolio",
+      "status": "missing",
+      "exposure_sum_pct": 0,
+      "cash_or_unassigned_pct": null,
+      "asset_concentration": [],
+      "theme_concentration": {},
+      "market_concentration": {},
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "broad_or_unclassified",
+      "portfolio_relevance_score": 0.0,
+      "correlated_risk_clusters": [],
+      "packet_risk_level": "low",
+      "packet_confidence": 0.25,
+      "packet_summary_prefix": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver of Narrative Crowding. Regime transition probability is high at 85%."
+    }
+  ],
+  "distinct_portfolio_outputs": 4
+}

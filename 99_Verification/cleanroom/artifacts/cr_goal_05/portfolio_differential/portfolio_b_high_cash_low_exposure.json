@@ -1,0 +1,91 @@
+{
+  "case": "portfolio_b_high_cash_low_exposure",
+  "returncode": 0,
+  "stderr_prefix": "",
+  "event_type": "fused_market_reality",
+  "brief_id": "brief-344db33e-5928-4f58-8d3f-07fef82d9513",
+  "portfolio_context": {
+    "status": "configured",
+    "source": "/tmp/atlas-cleanroom-state-cr05-20260708-162920/portfolio_b_high_cash_low_exposure/runtime/config/user_config.json",
+    "privacy": "percentage_only_no_account_amounts",
+    "portfolio_consistency": "PASS",
+    "exposure_sum_pct": 25.0,
+    "cash_or_unassigned_pct": 75.0,
+    "positions": [
+      {
+        "asset": "AAPL",
+        "market": "US",
+        "portfolio_percentage": 15.0,
+        "theme": "Unspecified",
+        "role": "Unspecified",
+        "user_thesis": "",
+        "risk_note": ""
+      },
+      {
+        "asset": "MSFT",
+        "market": "US",
+        "portfolio_percentage": 10.0,
+        "theme": "Unspecified",
+        "role": "Unspecified",
+        "user_thesis": "",
+        "risk_note": ""
+      }
+    ],
+    "exposure_map": {
+      "asset_concentration": [
+        {
+          "asset": "AAPL",
+          "exposure_pct": 15.0
+        },
+        {
+          "asset": "MSFT",
+          "exposure_pct": 10.0
+        }
+      ],
+      "theme_concentration": {
+        "Unspecified": 25.0
+      },
+      "market_concentration": {
+        "US": 25.0
+      },
+      "role_concentration": {
+        "Unspecified": 25.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "theme_cluster_sensitive",
+      "portfolio_relevance_score": 25.0,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "Unspecified",
+          "exposure_pct": 25.0,
+          "risk": "moderate_concentration"
+        }
+      ]
+    },
+    "warnings": [],
+    "read_only": true,
+    "no_trading_execution": true
+  },
+  "decision_packet": {
+    "attention_state": "retail narrative attention",
+    "causal_summary": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver of Narrative Crowding. Fusion stress is low.",
+    "confidence": 0.15,
+    "liquidity_state": "Neutral",
+    "reasoning_trace": "Market context shows ATTENTION_EXPANSION regime with low confidence. Primary driver is Attention-Liquidity Divergence, supported by high attention pressure (85) and neutral liquidity conditions. Cognition layer confirms low stress and proposed state remains unchanged. Portfolio is read-only with no trading execution allowed. Recommended action is observe due to limited data confidence and stable regime state.",
+    "recommended_action": "observe",
+    "regime_state": "ATTENTION_EXPANSION / Runtime State Context",
+    "risk_level": "low"
+  },
+  "brief_portfolio_lines": [
+    "Status: ATTENTION_EXPANSION / Runtime State Context",
+    "Portfolio State: configured / percentage_only_no_account_amounts",
+    "Source: runtime/config/user_config.json",
+    "Status: configured",
+    "Privacy: percentage_only_no_account_amounts",
+    "Exposure Sum: 25.0",
+    "Portfolio Consistency: PASS"
+  ],
+  "brief_content_prefix": "# Atlas Decision Brief (Runtime Generated)\n\nBrief ID: brief-344db33e-5928-4f58-8d3f-07fef82d9513\nTrigger Type: autonomous_state_loop\nEvent Type: fused_market_reality\nPipeline: Attention + Flow Inference\n\n## Market State\nSummary: State-driven runtime route: run attention and flow inference from ATTENTION_EXPANSION.\nData Status: Event Stream / Confidence Limited\n\n## Regime Status\nStatus: ATTENTION_EXPANSION / Runtime State Context\nProbability Vector: bull_regime: 15, distribution_risk: 0, transition_to_exhaustion: 15, crash_stress: 0, consolidation: 0, data_insufficient: 70\nConfidence: Low\n\n## Portfolio Exposure\nPortfolio State: configured / percentage_only_no_account_amounts\nSource: runtime/config/user_config.json\nStatus: configured\nPrivacy: percentage_only_no_account_amounts\nExposure Sum: 25.0\nPortfolio Consistency: PASS\n\n## Risk\nRisk Level: Low\n\n## Runtime Execution\nModules Executed: atlas-research, atlas-portfolio, attention_flow_placeholder\nLLM Provider: ollama\nLLM Status: validated_decision_packet\n\n## Action Bias\nObserve (NON-BINDING)\n\nCDE Authority: Not created by runtime.\nExecution: No automatic trading execution. User confirmation remains mandatory.\nSafety: No portfolio modification. No CDE logic change.",
+  "db_path": "/tmp/atlas-cleanroom-state-cr05-20260708-162920/portfolio_b_high_cash_low_exposure/runtime/atlas_runtime.sqlite3",
+  "config_path": "/tmp/atlas-cleanroom-state-cr05-20260708-162920/portfolio_b_high_cash_low_exposure/runtime/config/user_config.json"
+}

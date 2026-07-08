@@ -1,0 +1,137 @@
+{
+  "clone_path": "/tmp/atlas-cleanroom-cr05-20260708-162920",
+  "state_root": "/tmp/atlas-cleanroom-state-cr05-20260708-162920",
+  "commit": "4792d18ba72180f531c1b866ba2fce20c7ea4317",
+  "same_market_input": "daemon first simulated attention tick, market refresh disabled",
+  "cases": [
+    {
+      "case": "portfolio_a_ai_hardware_concentrated",
+      "status": "configured",
+      "exposure_sum_pct": 95.0,
+      "cash_or_unassigned_pct": 5.0,
+      "asset_concentration": [
+        {
+          "asset": "NVDA",
+          "exposure_pct": 55.0
+        },
+        {
+          "asset": "TSM",
+          "exposure_pct": 25.0
+        },
+        {
+          "asset": "AVGO",
+          "exposure_pct": 15.0
+        }
+      ],
+      "theme_concentration": {
+        "Unspecified": 95.0
+      },
+      "market_concentration": {
+        "US": 95.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 95.0,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "Unspecified",
+          "exposure_pct": 95.0,
+          "risk": "high_concentration"
+        }
+      ],
+      "packet_risk_level": "low",
+      "packet_confidence": 0.15,
+      "packet_summary_prefix": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver of Narrative Crowding. Fusion stress is low."
+    },
+    {
+      "case": "portfolio_b_high_cash_low_exposure",
+      "status": "configured",
+      "exposure_sum_pct": 25.0,
+      "cash_or_unassigned_pct": 75.0,
+      "asset_concentration": [
+        {
+          "asset": "AAPL",
+          "exposure_pct": 15.0
+        },
+        {
+          "asset": "MSFT",
+          "exposure_pct": 10.0
+        }
+      ],
+      "theme_concentration": {
+        "Unspecified": 25.0
+      },
+      "market_concentration": {
+        "US": 25.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "theme_cluster_sensitive",
+      "portfolio_relevance_score": 25.0,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "Unspecified",
+          "exposure_pct": 25.0,
+          "risk": "moderate_concentration"
+        }
+      ],
+      "packet_risk_level": "low",
+      "packet_confidence": 0.15,
+      "packet_summary_prefix": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver of Narrative Crowding. Fusion stress is low."
+    },
+    {
+      "case": "portfolio_c_single_theme_concentration",
+      "status": "configured",
+      "exposure_sum_pct": 90.0,
+      "cash_or_unassigned_pct": 10.0,
+      "asset_concentration": [
+        {
+          "asset": "TSM",
+          "exposure_pct": 35.0
+        },
+        {
+          "asset": "ASML",
+          "exposure_pct": 30.0
+        },
+        {
+          "asset": "AMAT",
+          "exposure_pct": 25.0
+        }
+      ],
+      "theme_concentration": {
+        "Unspecified": 90.0
+      },
+      "market_concentration": {
+        "US": 90.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 90.0,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "Unspecified",
+          "exposure_pct": 90.0,
+          "risk": "high_concentration"
+        }
+      ],
+      "packet_risk_level": "low",
+      "packet_confidence": 0.15,
+      "packet_summary_prefix": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary influence from Narrative Crowding."
+    },
+    {
+      "case": "portfolio_d_no_portfolio",
+      "status": "missing",
+      "exposure_sum_pct": 0,
+      "cash_or_unassigned_pct": null,
+      "asset_concentration": [],
+      "theme_concentration": {},
+      "market_concentration": {},
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "broad_or_unclassified",
+      "portfolio_relevance_score": 0.0,
+      "correlated_risk_clusters": [],
+      "packet_risk_level": "low",
+      "packet_confidence": 0.25,
+      "packet_summary_prefix": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary influence from Narrative Crowding. Regime transition probability is high at 85."
+    }
+  ]
+}

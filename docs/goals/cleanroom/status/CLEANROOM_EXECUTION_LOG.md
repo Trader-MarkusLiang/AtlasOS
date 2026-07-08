@@ -66,6 +66,61 @@ CR_GOAL_01_BOOTSTRAP_FROM_ZERO
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, runtime cognition,
 trading execution, broker integration, or portfolio holdings were modified.
 
+## 2026-07-08 - CR_GOAL_05 Portfolio Cognition Black-Box Completed
+
+### Summary
+
+Proved that UI-configured portfolio context changes normal runtime output under the same market
+input.
+
+### Evidence
+
+- Fresh clone: `/tmp/atlas-cleanroom-cr05-rerun-20260708-163116`
+- Clean runtime state: `/tmp/atlas-cleanroom-state-cr05-ui-20260708-163116`
+- Commit: `1a812b120bece456f144d2aa8d165ac7208ea309`
+- Report:
+  `99_Verification/cleanroom/CR_GOAL_05_Portfolio_Cognition_Blackbox_Report.md`
+- Artifacts:
+  `99_Verification/cleanroom/artifacts/cr_goal_05/ui_runtime_differential/`
+
+### Proven Path
+
+`/settings` HTTP saved each portfolio configuration, then daemon one-tick runtime generated
+portfolio-aware Decision Brief output.
+
+### Differential Results
+
+- Portfolio A: AI hardware 95%, relevance 91.25.
+- Portfolio B: high cash / low exposure, relevance 22.0.
+- Portfolio C: semiconductor manufacturing 90%, relevance 81.75.
+- Portfolio D: no portfolio, relevance 0.0.
+
+All four cases produced distinct portfolio context outputs.
+
+### Repair
+
+Committed `1a812b1 cleanroom: preserve detailed portfolio asset context` after discovering that
+simple asset-list rows could overwrite detailed portfolio JSON entries.
+
+### Classification
+
+CR_GOAL_05 classification: `PROVEN_COMPLETE`
+
+Evidence level: `REAL_RUNTIME_PROVEN`
+
+### Transition
+
+`CLEANROOM_GOAL_STATUS.json` now records current goal:
+
+```text
+CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX
+```
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
+integration, portfolio mutation, or private holdings were modified.
+
 ## 2026-07-08 - CR_GOAL_04 Live Market Black-Box Completed
 
 ### Summary

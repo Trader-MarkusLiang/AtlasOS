@@ -1,0 +1,106 @@
+{
+  "case": "portfolio_c_single_theme_concentration",
+  "settings_status": "saved",
+  "config_path": "/tmp/atlas-cleanroom-state-cr05-ui-20260708-163116/portfolio_c_single_theme_concentration/runtime/config/user_config.json",
+  "returncode": 0,
+  "portfolio_context": {
+    "status": "configured",
+    "source": "/tmp/atlas-cleanroom-state-cr05-ui-20260708-163116/portfolio_c_single_theme_concentration/runtime/config/user_config.json",
+    "privacy": "percentage_only_no_account_amounts",
+    "portfolio_consistency": "PASS",
+    "exposure_sum_pct": 90.0,
+    "cash_or_unassigned_pct": 10.0,
+    "positions": [
+      {
+        "asset": "TSM",
+        "market": "TW",
+        "portfolio_percentage": 35.0,
+        "theme": "semiconductor manufacturing",
+        "role": "foundry",
+        "user_thesis": "advanced node",
+        "risk_note": ""
+      },
+      {
+        "asset": "ASML",
+        "market": "EU",
+        "portfolio_percentage": 30.0,
+        "theme": "semiconductor manufacturing",
+        "role": "lithography",
+        "user_thesis": "EUV bottleneck",
+        "risk_note": ""
+      },
+      {
+        "asset": "AMAT",
+        "market": "US",
+        "portfolio_percentage": 25.0,
+        "theme": "semiconductor manufacturing",
+        "role": "equipment",
+        "user_thesis": "capex leverage",
+        "risk_note": ""
+      }
+    ],
+    "exposure_map": {
+      "asset_concentration": [
+        {
+          "asset": "TSM",
+          "exposure_pct": 35.0
+        },
+        {
+          "asset": "ASML",
+          "exposure_pct": 30.0
+        },
+        {
+          "asset": "AMAT",
+          "exposure_pct": 25.0
+        }
+      ],
+      "theme_concentration": {
+        "semiconductor manufacturing": 90.0
+      },
+      "market_concentration": {
+        "TW": 35.0,
+        "EU": 30.0,
+        "US": 25.0
+      },
+      "role_concentration": {
+        "foundry": 35.0,
+        "lithography": 30.0,
+        "equipment": 25.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 81.75,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "semiconductor manufacturing",
+          "exposure_pct": 90.0,
+          "risk": "high_concentration"
+        }
+      ]
+    },
+    "warnings": [],
+    "read_only": true,
+    "no_trading_execution": true
+  },
+  "brief_id": "brief-faf17084-d93e-47f2-939a-b984356f23af",
+  "event_type": "fused_market_reality",
+  "decision_packet": {
+    "attention_state": "retail narrative attention",
+    "causal_summary": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver of Narrative Crowding.",
+    "confidence": 0.15,
+    "liquidity_state": "Neutral",
+    "reasoning_trace": "Cognition-layer analysis confirms ATTENTION_EXPANSION state with high attention pressure (85) and neutral liquidity conditions. The regime transition probability is 85, indicating strong momentum in the current attention-driven market phase. Data confidence is low, but the system remains in a stable attention_momentum_basin structure. Portfolio exposure is concentrated in semiconductor manufacturing with diversified geographic and role-based positions, supporting a neutral to observe stance.",
+    "recommended_action": "observe",
+    "regime_state": "ATTENTION_EXPANSION / Runtime State Context",
+    "risk_level": "low"
+  },
+  "brief_portfolio_lines": [
+    "Status: ATTENTION_EXPANSION / Runtime State Context",
+    "Portfolio State: configured / percentage_only_no_account_amounts",
+    "Source: runtime/config/user_config.json",
+    "Status: configured",
+    "Privacy: percentage_only_no_account_amounts",
+    "Exposure Sum: 90.0",
+    "Portfolio Consistency: PASS"
+  ]
+}

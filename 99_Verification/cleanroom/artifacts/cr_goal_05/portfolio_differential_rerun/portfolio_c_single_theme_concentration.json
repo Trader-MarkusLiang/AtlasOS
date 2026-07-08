@@ -1,0 +1,108 @@
+{
+  "case": "portfolio_c_single_theme_concentration",
+  "returncode": 0,
+  "stderr_prefix": "",
+  "event_type": "fused_market_reality",
+  "brief_id": "brief-fefa3b77-00c1-47b5-9fef-9e292395b422",
+  "portfolio_context": {
+    "status": "configured",
+    "source": "/tmp/atlas-cleanroom-state-cr05-rerun-20260708-163116/portfolio_c_single_theme_concentration/runtime/config/user_config.json",
+    "privacy": "percentage_only_no_account_amounts",
+    "portfolio_consistency": "PASS",
+    "exposure_sum_pct": 90.0,
+    "cash_or_unassigned_pct": 10.0,
+    "positions": [
+      {
+        "asset": "TSM",
+        "market": "TW",
+        "portfolio_percentage": 35.0,
+        "theme": "semiconductor manufacturing",
+        "role": "foundry",
+        "user_thesis": "advanced node",
+        "risk_note": ""
+      },
+      {
+        "asset": "ASML",
+        "market": "EU",
+        "portfolio_percentage": 30.0,
+        "theme": "semiconductor manufacturing",
+        "role": "lithography",
+        "user_thesis": "EUV bottleneck",
+        "risk_note": ""
+      },
+      {
+        "asset": "AMAT",
+        "market": "US",
+        "portfolio_percentage": 25.0,
+        "theme": "semiconductor manufacturing",
+        "role": "equipment",
+        "user_thesis": "capex leverage",
+        "risk_note": ""
+      }
+    ],
+    "exposure_map": {
+      "asset_concentration": [
+        {
+          "asset": "TSM",
+          "exposure_pct": 35.0
+        },
+        {
+          "asset": "ASML",
+          "exposure_pct": 30.0
+        },
+        {
+          "asset": "AMAT",
+          "exposure_pct": 25.0
+        }
+      ],
+      "theme_concentration": {
+        "semiconductor manufacturing": 90.0
+      },
+      "market_concentration": {
+        "TW": 35.0,
+        "EU": 30.0,
+        "US": 25.0
+      },
+      "role_concentration": {
+        "foundry": 35.0,
+        "lithography": 30.0,
+        "equipment": 25.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 81.75,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "semiconductor manufacturing",
+          "exposure_pct": 90.0,
+          "risk": "high_concentration"
+        }
+      ]
+    },
+    "warnings": [],
+    "read_only": true,
+    "no_trading_execution": true
+  },
+  "decision_packet": {
+    "attention_state": "retail narrative attention",
+    "causal_summary": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver of Narrative Crowding. Fusion stress is low.",
+    "confidence": 0.25,
+    "liquidity_state": "Neutral",
+    "reasoning_trace": "Market is in ATTENTION_EXPANSION state with high attention pressure (85) and neutral liquidity conditions. The regime transition probability is 85, indicating a strong likelihood of continued expansion. Confidence is low due to data insufficiency, but the system is operating within safe parameters with no trading execution allowed.",
+    "recommended_action": "observe",
+    "regime_state": "ATTENTION_EXPANSION / Runtime State Context",
+    "risk_level": "low"
+  },
+  "brief_portfolio_lines": [
+    "Status: ATTENTION_EXPANSION / Runtime State Context",
+    "Portfolio State: configured / percentage_only_no_account_amounts",
+    "Source: runtime/config/user_config.json",
+    "Status: configured",
+    "Privacy: percentage_only_no_account_amounts",
+    "Exposure Sum: 90.0",
+    "Portfolio Consistency: PASS"
+  ],
+  "brief_content_prefix": "# Atlas Decision Brief (Runtime Generated)\n\nBrief ID: brief-fefa3b77-00c1-47b5-9fef-9e292395b422\nTrigger Type: autonomous_state_loop\nEvent Type: fused_market_reality\nPipeline: Attention + Flow Inference\n\n## Market State\nSummary: State-driven runtime route: run attention and flow inference from ATTENTION_EXPANSION.\nData Status: Event Stream / Confidence Limited\n\n## Regime Status\nStatus: ATTENTION_EXPANSION / Runtime State Context\nProbability Vector: bull_regime: 15, distribution_risk: 0, transition_to_exhaustion: 15, crash_stress: 0, consolidation: 0, data_insufficient: 70\nConfidence: Low\n\n## Portfolio Exposure\nPortfolio State: configured / percentage_only_no_account_amounts\nSource: runtime/config/user_config.json\nStatus: configured\nPrivacy: percentage_only_no_account_amounts\nExposure Sum: 90.0\nPortfolio Consistency: PASS\n\n## Risk\nRisk Level: Low\n\n## Runtime Execution\nModules Executed: atlas-research, atlas-portfolio, attention_flow_placeholder\nLLM Provider: ollama\nLLM Status: validated_decision_packet\n\n## Action Bias\nObserve (NON-BINDING)\n\nCDE Authority: Not created by runtime.\nExecution: No automatic trading execution. User confirmation remains mandatory.\nSafety: No portfolio modification. No CDE logic change.",
+  "db_path": "/tmp/atlas-cleanroom-state-cr05-rerun-20260708-163116/portfolio_c_single_theme_concentration/runtime/atlas_runtime.sqlite3",
+  "config_path": "/tmp/atlas-cleanroom-state-cr05-rerun-20260708-163116/portfolio_c_single_theme_concentration/runtime/config/user_config.json"
+}

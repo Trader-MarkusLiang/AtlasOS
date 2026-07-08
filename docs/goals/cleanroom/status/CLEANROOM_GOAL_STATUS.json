@@ -3,24 +3,25 @@
   "status": "IN_PROGRESS",
   "candidate_branch": "codex/overnight-productization-sprint",
   "candidate_commit": "ed63678793bdc5d10c1469433e461a6c20db7927",
-  "current_goal": "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
+  "current_goal": "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
   "current_goal_status": "NOT_STARTED",
   "completed_goals": [
     "CR_GOAL_00_FRESH_CLONE_BASELINE",
     "CR_GOAL_01_BOOTSTRAP_FROM_ZERO",
     "CR_GOAL_02_FIRST_TIME_USER_BLACKBOX",
     "CR_GOAL_03_LIVE_LLM_BLACKBOX",
-    "CR_GOAL_04_LIVE_MARKET_BLACKBOX"
+    "CR_GOAL_04_LIVE_MARKET_BLACKBOX",
+    "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX"
   ],
   "partial_goals": [],
   "failed_goals": [],
   "blocked_goals": [],
-  "next_goal": "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
+  "next_goal": "CR_GOAL_07_SELF_ITERATION_BLACKBOX",
   "stop_allowed": false,
-  "last_updated": "2026-07-08T16:34:00+08:00",
-  "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr04-20260708-162357",
-  "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr04-20260708-162357",
-  "evidence_level": "LIVE_PROVEN",
+  "last_updated": "2026-07-08T16:42:00+08:00",
+  "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr05-rerun-20260708-163116",
+  "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr05-ui-20260708-163116",
+  "evidence_level": "REAL_RUNTIME_PROVEN",
   "goal_results": [
     {
       "goal": "CR_GOAL_00_FRESH_CLONE_BASELINE",
@@ -86,6 +87,20 @@
       "runtime_eventstream_proven": true,
       "ui_freshness_proven": true,
       "missing_channels_explicit": true
+    },
+    {
+      "goal": "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
+      "status": "PROVEN_COMPLETE",
+      "evidence_level": "REAL_RUNTIME_PROVEN",
+      "report": "99_Verification/cleanroom/CR_GOAL_05_Portfolio_Cognition_Blackbox_Report.md",
+      "clone_path": "/tmp/atlas-cleanroom-cr05-rerun-20260708-163116",
+      "state_path": "/tmp/atlas-cleanroom-state-cr05-ui-20260708-163116",
+      "ui_settings_path_proven": true,
+      "same_market_input": true,
+      "differential_cases": 4,
+      "distinct_portfolio_outputs": 4,
+      "portfolio_context_repair_committed": true,
+      "no_private_wealth_data": true
     }
   ],
   "evidence_levels": [

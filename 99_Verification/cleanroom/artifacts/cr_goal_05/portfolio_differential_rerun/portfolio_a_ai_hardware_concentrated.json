@@ -1,0 +1,107 @@
+{
+  "case": "portfolio_a_ai_hardware_concentrated",
+  "returncode": 0,
+  "stderr_prefix": "",
+  "event_type": "fused_market_reality",
+  "brief_id": "brief-4971bcbe-9b53-4333-8cc8-06d446beb28e",
+  "portfolio_context": {
+    "status": "configured",
+    "source": "/tmp/atlas-cleanroom-state-cr05-rerun-20260708-163116/portfolio_a_ai_hardware_concentrated/runtime/config/user_config.json",
+    "privacy": "percentage_only_no_account_amounts",
+    "portfolio_consistency": "PASS",
+    "exposure_sum_pct": 95.0,
+    "cash_or_unassigned_pct": 5.0,
+    "positions": [
+      {
+        "asset": "NVDA",
+        "market": "US",
+        "portfolio_percentage": 55.0,
+        "theme": "AI hardware",
+        "role": "GPU bottleneck",
+        "user_thesis": "AI compute leverage",
+        "risk_note": "single asset concentration"
+      },
+      {
+        "asset": "TSM",
+        "market": "TW",
+        "portfolio_percentage": 25.0,
+        "theme": "AI hardware",
+        "role": "foundry supply",
+        "user_thesis": "advanced manufacturing exposure",
+        "risk_note": "geopolitical risk"
+      },
+      {
+        "asset": "AVGO",
+        "market": "US",
+        "portfolio_percentage": 15.0,
+        "theme": "AI hardware",
+        "role": "networking ASIC",
+        "user_thesis": "AI cluster connectivity",
+        "risk_note": "cycle risk"
+      }
+    ],
+    "exposure_map": {
+      "asset_concentration": [
+        {
+          "asset": "NVDA",
+          "exposure_pct": 55.0
+        },
+        {
+          "asset": "TSM",
+          "exposure_pct": 25.0
+        },
+        {
+          "asset": "AVGO",
+          "exposure_pct": 15.0
+        }
+      ],
+      "theme_concentration": {
+        "AI hardware": 95.0
+      },
+      "market_concentration": {
+        "US": 70.0,
+        "TW": 25.0
+      },
+      "role_concentration": {
+        "GPU bottleneck": 55.0,
+        "foundry supply": 25.0,
+        "networking ASIC": 15.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "single_theme_regime_sensitive",
+      "portfolio_relevance_score": 91.25,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "AI hardware",
+          "exposure_pct": 95.0,
+          "risk": "high_concentration"
+        }
+      ]
+    },
+    "warnings": [],
+    "read_only": true,
+    "no_trading_execution": true
+  },
+  "decision_packet": {
+    "attention_state": "retail narrative attention",
+    "causal_summary": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver Narrative Crowding. Fusion stress is low.",
+    "confidence": 0.15,
+    "liquidity_state": "Neutral",
+    "reasoning_trace": "Market is in ATTENTION_EXPANSION regime with high attention pressure (85) and neutral liquidity conditions. Causal drivers point to Attention-Liquidity Divergence, with low confidence in regime transition. Portfolio is highly concentrated in AI hardware theme with single asset exposure to NVDA. No trading execution or modifications allowed. Recommended action is observe due to low risk and limited data confidence.",
+    "recommended_action": "observe",
+    "regime_state": "ATTENTION_EXPANSION / Runtime State Context",
+    "risk_level": "low"
+  },
+  "brief_portfolio_lines": [
+    "Status: ATTENTION_EXPANSION / Runtime State Context",
+    "Portfolio State: configured / percentage_only_no_account_amounts",
+    "Source: runtime/config/user_config.json",
+    "Status: configured",
+    "Privacy: percentage_only_no_account_amounts",
+    "Exposure Sum: 95.0",
+    "Portfolio Consistency: PASS"
+  ],
+  "brief_content_prefix": "# Atlas Decision Brief (Runtime Generated)\n\nBrief ID: brief-4971bcbe-9b53-4333-8cc8-06d446beb28e\nTrigger Type: autonomous_state_loop\nEvent Type: fused_market_reality\nPipeline: Attention + Flow Inference\n\n## Market State\nSummary: State-driven runtime route: run attention and flow inference from ATTENTION_EXPANSION.\nData Status: Event Stream / Confidence Limited\n\n## Regime Status\nStatus: ATTENTION_EXPANSION / Runtime State Context\nProbability Vector: bull_regime: 15, distribution_risk: 0, transition_to_exhaustion: 15, crash_stress: 0, consolidation: 0, data_insufficient: 70\nConfidence: Low\n\n## Portfolio Exposure\nPortfolio State: configured / percentage_only_no_account_amounts\nSource: runtime/config/user_config.json\nStatus: configured\nPrivacy: percentage_only_no_account_amounts\nExposure Sum: 95.0\nPortfolio Consistency: PASS\n\n## Risk\nRisk Level: Low\n\n## Runtime Execution\nModules Executed: atlas-research, atlas-portfolio, attention_flow_placeholder\nLLM Provider: ollama\nLLM Status: validated_decision_packet\n\n## Action Bias\nObserve (NON-BINDING)\n\nCDE Authority: Not created by runtime.\nExecution: No automatic trading execution. User confirmation remains mandatory.\nSafety: No portfolio modification. No CDE logic change.",
+  "db_path": "/tmp/atlas-cleanroom-state-cr05-rerun-20260708-163116/portfolio_a_ai_hardware_concentrated/runtime/atlas_runtime.sqlite3",
+  "config_path": "/tmp/atlas-cleanroom-state-cr05-rerun-20260708-163116/portfolio_a_ai_hardware_concentrated/runtime/config/user_config.json"
+}

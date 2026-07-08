@@ -1,0 +1,96 @@
+{
+  "case": "portfolio_b_high_cash_low_exposure",
+  "settings_status": "saved",
+  "config_path": "/tmp/atlas-cleanroom-state-cr05-ui-20260708-163116/portfolio_b_high_cash_low_exposure/runtime/config/user_config.json",
+  "returncode": 0,
+  "portfolio_context": {
+    "status": "configured",
+    "source": "/tmp/atlas-cleanroom-state-cr05-ui-20260708-163116/portfolio_b_high_cash_low_exposure/runtime/config/user_config.json",
+    "privacy": "percentage_only_no_account_amounts",
+    "portfolio_consistency": "PASS",
+    "exposure_sum_pct": 25.0,
+    "cash_or_unassigned_pct": 75.0,
+    "positions": [
+      {
+        "asset": "AAPL",
+        "market": "US",
+        "portfolio_percentage": 15.0,
+        "theme": "platform quality",
+        "role": "liquid core",
+        "user_thesis": "defensive liquid exposure",
+        "risk_note": "low exposure"
+      },
+      {
+        "asset": "MSFT",
+        "market": "US",
+        "portfolio_percentage": 10.0,
+        "theme": "AI software",
+        "role": "cloud platform",
+        "user_thesis": "cloud AI distribution",
+        "risk_note": "execution risk"
+      }
+    ],
+    "exposure_map": {
+      "asset_concentration": [
+        {
+          "asset": "AAPL",
+          "exposure_pct": 15.0
+        },
+        {
+          "asset": "MSFT",
+          "exposure_pct": 10.0
+        }
+      ],
+      "theme_concentration": {
+        "platform quality": 15.0,
+        "AI software": 10.0
+      },
+      "market_concentration": {
+        "US": 25.0
+      },
+      "role_concentration": {
+        "liquid core": 15.0,
+        "cloud platform": 10.0
+      },
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "broad_or_unclassified",
+      "portfolio_relevance_score": 22.0,
+      "correlated_risk_clusters": [
+        {
+          "cluster": "platform quality",
+          "exposure_pct": 15.0,
+          "risk": "low"
+        },
+        {
+          "cluster": "AI software",
+          "exposure_pct": 10.0,
+          "risk": "low"
+        }
+      ]
+    },
+    "warnings": [],
+    "read_only": true,
+    "no_trading_execution": true
+  },
+  "brief_id": "brief-3ff2fd2f-5aff-4376-bc47-d1a207307b14",
+  "event_type": "fused_market_reality",
+  "decision_packet": {
+    "attention_state": "retail narrative attention",
+    "causal_summary": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary driver Narrative Crowding",
+    "confidence": 0.25,
+    "liquidity_state": "Neutral",
+    "reasoning_trace": "Cognition layer indicates ATTENTION_EXPANSION state with high attention pressure (85) and neutral liquidity conditions. The regime transition probability is 85, suggesting a strong likelihood of continued expansion. Market stress is low, and the primary driver remains Attention-Liquidity Divergence. Portfolio is diversified and read-only with no execution allowed. Risk is assessed as low, and recommended action is to observe given the current stable but attention-driven market conditions.",
+    "recommended_action": "observe",
+    "regime_state": "ATTENTION_EXPANSION / Runtime State Context",
+    "risk_level": "low"
+  },
+  "brief_portfolio_lines": [
+    "Status: ATTENTION_EXPANSION / Runtime State Context",
+    "Portfolio State: configured / percentage_only_no_account_amounts",
+    "Source: runtime/config/user_config.json",
+    "Status: configured",
+    "Privacy: percentage_only_no_account_amounts",
+    "Exposure Sum: 25.0",
+    "Portfolio Consistency: PASS"
+  ]
+}

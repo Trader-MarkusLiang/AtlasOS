@@ -1,0 +1,51 @@
+{
+  "case": "portfolio_d_no_portfolio",
+  "returncode": 0,
+  "stderr_prefix": "",
+  "event_type": "fused_market_reality",
+  "brief_id": "brief-ebeb41d1-9237-4df6-bd22-92040443a988",
+  "portfolio_context": {
+    "status": "missing",
+    "source": "/tmp/atlas-cleanroom-state-cr05-20260708-162920/portfolio_d_no_portfolio/runtime/config/user_config.json",
+    "privacy": "percentage_only_no_account_amounts",
+    "portfolio_consistency": "PASS",
+    "exposure_sum_pct": 0,
+    "cash_or_unassigned_pct": null,
+    "positions": [],
+    "exposure_map": {
+      "asset_concentration": [],
+      "theme_concentration": {},
+      "market_concentration": {},
+      "role_concentration": {},
+      "liquidity_sensitivity": "diversified_or_unknown",
+      "regime_sensitivity": "broad_or_unclassified",
+      "portfolio_relevance_score": 0.0,
+      "correlated_risk_clusters": []
+    },
+    "warnings": [],
+    "read_only": true,
+    "no_trading_execution": true
+  },
+  "decision_packet": {
+    "attention_state": "retail narrative attention",
+    "causal_summary": "Attention-Liquidity Divergence driven by Narrative -> Retail Flow, with secondary influence from Narrative Crowding. Regime transition probability is high at 85.",
+    "confidence": 0.25,
+    "liquidity_state": "Neutral",
+    "reasoning_trace": "The system is operating within ATTENTION_EXPANSION state with low stress and neutral liquidity conditions. The primary driver is Attention-Liquidity Divergence, indicating a potential misalignment between market attention and underlying liquidity dynamics. Confidence is low due to limited data and event stream uncertainty. Recommended action remains 'observe' as the system does not predict imminent regime shifts or high-risk conditions.",
+    "recommended_action": "observe",
+    "regime_state": "ATTENTION_EXPANSION / Runtime State Context",
+    "risk_level": "low"
+  },
+  "brief_portfolio_lines": [
+    "Status: ATTENTION_EXPANSION / Runtime State Context",
+    "Portfolio State: missing / no_private_data_loaded",
+    "Source: none",
+    "Status: missing",
+    "Privacy: no_private_data_loaded",
+    "Exposure Sum: Unknown",
+    "Portfolio Consistency: Unknown"
+  ],
+  "brief_content_prefix": "# Atlas Decision Brief (Runtime Generated)\n\nBrief ID: brief-ebeb41d1-9237-4df6-bd22-92040443a988\nTrigger Type: autonomous_state_loop\nEvent Type: fused_market_reality\nPipeline: Attention + Flow Inference\n\n## Market State\nSummary: State-driven runtime route: run attention and flow inference from ATTENTION_EXPANSION.\nData Status: Event Stream / Confidence Limited\n\n## Regime Status\nStatus: ATTENTION_EXPANSION / Runtime State Context\nProbability Vector: bull_regime: 15, distribution_risk: 0, transition_to_exhaustion: 15, crash_stress: 0, consolidation: 0, data_insufficient: 70\nConfidence: Low\n\n## Portfolio Exposure\nPortfolio State: missing / no_private_data_loaded\nSource: none\nStatus: missing\nPrivacy: no_private_data_loaded\nExposure Sum: Unknown\nPortfolio Consistency: Unknown\n\n## Risk\nRisk Level: Low\n\n## Runtime Execution\nModules Executed: atlas-research, atlas-portfolio, attention_flow_placeholder\nLLM Provider: ollama\nLLM Status: validated_decision_packet\n\n## Action Bias\nObserve (NON-BINDING)\n\nCDE Authority: Not created by runtime.\nExecution: No automatic trading execution. User confirmation remains mandatory.\nSafety: No portfolio modification. No CDE logic change.",
+  "db_path": "/tmp/atlas-cleanroom-state-cr05-20260708-162920/portfolio_d_no_portfolio/runtime/atlas_runtime.sqlite3",
+  "config_path": "/tmp/atlas-cleanroom-state-cr05-20260708-162920/portfolio_d_no_portfolio/runtime/config/user_config.json"
+}
