@@ -66,6 +66,40 @@ v0.8.
   - removed raw JSON/dict default displays from Setup/Home;
   - validated `/setup`, `/settings`, `/llm/providers`, `/llm/provider/test`, `/chat/send`,
     `/control/start`, and `/control/stop` through a temporary HTTP server.
+- 2026-07-08 10:40 CST plan-audit refresh:
+  - re-read current `docs/goals/` architecture and confirmed the requested master/goal/status files
+    already exist on the branch;
+  - confirmed `docs/goals/evidence/` indexes also exist;
+  - rechecked `README.md`, `VERSION.md`, `CHANGELOG.md`, `99_Verification/`, branch history, and
+    Prompt A/B/C/D references;
+  - confirmed the branch is now ahead of origin by two commits: GOAL 00 baseline and GOAL 01 repair
+    pass;
+  - confirmed `GOAL_STATUS.json` still points current execution to `GOAL_01_USER_ACTIVATION` and
+    should not be advanced before browser-level activation proof;
+  - found `GOAL_STATUS.json` `current_commit` is stale relative to HEAD after the GOAL 00/01
+    commits and should be repaired during the next status update, not silently papered over.
+- 2026-07-08 11:10 CST user-requested `/plan` audit:
+  - performed a read-only repository truth pass before writing any requested goal files;
+  - confirmed the exact requested files already exist under `docs/goals/` and
+    `docs/goals/status/`;
+  - confirmed Prompt D truth remains: partially real-runtime-proven internal alpha, not RC,
+    not production, not live-market-complete, and not long-duration stable;
+  - confirmed branch state is `codex/overnight-productization-sprint`, ahead of origin by two
+    commits, with uncommitted GOAL 01 activation/UI/runtime validation changes still present;
+  - prepared an execution plan to normalize or preserve the goal orchestration files without
+    contradicting current repository truth.
+- 2026-07-08 11:13 CST GOAL 01 completion reconciliation:
+  - re-ran `python3 -m py_compile` for modified GOAL 01 runtime/UI files and validator;
+  - re-ran `python3 99_Verification/validate_goal_01_user_activation.py` with temporary config,
+    DB, inbox, logs, and UI server;
+  - validation passed all checks for Setup, provider-test visibility, API-key non-plaintext
+    persistence, zh UI copy, runtime start, first Decision Brief, portfolio context, Ask Atlas,
+    product-page no-raw-JSON defaults, runtime stop, and persisted forecast/brief rows;
+  - updated `docs/goals/evidence/GOAL_01_EVIDENCE.md`,
+    `docs/goals/evidence/ATLAS_MASTER_EVIDENCE.md`,
+    `docs/goals/status/GOAL_STATUS.json`, and
+    `docs/goals/status/GOAL_EXECUTION_LOG.md` so GOAL 01 is `PROVEN_COMPLETE` and current
+    execution advances to `GOAL_02_LIVE_LLM_ACTIVATION`.
 
 ## Files Changed
 
@@ -84,6 +118,9 @@ v0.8.
 - `ui/pages/home.py`
 - `ui/pages/settings.py`
 - `docs/goals/evidence/GOAL_01_EVIDENCE.md`
+- `docs/goals/evidence/ATLAS_MASTER_EVIDENCE.md`
+- `99_Verification/validate_goal_01_user_activation.py`
+- `99_Verification/artifacts/goal_01_user_activation_fixed/`
 
 ## Decisions
 
@@ -101,6 +138,15 @@ v0.8.
 - Master Goal remains active.
 - GOAL 01 still needs browser/user-journey validation and likely UI repair work.
 - GOAL 01 first repair pass is complete but still `PROVEN_PARTIAL`.
+- Goal orchestration files are already present; the immediate next work is not file creation but
+  status reconciliation plus GOAL 01 browser-level validation.
+- As of the 11:10 `/plan` audit, requested goal orchestration files should be treated as existing
+  governance artifacts to reconcile, not blindly recreate; any overwrite must preserve Prompt D
+  evidence levels and current uncommitted GOAL 01 work.
+- GOAL 01 is now reconciled as `PROVEN_COMPLETE`; `GOAL_STATUS.json` current cursor is
+  `GOAL_02_LIVE_LLM_ACTIVATION`.
+- A temporary UI server process is still visible on port `8876`; stop or reuse it intentionally
+  before further browser tests.
 
 ## Verification Results
 
@@ -111,24 +157,19 @@ v0.8.
   partial.
 - GOAL 01 temporary HTTP flow: PASS for setup save, provider test failure visibility, chat queue,
   start/stop control, config isolation, and no secret echo.
+- 11:10 `/plan` audit: read-only repository/goal/Prompt-history inspection completed; no target
+  goal files were changed.
+- GOAL 01 validator rerun: PASS.
+- GOAL 01 compile check: PASS.
 
 ## Resume Instructions
 
 1. Read `docs/goals/status/GOAL_STATUS.json`.
-2. Confirm `current_goal` is `GOAL_01_USER_ACTIVATION`.
-3. Read `docs/goals/GOAL_01_USER_ACTIVATION.md` and `docs/goals/evidence/GOAL_01_EVIDENCE.md`.
-4. Continue GOAL 01 with a browser/UI first-user journey audit:
-   - open Atlas
-   - understand Atlas
-   - select language
-   - configure LLM
-   - test provider
-   - select model
-   - add assets without JSON
-   - start runtime
-   - see first brief
-   - ask Atlas
-   - stop runtime
+2. Confirm `current_goal` is `GOAL_02_LIVE_LLM_ACTIVATION`.
+3. Read `docs/goals/GOAL_02_LIVE_LLM_ACTIVATION.md` and
+   `docs/goals/evidence/GOAL_02_EVIDENCE.md`.
+4. Inspect existing Prompt D live LLM evidence and determine whether a GOAL-specific report
+   `99_Verification/GOAL_02_Live_LLM_Report.md` is still needed.
 5. Preserve hard boundaries: no broker/trading execution, no cognition rewrites, no speculative
    engines, no private config commits.
 

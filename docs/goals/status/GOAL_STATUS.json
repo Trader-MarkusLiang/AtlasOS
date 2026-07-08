@@ -1,18 +1,18 @@
 {
   "schema_version": "1.1",
-  "last_updated": "2026-07-08T10:24:00+08:00",
+  "last_updated": "2026-07-08T11:13:18+08:00",
   "project": "Atlas OS",
   "branch": "codex/overnight-productization-sprint",
-  "current_commit": "fd76611913551eb6c6cc1679b6c9d810a385d8e8",
+  "current_commit": "78df5f4da3364e5f046b73a48c0d70f56baea76e",
   "release_position": "internal_alpha_real_world_activation_hardening",
   "master_goal_name": "Atlas OS Autonomous Productization",
-  "current_goal": "GOAL_01_USER_ACTIVATION",
+  "current_goal": "GOAL_02_LIVE_LLM_ACTIVATION",
   "status": "IN_PROGRESS",
   "completed_goals": [
-    "GOAL_00_TRUTH_BASELINE"
+    "GOAL_00_TRUTH_BASELINE",
+    "GOAL_01_USER_ACTIVATION"
   ],
   "partial_goals": [
-    "GOAL_01_USER_ACTIVATION",
     "GOAL_03_MARKET_INTELLIGENCE",
     "GOAL_07_AUTONOMOUS_OPERATIONS",
     "GOAL_08_RELEASE_READINESS"
@@ -65,11 +65,13 @@
       "name": "User Activation",
       "file": "docs/goals/GOAL_01_USER_ACTIVATION.md",
       "evidence_index": "docs/goals/evidence/GOAL_01_EVIDENCE.md",
-      "status": "in_progress",
-      "classification": "PROVEN_PARTIAL",
-      "evidence_level": "PARTIAL",
+      "status": "completed",
+      "classification": "PROVEN_COMPLETE",
+      "evidence_level": "REAL_RUNTIME_PROVEN",
       "report": "99_Verification/GOAL_01_User_Activation_Report.md",
-      "next_action": "Run browser-level first-user journey and verify first Decision Brief visibility."
+      "validation": "99_Verification/validate_goal_01_user_activation.py",
+      "artifacts": "99_Verification/artifacts/goal_01_user_activation_fixed/",
+      "next_action": "Proceed to GOAL 02 live LLM activation."
     },
     {
       "id": "GOAL_02",
@@ -77,10 +79,10 @@
       "name": "Live LLM Activation",
       "file": "docs/goals/GOAL_02_LIVE_LLM_ACTIVATION.md",
       "evidence_index": "docs/goals/evidence/GOAL_02_EVIDENCE.md",
-      "status": "pending",
+      "status": "in_progress",
       "classification": "PROVEN_PARTIAL",
       "evidence_level": "LIVE_PROVEN",
-      "next_action": "Resolve MoreCode authorization or keep it explicitly blocked."
+      "next_action": "Audit existing live provider evidence, create GOAL 02 report, and prove failure matrix through normal runtime-safe paths."
     },
     {
       "id": "GOAL_03",
@@ -155,6 +157,7 @@
   "source_reports": [
     "99_Verification/GOAL_00_Truth_Baseline_Report.md",
     "99_Verification/GOAL_01_User_Activation_Report.md",
+    "99_Verification/validate_goal_01_user_activation.py",
     "99_Verification/Atlas_OS_Real_World_Activation_Tribunal.md",
     "99_Verification/Atlas_OS_Prompt_D_Final_Report.md",
     "99_Verification/Atlas_OS_Merge_Readiness_Report.md"

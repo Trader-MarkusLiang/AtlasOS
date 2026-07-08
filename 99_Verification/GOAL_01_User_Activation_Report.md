@@ -4,114 +4,118 @@ Date: 2026-07-08
 
 Branch: `codex/overnight-productization-sprint`
 
-Status: `PROVEN_PARTIAL`
+Status: `PROVEN_COMPLETE`
+
+Evidence level: `REAL_RUNTIME_PROVEN`
 
 ## Objective
 
 Make Atlas usable by a first-time user without terminal, JSON, Python, logs, or internal acronyms.
 
-This report records the first GOAL 01 repair pass after GOAL 00. It does not claim full ordinary-user
-activation because browser-level click-path acceptance is still pending.
+GOAL 01 is complete for the ordinary-user activation path. This does not claim live LLM success,
+live market completeness, release readiness, 2h/24h stability, broker integration, or trading
+execution.
 
-## Audit Findings
+## Boundary Decision
 
-| Requirement | Before Repair | Action |
-|---|---|---|
-| API key must truly submit | Setup submitted `active_provider`, but legacy config parser only read `provider` | Parser now accepts `active_provider` |
-| Provider test must use current form values | Setup test called `/llm/provider/test` without saving current API key/base URL/model | Setup test now saves current values before testing |
-| Asset setup must not require JSON | Setup required a portfolio JSON textarea | Setup now provides ordinary asset, market, percentage, theme, role, thesis, and risk-note fields |
-| Runtime start must exist in user flow | UI control existed, but daemon start did not pass UI inbox/config path | Start command now passes `--ui-inbox-path` and `--market-config-path` |
-| No raw dict/JSON by default | Setup result used raw JSON; Home printed raw market channel dict | Setup shows human-readable status; Home shows market channel summary |
-| Config isolation | Provider endpoints ignored `ATLAS_USER_CONFIG` in some paths | Provider endpoints and registry now honor the active UI config path |
+Scope classification: UI / configuration / runtime-control usability repair.
+
+Module boundary decision: no Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics,
+trading, broker, prediction, or portfolio-mutation logic was changed.
+
+## Repairs Completed
+
+| Requirement | Repair |
+|---|---|
+| API key must truly submit | Settings parser accepts `active_provider`; provider registry respects active config path; validation confirms no raw key in saved config. |
+| Provider test must use current form values | Setup saves current provider/base URL/model/key before calling `/llm/provider/test`. |
+| Asset setup must not require JSON | Setup uses ordinary asset, market, percentage, theme, role, thesis, and risk-note fields. |
+| Runtime start must exist in user flow | Setup now includes a direct `Start Runtime` button that saves current form values and calls `/control/start`. |
+| Running state must be obvious | Setup shows `Status: started`; Dashboard shows start/stop chatline feedback; `/state` exposes tick and brief. |
+| Home must be Decision Brief-first | Home first viewport shows Atlas Brief, action, trust, regime, market context, portfolio impact, and risks. |
+| No raw dict/JSON by default | Home, Setup, Portfolio, Markets, Predictions, and Learning avoid raw dict/JSON on default pages. JSON remains available through explicit JSON/API routes. |
+| zh/en parity | Setup/Home and product-page primary labels now use the UI i18n layer and respect `ATLAS_USER_CONFIG`. |
+| Stop runtime | Daemon sleep is interruptible; control PID checks treat zombie/stale processes as stopped. |
 
 ## Files Changed
 
-- `runtime/llm/provider_registry.py`
-- `ui/app_server.py`
-- `ui/system_control_panel.py`
+- `runtime/atlas_runtime_daemon.py`
+- `ui/i18n/i18n.py`
 - `ui/pages/setup.py`
 - `ui/pages/home.py`
-- `ui/pages/settings.py`
+- `ui/pages/portfolio.py`
+- `ui/pages/markets.py`
+- `ui/pages/predictions.py`
+- `ui/pages/learning.py`
+- `ui/system_control_panel.py`
+- `99_Verification/validate_goal_01_user_activation.py`
 
-No cognition, Event Fusion, CDE, broker, trading, prediction, or portfolio-mutation logic was
-changed.
+## Browser Journey Evidence
 
-## Validation
+Browser artifacts:
 
-### Static Checks
+- `99_Verification/artifacts/goal_01_user_activation_fixed/01_setup_filled_en.png`
+- `99_Verification/artifacts/goal_01_user_activation_fixed/02_setup_started.png`
+- `99_Verification/artifacts/goal_01_user_activation_fixed/03_dashboard_after_ask.png`
+- `99_Verification/artifacts/goal_01_user_activation_fixed/04_home_first_brief_zh.png`
+- `99_Verification/artifacts/goal_01_user_activation_fixed/05_dashboard_after_stop.png`
+- `99_Verification/artifacts/goal_01_user_activation_fixed/browser_journey_result.json`
 
-- `python3 -m py_compile runtime/llm/provider_registry.py ui/system_control_panel.py ui/app_server.py ui/pages/setup.py ui/pages/home.py ui/pages/settings.py`: PASS
-- Render assertions:
-  - Setup has normal asset fields.
-  - Setup has base URL field.
-  - Setup provider test references current payload.
-  - Setup no longer uses a raw `<pre>` result.
-  - Home no longer renders raw Python dict channel output.
+Observed browser path:
 
-### Temporary HTTP Flow
-
-The HTTP validation used temporary:
-
-- `ATLAS_USER_CONFIG`
-- `ATLAS_RUNTIME_DB`
-- `ATLAS_UI_INBOX`
-- `ATLAS_UI_PID_FILE`
-- telemetry/log paths
-
-Validated endpoints:
-
-| Step | Result |
+| Journey Step | Evidence |
 |---|---|
-| `GET /setup` | 200 |
-| setup asset fields visible | PASS |
-| setup JSON textarea absent | PASS |
-| `POST /settings` with `active_provider=custom` | `saved` |
-| API key in response | not present |
-| saved custom provider base URL | current form value preserved |
-| saved API key | encrypted local value; no raw key in file |
-| `GET /llm/providers` | reads temporary active config; active provider `custom` |
-| `POST /llm/provider/test` | used saved current provider values; returned honest `error` for unreachable endpoint |
-| `POST /chat/send` | queued event and wrote UI inbox |
-| `POST /control/start` | started daemon |
-| start command includes `--ui-inbox-path` | PASS |
-| start command includes `--market-config-path` | PASS |
-| `POST /control/stop` | stop requested |
+| Open Atlas / Setup | `/setup` rendered first-run setup. |
+| Understand Atlas | Setup explains non-binding cognitive loop and no trading execution. |
+| Select language | Browser selected `zh`; saved config recorded `ui.language = zh`; reloaded Setup rendered Chinese labels. |
+| Configure LLM | Browser filled provider, model, base URL, and non-secret test key. |
+| Test provider | Provider test used saved current values and returned visible `error` for the intentionally unreachable local endpoint. |
+| Select model | Browser filled custom model `goal-01-custom-model-fixed`. |
+| Add assets | Browser filled AAPL, market, theme, role, thesis, and risk note without JSON. |
+| Set percentages | Browser filled `25%`; runtime portfolio context later showed exposure `25.0`. |
+| Start runtime | Setup `Start Runtime` returned `Status: started`. |
+| See first brief | Home displayed `今日 Atlas 简报`, `NEUTRAL`, trust, regime, market context, and portfolio impact. |
+| Ask Atlas | Dashboard Chat Mode queued a `/chat/send` event. |
+| Stop runtime | Dashboard Stop returned `stop_requested`; validation confirmed the runtime process stopped. |
 
-Provider test returned an error for the intentionally unreachable temporary endpoint. That is
-expected and proves failure visibility, not provider live readiness.
+## Automated Validation
+
+Command:
+
+```text
+python3 -m py_compile runtime/atlas_runtime_daemon.py ui/system_control_panel.py ui/i18n/i18n.py ui/pages/setup.py ui/pages/home.py ui/pages/portfolio.py ui/pages/markets.py ui/pages/predictions.py ui/pages/learning.py 99_Verification/validate_goal_01_user_activation.py
+python3 99_Verification/validate_goal_01_user_activation.py
+```
+
+Result: `PASS`
+
+Key checks:
+
+- Setup renders and has direct runtime start.
+- Setup has no default portfolio JSON textarea.
+- Settings save succeeds.
+- API key is not stored in plaintext.
+- Provider test returns visible status and uses `custom`.
+- zh Setup labels are visible after save.
+- Runtime start produces at least one tick and one Decision Brief.
+- Portfolio context is configured from UI input.
+- Ask Atlas writes to UI inbox.
+- Home is Decision Brief-first and shows portfolio impact.
+- Product pages render and do not show raw JSON by default.
+- Runtime stop is visible and process exits.
+- Decision Brief and Forecast Ledger rows persist in the temporary runtime DB.
 
 ## Current GOAL 01 Classification
 
-`PROVEN_PARTIAL`
+`PROVEN_COMPLETE`
 
-Reasons:
+Reason:
 
-- Several locally fixable ordinary-user blockers were repaired.
-- API/config/UI control path is materially better and validated through real HTTP endpoints.
-- Full browser-level first-user journey has not yet been executed.
-- zh/en parity is not fully proven across every page.
-- Seeing the first brief after a fresh browser start still needs end-to-end visual validation.
-
-## Remaining Work
-
-1. Run browser-level click path:
-   - open Atlas
-   - understand Atlas
-   - select language
-   - configure LLM
-   - test provider
-   - select model
-   - add assets
-   - set percentages
-   - start runtime
-   - see first brief
-   - ask Atlas
-   - stop runtime
-2. Add stale-server/version guard if browser testing shows old assets can remain served.
-3. Improve zh/en parity in Setup and Home copy.
-4. Verify Home is Decision Brief-first after a fresh runtime tick, not just route-rendered.
+- The complete required first-user journey succeeded through the real UI/runtime path.
+- Evidence includes browser-level artifacts, persisted runtime DB/logs, and a repeatable validation
+  script.
+- Remaining live-provider success belongs to `GOAL_02_LIVE_LLM_ACTIVATION`, not GOAL 01.
 
 ## Transition
 
-Do not advance to GOAL 02 yet. Continue GOAL 01 until the full ordinary-user journey succeeds
-through the real UI/runtime path.
+Proceed to `GOAL_02_LIVE_LLM_ACTIVATION`.

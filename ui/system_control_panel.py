@@ -88,10 +88,11 @@ def runtime_status(*, pid_file: Optional[str] = None, db_path: Optional[str] = N
     if pid_path.exists():
         try:
             pid = int(pid_path.read_text(encoding="utf-8").strip())
-            os.kill(pid, 0)
-            running = True
+            running = _process_is_running(pid)
         except (OSError, ValueError):
             running = False
+        if not running:
+            pid_path.unlink(missing_ok=True)
     trust = StateStore(db_path=db_path).get_state("system_trust_state")
     return {
         "running": running,
@@ -177,3 +178,23 @@ def _write_config(config: Dict[str, Any], config_path: Optional[str]) -> None:
     path = _config_path(config_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(config, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+
+
+def _process_is_running(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    try:
+        status = subprocess.run(
+            ["ps", "-p", str(pid), "-o", "stat="],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=1,
+        ).stdout.strip()
+    except Exception:
+        return True
+    if not status:
+        return False
+    return not status.upper().startswith("Z")

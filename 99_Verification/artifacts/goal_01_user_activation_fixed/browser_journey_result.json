@@ -1,0 +1,50 @@
+{
+  "base": "http://127.0.0.1:8891",
+  "steps": [
+    {
+      "step": "open_setup_en",
+      "hasSetup": true,
+      "hasStartRuntime": true,
+      "hasNoJsonDefault": true
+    },
+    {
+      "step": "provider_test_current_values",
+      "result": "Saving current values before provider test..."
+    },
+    {
+      "step": "setup_start_runtime",
+      "result": "Status: started"
+    },
+    {
+      "step": "setup_zh_after_save",
+      "hasZhTitle": true,
+      "hasZhStart": true
+    },
+    {
+      "step": "onboarding_visible",
+      "enterText": "Enter Dashboard"
+    },
+    {
+      "step": "chat_mode_switch",
+      "panel": {
+        "chatClass": "v2-mode-panel active",
+        "chatDisplay": "block"
+      }
+    },
+    {
+      "step": "ask_atlas",
+      "messages": "Queued: queued\nYou: What changed in my Atlas brief after setup?"
+    },
+    {
+      "step": "home_decision_brief",
+      "hasBrief": false,
+      "hasPortfolio": true,
+      "hasConfigured": true,
+      "excerpt": "首页\n询问 Atlas\n组合\n市场\n预测\n学习\n工作流\n路线图\n设置\n今日 ATLAS 简报\nNEUTRAL\n\nLLM reasoning unavailable or invalid.\n\n信任: 0.4821 · 状态: ATTENTION_EXPANSION · 更新时间: 2026-07-08T02:57:34.754063+00:00\n当前市场上下文\nok\n\n实时: portfolio_relevance · 需要关注: price_volume · 未配置: liquidity_proxy, macro_policy, market_breadth, narrative_attention\n\n组合影响\nconfigured\n\n暴露合计: 25.0\n\n数据新鲜度\n2026-07-08T02:57:19.720679+00:00\n\nTrue\n\n触发条件\nall_providers_failed\n主要风险\nunknown\n\n置信度: 0.0"
+    },
+    {
+      "step": "stop_runtime",
+      "messages": "Stop: stop_requested"
+    }
+  ]
+}

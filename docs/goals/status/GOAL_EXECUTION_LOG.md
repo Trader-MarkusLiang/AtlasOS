@@ -154,3 +154,55 @@ GOAL 01 remains `PROVEN_PARTIAL`.
 
 Run browser-level first-user journey and verify the first Decision Brief appears after a fresh
 runtime tick. Do not advance to GOAL 02 yet.
+
+## 2026-07-08 - GOAL 01 User Activation Completed
+
+### Summary
+
+Completed the ordinary-user activation path after browser-level journey validation and a repeatable
+temporary-state validator. GOAL 01 is now proven for first-time UI setup, language selection,
+provider configuration entry, provider test visibility, asset/percentage input without JSON,
+runtime start, first brief visibility, Ask Atlas, and runtime stop.
+
+### Evidence
+
+- Browser artifacts:
+  - `99_Verification/artifacts/goal_01_user_activation_fixed/01_setup_filled_en.png`
+  - `99_Verification/artifacts/goal_01_user_activation_fixed/02_setup_started.png`
+  - `99_Verification/artifacts/goal_01_user_activation_fixed/03_dashboard_after_ask.png`
+  - `99_Verification/artifacts/goal_01_user_activation_fixed/04_home_first_brief_zh.png`
+  - `99_Verification/artifacts/goal_01_user_activation_fixed/05_dashboard_after_stop.png`
+  - `99_Verification/artifacts/goal_01_user_activation_fixed/browser_journey_result.json`
+- Repeatable validator:
+  - `python3 99_Verification/validate_goal_01_user_activation.py`
+  - Result: `PASS`
+- Report:
+  - `99_Verification/GOAL_01_User_Activation_Report.md`
+
+### Validation Coverage
+
+- Setup renders and has a direct runtime start.
+- Setup does not require raw portfolio JSON by default.
+- Settings save path accepts current provider form values.
+- API key input is not persisted as plaintext.
+- Provider test returns a visible status and uses the selected provider.
+- zh/en primary Setup/Home labels are driven by UI i18n.
+- Temporary runtime produced at least one tick and persisted a Decision Brief.
+- Portfolio context was configured from UI asset/percentage fields.
+- Ask Atlas wrote a UI inbox event.
+- Runtime stop was visible and the temporary runtime process exited.
+
+### Classification
+
+GOAL 01 classification: `PROVEN_COMPLETE`
+
+Evidence level: `REAL_RUNTIME_PROVEN`
+
+### Transition
+
+`GOAL_STATUS.json` now records `current_goal: GOAL_02_LIVE_LLM_ACTIVATION`.
+
+### Boundary
+
+This does not claim live LLM provider success, live market completeness, release readiness, broker
+integration, trading execution, or 2h/24h runtime stability.

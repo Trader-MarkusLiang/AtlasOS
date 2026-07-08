@@ -2,21 +2,24 @@
 
 from __future__ import annotations
 
-import json
 from html import escape
 from typing import Any, Mapping
 
+from ui.i18n.i18n import current_language, t
+
 
 def render_home_page(state: Mapping[str, Any]) -> str:
+    lang = current_language()
     packet = state.get("last_decision_packet") if isinstance(state.get("last_decision_packet"), Mapping) else {}
     portfolio = state.get("portfolio_context") if isinstance(state.get("portfolio_context"), Mapping) else {}
     market = state.get("market_intelligence") if isinstance(state.get("market_intelligence"), Mapping) else {}
     channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
     action = str(packet.get("recommended_action") or "neutral").upper()
-    summary = str(packet.get("causal_summary") or "Atlas is waiting for sufficient cognitive signal.")
-    channel_summary = _channel_summary(channels)
+    summary = str(packet.get("causal_summary") or t("home.waiting_summary", lang))
+    channel_summary = _channel_summary(channels, lang)
+    trigger_trace = str(packet.get("reasoning_trace") or t("home.trace_placeholder", lang))
     return f"""<!doctype html>
-<html lang="en">
+<html lang="{escape(lang)}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,39 +47,39 @@ pre {{ margin:10px 0 0; max-height:230px; overflow:auto; white-space:pre-wrap; c
 <body>
 <main class="shell">
   <nav class="nav">
-    <a href="/">Home</a><a href="/dashboard">Ask Atlas</a><a href="/portfolio">Portfolio</a><a href="/markets">Markets</a>
-    <a href="/predictions">Predictions</a><a href="/learning">Learning</a><a href="/workflow">Workflow</a><a href="/roadmap">Roadmap</a><a href="/settings">Settings</a>
+    <a href="/">{escape(t("home.nav.home", lang))}</a><a href="/dashboard">{escape(t("home.nav.ask", lang))}</a><a href="/portfolio">{escape(t("home.nav.portfolio", lang))}</a><a href="/markets">{escape(t("home.nav.markets", lang))}</a>
+    <a href="/predictions">{escape(t("home.nav.predictions", lang))}</a><a href="/learning">{escape(t("home.nav.learning", lang))}</a><a href="/workflow">{escape(t("nav.workflow", lang))}</a><a href="/roadmap">{escape(t("nav.roadmap", lang))}</a><a href="/settings">{escape(t("nav.settings", lang))}</a>
   </nav>
   <section class="hero">
-    <span class="kicker">Today&apos;s Atlas Brief</span>
+    <span class="kicker">{escape(t("home.kicker", lang))}</span>
     <h1>{escape(action)}</h1>
     <p class="summary">{escape(summary)}</p>
-    <div class="summary">Trust: {escape(str(state.get("trust_index") or "Waiting for cognitive signal"))} · Regime: {escape(str(state.get("regime_state") or "Waiting for cognitive signal"))} · Last updated: {escape(str(state.get("timestamp") or ""))}</div>
+    <div class="summary">{escape(t("home.trust", lang))}: {escape(str(state.get("trust_index") or t("empty.signal", lang)))} · {escape(t("home.regime", lang))}: {escape(str(state.get("regime_state") or t("empty.signal", lang)))} · {escape(t("home.updated", lang))}: {escape(str(state.get("timestamp") or ""))}</div>
   </section>
   <section class="grid">
     <article class="card">
-      <span class="kicker">Current Market Context</span>
-      <strong>{escape(str(market.get("status") or "Waiting for market refresh"))}</strong>
+      <span class="kicker">{escape(t("home.market_context", lang))}</span>
+      <strong>{escape(str(market.get("status") or t("home.market_waiting", lang)))}</strong>
       <p>{escape(channel_summary)}</p>
     </article>
     <article class="card">
-      <span class="kicker">Portfolio Impact</span>
-      <strong>{escape(str(portfolio.get("status") or "No portfolio percentages configured"))}</strong>
-      <p>Exposure sum: {escape(str(portfolio.get("exposure_sum_pct") or "Unknown"))}</p>
+      <span class="kicker">{escape(t("home.portfolio_impact", lang))}</span>
+      <strong>{escape(str(portfolio.get("status") or t("home.no_portfolio", lang)))}</strong>
+      <p>{escape(t("home.exposure_sum", lang))}: {escape(str(portfolio.get("exposure_sum_pct") or t("empty.context", lang)))}</p>
     </article>
     <article class="card">
-      <span class="kicker">Data Freshness</span>
-      <strong>{escape(str(market.get("timestamp") or "Unknown"))}</strong>
-      <p>{escape(str(market.get("degraded", "Unknown")))}</p>
+      <span class="kicker">{escape(t("home.data_freshness", lang))}</span>
+      <strong>{escape(str(market.get("timestamp") or t("empty.context", lang)))}</strong>
+      <p>{escape(str(market.get("degraded", t("empty.context", lang))))}</p>
     </article>
     <article class="card wide">
-      <span class="kicker">Trigger Conditions</span>
-      <pre>{escape(json.dumps(packet.get("reasoning_trace") or "Show system details for raw trace.", ensure_ascii=False, indent=2))}</pre>
+      <span class="kicker">{escape(t("home.trigger_conditions", lang))}</span>
+      <pre>{escape(trigger_trace)}</pre>
     </article>
     <article class="card">
-      <span class="kicker">Top Risks</span>
+      <span class="kicker">{escape(t("home.top_risks", lang))}</span>
       <strong>{escape(str(packet.get("risk_level") or "unknown"))}</strong>
-      <p>Confidence: {escape(str(packet.get("confidence", 0.0)))}</p>
+      <p>{escape(t("home.confidence", lang))}: {escape(str(packet.get("confidence", 0.0)))}</p>
     </article>
   </section>
 </main>
@@ -84,20 +87,20 @@ pre {{ margin:10px 0 0; max-height:230px; overflow:auto; white-space:pre-wrap; c
 </html>"""
 
 
-def _channel_summary(channels: Mapping[str, Any]) -> str:
+def _channel_summary(channels: Mapping[str, Any], lang: str = "en") -> str:
     if not channels:
-        return "Waiting for market channels."
+        return t("home.waiting_market", lang)
     live = [key for key, value in channels.items() if str(value) == "LIVE"]
     simulated = [key for key, value in channels.items() if str(value) == "SIMULATED"]
     failed = [key for key, value in channels.items() if str(value) in {"FAILED", "RATE_LIMITED"}]
     missing = [key for key, value in channels.items() if str(value) == "NOT_CONFIGURED"]
     parts = []
     if live:
-        parts.append("Live: " + ", ".join(live))
+        parts.append(f"{t('home.live', lang)}: " + ", ".join(live))
     if simulated:
-        parts.append("Simulated: " + ", ".join(simulated))
+        parts.append(f"{t('home.simulated', lang)}: " + ", ".join(simulated))
     if failed:
-        parts.append("Needs attention: " + ", ".join(failed))
+        parts.append(f"{t('home.needs_attention', lang)}: " + ", ".join(failed))
     if missing:
-        parts.append("Not configured: " + ", ".join(missing[:4]))
-    return " · ".join(parts) or "Waiting for sufficient market signal."
+        parts.append(f"{t('home.not_configured', lang)}: " + ", ".join(missing[:4]))
+    return " · ".join(parts) or t("home.waiting_signal", lang)

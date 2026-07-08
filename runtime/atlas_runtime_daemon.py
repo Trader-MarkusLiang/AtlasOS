@@ -18,6 +18,7 @@ import argparse
 import json
 import signal
 import sys
+import threading
 import time
 from dataclasses import dataclass
 from datetime import datetime
@@ -100,6 +101,7 @@ class AtlasRuntimeDaemon:
             )
         )
         self._running = False
+        self._stop_event = threading.Event()
 
     def run_tick(self, tick_index: int) -> Dict[str, Any]:
         """Run one isolated daemon tick and always return a loggable record."""
@@ -147,6 +149,7 @@ class AtlasRuntimeDaemon:
 
     def run_forever(self) -> None:
         self._running = True
+        self._stop_event.clear()
         tick_index = 0
         while self._running:
             self.run_tick(tick_index)
@@ -154,10 +157,12 @@ class AtlasRuntimeDaemon:
             if self.config.max_cycles is not None and tick_index >= self.config.max_cycles:
                 break
             if not self.config.no_sleep:
-                time.sleep(self.schedule.interval_seconds)
+                if self._stop_event.wait(self.schedule.interval_seconds):
+                    break
 
     def stop(self, *_args: object) -> None:
         self._running = False
+        self._stop_event.set()
 
     def _build_log_entry(
         self,
