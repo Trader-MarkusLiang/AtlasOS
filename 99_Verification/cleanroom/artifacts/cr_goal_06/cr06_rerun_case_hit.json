@@ -1,0 +1,171 @@
+{
+  "case": "hit",
+  "created": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H1-liquidity-expansion-persistence",
+      "actual_outcome": "",
+      "calibration_error": null,
+      "causal_drivers": [
+        "stable volume",
+        "positive breadth",
+        "attention persistence"
+      ],
+      "confidence": 0.72,
+      "created_at": "2026-07-08T08:41:34.429250+00:00",
+      "expected_direction_state": "liquidity expansion",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": null,
+      "forecast_id": "cr06-rerun-hit-001",
+      "forecast_statement": "Liquidity expansion should remain visible after the observation window.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {},
+      "invalidation_conditions": [
+        "liquidity contraction",
+        "breadth reversal"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.429250+00:00"
+        }
+      ],
+      "matured_at": "",
+      "maturity_evidence": {},
+      "outcome_timestamp": "",
+      "prediction_error": null,
+      "runtime_lineage": {},
+      "status": "OPEN",
+      "subject": "market_structure_hit_case",
+      "trust_update": {},
+      "updated_at": "2026-07-08T08:41:34.429250+00:00"
+    },
+    "status_code": 200
+  },
+  "evaluated": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H1-liquidity-expansion-persistence",
+      "actual_outcome": "liquidity expansion confirmed by controlled observation",
+      "calibration_error": 0.28,
+      "causal_drivers": [
+        "stable volume",
+        "positive breadth",
+        "attention persistence"
+      ],
+      "confidence": 0.72,
+      "created_at": "2026-07-08T08:41:34.429250+00:00",
+      "expected_direction_state": "liquidity expansion",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": 0.0,
+      "forecast_id": "cr06-rerun-hit-001",
+      "forecast_statement": "Liquidity expansion should remain visible after the observation window.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {
+        "active_hypothesis": "H1-liquidity-expansion-persistence",
+        "forecast_error": 0.0,
+        "metadata_only": true,
+        "outcome": "supported"
+      },
+      "invalidation_conditions": [
+        "liquidity contraction",
+        "breadth reversal"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.429250+00:00"
+        },
+        {
+          "event": "matured",
+          "status": "MATURED",
+          "timestamp": "2026-07-08T08:41:34.433580+00:00"
+        },
+        {
+          "event": "evaluated",
+          "forecast_error": 0.0,
+          "status": "VERIFIED",
+          "timestamp": "2026-07-08T08:41:34.437522+00:00"
+        }
+      ],
+      "matured_at": "2026-07-08T08:41:34.433580+00:00",
+      "maturity_evidence": {
+        "forecast_id": "cr06-rerun-hit-001",
+        "observation": "volume and breadth checked",
+        "window_closed": true
+      },
+      "outcome_timestamp": "2026-07-08T08:41:34.437522+00:00",
+      "prediction_error": 0.0,
+      "runtime_lineage": {},
+      "status": "VERIFIED",
+      "subject": "market_structure_hit_case",
+      "trust_update": {
+        "bounded": true,
+        "delta": 0.0416,
+        "rolling_trust_after": 0.5416,
+        "rolling_trust_before": 0.5,
+        "status": "applied"
+      },
+      "updated_at": "2026-07-08T08:41:34.437522+00:00"
+    },
+    "status_code": 200
+  },
+  "forecast_id": "cr06-rerun-hit-001",
+  "matured": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H1-liquidity-expansion-persistence",
+      "actual_outcome": "",
+      "calibration_error": null,
+      "causal_drivers": [
+        "stable volume",
+        "positive breadth",
+        "attention persistence"
+      ],
+      "confidence": 0.72,
+      "created_at": "2026-07-08T08:41:34.429250+00:00",
+      "expected_direction_state": "liquidity expansion",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": null,
+      "forecast_id": "cr06-rerun-hit-001",
+      "forecast_statement": "Liquidity expansion should remain visible after the observation window.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {},
+      "invalidation_conditions": [
+        "liquidity contraction",
+        "breadth reversal"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.429250+00:00"
+        },
+        {
+          "event": "matured",
+          "status": "MATURED",
+          "timestamp": "2026-07-08T08:41:34.433580+00:00"
+        }
+      ],
+      "matured_at": "2026-07-08T08:41:34.433580+00:00",
+      "maturity_evidence": {
+        "forecast_id": "cr06-rerun-hit-001",
+        "observation": "volume and breadth checked",
+        "window_closed": true
+      },
+      "outcome_timestamp": "",
+      "prediction_error": null,
+      "runtime_lineage": {},
+      "status": "MATURED",
+      "subject": "market_structure_hit_case",
+      "trust_update": {},
+      "updated_at": "2026-07-08T08:41:34.433580+00:00"
+    },
+    "status_code": 200
+  }
+}

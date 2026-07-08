@@ -1,0 +1,254 @@
+{
+  "predictions_empty": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "forecasts": [],
+      "metrics": {
+        "accuracy": null,
+        "evaluated": 0,
+        "matured": 0,
+        "mean_calibration_error": null,
+        "mean_forecast_error": null,
+        "minimum_sample_size_met": false,
+        "open": 0,
+        "total": 0,
+        "verified": 0
+      },
+      "no_trading_execution": true,
+      "sample_warning": "Low sample size: calibration is directional only, not statistically reliable.",
+      "timestamp": "2026-07-08T08:41:34.425096+00:00"
+    },
+    "status_code": 200
+  },
+  "state": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "attention": null,
+      "daily_cycle": {},
+      "dashboard": {
+        "attention_liquidity_charts": [],
+        "causal_graph_snapshot": {},
+        "latest_self_organization": {},
+        "latest_trust": {},
+        "read_only": true,
+        "regime_state_timeline": [],
+        "system_state": {},
+        "trust_field_evolution_curve": []
+      },
+      "last_decision_brief_id": null,
+      "last_decision_packet": {},
+      "last_event_summary": {},
+      "liquidity": null,
+      "llm_provider_registry": {
+        "active_provider": "openai",
+        "fallback_chain": [
+          "openai",
+          "claude",
+          "ollama",
+          "custom"
+        ],
+        "providers": [
+          {
+            "available_models": [],
+            "base_url": "https://api.openai.com/v1/chat/completions",
+            "enabled": true,
+            "health": "unknown",
+            "id": "openai",
+            "label": "OpenAI",
+            "last_error": "",
+            "last_latency_ms": null,
+            "last_models_error": "",
+            "model": "gpt-5.5",
+            "type": "openai"
+          },
+          {
+            "available_models": [],
+            "base_url": "https://api.anthropic.com/v1/messages",
+            "enabled": false,
+            "health": "unknown",
+            "id": "claude",
+            "label": "Claude",
+            "last_error": "",
+            "last_latency_ms": null,
+            "last_models_error": "",
+            "model": "claude-sonnet-4-20250514",
+            "type": "claude"
+          },
+          {
+            "available_models": [],
+            "base_url": "http://localhost:11434/api/generate",
+            "enabled": true,
+            "health": "unknown",
+            "id": "ollama",
+            "label": "Ollama",
+            "last_error": "",
+            "last_latency_ms": null,
+            "last_models_error": "",
+            "model": "llama3.1",
+            "type": "ollama"
+          },
+          {
+            "available_models": [],
+            "base_url": "",
+            "enabled": false,
+            "health": "unknown",
+            "id": "morecode",
+            "label": "MoreCode / cc switch",
+            "last_error": "",
+            "last_latency_ms": null,
+            "last_models_error": "",
+            "model": "morecode-default",
+            "type": "morecode"
+          },
+          {
+            "available_models": [],
+            "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            "enabled": false,
+            "health": "unknown",
+            "id": "ark",
+            "label": "ARK Coding",
+            "last_error": "",
+            "last_latency_ms": null,
+            "last_models_error": "",
+            "model": "doubao-seed-1-6",
+            "type": "ark"
+          },
+          {
+            "available_models": [],
+            "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            "enabled": false,
+            "health": "unknown",
+            "id": "volcano",
+            "label": "Volcano Coding",
+            "last_error": "",
+            "last_latency_ms": null,
+            "last_models_error": "",
+            "model": "doubao-seed-1-6",
+            "type": "volcano"
+          },
+          {
+            "available_models": [],
+            "base_url": "",
+            "enabled": false,
+            "health": "unknown",
+            "id": "custom",
+            "label": "Custom Proxy",
+            "last_error": "",
+            "last_latency_ms": null,
+            "last_models_error": "",
+            "model": "custom-default",
+            "type": "custom"
+          }
+        ],
+        "supported_provider_types": {
+          "ark": {
+            "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            "label": "ARK Coding",
+            "model": "doubao-seed-1-6",
+            "protocol": "openai_compatible"
+          },
+          "claude": {
+            "base_url": "https://api.anthropic.com/v1/messages",
+            "label": "Claude",
+            "model": "claude-sonnet-4-20250514",
+            "protocol": "anthropic"
+          },
+          "custom": {
+            "base_url": "",
+            "label": "Custom Proxy",
+            "model": "custom-default",
+            "protocol": "proxy"
+          },
+          "morecode": {
+            "base_url": "",
+            "label": "MoreCode / cc switch",
+            "model": "morecode-default",
+            "protocol": "openai_compatible"
+          },
+          "ollama": {
+            "base_url": "http://localhost:11434/api/generate",
+            "label": "Ollama",
+            "model": "llama3.1",
+            "protocol": "ollama"
+          },
+          "openai": {
+            "base_url": "https://api.openai.com/v1/chat/completions",
+            "label": "OpenAI",
+            "model": "gpt-5.5",
+            "protocol": "openai_compatible"
+          },
+          "volcano": {
+            "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            "label": "Volcano Coding",
+            "model": "doubao-seed-1-6",
+            "protocol": "openai_compatible"
+          }
+        }
+      },
+      "llm_trace_summary": {
+        "call_count": 0,
+        "latest_hallucination_risk_proxy": null,
+        "latest_latency_ms": null,
+        "latest_model": null,
+        "providers": {}
+      },
+      "market_intelligence": {
+        "channels": {
+          "liquidity_proxy": "NOT_CONFIGURED",
+          "macro_policy": "NOT_CONFIGURED",
+          "market_breadth": "NOT_CONFIGURED",
+          "narrative_attention": "NOT_CONFIGURED",
+          "news_announcement": "NOT_CONFIGURED",
+          "portfolio_relevance": "NOT_CONFIGURED",
+          "price_volume": "NOT_CONFIGURED",
+          "volatility": "NOT_CONFIGURED"
+        },
+        "degraded": true,
+        "events_enqueued": 0,
+        "no_trading_execution": true,
+        "observations": [],
+        "read_only": true,
+        "status": "not_run",
+        "timestamp": null
+      },
+      "portfolio_context": {
+        "cash_or_unassigned_pct": null,
+        "exposure_map": {
+          "asset_concentration": [],
+          "correlated_risk_clusters": [],
+          "liquidity_sensitivity": "diversified_or_unknown",
+          "market_concentration": {},
+          "portfolio_relevance_score": 0.0,
+          "regime_sensitivity": "broad_or_unclassified",
+          "role_concentration": {},
+          "theme_concentration": {}
+        },
+        "exposure_sum_pct": 0,
+        "no_trading_execution": true,
+        "portfolio_consistency": "PASS",
+        "positions": [],
+        "privacy": "percentage_only_no_account_amounts",
+        "read_only": true,
+        "source": "/tmp/atlas-cleanroom-state-cr06-rerun-20260708-163952/runtime/config/user_config.json",
+        "status": "missing",
+        "warnings": []
+      },
+      "proposed_state": "Unknown",
+      "regime_state": "Unknown",
+      "runtime": {
+        "feedback_stability_index": null,
+        "pid": null,
+        "pid_file": "/tmp/atlas-cleanroom-state-cr06-rerun-20260708-163952/runtime/atlas_runtime.pid",
+        "rolling_trust_index": null,
+        "running": false
+      },
+      "self_organization_state": {},
+      "structural_coevolution_state": {},
+      "tick_counter": 0,
+      "timestamp": "2026-07-08T08:41:34.419234+00:00",
+      "trust_index": null,
+      "volatility": null
+    },
+    "status_code": 200
+  }
+}

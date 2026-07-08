@@ -1,0 +1,132 @@
+{
+  "db_path": "/tmp/atlas-cleanroom-state-cr06-rerun-20260708-163952/runtime/atlas_runtime.sqlite3",
+  "direct_eval_attack_persisted_status": "OPEN",
+  "forecast_count_total": 6,
+  "required_case_count": 5,
+  "required_case_error_fields": {
+    "cr06-rerun-high-confidence-miss-001": {
+      "actual_outcome_present": true,
+      "calibration_error": 0.95,
+      "forecast_error": 1.0,
+      "prediction_error": 1.0
+    },
+    "cr06-rerun-hit-001": {
+      "actual_outcome_present": true,
+      "calibration_error": 0.28,
+      "forecast_error": 0.0,
+      "prediction_error": 0.0
+    },
+    "cr06-rerun-inconclusive-001": {
+      "actual_outcome_present": true,
+      "calibration_error": 0.01,
+      "forecast_error": 0.5,
+      "prediction_error": 0.5
+    },
+    "cr06-rerun-low-confidence-hit-001": {
+      "actual_outcome_present": true,
+      "calibration_error": 0.75,
+      "forecast_error": 0.0,
+      "prediction_error": 0.0
+    },
+    "cr06-rerun-miss-001": {
+      "actual_outcome_present": true,
+      "calibration_error": 0.68,
+      "forecast_error": 1.0,
+      "prediction_error": 1.0
+    }
+  },
+  "required_case_lineage_events": {
+    "cr06-rerun-high-confidence-miss-001": [
+      "created",
+      "matured",
+      "evaluated"
+    ],
+    "cr06-rerun-hit-001": [
+      "created",
+      "matured",
+      "evaluated"
+    ],
+    "cr06-rerun-inconclusive-001": [
+      "created",
+      "matured",
+      "evaluated"
+    ],
+    "cr06-rerun-low-confidence-hit-001": [
+      "created",
+      "matured",
+      "evaluated"
+    ],
+    "cr06-rerun-miss-001": [
+      "created",
+      "matured",
+      "evaluated"
+    ]
+  },
+  "required_case_statuses": {
+    "cr06-rerun-high-confidence-miss-001": "INVALIDATED",
+    "cr06-rerun-hit-001": "VERIFIED",
+    "cr06-rerun-inconclusive-001": "INCONCLUSIVE",
+    "cr06-rerun-low-confidence-hit-001": "VERIFIED",
+    "cr06-rerun-miss-001": "INVALIDATED"
+  },
+  "state_store": {
+    "causal_hypothesis_memory": {
+      "forecast_outcome_history": [
+        {
+          "active_hypothesis": "H1-liquidity-expansion-persistence",
+          "forecast_error": 0.0,
+          "forecast_id": "cr06-rerun-hit-001",
+          "status": "VERIFIED"
+        },
+        {
+          "active_hypothesis": "H2-attention-rotation",
+          "forecast_error": 1.0,
+          "forecast_id": "cr06-rerun-miss-001",
+          "status": "INVALIDATED"
+        },
+        {
+          "active_hypothesis": "H3-compression-with-low-evidence",
+          "forecast_error": 0.5,
+          "forecast_id": "cr06-rerun-inconclusive-001",
+          "status": "INCONCLUSIVE"
+        },
+        {
+          "active_hypothesis": "H4-high-confidence-risk easing",
+          "forecast_error": 1.0,
+          "forecast_id": "cr06-rerun-high-confidence-miss-001",
+          "status": "INVALIDATED"
+        },
+        {
+          "active_hypothesis": "H5-low-confidence-narrative-cooling",
+          "forecast_error": 0.0,
+          "forecast_id": "cr06-rerun-low-confidence-hit-001",
+          "status": "VERIFIED"
+        }
+      ],
+      "last_forecast_outcome": {
+        "active_hypothesis": "H5-low-confidence-narrative-cooling",
+        "forecast_error": 0.0,
+        "forecast_id": "cr06-rerun-low-confidence-hit-001",
+        "status": "VERIFIED"
+      }
+    },
+    "forecast_calibration_state": {
+      "evaluated_count": 5,
+      "last_forecast_id": "cr06-rerun-low-confidence-hit-001",
+      "last_status": "VERIFIED",
+      "mean_forecast_error": 0.5,
+      "minimum_sample_size_met": false
+    },
+    "system_trust_state": {
+      "latest_forecast_calibration": {
+        "delta": 0.0275,
+        "forecast_error": 0.0,
+        "forecast_id": "cr06-rerun-low-confidence-hit-001",
+        "status": "VERIFIED"
+      },
+      "rolling_trust_index": 0.3187,
+      "trust_adjustment_reason": "forecast_outcome_calibration",
+      "trust_direction": "improving"
+    }
+  }
+}

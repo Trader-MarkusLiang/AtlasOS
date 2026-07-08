@@ -1,0 +1,168 @@
+{
+  "case": "inconclusive",
+  "created": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H3-compression-with-low-evidence",
+      "actual_outcome": "",
+      "calibration_error": null,
+      "causal_drivers": [
+        "mixed volatility signals",
+        "thin liquidity"
+      ],
+      "confidence": 0.51,
+      "created_at": "2026-07-08T08:41:34.579801+00:00",
+      "expected_direction_state": "volatility compression",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": null,
+      "forecast_id": "cr06-rerun-inconclusive-001",
+      "forecast_statement": "Volatility compression should emerge, but source quality is mixed.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {},
+      "invalidation_conditions": [
+        "data remains mixed",
+        "source conflict persists"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.579801+00:00"
+        }
+      ],
+      "matured_at": "",
+      "maturity_evidence": {},
+      "outcome_timestamp": "",
+      "prediction_error": null,
+      "runtime_lineage": {},
+      "status": "OPEN",
+      "subject": "market_structure_inconclusive_case",
+      "trust_update": {},
+      "updated_at": "2026-07-08T08:41:34.579801+00:00"
+    },
+    "status_code": 200
+  },
+  "evaluated": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H3-compression-with-low-evidence",
+      "actual_outcome": "mixed observation and insufficient source agreement",
+      "calibration_error": 0.01,
+      "causal_drivers": [
+        "mixed volatility signals",
+        "thin liquidity"
+      ],
+      "confidence": 0.51,
+      "created_at": "2026-07-08T08:41:34.579801+00:00",
+      "expected_direction_state": "volatility compression",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": 0.5,
+      "forecast_id": "cr06-rerun-inconclusive-001",
+      "forecast_statement": "Volatility compression should emerge, but source quality is mixed.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {
+        "active_hypothesis": "H3-compression-with-low-evidence",
+        "forecast_error": 0.5,
+        "metadata_only": true,
+        "outcome": "inconclusive"
+      },
+      "invalidation_conditions": [
+        "data remains mixed",
+        "source conflict persists"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.579801+00:00"
+        },
+        {
+          "event": "matured",
+          "status": "MATURED",
+          "timestamp": "2026-07-08T08:41:34.585154+00:00"
+        },
+        {
+          "event": "evaluated",
+          "forecast_error": 0.5,
+          "status": "INCONCLUSIVE",
+          "timestamp": "2026-07-08T08:41:34.589913+00:00"
+        }
+      ],
+      "matured_at": "2026-07-08T08:41:34.585154+00:00",
+      "maturity_evidence": {
+        "forecast_id": "cr06-rerun-inconclusive-001",
+        "observation": "source conflict persisted",
+        "window_closed": true
+      },
+      "outcome_timestamp": "2026-07-08T08:41:34.589913+00:00",
+      "prediction_error": 0.5,
+      "runtime_lineage": {},
+      "status": "INCONCLUSIVE",
+      "subject": "market_structure_inconclusive_case",
+      "trust_update": {
+        "bounded": true,
+        "delta": -0.04,
+        "rolling_trust_after": 0.4072,
+        "rolling_trust_before": 0.4472,
+        "status": "applied"
+      },
+      "updated_at": "2026-07-08T08:41:34.589913+00:00"
+    },
+    "status_code": 200
+  },
+  "forecast_id": "cr06-rerun-inconclusive-001",
+  "matured": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H3-compression-with-low-evidence",
+      "actual_outcome": "",
+      "calibration_error": null,
+      "causal_drivers": [
+        "mixed volatility signals",
+        "thin liquidity"
+      ],
+      "confidence": 0.51,
+      "created_at": "2026-07-08T08:41:34.579801+00:00",
+      "expected_direction_state": "volatility compression",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": null,
+      "forecast_id": "cr06-rerun-inconclusive-001",
+      "forecast_statement": "Volatility compression should emerge, but source quality is mixed.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {},
+      "invalidation_conditions": [
+        "data remains mixed",
+        "source conflict persists"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.579801+00:00"
+        },
+        {
+          "event": "matured",
+          "status": "MATURED",
+          "timestamp": "2026-07-08T08:41:34.585154+00:00"
+        }
+      ],
+      "matured_at": "2026-07-08T08:41:34.585154+00:00",
+      "maturity_evidence": {
+        "forecast_id": "cr06-rerun-inconclusive-001",
+        "observation": "source conflict persisted",
+        "window_closed": true
+      },
+      "outcome_timestamp": "",
+      "prediction_error": null,
+      "runtime_lineage": {},
+      "status": "MATURED",
+      "subject": "market_structure_inconclusive_case",
+      "trust_update": {},
+      "updated_at": "2026-07-08T08:41:34.585154+00:00"
+    },
+    "status_code": 200
+  }
+}

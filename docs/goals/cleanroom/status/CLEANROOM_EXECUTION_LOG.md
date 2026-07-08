@@ -121,6 +121,64 @@ CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
 integration, portfolio mutation, or private holdings were modified.
 
+## 2026-07-08 - CR_GOAL_06 Forecast Accountability Black-Box Completed
+
+### Summary
+
+Proved that Atlas records expectations before outcomes and later evaluates them through the
+supported `/predictions` UI/API path.
+
+### Evidence
+
+- Final fresh clone: `/tmp/atlas-cleanroom-cr06-rerun-20260708-163952`
+- Final clean runtime state: `/tmp/atlas-cleanroom-state-cr06-rerun-20260708-163952`
+- Final repair commit: `4280a5ad583c57a29075e5a6a3533adba6b3888d`
+- Report:
+  `99_Verification/cleanroom/CR_GOAL_06_Forecast_Accountability_Blackbox_Report.md`
+- Artifacts:
+  `99_Verification/cleanroom/artifacts/cr_goal_06/`
+
+### Proven Lifecycle
+
+- Five required cases were created through `POST /predictions`.
+- All five moved from `OPEN` to `MATURED` through `POST /predictions/mature`.
+- All five were evaluated through `POST /predictions/evaluate`.
+- Final statuses were `VERIFIED`, `INVALIDATED`, `INCONCLUSIVE`, `INVALIDATED`, and `VERIFIED`.
+- Forecast metrics before attack regression: evaluated `5`, verified `2`, mean forecast error
+  `0.5`, mean calibration error `0.534`.
+- Persistence check confirmed each required lineage was `created -> matured -> evaluated`.
+
+### Repair
+
+Initial attack found that OPEN forecasts could be directly evaluated and duplicate forecast IDs
+could be overwritten. Commit `4280a5a cleanroom: enforce forecast lifecycle boundaries` repaired
+both issues.
+
+Post-repair regression from a new clean-room clone confirmed:
+
+- direct evaluation without maturity returns `forecast_not_matured`;
+- duplicate creation returns `forecast_already_exists`;
+- the direct-evaluation attack row remains `OPEN` after rejected evaluation.
+
+### Classification
+
+CR_GOAL_06 classification: `PROVEN_COMPLETE`
+
+Evidence level: `REAL_RUNTIME_PROVEN`
+
+### Transition
+
+`CLEANROOM_GOAL_STATUS.json` now records current goal:
+
+```text
+CR_GOAL_07_SELF_ITERATION_BLACKBOX
+```
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
+integration, portfolio mutation, prediction behavior, or private holdings were modified.
+
 ## 2026-07-08 - CR_GOAL_04 Live Market Black-Box Completed
 
 ### Summary

@@ -1,0 +1,168 @@
+{
+  "case": "high_confidence_miss",
+  "created": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H4-high-confidence-risk easing",
+      "actual_outcome": "",
+      "calibration_error": null,
+      "causal_drivers": [
+        "assumed stabilization",
+        "assumed liquidity relief"
+      ],
+      "confidence": 0.95,
+      "created_at": "2026-07-08T08:41:34.656204+00:00",
+      "expected_direction_state": "risk compression easing",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": null,
+      "forecast_id": "cr06-rerun-high-confidence-miss-001",
+      "forecast_statement": "Risk compression easing should be strong after the window.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {},
+      "invalidation_conditions": [
+        "risk compression intensifies",
+        "liquidity relief absent"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.656204+00:00"
+        }
+      ],
+      "matured_at": "",
+      "maturity_evidence": {},
+      "outcome_timestamp": "",
+      "prediction_error": null,
+      "runtime_lineage": {},
+      "status": "OPEN",
+      "subject": "market_structure_high_confidence_miss_case",
+      "trust_update": {},
+      "updated_at": "2026-07-08T08:41:34.656204+00:00"
+    },
+    "status_code": 200
+  },
+  "evaluated": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H4-high-confidence-risk easing",
+      "actual_outcome": "risk compression intensified and liquidity relief was absent",
+      "calibration_error": 0.95,
+      "causal_drivers": [
+        "assumed stabilization",
+        "assumed liquidity relief"
+      ],
+      "confidence": 0.95,
+      "created_at": "2026-07-08T08:41:34.656204+00:00",
+      "expected_direction_state": "risk compression easing",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": 1.0,
+      "forecast_id": "cr06-rerun-high-confidence-miss-001",
+      "forecast_statement": "Risk compression easing should be strong after the window.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {
+        "active_hypothesis": "H4-high-confidence-risk easing",
+        "forecast_error": 1.0,
+        "metadata_only": true,
+        "outcome": "weakened"
+      },
+      "invalidation_conditions": [
+        "risk compression intensifies",
+        "liquidity relief absent"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.656204+00:00"
+        },
+        {
+          "event": "matured",
+          "status": "MATURED",
+          "timestamp": "2026-07-08T08:41:34.661472+00:00"
+        },
+        {
+          "event": "evaluated",
+          "forecast_error": 1.0,
+          "status": "INVALIDATED",
+          "timestamp": "2026-07-08T08:41:34.666455+00:00"
+        }
+      ],
+      "matured_at": "2026-07-08T08:41:34.661472+00:00",
+      "maturity_evidence": {
+        "forecast_id": "cr06-rerun-high-confidence-miss-001",
+        "observation": "risk compression worsened",
+        "window_closed": true
+      },
+      "outcome_timestamp": "2026-07-08T08:41:34.666455+00:00",
+      "prediction_error": 1.0,
+      "runtime_lineage": {},
+      "status": "INVALIDATED",
+      "subject": "market_structure_high_confidence_miss_case",
+      "trust_update": {
+        "bounded": true,
+        "delta": -0.116,
+        "rolling_trust_after": 0.2912,
+        "rolling_trust_before": 0.4072,
+        "status": "applied"
+      },
+      "updated_at": "2026-07-08T08:41:34.666455+00:00"
+    },
+    "status_code": 200
+  },
+  "forecast_id": "cr06-rerun-high-confidence-miss-001",
+  "matured": {
+    "content_type": "application/json; charset=utf-8",
+    "json": {
+      "active_hypothesis": "H4-high-confidence-risk easing",
+      "actual_outcome": "",
+      "calibration_error": null,
+      "causal_drivers": [
+        "assumed stabilization",
+        "assumed liquidity relief"
+      ],
+      "confidence": 0.95,
+      "created_at": "2026-07-08T08:41:34.656204+00:00",
+      "expected_direction_state": "risk compression easing",
+      "expected_observation_window": "Unknown",
+      "explanation_error": {},
+      "forecast_error": null,
+      "forecast_id": "cr06-rerun-high-confidence-miss-001",
+      "forecast_statement": "Risk compression easing should be strong after the window.",
+      "horizon": "controlled same-day maturity",
+      "hypothesis_evaluation": {},
+      "invalidation_conditions": [
+        "risk compression intensifies",
+        "liquidity relief absent"
+      ],
+      "lineage": [
+        {
+          "event": "created",
+          "status": "OPEN",
+          "timestamp": "2026-07-08T08:41:34.656204+00:00"
+        },
+        {
+          "event": "matured",
+          "status": "MATURED",
+          "timestamp": "2026-07-08T08:41:34.661472+00:00"
+        }
+      ],
+      "matured_at": "2026-07-08T08:41:34.661472+00:00",
+      "maturity_evidence": {
+        "forecast_id": "cr06-rerun-high-confidence-miss-001",
+        "observation": "risk compression worsened",
+        "window_closed": true
+      },
+      "outcome_timestamp": "",
+      "prediction_error": null,
+      "runtime_lineage": {},
+      "status": "MATURED",
+      "subject": "market_structure_high_confidence_miss_case",
+      "trust_update": {},
+      "updated_at": "2026-07-08T08:41:34.661472+00:00"
+    },
+    "status_code": 200
+  }
+}
