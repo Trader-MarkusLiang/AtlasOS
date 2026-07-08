@@ -2,19 +2,21 @@
 
 ## Current Classification
 
-`PROVEN_PARTIAL`
+`PROVEN_COMPLETE`
 
 GOAL 07 now has target-level proof for meaningful daily-cycle execution, accelerated 500-cycle
-stability, short scheduler-sleep runtime, and recovery cases. It still does not prove 2h or 24h
-continuous operation.
+stability, short scheduler-sleep runtime, tested recovery cases, and a 2-hour real-duration daemon
+soak. It still does not prove 24-hour unattended operation.
 
 ## Supporting Evidence
 
 | Evidence | File | Classification |
 |---|---|---|
-| GOAL 07 report | `99_Verification/GOAL_07_Autonomous_Operations_Report.md` | `PROVEN_PARTIAL` |
+| GOAL 07 report | `99_Verification/GOAL_07_Autonomous_Operations_Report.md` | `PROVEN_COMPLETE` |
 | GOAL 07 validator | `99_Verification/validate_goal_07_autonomous_operations.py` | `ACCELERATED_ONLY_WITH_SHORT_REAL_DURATION` |
 | GOAL 07 artifact | `99_Verification/artifacts/goal_07_autonomous_operations/operations_result.json` | `ACCELERATED_ONLY_WITH_SHORT_REAL_DURATION` |
+| GOAL 07 long soak runner | `99_Verification/run_goal_07_long_soak.py` | validation runner |
+| GOAL 07 2h soak artifact | `99_Verification/artifacts/goal_07_autonomous_operations/long_soak_2h_result.json` | `REAL_DURATION_2H_PROVEN` |
 | Real-duration soak | `99_Verification/Atlas_OS_Real_Duration_Soak_Report.md` | `PARTIAL` |
 | Runtime failure injection | `99_Verification/Atlas_OS_Live_Runtime_Failure_Injection_Report.md` | `REAL_RUNTIME_PROVEN` for tested failures |
 | Tribunal operations rows | `99_Verification/Atlas_OS_Real_World_Activation_Tribunal.md` | `PARTIAL` |
@@ -25,6 +27,7 @@ continuous operation.
 - All four daily-cycle phases executed actual read-only tasks and persisted phase artifacts.
 - Accelerated 500-cycle soak completed with 0 tick errors.
 - Short real wall-clock loop ran with scheduler sleep.
+- 2-hour wall-clock daemon soak completed with scheduler sleep and 0 tick errors.
 - Tick errors remained isolated.
 - Malformed inbox, corrupt telemetry, stale PID, UI restart, provider fallback, and market failure
   were tested.
@@ -45,18 +48,42 @@ continuous operation.
 | short real-duration cycles | 2 |
 | short real-duration elapsed seconds | 10.0563 |
 
+## GOAL 07 Two-Hour Soak Metrics
+
+| Metric | Value |
+|---|---:|
+| classification | `REAL_DURATION_2H_PROVEN` |
+| elapsed seconds | 7,264.9623 |
+| runtime log lines | 721 |
+| tick errors | 0 |
+| decision briefs | 721 |
+| forecast ledger rows | 721 |
+| events | 1,467 |
+| state transitions | 721 |
+| system logs | 2,163 |
+| pending queue depth | 0 |
+| provider failures | 721 |
+| market failure ticks | 0 |
+| max RSS KB | 35,120 |
+| max CPU % | 13.6 |
+| trust drift | -0.0026 |
+| hypothesis switches | 0 |
+| no trading execution | true |
+
+Provider failures were expected failsafe degradations from an isolated `litellm` backend without
+the optional dependency installed. They did not crash ticks or create trading behavior.
+
 ## Remaining Gaps
 
-- 2h soak not complete.
 - 24h soak not attempted.
-- Active provider timeout not separately held open.
-- Resource growth needs longer sample.
+- Active live-provider stability during a long run remains a small sample.
+- Resource growth needs a 24h sample before any production-ready claim.
 
 ## Next Evidence To Collect
 
-1. 2h soak with PID, uptime, RSS, CPU, queue depth, tick count, and error count.
-2. Active provider timeout run.
-3. 24h soak plan after 2h result.
+1. 24h soak with PID, uptime, RSS, CPU, queue depth, tick count, and error count.
+2. Active provider timeout run during longer operation.
+3. Release-readiness tribunal under GOAL 08.
 
 ## Non-Evidence
 

@@ -12,9 +12,9 @@
     "why_versions_differ": "Core v2.x, Runtime v0.x, UI v1.x/v2.x, and Data v0.x can coexist because they describe different product surfaces with different maturity levels."
   },
   "current_stage": "productization internal alpha after Prompt D real-world activation hardening",
-  "next_stage": "2h real-duration soak, stable live market daemon path, browser UX closure, forecast accountability sample growth",
+  "next_stage": "GOAL 08 release-readiness tribunal, 24h soak planning, stable live market daemon path, browser UX closure, forecast accountability sample growth",
   "active_version": "productization-sprint",
-  "stability_status": "short_real_soak_partial_no_2h_or_24h_proof",
+  "stability_status": "goal_07_2h_real_soak_proven_no_24h_proof",
   "trust_status": "real_runtime_forecast_error_loop_proven_low_sample",
   "prompt_d_evidence": {
     "provider_inference": "LIVE_PROVEN",
@@ -42,7 +42,7 @@
       "current_version": "v0.3.x / real-runtime internal alpha",
       "status": "current",
       "role": "Local daemon, EventStream, DecisionLoop, telemetry, state store, safe runtime controls.",
-      "current_focus": "2h+ daemon soak, market-provider recovery, restart recovery, UI control accuracy, and durable runtime evidence."
+      "current_focus": "GOAL 08 release readiness, 24h daemon soak planning, market-provider recovery, restart recovery, UI control accuracy, and durable runtime evidence."
     },
     {
       "track": "Atlas Cognitive Overlay",
@@ -81,7 +81,7 @@
       "validation": {
         "status": "REAL_RUNTIME_PROVEN",
         "result_file": "99_Verification/Runtime_Daemon_v0.1_Validation_Result.md",
-        "evidence_note": "Prompt D proved daemon ticks, scheduler sleep, logs, and forecast creation, but only short wall-clock soak."
+        "evidence_note": "Prompt D proved daemon ticks, scheduler sleep, logs, and forecast creation. GOAL 07 later proved a 2-hour real-duration daemon soak; 24h remains unproven."
       }
     },
     {

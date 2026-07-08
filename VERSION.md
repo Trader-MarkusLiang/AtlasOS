@@ -17,19 +17,19 @@ Productization track: Prompt D real-world activation hardening
 Parallel version model:
 
 - Atlas Core / Knowledge OS: v2.1 RC
-- Atlas Runtime: real daemon / EventStream / DecisionLoop path partially proven; short wall-clock soak only, no 2h/24h proof
+- Atlas Runtime: real daemon / EventStream / DecisionLoop path proven through GOAL 07 two-hour wall-clock soak; no 24h proof
 - Atlas Cognitive Overlay: symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence
 - Atlas UI / Product: UI v2.x + provider configuration v1.4.x + Decision Brief-first Home; browser UX evidence is partial
 - Atlas Data / Market Intelligence: live market fetch attempted; daemon path currently degraded by provider/rate-limit failures
 
-Prompt D evidence classification:
+Current evidence classification:
 
 - Provider inference and fallback: `LIVE_PROVEN`
 - Portfolio context runtime path: `REAL_RUNTIME_PROVEN`
 - Forecast lineage and self-iteration: `REAL_RUNTIME_PROVEN`
 - Daily-cycle dispatch: `REAL_RUNTIME_PROVEN`
 - Live market observation: `PARTIAL` / `EXTERNAL_BLOCKER`
-- Real-duration stability: `PARTIAL`
+- Real-duration stability: `REAL_RUNTIME_PROVEN` for 2h GOAL 07 soak; 24h still not proven
 
 Release lifecycle: Alpha -> RC -> Production Trial -> Final
 

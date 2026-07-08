@@ -41,12 +41,12 @@ Runtime, UI, and Data tracks use separate version labels because they mature ind
 | Track | Current State |
 |---|---|
 | Atlas Core / Knowledge OS | v2.1 RC Production Trial |
-| Atlas Runtime | real daemon / EventStream / DecisionLoop path partially proven; short wall-clock soak only, no 2h/24h proof |
+| Atlas Runtime | real daemon / EventStream / DecisionLoop path proven through GOAL 07 two-hour wall-clock soak; no 24h proof |
 | Atlas Cognitive Overlay | symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence |
 | Atlas UI / Product | control center and settings routes render; browser UX is partial and stale-server risk remains |
 | Atlas Data / Market Intelligence | live market fetch attempted; daemon path currently degraded by provider/rate-limit failures; breadth/news/macro/narrative channels explicitly not configured |
 
-Prompt D evidence levels:
+Current evidence levels:
 
 | Area | Current Evidence |
 |---|---|
@@ -55,7 +55,7 @@ Prompt D evidence levels:
 | Forecast lineage and self-iteration | `REAL_RUNTIME_PROVEN` / `LIVE_PROVEN` for treatment-control behavioral delta |
 | Daily cycle dispatch | `REAL_RUNTIME_PROVEN` through daemon phase dispatch |
 | Live market observation | `PARTIAL` / `EXTERNAL_BLOCKER` due provider disconnects and rate limits |
-| Real-duration stability | `PARTIAL`; short soak only, not 2h or 24h |
+| Real-duration stability | `REAL_RUNTIME_PROVEN` for 2h GOAL 07 soak; 24h still not proven |
 
 Latest release tag: ais-v1.0.
 

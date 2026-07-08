@@ -5,7 +5,8 @@
 `PARTIAL`
 
 Atlas is a partially real-runtime-proven internal alpha. It is not Release Candidate, not
-production, not live-market proven, and not 2h/24h stable.
+production, not complete-live-market proven, and not 24h stable. GOAL 07 has now proven a 2-hour
+real-duration daemon soak.
 
 ## Supporting Evidence
 
@@ -18,7 +19,8 @@ production, not live-market proven, and not 2h/24h stable.
 | Goal status registry | `docs/goals/status/GOAL_STATUS.json` | active |
 | GOAL 05 forecast accountability | `99_Verification/GOAL_05_Forecast_Accountability_Report.md` | `REAL_RUNTIME_PROVEN` |
 | GOAL 06 self-iteration reality | `99_Verification/GOAL_06_True_Self_Iteration_Report.md` | `REAL_RUNTIME_BEHAVIORAL_LOOP` |
-| GOAL 07 autonomous operations | `99_Verification/GOAL_07_Autonomous_Operations_Report.md` | `PROVEN_PARTIAL` |
+| GOAL 07 autonomous operations | `99_Verification/GOAL_07_Autonomous_Operations_Report.md` | `PROVEN_COMPLETE` |
+| GOAL 07 2h soak artifact | `99_Verification/artifacts/goal_07_autonomous_operations/long_soak_2h_result.json` | `REAL_DURATION_2H_PROVEN` |
 
 ## Proven Areas
 
@@ -28,21 +30,22 @@ production, not live-market proven, and not 2h/24h stable.
 - Portfolio cognition differential through UI/runtime path through GOAL 04.
 - Forecast accountability lifecycle through normal runtime-supported paths through GOAL 05.
 - Self-iteration treatment/control behavior through GOAL 06.
-- Daily-cycle daemon dispatch and 500-cycle accelerated operations through GOAL 07.
+- Daily-cycle daemon dispatch, 500-cycle accelerated operations, and 2-hour real-duration daemon
+  soak through GOAL 07.
 - Failure recovery for tested cases through GOAL 07.
 
 ## Open Gaps
 
-- 2h and 24h real-duration soak.
+- 24h real-duration soak.
 - Breadth/news/macro/narrative live feeds remain not configured.
 - Provider long-run stability sample remains small.
 
 ## Next Evidence To Collect
 
-1. 2h wall-clock soak report.
-2. Provider stability evidence during a longer GOAL 07 soak.
-3. Oscillation and stability monitoring for forecast-feedback loops.
-4. Release tribunal after the remaining blockers close.
+1. GOAL 08 release-readiness tribunal.
+2. 24h wall-clock soak report.
+3. Provider stability evidence during a longer run.
+4. Oscillation and stability monitoring for forecast-feedback loops.
 
 ## Non-Evidence
 

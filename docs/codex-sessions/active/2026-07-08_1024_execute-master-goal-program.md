@@ -203,6 +203,15 @@ v0.8.
   - GOAL 07 remains `PROVEN_PARTIAL`; `GOAL_STATUS.json` stays on
     `GOAL_07_AUTONOMOUS_OPERATIONS` because 2h/24h wall-clock stability is not proven.
   - committed GOAL 07 partial proof as `d6511725fd916be325de89356aa3160f292db014`.
+- 2026-07-08 14:27 CST GOAL 07 two-hour real-duration proof:
+  - validated the previously completed long-soak artifact with
+    `python3 -m json.tool 99_Verification/artifacts/goal_07_autonomous_operations/long_soak_2h_result.json`;
+  - compiled `99_Verification/run_goal_07_long_soak.py`;
+  - re-ran `git diff --check`;
+  - reconciled GOAL 07 report, GOAL 07 evidence, master evidence, GOAL 08 evidence, status
+    registry, execution log, README, VERSION, CHANGELOG, and roadmap truth so they state:
+    2-hour real-duration daemon stability is proven, 24-hour unattended stability is not proven;
+  - advanced `GOAL_STATUS.json` current cursor to `GOAL_08_RELEASE_READINESS`.
 
 ## Files Changed
 
@@ -251,6 +260,13 @@ v0.8.
 - `99_Verification/validate_goal_07_autonomous_operations.py`
 - `99_Verification/artifacts/goal_07_autonomous_operations/operations_result.json`
 - `docs/goals/evidence/GOAL_07_EVIDENCE.md`
+- `99_Verification/run_goal_07_long_soak.py`
+- `99_Verification/artifacts/goal_07_autonomous_operations/long_soak_2h_result.json`
+- `docs/goals/evidence/GOAL_08_EVIDENCE.md`
+- `README.md`
+- `VERSION.md`
+- `CHANGELOG.md`
+- `docs/atlas_roadmap.json`
 
 ## Decisions
 
@@ -291,6 +307,8 @@ v0.8.
 - GOAL 07 has target-level partial proof for scheduled cycles, 500-cycle accelerated stability,
   short real-duration sleep, and recovery. It remains active until longer wall-clock stability is
   proven or explicitly accepted as a release blocker.
+- GOAL 07 now has two-hour real-duration daemon proof and is ready to be committed as
+  `PROVEN_COMPLETE`; the execution cursor is `GOAL_08_RELEASE_READINESS`.
 - A temporary UI server process is still visible on port `8876`; stop or reuse it intentionally
   before further browser tests.
 
@@ -325,15 +343,17 @@ v0.8.
 - GOAL 07 compile check: PASS.
 - GOAL 07 autonomous operations validator: PASS.
 - GOAL 07 artifact JSON generation: PASS.
+- GOAL 07 long-soak artifact JSON check: PASS.
+- GOAL 07 long-soak runner compile check: PASS.
+- GOAL 07 two-hour reconciliation `git diff --check`: PASS.
 
 ## Resume Instructions
 
 1. Read `docs/goals/status/GOAL_STATUS.json`.
-2. Confirm `current_goal` is `GOAL_07_AUTONOMOUS_OPERATIONS`.
-3. Read `docs/goals/GOAL_07_AUTONOMOUS_OPERATIONS.md` and
-   `docs/goals/evidence/GOAL_07_EVIDENCE.md`.
-4. Run a longer wall-clock soak, ideally 2 hours, with PID, uptime, RSS, CPU, DB growth, queue
-   depth, errors, provider failures, trust drift, and hypothesis switches.
+2. Confirm `current_goal` is `GOAL_08_RELEASE_READINESS`.
+3. Read `docs/goals/GOAL_08_RELEASE_READINESS.md` and
+   `docs/goals/evidence/GOAL_08_EVIDENCE.md`.
+4. Create and run the GOAL 08 release-readiness tribunal against the current evidence set.
 5. Preserve hard boundaries: no broker/trading execution, no cognition rewrites, no speculative
    engines, no private config commits.
 
