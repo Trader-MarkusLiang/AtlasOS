@@ -7,6 +7,7 @@ and never validates or changes DecisionPacket semantics.
 from __future__ import annotations
 
 import json
+import os
 import time
 import urllib.error
 import urllib.request
@@ -19,6 +20,9 @@ from runtime.llm.provider_registry import (
     provider_api_key,
     record_provider_result,
 )
+
+
+DEFAULT_PROVIDER_TIMEOUT_SECONDS = 8.0
 
 
 def route_llm_request(
@@ -138,7 +142,7 @@ def _call_openai_compatible(provider: Mapping[str, Any], prompt: str, context: M
         headers=headers,
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
+    with urllib.request.urlopen(request, timeout=_provider_timeout_seconds(provider)) as response:
         data = json.loads(response.read().decode("utf-8"))
     return str(data["choices"][0]["message"]["content"])
 
@@ -170,7 +174,7 @@ def _call_anthropic(provider: Mapping[str, Any], prompt: str, context: Mapping[s
         },
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
+    with urllib.request.urlopen(request, timeout=_provider_timeout_seconds(provider)) as response:
         data = json.loads(response.read().decode("utf-8"))
     return str(data["content"][0]["text"])
 
@@ -190,7 +194,7 @@ def _call_ollama(provider: Mapping[str, Any], prompt: str, context: Mapping[str,
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
+    with urllib.request.urlopen(request, timeout=_provider_timeout_seconds(provider)) as response:
         data = json.loads(response.read().decode("utf-8"))
     return str(data.get("response", ""))
 
@@ -214,11 +218,20 @@ def _call_proxy(provider: Mapping[str, Any], prompt: str, context: Mapping[str, 
         headers=headers,
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
+    with urllib.request.urlopen(request, timeout=_provider_timeout_seconds(provider)) as response:
         data = json.loads(response.read().decode("utf-8"))
     if isinstance(data, dict):
         return str(data.get("content") or data.get("text") or data.get("response") or "")
     return str(data)
+
+
+def _provider_timeout_seconds(provider: Mapping[str, Any]) -> float:
+    value = provider.get("timeout_seconds", os.environ.get("ATLAS_LLM_PROVIDER_TIMEOUT_SECONDS", DEFAULT_PROVIDER_TIMEOUT_SECONDS))
+    try:
+        timeout = float(value)
+    except (TypeError, ValueError):
+        timeout = DEFAULT_PROVIDER_TIMEOUT_SECONDS
+    return max(0.25, timeout)
 
 
 def _failsafe_raw_json(reason: str) -> str:

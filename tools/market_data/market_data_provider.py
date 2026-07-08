@@ -7,7 +7,13 @@ trading system, cache, crawler, or execution layer.
 from __future__ import annotations
 
 import json
+import multiprocessing as mp
+import os
+import queue
+import signal
+import threading
 import urllib.request
+from contextlib import contextmanager
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
@@ -15,6 +21,7 @@ import pandas as pd
 
 
 MISSING_VALUE = None
+DEFAULT_PROVIDER_TIMEOUT_SECONDS = 4.0
 
 
 def _safe_float(value: Any) -> Optional[float]:
@@ -132,7 +139,7 @@ def _yahoo_chart_history(ticker: str, market: str, period: str) -> pd.DataFrame:
     chart_range = _period_to_yfinance_period(period)
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range={chart_range}&interval=1d"
     request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(request, timeout=8) as response:
+    with urllib.request.urlopen(request, timeout=min(8.0, _provider_attempt_timeout_seconds())) as response:
         payload = json.loads(response.read().decode("utf-8") or "{}")
     chart = payload.get("chart") if isinstance(payload, dict) else {}
     if not isinstance(chart, dict) or chart.get("error"):
@@ -173,17 +180,17 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
     if not ticker:
         return pd.DataFrame()
 
-    attempts = []
+    attempts: list[str] = []
     if market in {"A-share", "HK"}:
-        attempts.append(("akshare", lambda: _akshare_history(ticker, market, period)))
+        attempts.append("akshare")
     if market in {"A-share", "HK", "US", "US / ETF", "ETF"}:
-        attempts.append(("yfinance", lambda: _yfinance_history(ticker, market, period)))
-        attempts.append(("yahoo_chart", lambda: _yahoo_chart_history(ticker, market, period)))
+        attempts.append("yfinance")
+        attempts.append("yahoo_chart")
 
     errors: List[str] = []
-    for source, loader in attempts:
+    for source in attempts:
         try:
-            df = loader()
+            df = _load_history_with_deadline(source, ticker, market, period)
             if df is not None and not df.empty:
                 df.attrs["source"] = source
                 return df
@@ -194,6 +201,96 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
     df = pd.DataFrame()
     df.attrs["errors"] = errors
     return df
+
+
+def _run_history_loader(source: str, ticker: str, market: str, period: str) -> pd.DataFrame:
+    if source == "akshare":
+        return _akshare_history(ticker, market, period)
+    if source == "yfinance":
+        return _yfinance_history(ticker, market, period)
+    if source == "yahoo_chart":
+        return _yahoo_chart_history(ticker, market, period)
+    raise ValueError(f"unknown market data source: {source}")
+
+
+def _load_history_with_deadline(source: str, ticker: str, market: str, period: str) -> pd.DataFrame:
+    if _hard_timeout_enabled(source):
+        return _load_history_in_process(source, ticker, market, period)
+    with _provider_attempt_deadline(source):
+        return _run_history_loader(source, ticker, market, period)
+
+
+def _hard_timeout_enabled(source: str) -> bool:
+    raw = os.environ.get("ATLAS_MARKET_PROVIDER_HARD_TIMEOUT", "1").strip().lower()
+    return raw not in {"0", "false", "no", "off"} and source in {"akshare", "yfinance"}
+
+
+def _load_history_in_process(source: str, ticker: str, market: str, period: str) -> pd.DataFrame:
+    seconds = _provider_attempt_timeout_seconds()
+    ctx = mp.get_context("fork") if "fork" in mp.get_all_start_methods() else mp.get_context()
+    result_queue = ctx.Queue(maxsize=1)
+    process = ctx.Process(target=_history_worker, args=(source, ticker, market, period, result_queue))
+    process.daemon = True
+    process.start()
+    process.join(seconds)
+    if process.is_alive():
+        process.terminate()
+        process.join(1)
+        if process.is_alive() and hasattr(process, "kill"):
+            process.kill()
+            process.join(1)
+        raise TimeoutError(f"{source} timed out after {seconds:.2f}s")
+    try:
+        result = result_queue.get_nowait()
+    except queue.Empty as exc:
+        raise RuntimeError(f"{source} exited without result") from exc
+    if not isinstance(result, dict):
+        raise RuntimeError(f"{source} returned malformed result")
+    if result.get("ok"):
+        df = result.get("data")
+        return df if isinstance(df, pd.DataFrame) else pd.DataFrame()
+    raise RuntimeError(str(result.get("error") or f"{source} failed"))
+
+
+def _history_worker(source: str, ticker: str, market: str, period: str, result_queue: Any) -> None:
+    try:
+        result_queue.put({"ok": True, "data": _run_history_loader(source, ticker, market, period)})
+    except Exception as exc:
+        result_queue.put({"ok": False, "error": f"{type(exc).__name__}: {exc}"})
+
+
+def _provider_attempt_timeout_seconds() -> float:
+    raw = os.environ.get("ATLAS_MARKET_PROVIDER_TIMEOUT_SECONDS")
+    if raw is None:
+        return DEFAULT_PROVIDER_TIMEOUT_SECONDS
+    try:
+        value = float(raw)
+    except ValueError:
+        return DEFAULT_PROVIDER_TIMEOUT_SECONDS
+    return max(0.25, value)
+
+
+@contextmanager
+def _provider_attempt_deadline(source: str):
+    seconds = _provider_attempt_timeout_seconds()
+    if threading.current_thread() is not threading.main_thread():
+        yield
+        return
+
+    def _handle_timeout(_signum: int, _frame: Any) -> None:
+        raise TimeoutError(f"{source} timed out after {seconds:.2f}s")
+
+    previous_handler = signal.getsignal(signal.SIGALRM)
+    previous_timer = signal.setitimer(signal.ITIMER_REAL, 0)
+    signal.signal(signal.SIGALRM, _handle_timeout)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous_handler)
+        if previous_timer[0] > 0:
+            signal.setitimer(signal.ITIMER_REAL, previous_timer[0], previous_timer[1])
 
 
 def _pct_change_from_tail(df: pd.DataFrame, periods: int) -> Optional[float]:
