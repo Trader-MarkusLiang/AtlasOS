@@ -20,6 +20,7 @@ from typing import Any, Dict, Optional
 try:
     from runtime.telemetry.llm_trace_logger import log_llm_trace
     from runtime.llm.provider_router import route_llm_request
+    from runtime.llm.provider_registry import load_provider_registry
 except ModuleNotFoundError:  # pragma: no cover
     import sys
     from pathlib import Path
@@ -27,6 +28,7 @@ except ModuleNotFoundError:  # pragma: no cover
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from runtime.telemetry.llm_trace_logger import log_llm_trace
     from runtime.llm.provider_router import route_llm_request
+    from runtime.llm.provider_registry import load_provider_registry
 
 
 SUPPORTED_PROVIDERS = {
@@ -114,11 +116,11 @@ class LLMResult:
 def call_llm(model: str, prompt: str, context: Dict[str, Any]) -> Dict[str, Any]:
     """Compatibility wrapper around the v0.2 raw-text router."""
 
-    config = _provider_config(model)
     raw_text = call_llm_raw(model, prompt, context)
+    metadata = provider_metadata(model)
     return LLMResult(
-        model=config["default_model"],
-        provider=config["provider"],
+        model=metadata["model"],
+        provider=metadata["provider"],
         status="raw_text_returned",
         content=raw_text,
     ).to_dict()
@@ -135,11 +137,12 @@ def call_llm_raw(model: str, prompt: str, context: Dict[str, Any]) -> str:
         if backend == "litellm":
             output = _call_litellm_backend_raw(model, prompt, context)
         else:
+            provider_id, requested_model = _route_args_for_model(model)
             routed = route_llm_request(
                 prompt=prompt,
                 context=context,
-                provider_id=_provider_id_for_model(model),
-                model=config.get("default_model", model) if model in SUPPORTED_PROVIDERS else None,
+                provider_id=provider_id,
+                model=requested_model,
             )
             output = str(routed.get("content") or _failsafe_raw_json(str(routed.get("error") or "provider_error")))
             config = {
@@ -337,12 +340,36 @@ def _provider_config(model: str) -> Dict[str, str]:
 
 
 def provider_metadata(model: str) -> Dict[str, str]:
+    if _use_active_provider(model):
+        registry = load_provider_registry(os.environ.get("ATLAS_USER_CONFIG"))
+        active = str(registry.get("active_provider") or "openai")
+        provider = next((item for item in registry.get("providers", []) if item.get("id") == active), {})
+        return {
+            "provider": active,
+            "model": str(provider.get("model") or model),
+            "raw_text_only": "true",
+        }
     config = _provider_config(model)
     return {
         "provider": config["provider"],
         "model": config["default_model"],
         "raw_text_only": "true",
     }
+
+
+def _route_args_for_model(model: str) -> tuple[Optional[str], Optional[str]]:
+    if _use_active_provider(model):
+        return None, None
+    if model in SUPPORTED_PROVIDERS:
+        config = _provider_config(model)
+        return _provider_id_for_model(model), config.get("default_model", model)
+    clean_model = str(model or "").strip()
+    return None, clean_model or None
+
+
+def _use_active_provider(model: str) -> bool:
+    alias = str(model or "").strip().lower()
+    return alias in {"", "gpt", "gpt-5.5"}
 
 
 def _provider_id_for_model(model: str) -> str:

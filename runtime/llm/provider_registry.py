@@ -255,7 +255,16 @@ def health_check_provider(provider_id: str, path: str | None = None, timeout: fl
             endpoint = base_url.rstrip("/")
             endpoint = endpoint.replace("/api/generate", "/api/tags")
             with urllib.request.urlopen(endpoint, timeout=timeout) as response:
-                status = "healthy" if response.status < 500 else "error"
+                payload = json.loads(response.read().decode("utf-8") or "{}")
+                models = _extract_model_names(payload)
+                selected_model = str(provider.get("model") or "").strip()
+                if response.status >= 500:
+                    status = "error"
+                elif selected_model and selected_model not in models:
+                    status = "model_not_found"
+                    error = f"model_not_found:{selected_model}"
+                else:
+                    status = "healthy"
         elif not base_url:
             status = "not_configured"
             error = "base_url_missing"
@@ -270,7 +279,7 @@ def health_check_provider(provider_id: str, path: str | None = None, timeout: fl
         else:
             status = "not_configured"
             error = "api_key_missing"
-    except (OSError, urllib.error.URLError, TimeoutError) as exc:
+    except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
         status = "error"
         error = str(exc)[:240]
     latency_ms = int((time.time() - started) * 1000)
