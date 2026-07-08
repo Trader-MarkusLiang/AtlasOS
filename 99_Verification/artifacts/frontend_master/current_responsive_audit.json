@@ -1,0 +1,272 @@
+[
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/",
+    "scrollHeight": 1896,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1613,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/setup",
+    "scrollHeight": 2239,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1573,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/portfolio",
+    "scrollHeight": 1625,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1488,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/markets",
+    "scrollHeight": 1559,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1510,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/predictions",
+    "scrollHeight": 1030,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1244,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/learning",
+    "scrollHeight": 1181,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1064,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/workflow",
+    "scrollHeight": 1201,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1165,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/roadmap",
+    "scrollHeight": 1383,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1530,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1440,
+    "overflowX": false,
+    "route": "/settings",
+    "scrollHeight": 4376,
+    "scrollWidth": 1440,
+    "shell": true,
+    "textLength": 1950,
+    "width": 1440
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/",
+    "scrollHeight": 1927,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1613,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/setup",
+    "scrollHeight": 2279,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1573,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/portfolio",
+    "scrollHeight": 1710,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1488,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/markets",
+    "scrollHeight": 1567,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1510,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/predictions",
+    "scrollHeight": 1183,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1244,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/learning",
+    "scrollHeight": 1149,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1064,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/workflow",
+    "scrollHeight": 1158,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1165,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/roadmap",
+    "scrollHeight": 1416,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1530,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1280,
+    "overflowX": false,
+    "route": "/settings",
+    "scrollHeight": 4416,
+    "scrollWidth": 1280,
+    "shell": true,
+    "textLength": 1950,
+    "width": 1280
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/",
+    "scrollHeight": 2361,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1613,
+    "width": 1024
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/setup",
+    "scrollHeight": 2597,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1573,
+    "width": 1024
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/portfolio",
+    "scrollHeight": 2089,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1488,
+    "width": 1024
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/markets",
+    "scrollHeight": 1835,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1510,
+    "width": 1024
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/predictions",
+    "scrollHeight": 1516,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1244,
+    "width": 1024
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/learning",
+    "scrollHeight": 1474,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1064,
+    "width": 1024
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/workflow",
+    "scrollHeight": 1522,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1165,
+    "width": 1024
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/roadmap",
+    "scrollHeight": 1732,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1530,
+    "width": 1024
+  },
+  {
+    "clientWidth": 1024,
+    "overflowX": false,
+    "route": "/settings",
+    "scrollHeight": 4842,
+    "scrollWidth": 1024,
+    "shell": true,
+    "textLength": 1950,
+    "width": 1024
+  }
+]

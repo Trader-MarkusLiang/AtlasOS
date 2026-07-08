@@ -5,6 +5,7 @@ Date: 2026-07-08
 ## Environment
 
 - UI server: `127.0.0.1:8765`
+- Isolated E2E server: `127.0.0.1:8766`
 - Branch: `codex/frontend-master-upgrade`
 - Browser evidence directory: `99_Verification/artifacts/frontend_master/`
 
@@ -75,3 +76,22 @@ After start/stop smoke:
 - No daemon PID remained from the UI start smoke.
 
 Result: `PASS`
+
+## Current Closure Browser Run
+
+Fresh current-run artifacts:
+
+- `99_Verification/artifacts/frontend_master/current_browser_product_audit.json`
+- `99_Verification/artifacts/frontend_master/current_responsive_audit.json`
+- `99_Verification/artifacts/frontend_master/current_browser_e2e_journey.json`
+- `99_Verification/artifacts/frontend_master/current_e2e_home_after_patch.png`
+- `99_Verification/artifacts/frontend_master/current_e2e_setup_after_patch.png`
+- `99_Verification/artifacts/frontend_master/current_e2e_settings_after_patch.png`
+
+Current closure results:
+
+- Product route audit: 13 routes, 0 shell/topbar/sidebar/raw-literal/NEUTRAL-hero failures.
+- Responsive audit: 27 route-width checks, 0 horizontal-overflow failures.
+- E2E journey: Chinese first-run setup, provider test with visible error state, 3 assets saved,
+  runtime started, primary routes opened, Ask Atlas queued, runtime stopped.
+- Final stop status: `runtime 已停止`.

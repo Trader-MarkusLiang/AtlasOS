@@ -129,7 +129,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "provider.never_checked": "Never checked",
         "provider.testing": "Testing providers...",
         "provider.tested": "Provider check complete",
-        "provider.none": "None yet",
+        "provider.none": "No provider available yet",
         "provider.available_section": "Available providers",
         "provider.other_section": "Unavailable / not configured",
         "provider.none_available": "No available provider yet",

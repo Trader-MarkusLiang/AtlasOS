@@ -141,6 +141,14 @@ def ask_content(state: Mapping[str, Any]) -> tuple[str, str]:
     script = """
     <script>
     (function () {
+      function msg(key) {
+        const zh = document.documentElement.lang === "zh";
+        const messages = {
+          queued: zh ? "已进入下一次 runtime tick 队列。" : "Queued for the next runtime tick.",
+          failed: zh ? "无法发送问题。" : "Could not queue message"
+        };
+        return messages[key] || key;
+      }
       const form = document.getElementById("atlas-chat-form");
       const input = document.getElementById("atlas-chat-input");
       const status = document.getElementById("atlas-chat-status");
@@ -157,15 +165,20 @@ def ask_content(state: Mapping[str, Any]) -> tuple[str, str]:
         event.preventDefault();
         const message = input.value.trim();
         if (!message) return;
-        status.textContent = "Queued for the next runtime tick.";
-        const response = await fetch("/chat/send", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ message })
-        });
-        const data = await response.json();
+        status.textContent = msg("queued");
         const row = document.createElement("li");
-        row.textContent = response.ok ? message + " -> " + data.status : "Could not queue message";
+        try {
+          const response = await fetch("/chat/send", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ message })
+          });
+          const data = await response.json();
+          row.textContent = response.ok ? message + " -> " + data.status : msg("failed");
+        } catch (error) {
+          row.textContent = msg("failed");
+          status.textContent = msg("failed");
+        }
         history.prepend(row);
         input.value = "";
       });
@@ -495,6 +508,10 @@ def settings_content(config: Mapping[str, Any], state: Mapping[str, Any]) -> tup
         <label>Trust threshold<input id="trust-threshold-setting" type="number" min="0" max="1" step="0.01" value="{escape(str(system.get("trust_threshold", 0.45)))}"></label>
         <label>Hypothesis sensitivity<input id="hypothesis-sensitivity-setting" type="number" min="0" max="1" step="0.01" value="{escape(str(system.get("hypothesis_switching_sensitivity", 0.08)))}"></label>
       </div>
+      <div class="button-row" style="margin-top: 12px;">
+        <button class="secondary-button" type="button" id="settings-start-runtime">{escape(t("system.start", lang))}</button>
+        <button class="secondary-button" type="button" id="settings-stop-runtime">{escape(t("system.stop", lang))}</button>
+      </div>
     </section>
     <details class="expert-details">
       <summary>{escape(t("settings.advanced", lang))}</summary>
@@ -585,6 +602,22 @@ def control_content(panel: Mapping[str, Any]) -> str:
 SETTINGS_JS = """
 <script>
 (function () {
+  function msg(key) {
+    const zh = document.documentElement.lang === "zh";
+    const messages = {
+      saved: zh ? "已保存" : "Saved",
+      save_failed: zh ? "无法保存设置" : "Could not save settings",
+      testing: zh ? "正在测试 Provider..." : "Testing providers...",
+      checked: zh ? "Provider 检测完成" : "Provider check complete",
+      test_failed: zh ? "Provider 测试失败" : "Provider test failed",
+      starting: zh ? "正在启动 runtime..." : "Starting runtime...",
+      started: zh ? "runtime 已启动" : "Runtime started",
+      stopping: zh ? "正在停止 runtime..." : "Stopping runtime...",
+      stopped: zh ? "runtime 已停止" : "Runtime stopped",
+      runtime_failed: zh ? "Runtime 控制失败" : "Runtime control failed"
+    };
+    return messages[key] || key;
+  }
   function providerCards() {
     return Array.from(document.querySelectorAll("[data-provider-card]")).map(function (card) {
       const item = {};
@@ -628,7 +661,7 @@ SETTINGS_JS = """
     };
     const response = await fetch("/settings", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
     const data = await response.json();
-    document.getElementById("settings-result").textContent = data.status === "saved" ? "Saved" : "Could not save settings";
+    document.getElementById("settings-result").textContent = data.status === "saved" ? msg("saved") : msg("save_failed");
     return data;
   }
   document.getElementById("save-settings").addEventListener("click", saveSettings);
@@ -637,20 +670,52 @@ SETTINGS_JS = """
   });
   document.getElementById("test-all-providers").addEventListener("click", async function () {
     await saveSettings();
-    document.getElementById("settings-result").textContent = "Testing providers...";
-    const response = await fetch("/llm/providers/test_all", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
-    const data = await response.json();
-    document.getElementById("settings-result").textContent = "Provider check complete: " + (data.summary ? data.summary.online_count + "/" + data.summary.total_count : "");
+    document.getElementById("settings-result").textContent = msg("testing");
+    try {
+      const response = await fetch("/llm/providers/test_all", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
+      const data = await response.json();
+      document.getElementById("settings-result").textContent = msg("checked") + ": " + (data.summary ? data.summary.online_count + "/" + data.summary.total_count : "");
+    } catch (error) {
+      document.getElementById("settings-result").textContent = msg("test_failed");
+    }
   });
   document.querySelectorAll("[data-test-provider]").forEach(function (button) {
     button.addEventListener("click", async function () {
       await saveSettings();
       const card = button.closest("[data-provider-card]");
       const id = card.querySelector('[data-provider-field="id"]').value;
-      const response = await fetch("/llm/provider/test", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ provider_id: id }) });
-      const data = await response.json();
-      card.querySelector("[data-provider-health]").textContent = data.status || data.health || "checked";
+      card.querySelector("[data-provider-health]").textContent = msg("testing");
+      try {
+        const response = await fetch("/llm/provider/test", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ provider_id: id }) });
+        const data = await response.json();
+        card.querySelector("[data-provider-health]").textContent = data.status || data.health || msg("checked");
+      } catch (error) {
+        card.querySelector("[data-provider-health]").textContent = msg("test_failed");
+      }
     });
+  });
+  document.getElementById("settings-start-runtime").addEventListener("click", async function () {
+    const result = document.getElementById("settings-result");
+    result.textContent = msg("starting");
+    try {
+      await saveSettings();
+      const response = await fetch("/control/start", { method: "POST" });
+      const data = await response.json();
+      result.textContent = data.status === "started" ? msg("started") : (data.status || msg("runtime_failed"));
+    } catch (error) {
+      result.textContent = msg("runtime_failed");
+    }
+  });
+  document.getElementById("settings-stop-runtime").addEventListener("click", async function () {
+    const result = document.getElementById("settings-result");
+    result.textContent = msg("stopping");
+    try {
+      const response = await fetch("/control/stop", { method: "POST" });
+      const data = await response.json();
+      result.textContent = ["stop_requested", "stopped"].includes(data.status) ? msg("stopped") : (data.status || msg("runtime_failed"));
+    } catch (error) {
+      result.textContent = msg("runtime_failed");
+    }
   });
 })();
 </script>
@@ -660,6 +725,20 @@ SETTINGS_JS = """
 SETUP_JS = """
 <script>
 (function () {
+  function msg(key) {
+    const zh = document.documentElement.lang === "zh";
+    const messages = {
+      saved: zh ? "设置已保存" : "Setup saved",
+      save_failed: zh ? "无法保存设置" : "Could not save setup",
+      testing: zh ? "正在测试 Provider..." : "Testing provider...",
+      test_complete: zh ? "Provider 测试完成" : "Provider test complete",
+      test_failed: zh ? "Provider 测试失败" : "Provider test failed",
+      starting: zh ? "正在启动 runtime..." : "Starting runtime...",
+      started: zh ? "runtime 已启动" : "Runtime started",
+      start_failed: zh ? "Runtime 启动失败" : "Runtime start failed"
+    };
+    return messages[key] || key;
+  }
   function assetTemplate() {
     return document.querySelector("[data-asset-row]").outerHTML.replace(/value="[^"]*"/g, 'value=""').replace(/>[^<]*<\\/textarea>/g, '></textarea>');
   }
@@ -692,20 +771,37 @@ SETUP_JS = """
   });
   document.getElementById("setup-form").addEventListener("submit", async function (event) {
     event.preventDefault();
-    const data = await save();
-    document.getElementById("setup-result").textContent = data.status === "saved" ? "Setup saved" : "Could not save setup";
+    const result = document.getElementById("setup-result");
+    try {
+      const data = await save();
+      result.textContent = data.status === "saved" ? msg("saved") : msg("save_failed");
+    } catch (error) {
+      result.textContent = msg("save_failed");
+    }
   });
   document.getElementById("setup-test-provider").addEventListener("click", async function () {
-    await save();
-    const response = await fetch("/llm/provider/test", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ provider_id: payload().active_provider }) });
-    const data = await response.json();
-    document.getElementById("setup-result").textContent = "Provider test: " + (data.status || data.health || "checked");
+    const result = document.getElementById("setup-result");
+    result.textContent = msg("testing");
+    try {
+      await save();
+      const response = await fetch("/llm/provider/test", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ provider_id: payload().active_provider }) });
+      const data = await response.json();
+      result.textContent = msg("test_complete") + ": " + (data.status || data.health || "checked");
+    } catch (error) {
+      result.textContent = msg("test_failed");
+    }
   });
   document.getElementById("setup-start-runtime").addEventListener("click", async function () {
-    await save();
-    const response = await fetch("/control/start", { method: "POST" });
-    const data = await response.json();
-    document.getElementById("setup-result").textContent = data.status || "Runtime start requested";
+    const result = document.getElementById("setup-result");
+    result.textContent = msg("starting");
+    try {
+      await save();
+      const response = await fetch("/control/start", { method: "POST" });
+      const data = await response.json();
+      result.textContent = data.status === "started" ? msg("started") : (data.status || msg("start_failed"));
+    } catch (error) {
+      result.textContent = msg("start_failed");
+    }
   });
 })();
 </script>
@@ -1109,13 +1205,14 @@ def _provider_cards(providers: list[Any], active: str, lang: str) -> str:
 def _provider_card(provider: Mapping[str, Any], active: str, lang: str) -> str:
     provider_id = str(provider.get("id") or "custom")
     health = str(provider.get("health") or "unknown")
+    health_label = _provider_health_label(health, lang)
     latency = provider.get("last_latency_ms")
     model = str(provider.get("model") or "")
     models = provider.get("available_models") if isinstance(provider.get("available_models"), list) else []
     return f"""
     <article class="metric-card" data-provider-card data-label="{escape(str(provider.get("label") or provider_id))}">
       <span>{escape(str(provider.get("label") or provider_id))}{' · active' if provider_id == active else ''}</span>
-      <strong data-provider-health>{escape(health.replace("_", " ").title())}</strong>
+      <strong data-provider-health>{escape(health_label)}</strong>
       <p>{escape(t("provider.latency", lang))}: {escape(str(latency) + 'ms' if latency is not None else '--')}</p>
       <input type="hidden" data-provider-field="id" value="{escape(provider_id)}">
       <input type="hidden" data-provider-field="type" value="{escape(str(provider.get("type") or provider_id))}">
@@ -1128,6 +1225,18 @@ def _provider_card(provider: Mapping[str, Any], active: str, lang: str) -> str:
       <div class="button-row"><button class="secondary-button" type="button" data-test-provider>{escape(t("settings.test", lang))}</button></div>
     </article>
     """
+
+
+def _provider_health_label(health: str, lang: str) -> str:
+    normalized = str(health or "unknown").lower()
+    labels = {
+        "unknown": t("provider.unknown", lang),
+        "healthy": t("provider.reachable", lang),
+        "reachable": t("provider.reachable", lang),
+        "error": t("provider.error", lang),
+        "not_configured": t("provider.needs_config", lang),
+    }
+    return labels.get(normalized, normalized.replace("_", " ").title())
 
 
 def _provider_options(providers: list[Any], active: str) -> str:

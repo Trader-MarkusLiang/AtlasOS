@@ -1,0 +1,149 @@
+{
+  "base": "http://127.0.0.1:8766",
+  "isolated_config_dir": "/tmp/atlas_frontend_current.troAah",
+  "generated_at": "2026-07-08T15:43:58.293Z",
+  "steps": [
+    {
+      "name": "Open Atlas",
+      "h1": "Live market context is active through portfolio_relevance, price_volume.",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/"
+    },
+    {
+      "name": "Switch to Chinese",
+      "h1": "Live market context is active through portfolio_relevance, price_volume.",
+      "lang": "zh",
+      "zhChars": 283
+    },
+    {
+      "name": "Open Setup",
+      "h1": "设置 Atlas OS"
+    },
+    {
+      "name": "Configure provider fields",
+      "provider": "custom",
+      "model": "atlas-test-model"
+    },
+    {
+      "name": "Add 3 assets",
+      "rows": 3,
+      "assets": [
+        "NVDA",
+        "TSM",
+        "CASH"
+      ]
+    },
+    {
+      "name": "Test provider",
+      "immediateStatus": "正在测试 Provider...",
+      "finalStatus": "Provider 测试完成: error"
+    },
+    {
+      "name": "Save setup",
+      "statusText": "设置已保存"
+    },
+    {
+      "name": "Start runtime",
+      "statusText": "runtime 已启动"
+    },
+    {
+      "h1": "Live market context is active through portfolio_relevance, price_volume.",
+      "name": "Open /",
+      "overflow": false,
+      "path": "/",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 3,
+      "table": 0
+    },
+    {
+      "h1": "Live market context is active through portfolio_relevance, price_volume.",
+      "name": "Open /markets",
+      "overflow": false,
+      "path": "/markets",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 2,
+      "table": 0
+    },
+    {
+      "h1": "Configured exposure: 100.0%",
+      "name": "Open /portfolio",
+      "overflow": false,
+      "path": "/portfolio",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 2,
+      "table": 0
+    },
+    {
+      "h1": "结果摘要",
+      "name": "Open /predictions",
+      "overflow": false,
+      "path": "/predictions",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 1,
+      "table": 0
+    },
+    {
+      "h1": "之前 -> 现实 -> 错误 -> 更新 -> 现在",
+      "name": "Open /learning",
+      "overflow": false,
+      "path": "/learning",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 3,
+      "table": 0
+    },
+    {
+      "h1": "最近 Tick 传播",
+      "name": "Open /workflow",
+      "overflow": false,
+      "path": "/workflow",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 1,
+      "table": 0
+    },
+    {
+      "h1": "Production Trial Candidate",
+      "name": "Open /roadmap",
+      "overflow": false,
+      "path": "/roadmap",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 1,
+      "table": 0
+    },
+    {
+      "h1": "Provider 控制",
+      "name": "Open /settings",
+      "overflow": false,
+      "path": "/settings",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 0,
+      "table": 0
+    },
+    {
+      "h1": "询问 Atlas 市场、组合、风险、预测，或今天发生了什么变化。",
+      "name": "Open /chat",
+      "overflow": false,
+      "path": "/chat",
+      "rawVisible": false,
+      "shell": true,
+      "svg": 0,
+      "table": 0
+    },
+    {
+      "name": "Ask Atlas",
+      "statusText": "已进入下一次 runtime tick 队列。"
+    },
+    {
+      "name": "Stop runtime",
+      "immediateStatus": "正在停止 runtime...",
+      "finalStatus": "runtime 已停止"
+    }
+  ]
+}
