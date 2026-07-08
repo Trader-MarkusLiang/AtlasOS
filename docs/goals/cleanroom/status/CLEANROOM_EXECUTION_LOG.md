@@ -179,6 +179,82 @@ CR_GOAL_07_SELF_ITERATION_BLACKBOX
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
 integration, portfolio mutation, prediction behavior, or private holdings were modified.
 
+## 2026-07-08 - CR_GOAL_07 Self-Iteration Black-Box Completed
+
+### Summary
+
+Independently proved that prior forecast error changes later equivalent runtime behavior through
+normal persisted forecast calibration state.
+
+### Evidence
+
+- Fresh clone: `/tmp/atlas-cleanroom-cr07-20260708-164741`
+- Control state: `/tmp/atlas-cleanroom-state-cr07-control-20260708-164741`
+- Treatment state: `/tmp/atlas-cleanroom-state-cr07-treatment-20260708-164741`
+- Commit: `ba7dc81944604198ffb428fbb41c304031b22283`
+- Report:
+  `99_Verification/cleanroom/CR_GOAL_07_Self_Iteration_Blackbox_Report.md`
+- Artifacts:
+  `99_Verification/cleanroom/artifacts/cr_goal_07/`
+
+### Experiment
+
+CONTROL:
+
+```text
+Event E -> daemon tick -> equivalent Event E2 -> daemon tick
+```
+
+TREATMENT:
+
+```text
+Event E -> daemon tick -> runtime forecast created -> /predictions/mature
+-> /predictions/evaluate INVALIDATED -> equivalent Event E2 -> daemon tick
+```
+
+### Result
+
+Final classification: `REAL_RUNTIME_BEHAVIORAL_LOOP`
+
+The treatment E2 tick applied forecast feedback from `forecast_calibration_state` with delta
+`-0.12`; the control E2 tick had no forecast feedback.
+
+Changed runtime behavior included:
+
+- global trust index: `0.7208` control vs `0.5965` treatment;
+- rolling trust index: `0.5741` control vs `0.4646` treatment;
+- hypothesis score distribution changed;
+- structural shift index: `0.1752` control vs `0.1144` treatment;
+- structural mutation intensity: `0.0254` control vs `0.0166` treatment;
+- self-organization status changed from `applied` to `frozen`;
+- causal self-correction edge deltas changed.
+
+### Limits
+
+Action bias did not change: both paths remained `neutral / unknown`. Active hypothesis did not
+switch: both paths remained `H_ATTENTION_FLOW`.
+
+### Classification
+
+CR_GOAL_07 classification: `PROVEN_COMPLETE`
+
+Evidence level: `REAL_RUNTIME_PROVEN`
+
+Loop classification: `REAL_RUNTIME_BEHAVIORAL_LOOP`
+
+### Transition
+
+`CLEANROOM_GOAL_STATUS.json` now records current goal:
+
+```text
+CR_GOAL_08_RECOVERY_AND_SOAK
+```
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading execution, broker
+integration, portfolio mutation, prediction behavior, or private holdings were modified.
+
 ## 2026-07-08 - CR_GOAL_04 Live Market Black-Box Completed
 
 ### Summary

@@ -1,0 +1,204 @@
+{
+  "action_bias": {
+    "recommended_action": "neutral",
+    "risk_level": "unknown"
+  },
+  "active_hypothesis": "H_ATTENTION_FLOW",
+  "calibrated_confidence": 0.0,
+  "causal_weights": {
+    "graph": {
+      "edges": [
+        {
+          "from": "Narrative Pressure",
+          "relationship": "amplifies",
+          "to": "Attention"
+        },
+        {
+          "from": "Attention",
+          "relationship": "raises participation probability",
+          "to": "Retail Flow"
+        },
+        {
+          "from": "Institutional Flow",
+          "relationship": "adds or withdraws depth",
+          "to": "Liquidity"
+        },
+        {
+          "from": "Liquidity",
+          "relationship": "buffers or amplifies",
+          "to": "Volatility"
+        },
+        {
+          "from": "Retail Flow",
+          "relationship": "can accelerate",
+          "to": "Price Momentum"
+        },
+        {
+          "from": "Price Momentum",
+          "relationship": "feedback loop",
+          "to": "Attention"
+        }
+      ],
+      "nodes": [
+        "Attention",
+        "Liquidity",
+        "Price Momentum",
+        "Volatility",
+        "Narrative Pressure",
+        "Institutional Flow",
+        "Retail Flow"
+      ]
+    },
+    "self_correction_edges": {
+      "Institutional Flow->Liquidity": -0.0058,
+      "Liquidity->Volatility": -0.0058,
+      "Narrative Pressure->Attention": -0.0058
+    }
+  },
+  "confidence": 0.0,
+  "confidence_adjustment_factor": 0.7186,
+  "cycle_status": "success",
+  "decision_brief": {
+    "content_excerpt": "# Atlas Decision Brief (Runtime Generated)\n\nBrief ID: brief-f8ce462f-f39d-4d12-8bde-d8d4953dcff6\nTrigger Type: autonomous_state_loop\nEvent Type: fused_market_reality\nPipeline: Attention + Flow Inference\n\n## Market State\nSummary: State-driven runtime route: run attention and flow inference from ATTENTION_EXPANSION.\nData Status: Event Stream / Confidence Limited\n\n## Regime Status\nStatus: ATTENTION_EXPANSION / Runtime State Context\nProbability Vector: bull_regime: 15, distribution_risk: 0, transition_to_exhaustion: 15, crash_stress: 0, consolidation: 0, data_insufficient: 70\nConfidence: Low\n\n## P",
+    "created_at": "2026-07-08T08:51:57.630881+00:00",
+    "id": "brief-f8ce462f-f39d-4d12-8bde-d8d4953dcff6",
+    "metadata": {
+      "action_bias": "Observe",
+      "decision_packet": {
+        "attention_state": "unknown",
+        "causal_summary": "LLM reasoning unavailable or invalid.",
+        "confidence": 0.0,
+        "liquidity_state": "unknown",
+        "reasoning_trace": "all_providers_failed",
+        "recommended_action": "neutral",
+        "regime_state": "unknown",
+        "risk_level": "unknown"
+      },
+      "llm_model": "gpt-5.5",
+      "llm_provider": "openai",
+      "llm_status": "failsafe_decision_packet",
+      "pipeline": "Attention + Flow Inference",
+      "raw_llm_output_stored": false,
+      "risk_level": "Unknown",
+      "system_state": "ATTENTION_EXPANSION"
+    }
+  },
+  "decision_log_index": 0,
+  "event_types": [
+    "attention_spike",
+    "user_input_event",
+    "heartbeat"
+  ],
+  "events_ingested": 0,
+  "forecast_calibration_feedback_delta": 0.0,
+  "forecast_calibration_feedback_source": "no_forecast_outcomes",
+  "forecast_calibration_feedback_status": "not_available",
+  "forecast_calibration_state_after_experiment": {
+    "evaluated_count": 1,
+    "last_forecast_id": "runtime-f8ce462f-f39d-4d12-8bde-d8d4953dcff6",
+    "last_status": "INVALIDATED",
+    "mean_forecast_error": 1.0,
+    "minimum_sample_size_met": false
+  },
+  "forecast_records_after_experiment": [
+    {
+      "calibration_error": 0.0,
+      "forecast_error": 1.0,
+      "forecast_id": "runtime-f8ce462f-f39d-4d12-8bde-d8d4953dcff6",
+      "lineage": [
+        "created",
+        "matured",
+        "evaluated"
+      ],
+      "status": "INVALIDATED"
+    },
+    {
+      "calibration_error": null,
+      "forecast_error": null,
+      "forecast_id": "runtime-d92e9193-22f4-43e3-8777-7ac3e4d6c348",
+      "lineage": [
+        "created"
+      ],
+      "status": "OPEN"
+    }
+  ],
+  "hypothesis_score_distribution": {
+    "H_ATTENTION_FLOW": 0.6098,
+    "H_INSTITUTIONAL_ROTATION": 0.5065,
+    "H_LIQUIDITY_STRESS": 0.5195,
+    "H_NARRATIVE_REFLEXIVITY": 0.6077
+  },
+  "kv_system_trust_state_after_experiment": {
+    "feedback_stability_index": 0.8348,
+    "forecast_calibration_feedback": {
+      "behavioral_influence": true,
+      "bounded": true,
+      "evaluated_count": 1,
+      "last_status": "INVALIDATED",
+      "mean_forecast_error": 1.0,
+      "source": "forecast_calibration_state",
+      "status": "applied",
+      "trust_delta": -0.12
+    },
+    "latest_trust_score": {
+      "cognitive_trust": 0.8786,
+      "feedback_consistency_trust": 0.7148,
+      "forecast_calibration_adjustment": -0.12,
+      "global_trust_index": 0.5965,
+      "llm_trust": 0.23,
+      "regime_stability_trust": 0.53
+    },
+    "llm_provider_trust": {
+      "runtime": 0.4044
+    },
+    "regime_trust_decay": 0.5354,
+    "rolling_trust_index": 0.4646,
+    "trust_adjustment_reason": "feedback_instability_decay",
+    "trust_direction": "decaying"
+  },
+  "label": "treatment_E",
+  "proposed_state": "ATTENTION_EXPANSION",
+  "raw_events_processed": 3,
+  "regime_state": "ATTENTION_EXPANSION",
+  "runtime_forecast_id": "runtime-f8ce462f-f39d-4d12-8bde-d8d4953dcff6",
+  "runtime_forecast_status": "OPEN",
+  "self_organization_shift_index": 0.0424,
+  "self_organization_status": "applied",
+  "self_organization_trust_gate": "open",
+  "structural_mutation_intensity": 0.025,
+  "structural_shift_index": 0.1308,
+  "structural_trust_gate": "open",
+  "system_trust_state": {
+    "feedback_stability_index": 0.8428,
+    "forecast_calibration_feedback": {
+      "behavioral_influence": false,
+      "source": "no_forecast_outcomes",
+      "status": "not_available",
+      "trust_delta": 0.0
+    },
+    "latest_trust_score": {
+      "cognitive_trust": 1.0,
+      "feedback_consistency_trust": 0.8428,
+      "forecast_calibration_adjustment": 0.0,
+      "global_trust_index": 0.7186,
+      "llm_trust": 0.35,
+      "regime_stability_trust": 0.65
+    },
+    "llm_provider_trust": {
+      "runtime": 0.4625
+    },
+    "regime_trust_decay": 0.4634,
+    "rolling_trust_index": 0.5366,
+    "trust_adjustment_reason": "feedback_instability_decay",
+    "trust_direction": "improving"
+  },
+  "transition_allowed": true,
+  "trust_score": {
+    "cognitive_trust": 1.0,
+    "feedback_consistency_trust": 0.8428,
+    "forecast_calibration_adjustment": 0.0,
+    "global_trust_index": 0.7186,
+    "llm_trust": 0.35,
+    "regime_stability_trust": 0.65
+  }
+}

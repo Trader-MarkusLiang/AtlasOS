@@ -87,6 +87,28 @@ execute independent black-box validation without accepting prior Master Goal art
 - Updated `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json` to advance to
   `CR_GOAL_07_SELF_ITERATION_BLACKBOX`.
 - Appended CR06 completion to `docs/goals/cleanroom/status/CLEANROOM_EXECUTION_LOG.md`.
+- Created fresh CR07 clone `/tmp/atlas-cleanroom-cr07-20260708-164741`.
+- Ran CR07 control/treatment experiment with separate clean state roots:
+  - control: `/tmp/atlas-cleanroom-state-cr07-control-20260708-164741`;
+  - treatment: `/tmp/atlas-cleanroom-state-cr07-treatment-20260708-164741`.
+- CONTROL path: Event E -> daemon runtime tick -> equivalent Event E2 -> daemon runtime tick.
+- TREATMENT path: Event E -> daemon runtime tick -> runtime forecast created ->
+  `/predictions/mature` -> `/predictions/evaluate` INVALIDATED -> equivalent Event E2 -> daemon
+  runtime tick.
+- Corrected the first CR07 extraction after noticing `system_logs` also stores daily-cycle rows;
+  final extraction filters `trigger_type=decision_loop_cycle`.
+- CR07 result: `REAL_RUNTIME_BEHAVIORAL_LOOP`.
+- Observed treatment E2 forecast feedback delta `-0.12`; changed runtime behavior included global
+  trust, rolling trust, hypothesis score distribution, structural shift, structural mutation,
+  self-organization status, self-organization shift, causal self-correction edges, and confidence
+  adjustment factor.
+- Not changed in CR07: action bias stayed `neutral / unknown`; active hypothesis stayed
+  `H_ATTENTION_FLOW`.
+- Added CR07 artifacts under `99_Verification/cleanroom/artifacts/cr_goal_07/`.
+- Wrote `99_Verification/cleanroom/CR_GOAL_07_Self_Iteration_Blackbox_Report.md`.
+- Updated `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json` to advance to
+  `CR_GOAL_08_RECOVERY_AND_SOAK`.
+- Appended CR07 completion to `docs/goals/cleanroom/status/CLEANROOM_EXECUTION_LOG.md`.
 
 ## Decisions
 
@@ -97,9 +119,9 @@ execute independent black-box validation without accepting prior Master Goal art
 
 ## Current State
 
-- CR_GOAL_00 through CR_GOAL_06 are complete.
-- Current cleanroom goal is `CR_GOAL_07_SELF_ITERATION_BLACKBOX`.
-- Latest completed commit before CR07 is `4280a5ad583c57a29075e5a6a3533adba6b3888d`.
+- CR_GOAL_00 through CR_GOAL_07 are complete.
+- Current cleanroom goal is `CR_GOAL_08_RECOVERY_AND_SOAK`.
+- Latest completed commit before CR08 is `ba7dc81944604198ffb428fbb41c304031b22283`.
 - There is one unrelated untracked stale artifact directory:
   `99_Verification/artifacts/goal_01_user_activation/`. Do not stage it unless the user explicitly
   asks.
@@ -107,15 +129,14 @@ execute independent black-box validation without accepting prior Master Goal art
 ## Resume Instructions
 
 1. Read `docs/goals/cleanroom/status/CLEANROOM_GOAL_STATUS.json`.
-2. Continue from `CR_GOAL_07_SELF_ITERATION_BLACKBOX`.
+2. Continue from `CR_GOAL_08_RECOVERY_AND_SOAK`.
 3. Start from current branch `codex/cleanroom-verification` at or after commit
-   `4280a5ad583c57a29075e5a6a3533adba6b3888d`.
-4. Create a fresh CR07 clone and empty runtime state root before testing; do not reuse CR06 state.
+   `ba7dc81944604198ffb428fbb41c304031b22283`.
+4. Create a fresh CR08 clone and empty runtime state root before testing; do not reuse CR07 state.
 5. Use fresh clean-room evidence only for final classifications.
-6. CR_GOAL_07 must independently test whether prior forecast error changes later equivalent
-   behavior, without directly mutating trust, hypothesis scores, causal weights, or structural
-   state.
-7. Record CR07 evidence under `99_Verification/cleanroom/artifacts/cr_goal_07/`.
+6. CR_GOAL_08 must run failure injections plus accelerated 500+ cycles and the longest practical
+   real-duration soak.
+7. Record CR08 evidence under `99_Verification/cleanroom/artifacts/cr_goal_08/`.
 
 ## Open Questions
 

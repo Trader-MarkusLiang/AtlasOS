@@ -3,7 +3,7 @@
   "status": "IN_PROGRESS",
   "candidate_branch": "codex/overnight-productization-sprint",
   "candidate_commit": "ed63678793bdc5d10c1469433e461a6c20db7927",
-  "current_goal": "CR_GOAL_07_SELF_ITERATION_BLACKBOX",
+  "current_goal": "CR_GOAL_08_RECOVERY_AND_SOAK",
   "current_goal_status": "NOT_STARTED",
   "completed_goals": [
     "CR_GOAL_00_FRESH_CLONE_BASELINE",
@@ -12,16 +12,17 @@
     "CR_GOAL_03_LIVE_LLM_BLACKBOX",
     "CR_GOAL_04_LIVE_MARKET_BLACKBOX",
     "CR_GOAL_05_PORTFOLIO_COGNITION_BLACKBOX",
-    "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX"
+    "CR_GOAL_06_FORECAST_ACCOUNTABILITY_BLACKBOX",
+    "CR_GOAL_07_SELF_ITERATION_BLACKBOX"
   ],
   "partial_goals": [],
   "failed_goals": [],
   "blocked_goals": [],
-  "next_goal": "CR_GOAL_08_RECOVERY_AND_SOAK",
+  "next_goal": "CR_GOAL_09_FINAL_TRIBUNAL_AND_MERGE_GATE",
   "stop_allowed": false,
-  "last_updated": "2026-07-08T16:44:00+08:00",
-  "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr06-rerun-20260708-163952",
-  "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr06-rerun-20260708-163952",
+  "last_updated": "2026-07-08T16:54:44+08:00",
+  "cleanroom_clone_path": "/tmp/atlas-cleanroom-cr07-20260708-164741",
+  "cleanroom_state_path": "/tmp/atlas-cleanroom-state-cr07-treatment-20260708-164741",
   "evidence_level": "REAL_RUNTIME_PROVEN",
   "goal_results": [
     {
@@ -120,6 +121,28 @@
       "mean_calibration_error": 0.534,
       "direct_evaluate_without_maturity_rejected": true,
       "duplicate_forecast_id_rejected": true,
+      "secret_shape_scan_clean": true
+    },
+    {
+      "goal": "CR_GOAL_07_SELF_ITERATION_BLACKBOX",
+      "status": "PROVEN_COMPLETE",
+      "evidence_level": "REAL_RUNTIME_PROVEN",
+      "classification": "REAL_RUNTIME_BEHAVIORAL_LOOP",
+      "report": "99_Verification/cleanroom/CR_GOAL_07_Self_Iteration_Blackbox_Report.md",
+      "clone_path": "/tmp/atlas-cleanroom-cr07-20260708-164741",
+      "control_state_path": "/tmp/atlas-cleanroom-state-cr07-control-20260708-164741",
+      "treatment_state_path": "/tmp/atlas-cleanroom-state-cr07-treatment-20260708-164741",
+      "forecast_error_runtime_path": true,
+      "direct_state_mutation": false,
+      "forecast_feedback_delta": -0.12,
+      "control_global_trust_index": 0.7208,
+      "treatment_global_trust_index": 0.5965,
+      "control_structural_shift_index": 0.1752,
+      "treatment_structural_shift_index": 0.1144,
+      "self_organization_status_changed": true,
+      "hypothesis_scores_changed": true,
+      "action_bias_changed": false,
+      "active_hypothesis_changed": false,
       "secret_shape_scan_clean": true
     }
   ],
