@@ -276,3 +276,77 @@ Evidence level: `LIVE_PROVEN`
 
 No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading, broker,
 prediction, or portfolio-mutation logic was changed.
+
+## 2026-07-08 - GOAL 03 Market Intelligence Completed
+
+### Summary
+
+Executed GOAL 03 after GOAL 02. Initial live market provider validation failed because `akshare`
+hit proxy disconnects and `yfinance` was rate limited. A local read-only market-data adapter repair
+added Yahoo Chart fallback support without changing cognition, trading, broker, CDE, or prediction
+logic.
+
+### Validation
+
+Command:
+
+```text
+python3 99_Verification/validate_goal_03_market_intelligence.py
+```
+
+Result: `PASS`
+
+### Runtime Evidence
+
+- Candidate probe found live price/volume data through `yahoo_chart`.
+- Daemon tick status: `success`.
+- Market refresh status: `ok`.
+- Market proof mode: `LIVE_OR_PROVIDER_PROOF`.
+- Runtime event enqueued: `volume_price_breakout`.
+- Event source: `yahoo_chart`.
+- UI `/state` reported `price_volume: LIVE`.
+- UI `/markets` displayed asset/source/status/freshness/timestamp.
+
+### Channel Status
+
+| Channel | Status |
+|---|---|
+| price_volume | `LIVE` |
+| market_breadth | `NOT_CONFIGURED` |
+| volatility | `SIMULATED` |
+| liquidity_proxy | `SIMULATED` |
+| news_announcement | `NOT_CONFIGURED` |
+| narrative_attention | `NOT_CONFIGURED` |
+| macro_policy | `NOT_CONFIGURED` |
+| portfolio_relevance | `LIVE` |
+
+### Degraded Handling
+
+The validator includes an invalid ticker degraded sample. It is preserved as a low-priority
+`market_event` with source `none`; the failure is not converted into fake freshness or zero signal.
+
+### Files Updated
+
+- `tools/market_data/market_data_provider.py`
+- `ui/pages/markets.py`
+- `ui/i18n/i18n.py`
+- `99_Verification/validate_goal_03_market_intelligence.py`
+- `99_Verification/GOAL_03_Market_Intelligence_Report.md`
+- `99_Verification/artifacts/goal_03_market_intelligence/live_runtime_result.json`
+- `docs/goals/evidence/GOAL_03_EVIDENCE.md`
+- `docs/goals/status/GOAL_STATUS.json`
+
+### Classification
+
+GOAL 03 classification: `PROVEN_COMPLETE`
+
+Evidence level: `LIVE_PROVEN`
+
+### Transition
+
+`GOAL_STATUS.json` now records `current_goal: GOAL_04_PORTFOLIO_COGNITION`.
+
+### Boundary
+
+No Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading, broker,
+prediction, or portfolio-mutation logic was changed.

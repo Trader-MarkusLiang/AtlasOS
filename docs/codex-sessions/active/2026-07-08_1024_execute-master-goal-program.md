@@ -117,6 +117,23 @@ v0.8.
   - updated GOAL 02 evidence and status so current execution advances to
     `GOAL_03_MARKET_INTELLIGENCE`.
   - committed GOAL 02 completion as `9e2cda363267657a8afa47f7dcbcdcc22571ab98`.
+- 2026-07-08 11:39 CST GOAL 03 market intelligence:
+  - inspected `docs/goals/GOAL_03_MARKET_INTELLIGENCE.md`,
+    `docs/goals/evidence/GOAL_03_EVIDENCE.md`, Prompt D market reports,
+    `runtime/market_intelligence.py`, daemon market hooks, portfolio config parsing, UI markets
+    page, and market data provider utility;
+  - direct probe initially found `002409` and `000001` available through `akshare`, then provider
+    availability degraded on rerun due proxy/rate-limit failures;
+  - repaired the local read-only market data provider with Yahoo Chart fallback, preserving the
+    same normalized snapshot shape and no trading execution;
+  - updated `/markets` to display asset/source/status/freshness/timestamp for observation
+    freshness visibility;
+  - added and ran `99_Verification/validate_goal_03_market_intelligence.py`, proving a live
+    `yahoo_chart` price/volume observation entered daemon/EventStream/DecisionLoop and appeared in
+    `/state` and `/markets`;
+  - added `99_Verification/GOAL_03_Market_Intelligence_Report.md` and live runtime artifact;
+  - updated GOAL 03 evidence and status so current execution advances to
+    `GOAL_04_PORTFOLIO_COGNITION`.
 
 ## Files Changed
 
@@ -142,6 +159,12 @@ v0.8.
 - `99_Verification/validate_goal_02_live_llm_activation.py`
 - `99_Verification/artifacts/goal_02_live_llm_activation/`
 - `docs/goals/evidence/GOAL_02_EVIDENCE.md`
+- `tools/market_data/market_data_provider.py`
+- `ui/pages/markets.py`
+- `99_Verification/GOAL_03_Market_Intelligence_Report.md`
+- `99_Verification/validate_goal_03_market_intelligence.py`
+- `99_Verification/artifacts/goal_03_market_intelligence/`
+- `docs/goals/evidence/GOAL_03_EVIDENCE.md`
 
 ## Decisions
 
@@ -168,6 +191,8 @@ v0.8.
   `GOAL_02_LIVE_LLM_ACTIVATION`.
 - GOAL 02 is now reconciled as `PROVEN_COMPLETE`; `GOAL_STATUS.json` current cursor is
   `GOAL_03_MARKET_INTELLIGENCE`.
+- GOAL 03 is now reconciled as `PROVEN_COMPLETE`; `GOAL_STATUS.json` current cursor is
+  `GOAL_04_PORTFOLIO_COGNITION`.
 - A temporary UI server process is still visible on port `8876`; stop or reuse it intentionally
   before further browser tests.
 
@@ -187,14 +212,17 @@ v0.8.
 - GOAL 02 live active-chain smoke: `morecode -> HTTP 401`, `ark -> timed out`, `volcano -> ok`.
 - GOAL 02 live telemetry contract smoke: PASS.
 - GOAL 02 failure-matrix validator: PASS.
+- GOAL 03 first validator run: FAIL due all live providers unavailable in that moment.
+- GOAL 03 repaired provider fallback and UI freshness view.
+- GOAL 03 validator rerun: PASS.
 
 ## Resume Instructions
 
 1. Read `docs/goals/status/GOAL_STATUS.json`.
-2. Confirm `current_goal` is `GOAL_03_MARKET_INTELLIGENCE`.
-3. Read `docs/goals/GOAL_03_MARKET_INTELLIGENCE.md` and
-   `docs/goals/evidence/GOAL_03_EVIDENCE.md`.
-4. Re-test one live price/volume daemon path and preserve missing-channel statuses honestly.
+2. Confirm `current_goal` is `GOAL_04_PORTFOLIO_COGNITION`.
+3. Read `docs/goals/GOAL_04_PORTFOLIO_COGNITION.md` and
+   `docs/goals/evidence/GOAL_04_EVIDENCE.md`.
+4. Audit existing portfolio differential proof and create GOAL 04 report/validator if needed.
 5. Preserve hard boundaries: no broker/trading execution, no cognition rewrites, no speculative
    engines, no private config commits.
 

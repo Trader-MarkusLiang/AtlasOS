@@ -6,6 +6,8 @@ trading system, cache, crawler, or execution layer.
 
 from __future__ import annotations
 
+import json
+import urllib.request
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
@@ -125,6 +127,46 @@ def _yfinance_history(ticker: str, market: str, period: str) -> pd.DataFrame:
     return df
 
 
+def _yahoo_chart_history(ticker: str, market: str, period: str) -> pd.DataFrame:
+    symbol = _market_to_yfinance_symbol(ticker, market)
+    chart_range = _period_to_yfinance_period(period)
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range={chart_range}&interval=1d"
+    request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(request, timeout=8) as response:
+        payload = json.loads(response.read().decode("utf-8") or "{}")
+    chart = payload.get("chart") if isinstance(payload, dict) else {}
+    if not isinstance(chart, dict) or chart.get("error"):
+        return pd.DataFrame()
+    results = chart.get("result")
+    if not isinstance(results, list) or not results:
+        return pd.DataFrame()
+    first = results[0] if isinstance(results[0], dict) else {}
+    timestamps = first.get("timestamp") if isinstance(first.get("timestamp"), list) else []
+    quote = first.get("indicators", {}).get("quote", [{}])
+    quote = quote[0] if isinstance(quote, list) and quote and isinstance(quote[0], dict) else {}
+    rows = []
+    for index, stamp in enumerate(timestamps):
+        rows.append(
+            {
+                "date": pd.to_datetime(stamp, unit="s", utc=True, errors="coerce"),
+                "open": _safe_index(quote.get("open"), index),
+                "high": _safe_index(quote.get("high"), index),
+                "low": _safe_index(quote.get("low"), index),
+                "close": _safe_index(quote.get("close"), index),
+                "volume": _safe_index(quote.get("volume"), index),
+            }
+        )
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return df
+    for col in ["open", "high", "low", "close", "volume"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+    df = df.dropna(subset=["close"])
+    df.attrs["source"] = "yahoo_chart"
+    return df
+
+
 def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
     """Return recent daily history with normalized columns where possible."""
 
@@ -136,6 +178,7 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
         attempts.append(("akshare", lambda: _akshare_history(ticker, market, period)))
     if market in {"A-share", "HK", "US", "US / ETF", "ETF"}:
         attempts.append(("yfinance", lambda: _yfinance_history(ticker, market, period)))
+        attempts.append(("yahoo_chart", lambda: _yahoo_chart_history(ticker, market, period)))
 
     errors: List[str] = []
     for source, loader in attempts:
@@ -251,6 +294,12 @@ def _timestamp_to_iso(value: Any) -> Optional[str]:
         return pd.Timestamp(value).isoformat()
     except Exception:
         return str(value)
+
+
+def _safe_index(values: Any, index: int) -> Any:
+    if isinstance(values, list) and index < len(values):
+        return values[index]
+    return None
 
 
 def _moving_average(df: pd.DataFrame, window: int) -> Optional[float]:

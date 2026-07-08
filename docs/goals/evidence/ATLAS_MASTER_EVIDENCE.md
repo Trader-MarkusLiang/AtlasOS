@@ -21,6 +21,7 @@ production, not live-market proven, and not 2h/24h stable.
 
 - Ordinary-user activation through UI/config/runtime path.
 - Live LLM provider inference and fallback through GOAL 02.
+- Live market price/volume observation through daemon/runtime/UI path through GOAL 03.
 - Portfolio context runtime path.
 - Forecast lineage through normal DecisionLoop.
 - Self-iteration treatment/control behavior.
@@ -29,14 +30,14 @@ production, not live-market proven, and not 2h/24h stable.
 
 ## Open Gaps
 
-- Stable live market daemon ingestion.
 - 2h and 24h real-duration soak.
+- Breadth/news/macro/narrative live feeds remain not configured.
 - Provider long-run stability sample remains small.
 
 ## Next Evidence To Collect
 
 1. 2h wall-clock soak report.
-2. Stable live market price/volume daemon path proof.
+2. Portfolio cognition GOAL 04 report reconciliation.
 3. Provider stability evidence during GOAL 07 soak.
 4. Release tribunal after the remaining blockers close.
 
