@@ -18,6 +18,7 @@ production, not live-market proven, and not 2h/24h stable.
 | Goal status registry | `docs/goals/status/GOAL_STATUS.json` | active |
 | GOAL 05 forecast accountability | `99_Verification/GOAL_05_Forecast_Accountability_Report.md` | `REAL_RUNTIME_PROVEN` |
 | GOAL 06 self-iteration reality | `99_Verification/GOAL_06_True_Self_Iteration_Report.md` | `REAL_RUNTIME_BEHAVIORAL_LOOP` |
+| GOAL 07 autonomous operations | `99_Verification/GOAL_07_Autonomous_Operations_Report.md` | `PROVEN_PARTIAL` |
 
 ## Proven Areas
 
@@ -27,8 +28,8 @@ production, not live-market proven, and not 2h/24h stable.
 - Portfolio cognition differential through UI/runtime path through GOAL 04.
 - Forecast accountability lifecycle through normal runtime-supported paths through GOAL 05.
 - Self-iteration treatment/control behavior through GOAL 06.
-- Daily-cycle daemon dispatch.
-- Failure recovery for tested cases.
+- Daily-cycle daemon dispatch and 500-cycle accelerated operations through GOAL 07.
+- Failure recovery for tested cases through GOAL 07.
 
 ## Open Gaps
 
@@ -39,7 +40,7 @@ production, not live-market proven, and not 2h/24h stable.
 ## Next Evidence To Collect
 
 1. 2h wall-clock soak report.
-2. Provider stability evidence during GOAL 07 soak.
+2. Provider stability evidence during a longer GOAL 07 soak.
 3. Oscillation and stability monitoring for forecast-feedback loops.
 4. Release tribunal after the remaining blockers close.
 
