@@ -221,7 +221,8 @@ v0.8.
   - added `99_Verification/GOAL_08_Release_Readiness_Report.md`;
   - added `99_Verification/Atlas_OS_Master_Goal_Final_Report.md`;
   - updated master/GOAL 08 evidence, status registry, changelog, README, VERSION, and roadmap;
-  - `GOAL_STATUS.json` now records `status: COMPLETE`.
+  - `GOAL_STATUS.json` now records `status: COMPLETE`;
+  - committed GOAL 08 tribunal as `900a1463f4933e29770c92ffdcae49b0bf65b871`.
 
 ## Files Changed
 
@@ -324,7 +325,7 @@ v0.8.
 - GOAL 07 now has two-hour real-duration daemon proof and is committed as `PROVEN_COMPLETE`; the
   execution cursor is `GOAL_08_RELEASE_READINESS`.
 - GOAL 08 validator passed and classified Atlas OS as `PRODUCTION_TRIAL_CANDIDATE`; Master Goal
-  status is ready to commit as `COMPLETE`.
+  status is committed as `COMPLETE`.
 - A temporary UI server process is still visible on port `8876`; stop or reuse it intentionally
   before further browser tests.
 
