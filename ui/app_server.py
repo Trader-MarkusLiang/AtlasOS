@@ -55,6 +55,7 @@ from ui.state_visual_dashboard import build_dashboard_state
 from ui.system_control_panel import (
     adjust_tick_interval,
     control_panel_state,
+    runtime_status,
     start_runtime_daemon,
     stop_runtime_daemon,
     switch_llm_provider,
@@ -372,6 +373,7 @@ def state_api() -> Dict[str, Any]:
         "portfolio_context": portfolio_context,
         "market_intelligence": market_intelligence,
         "daily_cycle": store.get_state("daily_cycle_state"),
+        "runtime": runtime_status(pid_file=_pid_file(), db_path=_db_path()),
         "llm_trace_summary": llm_summary,
         "llm_provider_registry": _safe_provider_registry(),
         "last_event_summary": event_history[0] if event_history else {},

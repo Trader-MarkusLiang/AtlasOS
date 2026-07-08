@@ -11,6 +11,7 @@ import os
 import signal
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -78,7 +79,11 @@ def stop_runtime_daemon(*, pid_file: Optional[str] = None) -> Dict[str, Any]:
     except ProcessLookupError:
         pid_path.unlink(missing_ok=True)
         return {"status": "stale_pid_removed", "running": False, "pid": pid}
-    return {"status": "stop_requested", "running": False, "pid": pid}
+    stopped = _wait_for_process_exit(pid)
+    if stopped:
+        pid_path.unlink(missing_ok=True)
+        return {"status": "stopped", "running": False, "pid": pid}
+    return {"status": "stop_requested", "running": _process_is_running(pid), "pid": pid}
 
 
 def runtime_status(*, pid_file: Optional[str] = None, db_path: Optional[str] = None) -> Dict[str, Any]:
@@ -198,3 +203,12 @@ def _process_is_running(pid: int) -> bool:
     if not status:
         return False
     return not status.upper().startswith("Z")
+
+
+def _wait_for_process_exit(pid: int, timeout_seconds: float = 3.0) -> bool:
+    deadline = time.time() + timeout_seconds
+    while time.time() < deadline:
+        if not _process_is_running(pid):
+            return True
+        time.sleep(0.1)
+    return not _process_is_running(pid)
