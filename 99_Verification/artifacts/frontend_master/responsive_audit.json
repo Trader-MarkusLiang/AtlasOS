@@ -1,0 +1,482 @@
+[
+  {
+    "width": 1280,
+    "name": "home",
+    "route": "/",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "NEUTRAL",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 829,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "setup",
+    "route": "/setup",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "设置 Atlas OS",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 2084,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "dashboard",
+    "route": "/dashboard",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "ATTENTION_EXPANSION",
+      "hasHorizontalOverflow": true,
+      "scrollHeight": 1078,
+      "scrollWidth": 1564,
+      "svgCount": 3,
+      "tableCount": 0,
+      "unknownCount": 1,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "portfolio",
+    "route": "/portfolio",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "组合上下文",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 692,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 1,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "markets",
+    "route": "/markets",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "市场智能",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 978,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 2,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "predictions",
+    "route": "/predictions",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "预测账本",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 859,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 1,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "learning",
+    "route": "/learning",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "学习与责任链",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 697,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "workflow",
+    "route": "/workflow",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "From event to bounded feedback.",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 906,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "roadmap",
+    "route": "/roadmap",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "master goal complete: production trial candidate, not release candidate",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 2708,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "dev_registry",
+    "route": "/dev-registry",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "Atlas OS Development Registry",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 2260,
+      "scrollWidth": 1280,
+      "svgCount": 1,
+      "tableCount": 2,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "settings",
+    "route": "/settings",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "Atlas OS",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 4370,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1280,
+    "name": "system_guide",
+    "route": "/system-guide",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1280,
+      "h1": "Atlas OS System Guide",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 747,
+      "scrollWidth": 1280,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 1,
+      "viewport": {
+        "height": 800,
+        "width": 1280
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "home",
+    "route": "/",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "NEUTRAL",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 829,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "setup",
+    "route": "/setup",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "设置 Atlas OS",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 2084,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "dashboard",
+    "route": "/dashboard",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "ATTENTION_EXPANSION",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 2712,
+      "scrollWidth": 1024,
+      "svgCount": 3,
+      "tableCount": 0,
+      "unknownCount": 1,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "portfolio",
+    "route": "/portfolio",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "组合上下文",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 692,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 1,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "markets",
+    "route": "/markets",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "市场智能",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 978,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 2,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "predictions",
+    "route": "/predictions",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "预测账本",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 959,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 1,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "learning",
+    "route": "/learning",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "学习与责任链",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 697,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "workflow",
+    "route": "/workflow",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "From event to bounded feedback.",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 1348,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "roadmap",
+    "route": "/roadmap",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "master goal complete: production trial candidate, not release candidate",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 2882,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "dev_registry",
+    "route": "/dev-registry",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "Atlas OS Development Registry",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 2374,
+      "scrollWidth": 1024,
+      "svgCount": 1,
+      "tableCount": 2,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "settings",
+    "route": "/settings",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "Atlas OS",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 6912,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  },
+  {
+    "width": 1024,
+    "name": "system_guide",
+    "route": "/system-guide",
+    "metrics": {
+      "canvasCount": 0,
+      "clientWidth": 1024,
+      "h1": "Atlas OS System Guide",
+      "hasHorizontalOverflow": false,
+      "scrollHeight": 804,
+      "scrollWidth": 1024,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 1,
+      "viewport": {
+        "height": 800,
+        "width": 1024
+      }
+    }
+  }
+]

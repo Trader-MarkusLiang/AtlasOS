@@ -1,0 +1,314 @@
+[
+  {
+    "name": "home",
+    "route": "/",
+    "title": "Atlas Home",
+    "url": "http://127.0.0.1:8765/",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/home_1440.png",
+    "metrics": {
+      "buttonCount": 0,
+      "canvasCount": 0,
+      "cardishCount": 5,
+      "clientWidth": 1440,
+      "h1": "NEUTRAL",
+      "hasHorizontalOverflow": false,
+      "linkCount": 9,
+      "nullCount": 0,
+      "scrollHeight": 829,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "setup",
+    "route": "/setup",
+    "title": "设置 Atlas OS",
+    "url": "http://127.0.0.1:8765/setup",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/setup_1440.png",
+    "metrics": {
+      "buttonCount": 4,
+      "canvasCount": 0,
+      "cardishCount": 0,
+      "clientWidth": 1440,
+      "h1": "设置 Atlas OS",
+      "hasHorizontalOverflow": false,
+      "linkCount": 2,
+      "nullCount": 0,
+      "scrollHeight": 2084,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "dashboard",
+    "route": "/dashboard",
+    "title": "Atlas OS Control Interface",
+    "url": "http://127.0.0.1:8765/dashboard",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/dashboard_1440.png",
+    "metrics": {
+      "buttonCount": 11,
+      "canvasCount": 0,
+      "cardishCount": 0,
+      "clientWidth": 1440,
+      "h1": "ATTENTION_EXPANSION",
+      "hasHorizontalOverflow": true,
+      "linkCount": 16,
+      "nullCount": 0,
+      "scrollHeight": 1056,
+      "scrollWidth": 1713,
+      "svgCount": 3,
+      "tableCount": 0,
+      "unknownCount": 1,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "portfolio",
+    "route": "/portfolio",
+    "title": "Atlas Portfolio",
+    "url": "http://127.0.0.1:8765/portfolio",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/portfolio_1440.png",
+    "metrics": {
+      "buttonCount": 0,
+      "canvasCount": 0,
+      "cardishCount": 3,
+      "clientWidth": 1440,
+      "h1": "组合上下文",
+      "hasHorizontalOverflow": false,
+      "linkCount": 2,
+      "nullCount": 0,
+      "scrollHeight": 692,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 1,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "markets",
+    "route": "/markets",
+    "title": "Atlas Markets",
+    "url": "http://127.0.0.1:8765/markets",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/markets_1440.png",
+    "metrics": {
+      "buttonCount": 0,
+      "canvasCount": 0,
+      "cardishCount": 3,
+      "clientWidth": 1440,
+      "h1": "市场智能",
+      "hasHorizontalOverflow": false,
+      "linkCount": 2,
+      "nullCount": 0,
+      "scrollHeight": 978,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 2,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "predictions",
+    "route": "/predictions",
+    "title": "Atlas Predictions",
+    "url": "http://127.0.0.1:8765/predictions",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/predictions_1440.png",
+    "metrics": {
+      "buttonCount": 1,
+      "canvasCount": 0,
+      "cardishCount": 3,
+      "clientWidth": 1440,
+      "h1": "预测账本",
+      "hasHorizontalOverflow": false,
+      "linkCount": 2,
+      "nullCount": 0,
+      "scrollHeight": 859,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 1,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "learning",
+    "route": "/learning",
+    "title": "Atlas Learning",
+    "url": "http://127.0.0.1:8765/learning",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/learning_1440.png",
+    "metrics": {
+      "buttonCount": 0,
+      "canvasCount": 0,
+      "cardishCount": 3,
+      "clientWidth": 1440,
+      "h1": "学习与责任链",
+      "hasHorizontalOverflow": false,
+      "linkCount": 2,
+      "nullCount": 0,
+      "scrollHeight": 697,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "workflow",
+    "route": "/workflow",
+    "title": "Atlas Workflow",
+    "url": "http://127.0.0.1:8765/workflow",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/workflow_1440.png",
+    "metrics": {
+      "buttonCount": 0,
+      "canvasCount": 0,
+      "cardishCount": 3,
+      "clientWidth": 1440,
+      "h1": "From event to bounded feedback.",
+      "hasHorizontalOverflow": false,
+      "linkCount": 13,
+      "nullCount": 0,
+      "scrollHeight": 931,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "roadmap",
+    "route": "/roadmap",
+    "title": "Atlas Roadmap",
+    "url": "http://127.0.0.1:8765/roadmap",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/roadmap_1440.png",
+    "metrics": {
+      "buttonCount": 0,
+      "canvasCount": 0,
+      "cardishCount": 22,
+      "clientWidth": 1440,
+      "h1": "master goal complete: production trial candidate, not release candidate",
+      "hasHorizontalOverflow": false,
+      "linkCount": 5,
+      "nullCount": 0,
+      "scrollHeight": 2293,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "dev_registry",
+    "route": "/dev-registry",
+    "title": "Atlas OS Dev Registry",
+    "url": "http://127.0.0.1:8765/dev-registry",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/dev_registry_1440.png",
+    "metrics": {
+      "buttonCount": 0,
+      "canvasCount": 0,
+      "cardishCount": 11,
+      "clientWidth": 1440,
+      "h1": "Atlas OS Development Registry",
+      "hasHorizontalOverflow": false,
+      "linkCount": 16,
+      "nullCount": 0,
+      "scrollHeight": 2270,
+      "scrollWidth": 1440,
+      "svgCount": 1,
+      "tableCount": 2,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "settings",
+    "route": "/settings",
+    "title": "Atlas 设置",
+    "url": "http://127.0.0.1:8765/settings",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/settings_1440.png",
+    "metrics": {
+      "buttonCount": 27,
+      "canvasCount": 0,
+      "cardishCount": 11,
+      "clientWidth": 1440,
+      "h1": "Atlas OS",
+      "hasHorizontalOverflow": false,
+      "linkCount": 3,
+      "nullCount": 0,
+      "scrollHeight": 4336,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 0,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "name": "system_guide",
+    "route": "/system-guide",
+    "title": "Atlas OS System Guide",
+    "url": "http://127.0.0.1:8765/system-guide",
+    "file": "/Users/markus/AtlasOS/99_Verification/artifacts/frontend_master/system_guide_1440.png",
+    "metrics": {
+      "buttonCount": 0,
+      "canvasCount": 0,
+      "cardishCount": 4,
+      "clientWidth": 1440,
+      "h1": "Atlas OS System Guide",
+      "hasHorizontalOverflow": false,
+      "linkCount": 4,
+      "nullCount": 0,
+      "scrollHeight": 747,
+      "scrollWidth": 1440,
+      "svgCount": 0,
+      "tableCount": 0,
+      "unknownCount": 1,
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  }
+]

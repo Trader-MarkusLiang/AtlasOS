@@ -1,0 +1,258 @@
+[
+  {
+    "route": "/",
+    "url": "http://127.0.0.1:8765/",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 3418,
+    "latency_ms": 125.05,
+    "title": "Atlas Home",
+    "h1": "NEUTRAL",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/setup",
+    "url": "http://127.0.0.1:8765/setup",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 9608,
+    "latency_ms": 3.48,
+    "title": "设置 Atlas OS",
+    "h1": "设置 Atlas OS",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 2
+    }
+  },
+  {
+    "route": "/dashboard",
+    "url": "http://127.0.0.1:8765/dashboard",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 72910,
+    "latency_ms": 127.2,
+    "title": "Atlas OS Control Interface",
+    "h1": "正在初始化推理层",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 12,
+      "literal_null_count": 9,
+      "literal_empty_dict_count": 17
+    }
+  },
+  {
+    "route": "/portfolio",
+    "url": "http://127.0.0.1:8765/portfolio",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 1433,
+    "latency_ms": 3.27,
+    "title": "Atlas Portfolio",
+    "h1": "组合上下文",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/markets",
+    "url": "http://127.0.0.1:8765/markets",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 1683,
+    "latency_ms": 2.77,
+    "title": "Atlas Markets",
+    "h1": "市场智能",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/predictions",
+    "url": "http://127.0.0.1:8765/predictions",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 2788,
+    "latency_ms": 3.15,
+    "title": "Atlas Predictions",
+    "h1": "预测账本",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 1,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/learning",
+    "url": "http://127.0.0.1:8765/learning",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 937,
+    "latency_ms": 88.4,
+    "title": "Atlas Learning",
+    "h1": "学习与责任链",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/workflow",
+    "url": "http://127.0.0.1:8765/workflow",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 11876,
+    "latency_ms": 3.06,
+    "title": "Atlas Workflow",
+    "h1": "From event to bounded feedback.",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 1,
+      "literal_empty_dict_count": 1
+    }
+  },
+  {
+    "route": "/roadmap",
+    "url": "http://127.0.0.1:8765/roadmap",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 15942,
+    "latency_ms": 3.15,
+    "title": "Atlas Roadmap",
+    "h1": "master goal complete: production trial candidate, not release candidate",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/dev-registry",
+    "url": "http://127.0.0.1:8765/dev-registry",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 15175,
+    "latency_ms": 83.02,
+    "title": "Atlas OS Dev Registry",
+    "h1": "Atlas OS Development Registry",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/settings",
+    "url": "http://127.0.0.1:8765/settings",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 56360,
+    "latency_ms": 3.67,
+    "title": "Atlas 设置",
+    "h1": "Atlas OS",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 4,
+      "literal_empty_dict_count": 8
+    }
+  },
+  {
+    "route": "/system-guide",
+    "url": "http://127.0.0.1:8765/system-guide",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 4784,
+    "latency_ms": 2.2,
+    "title": "Atlas OS System Guide",
+    "h1": "Atlas OS System Guide",
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 1,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/state",
+    "url": "http://127.0.0.1:8765/state",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 46861,
+    "latency_ms": 82.49,
+    "title": null,
+    "h1": null,
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 45,
+      "literal_empty_dict_count": 3
+    }
+  },
+  {
+    "route": "/roadmap?format=json",
+    "url": "http://127.0.0.1:8765/roadmap?format=json",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 17977,
+    "latency_ms": 2.09,
+    "title": null,
+    "h1": null,
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 2,
+      "literal_empty_dict_count": 0
+    }
+  },
+  {
+    "route": "/predictions?format=json",
+    "url": "http://127.0.0.1:8765/predictions?format=json",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 3523,
+    "latency_ms": 2.98,
+    "title": null,
+    "h1": null,
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 9,
+      "literal_empty_dict_count": 8
+    }
+  },
+  {
+    "route": "/markets?format=json",
+    "url": "http://127.0.0.1:8765/markets?format=json",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 599,
+    "latency_ms": 2.89,
+    "title": null,
+    "h1": null,
+    "raw_json_markers": {
+      "pre_json": false,
+      "literal_unknown_count": 0,
+      "literal_null_count": 0,
+      "literal_empty_dict_count": 0
+    }
+  }
+]

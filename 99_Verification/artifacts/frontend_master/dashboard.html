@@ -1,0 +1,2238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas OS Control Interface</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #070a0f;
+  --panel: rgba(15, 23, 35, 0.82);
+  --panel-strong: rgba(18, 29, 45, 0.94);
+  --line: rgba(148, 163, 184, 0.2);
+  --line-strong: rgba(94, 234, 212, 0.38);
+  --text: #e6edf3;
+  --muted: #94a3b8;
+  --accent: #5eead4;
+  --warn: #f8d66d;
+  --danger: #fb7185;
+  --ok: #86efac;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  min-width: 360px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(20, 184, 166, 0.16), transparent 30%),
+    linear-gradient(135deg, #070a0f 0%, #101622 44%, #090d14 100%);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+button, input, select, textarea { font: inherit; }
+.control-plane-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  background: #080b10;
+}
+.control-sidebar {
+  min-height: 100vh;
+  padding: 18px 14px;
+  border-right: 1px solid var(--line);
+  background: rgba(8, 13, 21, 0.96);
+}
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px 18px;
+}
+.sidebar-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--accent);
+  font-weight: 850;
+}
+.sidebar-brand strong, .sidebar-brand span {
+  display: block;
+}
+.sidebar-brand span, .sidebar-footer span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.sidebar-link {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+}
+.sidebar-link:hover {
+  border-color: var(--line);
+  background: rgba(148, 163, 184, 0.08);
+}
+.sidebar-footer {
+  margin-top: 16px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(2, 6, 12, 0.52);
+}
+.sidebar-footer strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--accent);
+}
+.control-plane-main {
+  min-width: 0;
+  min-height: 100vh;
+}
+.control-plane-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(10, 16, 26, 0.72);
+}
+.mode-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.mode-switcher button,
+.settings-link-button {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(15, 23, 35, 0.76);
+  color: var(--text);
+  text-decoration: none;
+}
+.mode-switcher button.active,
+.settings-link-button {
+  border-color: rgba(94, 234, 212, 0.48);
+  background: rgba(94, 234, 212, 0.12);
+}
+.control-plane-workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) 340px;
+  gap: 12px;
+  padding: 12px;
+}
+.workspace-primary {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.workspace-primary .center-panel {
+  width: 100%;
+  min-height: 520px;
+}
+.workspace-inspector {
+  min-width: 0;
+}
+.workspace-inspector .right-panel {
+  width: 100%;
+  height: 100%;
+}
+.workflow-graph-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  overflow: hidden;
+}
+.card-heading {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.card-heading h2 {
+  margin: 2px 0 0;
+  font-size: 1rem;
+}
+.workflow-graph {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 10px;
+  padding: 14px;
+}
+.workflow-node {
+  min-height: 64px;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(2, 6, 12, 0.48);
+  color: var(--text);
+  text-align: center;
+  text-decoration: none;
+}
+.workflow-node.active {
+  border-color: rgba(94, 234, 212, 0.6);
+  background: rgba(94, 234, 212, 0.12);
+  color: var(--accent);
+}
+.workflow-connectors {
+  display: none;
+}
+.execution-timeline {
+  margin: 0 12px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  overflow: hidden;
+}
+.execution-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0 14px 10px;
+}
+.execution-step {
+  min-height: 58px;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 8px;
+  background: rgba(2, 6, 12, 0.45);
+  color: #cbd5e1;
+  text-align: center;
+}
+.top-bar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(5, 9, 15, 0.88);
+  backdrop-filter: blur(14px);
+}
+.brand-block, .runtime-controls, .decision-topline, .stream-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-mark {
+  width: 74px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.brand-title { font-weight: 750; }
+.brand-subtitle, .panel-kicker, .metric-label, .decision-grid span {
+  color: var(--muted);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+}
+.runtime-controls { flex-wrap: wrap; justify-content: flex-end; }
+.language-switcher {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  color: #8c97a6;
+  font-size: 0.78rem;
+}
+.global-help-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(2, 6, 12, 0.82);
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+.global-help-bar a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+.nav-tab {
+  min-height: 32px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(15, 23, 35, 0.72);
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+}
+button.nav-tab { font: inherit; }
+.roadmap-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(8, 13, 21, 0.7);
+}
+.roadmap-strip strong {
+  margin: 0 10px;
+  color: var(--accent);
+}
+.roadmap-strip span {
+  color: var(--muted);
+}
+.roadmap-strip-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.system-navigation-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 12px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(15, 23, 35, 0.76);
+}
+.system-navigation-card h2 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.system-navigation-card p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+.system-navigation-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.system-navigation-links a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  background: rgba(2, 6, 12, 0.45);
+}
+.status-pill {
+  min-width: 90px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.status-running { color: var(--ok); border-color: rgba(134, 239, 172, 0.42); }
+.status-stopped { color: var(--danger); border-color: rgba(251, 113, 133, 0.42); }
+.status-unknown { color: var(--warn); }
+.control-button {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(94, 234, 212, 0.5);
+  border-radius: 8px;
+  background: rgba(20, 184, 166, 0.14);
+  color: var(--text);
+  cursor: pointer;
+}
+.control-button.secondary { border-color: var(--line); background: rgba(148, 163, 184, 0.08); }
+.compact-field {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(15, 23, 35, 0.72);
+}
+.compact-field span { color: var(--muted); font-size: 0.75rem; }
+select, textarea {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0b111a;
+  color: var(--text);
+}
+select { height: 28px; padding: 0 6px; }
+.workspace {
+  min-height: 0;
+  height: calc(100vh - 268px);
+  min-height: 460px;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(16px);
+}
+.left-panel, .right-panel {
+  width: 292px;
+  flex: 0 0 292px;
+  overflow: auto;
+}
+.center-panel {
+  min-width: 320px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.panel-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.panel-header h2, .inspector-section h3 {
+  margin: 2px 0 0;
+  font-size: 1rem;
+}
+.state-stack { padding: 14px; }
+.metric, .decision-card, .inspector-section {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(8, 13, 21, 0.68);
+}
+.metric { padding: 12px; margin-bottom: 10px; }
+.metric.primary strong { font-size: 1.28rem; color: var(--accent); }
+.metric strong { display: block; margin-top: 6px; font-size: 1rem; overflow-wrap: anywhere; }
+.metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.metric-grid .metric { margin: 0; min-height: 82px; }
+.meter {
+  height: 6px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.18);
+}
+.meter span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--danger), var(--warn), var(--accent));
+  transition: width 250ms ease;
+}
+.decision-card { margin: 14px; padding: 14px; }
+.decision-topline { justify-content: space-between; gap: 10px; }
+.decision-action {
+  color: var(--accent);
+  font-size: 1.55rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.decision-confidence { color: var(--muted); }
+.decision-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.decision-grid div {
+  min-height: 58px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(15, 23, 35, 0.7);
+}
+.decision-grid strong { display: block; margin-top: 5px; overflow-wrap: anywhere; }
+.decision-summary { margin: 12px 0 0; color: #cbd5e1; line-height: 1.45; }
+.chat-console {
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0 14px 14px;
+}
+.chat-messages {
+  flex: 1 1 auto;
+  min-height: 120px;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(4, 8, 14, 0.72);
+}
+.chat-line {
+  margin-bottom: 10px;
+  padding: 9px 10px;
+  border-left: 3px solid var(--line-strong);
+  background: rgba(15, 23, 35, 0.65);
+}
+.chat-line.system { border-left-color: var(--warn); }
+.chat-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.chat-form textarea {
+  min-width: 0;
+  flex: 1 1 auto;
+  resize: vertical;
+  padding: 10px;
+}
+.chat-form button { align-self: stretch; min-width: 82px; }
+.inspector-section { margin: 14px; padding: 12px; }
+.inline-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 7px 10px;
+  margin: 10px 0 0;
+}
+.inline-facts dt { color: var(--muted); }
+.inline-facts dd { margin: 0; overflow-wrap: anywhere; }
+.factor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+.factor-chip {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(94, 234, 212, 0.1);
+  color: #dbeafe;
+  font-size: 0.78rem;
+}
+pre {
+  max-height: 210px;
+  overflow: auto;
+  margin: 10px 0 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(2, 6, 12, 0.7);
+  color: #cbd5e1;
+  white-space: pre-wrap;
+}
+.stream-panel {
+  height: 190px;
+  margin: 0 12px 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.stream-header { justify-content: space-between; padding: 10px 14px; }
+.stream-clock { color: var(--muted); font-size: 0.78rem; }
+.event-stream {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 10px 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+}
+.stream-line {
+  display: flex;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+}
+.stream-line time { flex: 0 0 86px; color: var(--muted); }
+.stream-line span { overflow-wrap: anywhere; }
+.explainability-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(3, 7, 12, 0.72);
+  backdrop-filter: blur(12px);
+}
+.explainability-overlay.hidden { display: none; }
+.overlay-panel {
+  width: min(1120px, 100%);
+  max-height: min(760px, calc(100vh - 36px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(10, 16, 26, 0.96);
+  box-shadow: 0 26px 100px rgba(0, 0, 0, 0.48);
+}
+.overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.overlay-header h2 { margin: 2px 0 0; font-size: 1.05rem; }
+.overlay-body {
+  min-height: 0;
+  flex: 1 1 auto;
+  padding: 14px;
+  overflow: auto;
+}
+.graph-layout {
+  display: flex;
+  gap: 14px;
+}
+.explainability-svg {
+  min-width: 0;
+  flex: 1 1 auto;
+  height: 430px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(3, 7, 12, 0.68);
+}
+.overlay-side {
+  width: 270px;
+  flex: 0 0 270px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(15, 23, 35, 0.72);
+}
+.overlay-side h3 { margin: 0 0 10px; font-size: 0.95rem; }
+.mini-list, .timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mini-item, .timeline-item {
+  padding: 8px 9px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 8px;
+  background: rgba(2, 6, 12, 0.55);
+  color: #cbd5e1;
+  font-size: 0.82rem;
+}
+.mini-item.drifted { border-color: rgba(248, 214, 109, 0.58); color: #fde68a; }
+.timeline-layout { display: flex; flex-direction: column; gap: 12px; }
+.timeline-svg {
+  width: 100%;
+  height: 330px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(3, 7, 12, 0.68);
+}
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(3, 7, 12, 0.78);
+  backdrop-filter: blur(14px);
+}
+.onboarding-overlay.hidden { display: none; }
+.onboarding-card {
+  width: min(760px, 100%);
+  max-height: min(820px, calc(100vh - 36px));
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(10, 16, 26, 0.97);
+  box-shadow: 0 26px 100px rgba(0, 0, 0, 0.48);
+}
+.onboarding-card h1 {
+  margin: 6px 0 10px;
+  font-size: 1.45rem;
+}
+.onboarding-card p {
+  margin: 0;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+.onboarding-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+.onboarding-grid div, .boot-sequence {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(2, 6, 12, 0.52);
+}
+.onboarding-grid div { padding: 12px; }
+.onboarding-grid strong {
+  display: block;
+  color: var(--accent);
+}
+.onboarding-grid span {
+  display: block;
+  margin-top: 6px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+.boot-sequence {
+  margin-top: 14px;
+  padding: 10px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.boot-step {
+  padding: 4px 0;
+  color: var(--muted);
+  opacity: 0.45;
+}
+.boot-step.active {
+  color: var(--accent);
+  opacity: 1;
+}
+.onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.onboarding-actions a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.tour-highlight {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.atlas-v2-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 28%),
+    #0b0f14;
+  color: #f4f7fb;
+}
+.atlas-v2-main {
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.v2-control-panel {
+  min-height: 100vh;
+  padding: 24px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(13, 18, 25, 0.78);
+  backdrop-filter: blur(22px);
+  overflow: auto;
+}
+.v2-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.v2-brand-mark {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+  font-weight: 760;
+}
+.v2-brand strong,
+.v2-brand span {
+  display: block;
+}
+.v2-brand span {
+  margin-top: 2px;
+  color: #8c97a6;
+  font-size: 0.84rem;
+}
+.v2-control-section,
+.v2-intelligence-card,
+.v2-primary-workspace,
+.v2-execution-timeline,
+.v2-chat-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(18, 24, 32, 0.72);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(20px);
+}
+.v2-control-section {
+  margin-bottom: 16px;
+  padding: 16px;
+}
+.v2-provider-mini {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.045);
+}
+.v2-provider-mini span {
+  color: #8c97a6;
+  font-size: 0.75rem;
+}
+.v2-provider-mini strong {
+  color: #f4f7fb;
+  overflow-wrap: anywhere;
+}
+.v2-section-title,
+.v2-kicker,
+.v2-focus-kicker {
+  color: #8c97a6;
+  font-size: 0.74rem;
+  font-weight: 680;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.v2-field {
+  display: block;
+  margin-top: 14px;
+  color: #9aa5b3;
+  font-size: 0.82rem;
+}
+.v2-field span {
+  display: block;
+  margin-bottom: 7px;
+}
+.v2-field input,
+.v2-field select,
+.v2-field textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(9, 13, 19, 0.86);
+  color: #f4f7fb;
+  outline: none;
+}
+.v2-field textarea {
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+}
+.v2-button-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.v2-primary-button,
+.v2-secondary-button,
+.v2-panel-link,
+.nav-tab,
+.settings-link-button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #f4f7fb;
+  text-decoration: none;
+  cursor: pointer;
+}
+.v2-primary-button {
+  background: #f4f7fb;
+  color: #0b0f14;
+}
+.v2-secondary-button,
+.v2-panel-link,
+.nav-tab {
+  background: rgba(255, 255, 255, 0.06);
+}
+.v2-panel-link {
+  width: 100%;
+  margin-top: 12px;
+}
+.as-link {
+  text-decoration: none;
+}
+.v2-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  color: #a7b0bd;
+  font-size: 0.85rem;
+}
+.v2-toggle input {
+  width: 18px;
+  height: 18px;
+}
+.top-bar {
+  height: 72px;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(11, 15, 20, 0.7);
+}
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4f7fb;
+}
+.brand-title {
+  font-size: 1rem;
+}
+.brand-subtitle {
+  color: #8c97a6;
+  text-transform: none;
+}
+.nav-tabs {
+  gap: 8px;
+}
+.status-pill {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+}
+.atlas-v2-content {
+  min-height: 0;
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) 360px;
+  gap: 16px;
+  padding: 16px 24px 16px;
+}
+.atlas-v2-focus-zone {
+  min-width: 0;
+}
+.v2-primary-workspace {
+  min-height: min(620px, calc(100vh - 230px));
+  padding: 22px;
+  border-radius: 28px;
+}
+.v2-mode-switcher {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+}
+.v2-mode-switcher button {
+  min-height: 34px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #9aa5b3;
+  cursor: pointer;
+}
+.v2-mode-switcher button.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f4f7fb;
+}
+.v2-mode-panel {
+  display: none;
+  padding-top: 42px;
+}
+.v2-mode-panel.active {
+  display: block;
+}
+.v2-focus-kicker {
+  margin-bottom: 8px;
+}
+.v2-regime-title {
+  margin: 0;
+  max-width: 920px;
+  color: #f8fafc;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: 0.92;
+  font-weight: 760;
+  letter-spacing: 0;
+}
+.v2-trust-hero {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  margin-top: 36px;
+}
+.v2-trust-hero span,
+.v2-system-summary span,
+.v2-decision-meta span {
+  color: #8c97a6;
+  font-size: 0.78rem;
+}
+.v2-trust-hero strong {
+  display: block;
+  margin-top: 4px;
+  color: #f4f7fb;
+  font-size: 1.65rem;
+}
+.v2-trust-gauge {
+  height: 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.v2-trust-gauge span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #64748b, #e2e8f0);
+  transition: width 420ms ease;
+}
+.v2-active-decision {
+  margin-top: 32px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.045);
+}
+.v2-decision-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+.v2-decision-line strong {
+  color: #f8fafc;
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+.v2-decision-line span {
+  color: #aab4c1;
+}
+.v2-active-decision p {
+  max-width: 780px;
+  margin: 12px 0 0;
+  color: #cbd5e1;
+  line-height: 1.55;
+}
+.v2-decision-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+.v2-decision-meta span,
+.v2-system-summary div {
+  min-height: 54px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.045);
+}
+.v2-decision-meta strong,
+.v2-system-summary strong {
+  display: block;
+  margin-top: 4px;
+  color: #f4f7fb;
+  overflow-wrap: anywhere;
+}
+.v2-system-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.v2-chat-card {
+  min-height: 470px;
+  padding: 18px;
+}
+.chat-messages {
+  min-height: 280px;
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+}
+.chat-form textarea {
+  border-radius: 16px;
+}
+.v2-intelligence-panel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.v2-intelligence-card {
+  padding: 16px;
+}
+.v2-intelligence-card.primary p {
+  margin: 10px 0 0;
+  color: #d7dde6;
+  line-height: 1.5;
+}
+.v2-muted-copy {
+  margin: 10px 0 0;
+  color: #9aa5b3;
+  line-height: 1.45;
+}
+.v2-causal-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.factor-chip {
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #dbe4ef;
+}
+.v2-fact-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 12px;
+  margin: 12px 0 0;
+}
+.v2-fact-grid dt {
+  color: #8c97a6;
+}
+.v2-fact-grid dd {
+  margin: 0;
+  color: #f4f7fb;
+  overflow-wrap: anywhere;
+}
+.v2-intelligence-card pre {
+  max-height: 120px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.v2-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.v2-execution-timeline {
+  margin: 0 24px 24px;
+  padding: 14px;
+}
+.v2-timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.v2-timeline-header h2 {
+  margin: 2px 0 0;
+  font-size: 0.96rem;
+  font-weight: 650;
+}
+.v2-stream-clock {
+  color: #8c97a6;
+  font-size: 0.82rem;
+}
+.v2-timeline-chain {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.v2-timeline-node {
+  min-height: 58px;
+  padding: 10px 12px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.045);
+}
+.v2-timeline-node strong,
+.v2-timeline-node span {
+  display: block;
+}
+.v2-timeline-node span {
+  margin-top: 3px;
+  color: #8c97a6;
+  font-size: 0.76rem;
+}
+.v2-compressed-stream {
+  max-height: 76px;
+  overflow: auto;
+  margin-top: 10px;
+  color: #9aa5b3;
+  font-size: 0.8rem;
+}
+.stream-line {
+  border-bottom: 0;
+  padding: 3px 0;
+}
+.workflow-graph-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(18, 24, 32, 0.72);
+}
+.workflow-graph {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  padding: 16px;
+}
+.workflow-node {
+  min-height: 72px;
+  flex: 1 1 0;
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.045);
+  color: #f4f7fb;
+}
+.workflow-node.active-path {
+  background: rgba(255, 255, 255, 0.075);
+}
+.workflow-node.active {
+  border-color: rgba(255, 255, 255, 0.26);
+  background: #f4f7fb;
+  color: #0b0f14;
+}
+.workflow-node.inactive {
+  opacity: 0.42;
+}
+.workflow-explanation {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px 16px;
+  color: #9aa5b3;
+}
+.workflow-explanation strong {
+  color: #f4f7fb;
+}
+.empty-pulse {
+  animation: v2Pulse 2.8s ease-in-out infinite;
+}
+@keyframes v2Pulse {
+  0%, 100% { opacity: 0.62; }
+  50% { opacity: 1; }
+}
+@media (max-width: 1080px) {
+  .control-plane-shell { grid-template-columns: 1fr; }
+  .control-sidebar { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .sidebar-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .control-plane-workspace { grid-template-columns: 1fr; }
+  .workspace-inspector .right-panel { height: auto; }
+  .workflow-graph { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .execution-steps { grid-template-columns: 1fr; }
+  .workspace { height: auto; min-height: 0; flex-wrap: wrap; }
+  .left-panel, .right-panel { flex: 1 1 280px; width: auto; }
+  .center-panel { flex: 1 1 100%; order: 2; min-height: 520px; }
+  .right-panel { order: 3; }
+  .stream-panel { height: 220px; }
+  .graph-layout { flex-direction: column; }
+  .overlay-side { width: auto; flex-basis: auto; }
+  .atlas-v2-shell { grid-template-columns: 1fr; }
+  .v2-control-panel { min-height: 0; border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+  .atlas-v2-content { grid-template-columns: 1fr; }
+  .v2-system-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workflow-graph { flex-direction: column; }
+}
+@media (max-width: 680px) {
+  .top-bar { height: auto; align-items: flex-start; flex-direction: column; }
+  .runtime-controls { justify-content: flex-start; }
+  .sidebar-nav { grid-template-columns: 1fr; }
+  .control-plane-toolbar { align-items: flex-start; flex-direction: column; }
+  .workflow-graph { grid-template-columns: 1fr; }
+  .global-help-bar { align-items: flex-start; flex-direction: column; }
+  .system-navigation-card { align-items: flex-start; flex-direction: column; }
+  .system-navigation-links { justify-content: flex-start; }
+  .onboarding-grid { grid-template-columns: 1fr; }
+  .roadmap-strip { align-items: flex-start; flex-direction: column; }
+  .roadmap-strip-actions { flex-wrap: wrap; white-space: normal; }
+  .workspace { padding: 10px; }
+  .metric-grid, .decision-grid { grid-template-columns: 1fr; }
+  .chat-form { flex-direction: column; }
+  .atlas-v2-content { padding: 12px; }
+  .v2-regime-title { font-size: 3rem; }
+  .v2-trust-hero,
+  .v2-decision-meta,
+  .v2-system-summary,
+  .v2-timeline-chain { grid-template-columns: 1fr; }
+  .v2-decision-line { align-items: flex-start; flex-direction: column; }
+  .v2-execution-timeline { margin: 0 12px 12px; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="atlas-v2-shell">
+    <aside class="v2-control-panel" data-component="control-panel">
+      <div class="v2-brand">
+        <div class="v2-brand-mark">A</div>
+        <div>
+          <strong>Atlas OS</strong>
+          <span>认知控制中心</span>
+        </div>
+      </div>
+
+      <section class="v2-control-section">
+        <div class="v2-section-title">系统控制</div>
+        <div class="v2-button-row">
+          <button id="runtime-start" class="v2-primary-button" type="button">启动</button>
+          <button id="runtime-stop" class="v2-secondary-button" type="button">停止</button>
+        </div>
+        <label class="v2-field">
+          <span>Tick 间隔</span>
+          <select id="tick-interval" name="tick_interval">
+            <option value="10">10 seconds</option>
+            <option value="30">30 seconds</option>
+            <option value="60" selected>60 seconds</option>
+            <option value="300">5 minutes</option>
+          </select>
+        </label>
+        <label class="v2-toggle">
+          <input id="simulation-mode" type="checkbox" checked>
+          <span>模拟模式</span>
+        </label>
+      </section>
+
+      <section class="v2-control-section">
+        <div class="v2-section-title">模型配置</div>
+        <div class="v2-provider-mini">
+          <span>当前 Provider</span>
+          <strong id="active-provider-label">MoreCode / cc switch</strong>
+        </div>
+        <div class="v2-provider-mini">
+          <span>模型</span>
+          <strong id="active-provider-model">gpt-5.5</strong>
+        </div>
+        <div class="v2-provider-mini">
+          <span>健康状态</span>
+          <strong id="active-provider-health">error</strong>
+        </div>
+        <a class="v2-panel-link" href="/settings#llm-config">打开 Provider 设置</a>
+      </section>
+
+      <section class="v2-control-section">
+        <div class="v2-section-title">资产配置</div>
+        <label class="v2-field">
+          <span>组合 / 资产 JSON</span>
+          <textarea id="asset-json-editor" name="portfolio_json" rows="5" spellcheck="false">{}</textarea>
+        </label>
+        <div class="v2-button-row">
+          <a class="v2-secondary-button as-link" href="/settings#asset-config">加载</a>
+          <a class="v2-primary-button as-link" href="/settings#asset-config">保存配置</a>
+        </div>
+      </section>
+    </aside>
+    <main class="atlas-v2-main">
+    <header class="top-bar" data-component="top-bar">
+      <div class="brand-block">
+        <div class="brand-mark">ATLAS</div>
+        <div>
+          <div class="brand-title">认知控制中心</div>
+          <span class="sr-only">Cognitive Control Center</span>
+          <div class="brand-subtitle">实时认知运行界面</div>
+        </div>
+      </div>
+      <div class="runtime-controls" aria-label="Runtime controls">
+        <nav class="nav-tabs" aria-label="Atlas UI tabs">
+          <span class="sr-only">Dashboard Workflow Roadmap Settings</span>
+          <a class="nav-tab" href="/dashboard">仪表盘</a>
+          <a class="nav-tab" href="/workflow">工作流</a>
+          <a class="nav-tab" href="/roadmap">路线图</a>
+          <a class="nav-tab" href="/settings">设置</a>
+        </nav>
+        <label class="language-switcher" title="语言">
+          <span>语言</span>
+          <select id="language-select">
+            <option value="en">EN</option>
+            <option value="zh" selected>中文</option>
+          </select>
+        </label>
+        <span id="runtime-status-pill" class="status-pill status-unknown">INITIALIZING</span>
+      </div>
+    </header>
+    <div class="atlas-v2-content"><section class="atlas-v2-focus-zone">
+    <section class="v2-primary-workspace" data-component="primary-workspace">
+      <div class="v2-mode-switcher" aria-label="Workspace mode switcher">
+        <button class="active" type="button" data-v2-mode="system">系统模式</button>
+        <button type="button" data-v2-mode="chat">对话模式</button>
+        <button type="button" data-v2-mode="workflow">工作流模式</button>
+      </div>
+
+      <div id="mode-system" class="v2-mode-panel active" data-mode-panel="system">
+        <div class="v2-focus-kicker">当前系统状态</div>
+        <h1 id="state-regime" class="v2-regime-title">正在初始化推理层</h1>
+
+        <section class="v2-trust-hero" aria-label="Trust score gauge">
+          <div>
+            <span>信任分数</span>
+            <strong id="state-trust">等待足够认知信号</strong>
+          </div>
+          <div class="v2-trust-gauge"><span id="trust-meter"></span></div>
+        </section>
+
+        <section class="v2-active-decision">
+          <span class="v2-kicker">当前决策</span>
+          <div class="v2-decision-line">
+            <strong id="decision-action">neutral</strong>
+            <span id="decision-confidence">置信度 0.00</span>
+          </div>
+          <p id="decision-summary">正在初始化推理层</p>
+          <div class="v2-decision-meta">
+            <span>风险 <strong id="decision-risk">系统上下文不足</strong></span>
+            <span>注意力 <strong id="decision-attention">等待足够认知信号</strong></span>
+            <span>流动性 <strong id="decision-liquidity">等待足够认知信号</strong></span>
+          </div>
+        </section>
+
+        <section class="v2-system-summary">
+          <div><span>系统状态</span><strong id="focus-runtime-status">正在初始化推理层</strong></div>
+          <div><span>Tick</span><strong id="state-tick">0</strong></div>
+          <div><span>流动性</span><strong id="state-liquidity">等待足够认知信号</strong></div>
+          <div><span>注意力</span><strong id="state-attention">等待足够认知信号</strong></div>
+          <div><span>波动率</span><strong id="state-volatility">等待足够认知信号</strong></div>
+        </section>
+      </div>
+
+      <div id="mode-chat" class="v2-mode-panel" data-mode-panel="chat">
+        <section class="v2-chat-card">
+          <div class="v2-section-title">对话模式</div>
+          <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
+          <form id="chat-form" class="chat-form">
+            <textarea id="chat-input" name="message" rows="3" maxlength="2000" placeholder="发送安全的 Atlas 运行时问题"></textarea>
+            <button class="v2-primary-button" type="submit">发送</button>
+          </form>
+        </section>
+      </div>
+
+      <div id="mode-workflow" class="v2-mode-panel" data-mode-panel="workflow">
+        
+    <section class="workflow-graph-card" data-component="workflow-graph">
+      <div class="card-heading">
+        <span class="panel-kicker">Workflow</span>
+        <h2>Minimal Active Path</h2>
+      </div>
+      <div class="workflow-graph" aria-label="Atlas workflow graph">
+        
+        <a class="workflow-node active-path"
+           href="/workflow?stage=event_stream" data-workflow-node="event_stream" data-explanation="External input enters the safe runtime boundary.">
+          <span>Event Stream</span>
+        </a>
+        
+
+        <a class="workflow-node active-path"
+           href="/workflow?stage=cognitive_pipeline" data-workflow-node="cognitive_pipeline" data-explanation="Fusion and memory convert events into system context.">
+          <span>Cognitive Pipeline</span>
+        </a>
+        
+
+        <a class="workflow-node active-path"
+           href="/workflow?stage=causal_layer" data-workflow-node="causal_layer" data-explanation="Causal structure explains how forces interact.">
+          <span>Causal Layer</span>
+        </a>
+        
+
+        <a class="workflow-node active-path"
+           href="/workflow?stage=world_model" data-workflow-node="world_model" data-explanation="Market state evolves as an interpretable structure.">
+          <span>World Model</span>
+        </a>
+        
+
+        <a class="workflow-node active-path"
+           href="/workflow?stage=hypothesis_engine" data-workflow-node="hypothesis_engine" data-explanation="Competing causal models are kept in view.">
+          <span>Hypothesis Engine</span>
+        </a>
+        
+
+        <a class="workflow-node active active-path"
+           href="/workflow?stage=decision_contract" data-workflow-node="decision_contract" data-explanation="Output is normalized into a strict packet.">
+          <span>Decision Contract</span>
+        </a>
+        
+
+        <a class="workflow-node inactive"
+           href="/workflow?stage=llm_router" data-workflow-node="llm_router" data-explanation="Reasoning provider is isolated behind the router.">
+          <span>LLM Router</span>
+        </a>
+        
+
+        <a class="workflow-node inactive"
+           href="/workflow?stage=feedback_loop" data-workflow-node="feedback_loop" data-explanation="Bounded feedback updates the next tick context.">
+          <span>Feedback Loop</span>
+        </a>
+        
+      </div>
+      <aside class="workflow-explanation" id="workflow-node-explanation">
+        <strong>Decision Contract</strong>
+        <span>Output is normalized into a strict packet.</span>
+      </aside>
+    </section>
+    
+      </div>
+    </section>
+    </section>
+    <aside class="v2-intelligence-panel" data-component="intelligence-panel">
+      <section class="v2-intelligence-card primary">
+        <div class="v2-section-title">推理摘要</div>
+        <p id="decision-why">正在初始化推理层</p>
+      </section>
+
+      <section class="v2-intelligence-card">
+        <div class="v2-section-title">因果快照</div>
+        <div id="dominant-causal-factors" class="v2-causal-list" aria-live="polite"></div>
+        <p id="causal-summary" class="v2-muted-copy">等待足够认知信号</p>
+      </section>
+
+      <section class="v2-intelligence-card">
+        <div class="v2-section-title">假设状态</div>
+        <dl class="v2-fact-grid">
+          <dt>当前</dt><dd id="active-hypothesis">系统上下文不足</dd>
+          <dt>影子假设</dt><dd id="shadow-hypothesis-count">0</dd>
+        </dl>
+      </section>
+
+      <section class="v2-intelligence-card">
+        <div class="v2-section-title">系统健康</div>
+        <dl class="v2-fact-grid">
+          <dt>信任趋势</dt><dd id="trust-trend">等待足够认知信号</dd>
+          <dt>稳定性</dt><dd id="stability-index">系统上下文不足</dd>
+          <dt>LLM 调用</dt><dd id="llm-call-count">0</dd>
+          <dt>模型</dt><dd id="llm-model">等待足够认知信号</dd>
+          <dt>延迟</dt><dd id="llm-latency">等待足够认知信号</dd>
+        </dl>
+      </section>
+
+      <span id="decision-trace" class="v2-sr-only"></span>
+      <span id="structural-state" class="v2-sr-only"></span>
+      <span id="regime-influence" class="v2-sr-only">等待足够认知信号</span>
+      <span id="trust-impact" class="v2-sr-only">等待足够认知信号</span>
+    </aside>
+    </div>
+    <section class="v2-execution-timeline" data-component="execution-timeline">
+      <div class="v2-timeline-header">
+        <div>
+          <span class="v2-kicker">执行时间线</span>
+          <h2>事件 -> 决策 -> 反馈</h2>
+        </div>
+        <span id="stream-clock" class="v2-stream-clock">Waiting</span>
+      </div>
+      <div class="v2-timeline-chain" aria-label="Execution timeline stages">
+        
+        <div class="v2-timeline-node" data-stage="event">
+          <strong>Event</strong>
+          <span>input received</span>
+        </div>
+        
+
+        <div class="v2-timeline-node" data-stage="cognition">
+          <strong>Cognition</strong>
+          <span>state interpreted</span>
+        </div>
+        
+
+        <div class="v2-timeline-node" data-stage="decision">
+          <strong>Decision</strong>
+          <span>contract formed</span>
+        </div>
+        
+
+        <div class="v2-timeline-node" data-stage="explanation">
+          <strong>Explanation</strong>
+          <span>reasoning surfaced</span>
+        </div>
+        
+
+        <div class="v2-timeline-node" data-stage="feedback">
+          <strong>Feedback</strong>
+          <span>next tick context</span>
+        </div>
+        
+      </div>
+      <div id="event-stream" class="v2-compressed-stream" role="log" aria-live="polite"></div>
+    </section>
+    
+    <section id="causal-graph-overlay" class="explainability-overlay hidden" data-component="causal-graph-viewer">
+      <div class="overlay-panel">
+        <div class="overlay-header">
+          <div>
+            <span class="panel-kicker">Causal Graph</span>
+            <h2>Cognitive Variable Relations</h2>
+          </div>
+          <button class="control-button secondary overlay-close" type="button" data-close-overlay>Close</button>
+        </div>
+        <div class="overlay-body graph-layout">
+          <svg id="causal-graph-svg" class="explainability-svg" viewBox="0 0 720 420" role="img" aria-label="Causal graph"></svg>
+          <div class="overlay-side">
+            <h3>Drifted Edges</h3>
+            <div id="causal-edge-list" class="mini-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="regime-map-overlay" class="explainability-overlay hidden" data-component="regime-transition-map">
+      <div class="overlay-panel">
+        <div class="overlay-header">
+          <div>
+            <span class="panel-kicker">Regime Map</span>
+            <h2>Attractors + Transition Pressure</h2>
+          </div>
+          <button class="control-button secondary overlay-close" type="button" data-close-overlay>Close</button>
+        </div>
+        <div class="overlay-body graph-layout">
+          <svg id="regime-map-svg" class="explainability-svg" viewBox="0 0 720 420" role="img" aria-label="Regime transition map"></svg>
+          <div class="overlay-side">
+            <h3>Transition Weights</h3>
+            <div id="regime-transition-list" class="mini-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="drift-timeline-overlay" class="explainability-overlay hidden" data-component="structural-drift-timeline">
+      <div class="overlay-panel">
+        <div class="overlay-header">
+          <div>
+            <span class="panel-kicker">Drift Timeline</span>
+            <h2>Trust + Causal + Regime Stability</h2>
+          </div>
+          <button class="control-button secondary overlay-close" type="button" data-close-overlay>Close</button>
+        </div>
+        <div class="overlay-body timeline-layout">
+          <svg id="drift-timeline-svg" class="timeline-svg" viewBox="0 0 920 320" role="img" aria-label="Structural drift timeline"></svg>
+          <div id="drift-timeline-list" class="timeline-list"></div>
+        </div>
+      </div>
+    </section>
+    
+    <div id="onboarding-overlay" class="onboarding-overlay" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+      <div class="onboarding-card">
+        <div class="panel-kicker">First Load</div>
+        <h1 id="onboarding-title">Welcome to Atlas OS Runtime Cognitive System</h1>
+        <p>
+          Atlas OS runs a real-time cognitive loop. Every tick collects or simulates events,
+          passes them through cognitive layers, and updates the visible system state.
+        </p>
+        <div class="onboarding-grid">
+          <div>
+            <strong>Probabilistic output</strong>
+            <span>Outputs express current interpretation, confidence, and trust. They are not deterministic commands.</span>
+          </div>
+          <div>
+            <strong>UNKNOWN</strong>
+            <span>System has not yet converged on this metric or has no usable signal.</span>
+          </div>
+          <div>
+            <strong>NEUTRAL</strong>
+            <span>No strong regime signal is active. The runtime is observing rather than leaning.</span>
+          </div>
+        </div>
+        <div class="boot-sequence" aria-live="polite">
+          <div class="boot-step" data-step="0">Booting Atlas OS Cognitive Runtime...</div>
+          <div class="boot-step" data-step="1">Initializing Event Stream...</div>
+          <div class="boot-step" data-step="2">Loading Cognitive Layers...</div>
+          <div class="boot-step" data-step="3">System Ready</div>
+        </div>
+        <div class="onboarding-actions">
+          <button id="start-system-tour" class="control-button" type="button">Start System Tour</button>
+          <a class="control-button secondary" href="/roadmap">View Roadmap</a>
+          <button id="enter-dashboard" class="control-button secondary" type="button">Enter Dashboard</button>
+        </div>
+      </div>
+    </div>
+    </main></div>
+</div>
+<script>
+(function () {
+  const pollMs = 1500;
+  let lastTick = null;
+  let stillPolls = 0;
+  let lastStreamSignature = "";
+  let latestReplay = null;
+
+  function byId(id) { return document.getElementById(id); }
+  function setText(id, value) {
+    const node = byId(id);
+    if (!node) return;
+    const text = clean(value);
+    node.textContent = text;
+    if (text === "Waiting for cognitive signal") {
+      node.title = "System has not yet converged on this metric.";
+      node.classList.add("empty-pulse");
+    } else if (text === "Insufficient system context" || text === "System initializing reasoning layer") {
+      node.title = "Atlas needs more runtime context before this field becomes meaningful.";
+      node.classList.add("empty-pulse");
+    } else if (String(value || "").toLowerCase() === "neutral") {
+      node.title = "No strong regime signal is active.";
+      node.classList.remove("empty-pulse");
+    } else {
+      node.removeAttribute("title");
+      node.classList.remove("empty-pulse");
+    }
+  }
+  function clean(value) {
+    if (value === null || value === undefined || value === "") return "System initializing reasoning layer";
+    const textValue = String(value).trim();
+    if (textValue.toUpperCase() === "UNKNOWN") return "Waiting for cognitive signal";
+    if (textValue.toLowerCase() === "unknown") return "Insufficient system context";
+    if (typeof value === "number") return Number.isInteger(value) ? String(value) : value.toFixed(3);
+    return String(value);
+  }
+  function packetFrom(state) {
+    return state.last_decision_packet && typeof state.last_decision_packet === "object" ? state.last_decision_packet : {};
+  }
+  function dashboardFrom(state) {
+    return state.dashboard && typeof state.dashboard === "object" ? state.dashboard : {};
+  }
+  function asObject(value) {
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  }
+  function asArray(value) {
+    return Array.isArray(value) ? value : [];
+  }
+  function updateRuntimeStatus(tick) {
+    const pill = byId("runtime-status-pill");
+    if (!pill) return;
+    if (lastTick === null) {
+      pill.textContent = "RUNNING";
+      pill.className = "status-pill status-running";
+    } else if (tick === lastTick) {
+      stillPolls += 1;
+      if (stillPolls >= 3) {
+        pill.textContent = "STOPPED";
+        pill.className = "status-pill status-stopped";
+      }
+    } else {
+      stillPolls = 0;
+      pill.textContent = "RUNNING";
+      pill.className = "status-pill status-running";
+    }
+    lastTick = tick;
+  }
+  function updateState(state) {
+    const packet = packetFrom(state);
+    setText("state-regime", state.regime_state);
+    setText("state-trust", state.trust_index);
+    setText("state-liquidity", state.liquidity);
+    setText("state-attention", state.attention);
+    setText("state-volatility", state.volatility);
+    setText("state-tick", state.tick_counter || 0);
+    setText("decision-action", packet.recommended_action || "neutral");
+    setText("decision-confidence", "Confidence " + clean(packet.confidence || 0));
+    setText("decision-risk", packet.risk_level || "unknown");
+    setText("decision-attention", packet.attention_state || state.attention);
+    setText("decision-liquidity", packet.liquidity_state || state.liquidity);
+    setText("decision-summary", packet.causal_summary || "Waiting for DecisionPacket.");
+    setText("causal-summary", packet.causal_summary || "Unknown");
+    setText("llm-call-count", (state.llm_trace_summary || {}).call_count || 0);
+    setText("llm-model", (state.llm_trace_summary || {}).latest_model);
+    setText("llm-latency", clean((state.llm_trace_summary || {}).latest_latency_ms) + " ms");
+    setText("focus-runtime-status", state.tick_counter ? "Runtime loop active" : "Initializing cognition layer");
+    updateProviderMini(state.llm_provider_registry || {});
+
+    const trust = typeof state.trust_index === "number" ? Math.max(0, Math.min(1, state.trust_index)) : 0;
+    const meter = byId("trust-meter");
+    if (meter) meter.style.width = (trust * 100).toFixed(1) + "%";
+    setText("trust-trend", trust >= 0.7 ? "Stable trust field" : trust >= 0.4 ? "Moderate trust field" : "Low trust field");
+    setText("stability-index", trust >= 0.7 ? "Stable" : trust >= 0.4 ? "Watchful" : "Insufficient system context");
+
+    const decisionTrace = {
+      tick: state.tick_counter || 0,
+      brief_id: state.last_decision_brief_id || null,
+      regime: state.regime_state || "Unknown",
+      action: packet.recommended_action || "neutral",
+      risk: packet.risk_level || "unknown"
+    };
+    const decisionNode = byId("decision-trace");
+    if (decisionNode) {
+      decisionNode.textContent = "tick " + decisionTrace.tick + ", regime " + clean(decisionTrace.regime) + ", decision " + clean(decisionTrace.action);
+    }
+
+    const structuralNode = byId("structural-state");
+    if (structuralNode) {
+      const structuralSummary = summarizeStructure(state.structural_coevolution_state || state.self_organization_state || {});
+      structuralNode.textContent = structuralSummary;
+    }
+    updateHypothesisState(state);
+    updateDecisionExplanation(state, packet);
+    updateCausalGraph(state);
+    updateRegimeMap(state);
+    updateDriftTimeline(state);
+    updateRuntimeStatus(state.tick_counter || 0);
+    pushStream(state, packet);
+  }
+  function updateHypothesisState(state) {
+    const structural = asObject(state.structural_coevolution_state || state.self_organization_state);
+    const hypothesis = asObject(structural.hypothesis_state || structural.active_hypothesis || structural.causal_hypothesis);
+    setText("active-hypothesis", hypothesis.id || hypothesis.name || structural.active_hypothesis_id || "Insufficient system context");
+    const shadow = structural.shadow_hypothesis_count || structural.shadow_count || asArray(structural.shadow_hypotheses).length || 0;
+    setText("shadow-hypothesis-count", shadow);
+  }
+  function summarizeStructure(value) {
+    const structural = asObject(value);
+    if (!Object.keys(structural).length) return "No structural drift summary yet";
+    const mutation = asObject(structural.mutated_graph || structural.causal_graph_mutation || structural);
+    const drift = asObject(structural.applied_drift || structural.drift_summary || structural);
+    const pieces = [];
+    if (mutation.structural_shift_index !== undefined) pieces.push("shift " + clean(mutation.structural_shift_index));
+    if (mutation.mutation_intensity !== undefined) pieces.push("mutation " + clean(mutation.mutation_intensity));
+    if (drift.bounded !== undefined) pieces.push(drift.bounded ? "bounded" : "needs review");
+    return pieces.join(" · ") || "Structural state summarized";
+  }
+  function updateProviderMini(registry) {
+    const providers = Array.isArray(registry.providers) ? registry.providers : [];
+    const active = registry.active_provider || "openai";
+    const provider = providers.find(function (item) { return item.id === active; }) || {};
+    setText("active-provider-label", provider.label || active);
+    setText("active-provider-model", provider.model || "System initializing reasoning layer");
+    setText("active-provider-health", provider.health || "unknown");
+  }
+  function updateDecisionExplanation(state, packet) {
+    const factors = dominantFactors(state, packet);
+    const action = packet.recommended_action || "neutral";
+    const regime = state.regime_state || "Unknown";
+    const trust = typeof state.trust_index === "number" ? state.trust_index : null;
+    const reason = packet.reasoning_trace || packet.causal_summary || "System initializing reasoning layer";
+    setText("decision-why", action + " because " + reason);
+    setText("regime-influence", regime + " -> " + action);
+    setText("trust-impact", trust === null ? "Unknown" : (trust >= 0.7 ? "High trust supports explanation weight" : trust >= 0.4 ? "Medium trust tempers explanation weight" : "Low trust limits explanation weight"));
+    const list = byId("dominant-causal-factors");
+    if (list) {
+      list.textContent = "";
+      factors.forEach(function (factor) {
+        const chip = document.createElement("span");
+        chip.className = "factor-chip";
+        chip.textContent = factor;
+        list.appendChild(chip);
+      });
+    }
+  }
+  function dominantFactors(state, packet) {
+    const factors = [];
+    if (packet.risk_level) factors.push("risk:" + packet.risk_level);
+    if (packet.attention_state || state.attention !== undefined) factors.push("attention:" + clean(packet.attention_state || state.attention));
+    if (packet.liquidity_state || state.liquidity !== undefined) factors.push("liquidity:" + clean(packet.liquidity_state || state.liquidity));
+    if (state.volatility !== undefined) factors.push("volatility:" + clean(state.volatility));
+    if (state.trust_index !== undefined && state.trust_index !== null) factors.push("trust:" + clean(state.trust_index));
+    return factors.slice(0, 3);
+  }
+  function extractCausalEdges(state) {
+    const dashboard = dashboardFrom(state);
+    const graph = asObject(dashboard.causal_graph_snapshot);
+    const structural = asObject(state.structural_coevolution_state);
+    const mutated = asObject(structural.mutated_graph || structural.causal_graph_mutation || structural);
+    const edgeUpdates = asObject(mutated.edge_weight_updates);
+    const edges = [];
+    if (Array.isArray(graph.edges)) {
+      graph.edges.forEach(function (edge) {
+        if (!edge) return;
+        edges.push({
+          from: edge.from || edge.source || edge[0] || "Source",
+          to: edge.to || edge.target || edge[1] || "Target",
+          weight: Number(edge.weight || edge.value || 0.5),
+          drift: Number(edge.drift || edge.delta || 0)
+        });
+      });
+    }
+    Object.keys(graph).forEach(function (key) {
+      const value = graph[key];
+      if (key.indexOf("->") > -1) {
+        const parts = key.split("->");
+        edges.push({ from: parts[0].trim(), to: parts[1].trim(), weight: Number(value || 0.5), drift: 0 });
+      } else if (value && typeof value === "object" && !Array.isArray(value)) {
+        Object.keys(value).forEach(function (target) {
+          if (typeof value[target] === "number") edges.push({ from: key, to: target, weight: value[target], drift: 0 });
+        });
+      }
+    });
+    Object.keys(edgeUpdates).forEach(function (key) {
+      const parts = key.indexOf("->") > -1 ? key.split("->") : key.split(":");
+      edges.push({
+        from: (parts[0] || "Source").trim(),
+        to: (parts[1] || "Target").trim(),
+        weight: Math.abs(Number(edgeUpdates[key] || 0)),
+        drift: Number(edgeUpdates[key] || 0)
+      });
+    });
+    if (!edges.length) {
+      return [
+        { from: "Narrative", to: "Attention", weight: 0.6, drift: 0.0 },
+        { from: "Attention", to: "Retail Flow", weight: 0.55, drift: 0.0 },
+        { from: "Liquidity", to: "Volatility", weight: 0.7, drift: 0.0 },
+        { from: "Institutional Flow", to: "Liquidity", weight: 0.5, drift: 0.0 },
+        { from: "Price Momentum", to: "Attention", weight: 0.45, drift: 0.0 }
+      ];
+    }
+    return edges.slice(0, 14);
+  }
+  function updateCausalGraph(state) {
+    const svg = byId("causal-graph-svg");
+    const list = byId("causal-edge-list");
+    if (!svg) return;
+    const edges = extractCausalEdges(state);
+    const nodes = Array.from(new Set(edges.flatMap(function (edge) { return [edge.from, edge.to]; }))).slice(0, 10);
+    const centerX = 360, centerY = 210, radius = 145;
+    const points = {};
+    nodes.forEach(function (node, index) {
+      const angle = -Math.PI / 2 + (Math.PI * 2 * index / Math.max(nodes.length, 1));
+      points[node] = { x: centerX + Math.cos(angle) * radius, y: centerY + Math.sin(angle) * radius };
+    });
+    svg.textContent = "";
+    edges.forEach(function (edge) {
+      const a = points[edge.from], b = points[edge.to];
+      if (!a || !b) return;
+      const line = svgEl("line", {
+        x1: a.x, y1: a.y, x2: b.x, y2: b.y,
+        stroke: Math.abs(edge.drift) > 0.08 ? "#f8d66d" : "#5eead4",
+        "stroke-width": 1.2 + Math.min(4, Math.abs(edge.weight || 0.2) * 4),
+        opacity: 0.72
+      });
+      svg.appendChild(line);
+      const label = svgEl("text", { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 - 4, fill: "#cbd5e1", "font-size": "11", "text-anchor": "middle" });
+      label.textContent = clean(edge.weight);
+      svg.appendChild(label);
+    });
+    nodes.forEach(function (node) {
+      const point = points[node];
+      svg.appendChild(svgEl("circle", { cx: point.x, cy: point.y, r: 29, fill: "rgba(15, 23, 35, 0.95)", stroke: "#5eead4", "stroke-width": 1.4 }));
+      const label = svgEl("text", { x: point.x, y: point.y + 4, fill: "#e6edf3", "font-size": "11", "text-anchor": "middle" });
+      label.textContent = shortLabel(node);
+      svg.appendChild(label);
+    });
+    if (list) {
+      list.textContent = "";
+      edges.forEach(function (edge) {
+        const item = document.createElement("div");
+        item.className = "mini-item" + (Math.abs(edge.drift) > 0.08 ? " drifted" : "");
+        item.textContent = edge.from + " -> " + edge.to + " | weight " + clean(edge.weight) + " | drift " + clean(edge.drift);
+        list.appendChild(item);
+      });
+    }
+  }
+  function updateRegimeMap(state) {
+    const svg = byId("regime-map-svg");
+    const list = byId("regime-transition-list");
+    if (!svg) return;
+    const replayTimeline = asArray(asObject(latestReplay).decision_timeline).map(function (item) {
+      return { tick: item.tick, regime_state: item.regime_state };
+    });
+    const timeline = asArray(dashboardFrom(state).regime_state_timeline).concat(replayTimeline);
+    const names = Array.from(new Set(timeline.map(function (item) { return item.regime_state || item.state; }).filter(Boolean)));
+    if (!names.includes(state.regime_state || "Unknown")) names.push(state.regime_state || "Unknown");
+    const regimes = (names.length ? names : ["NORMAL", "HIGH_VOLATILITY", "RISK_OFF", "ATTENTION_EXPANSION"]).slice(0, 7);
+    const current = state.regime_state || regimes[0] || "Unknown";
+    const transitions = {};
+    for (let i = 1; i < timeline.length; i += 1) {
+      const from = timeline[i - 1].regime_state || timeline[i - 1].state || "Unknown";
+      const to = timeline[i].regime_state || timeline[i].state || "Unknown";
+      transitions[from + "->" + to] = (transitions[from + "->" + to] || 0) + 1;
+    }
+    svg.textContent = "";
+    const width = 720, baseY = 210, gap = width / Math.max(regimes.length + 1, 2);
+    const points = {};
+    regimes.forEach(function (name, index) {
+      points[name] = { x: gap * (index + 1), y: baseY + (index % 2 === 0 ? -62 : 62) };
+    });
+    Object.keys(transitions).forEach(function (key) {
+      const parts = key.split("->"), a = points[parts[0]], b = points[parts[1]];
+      if (!a || !b) return;
+      svg.appendChild(svgEl("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: "#f8d66d", "stroke-width": 1 + transitions[key], opacity: 0.6 }));
+    });
+    regimes.forEach(function (name) {
+      const point = points[name];
+      const active = name === current;
+      svg.appendChild(svgEl("circle", { cx: point.x, cy: point.y, r: active ? 45 : 34, fill: active ? "rgba(94, 234, 212, 0.2)" : "rgba(15, 23, 35, 0.95)", stroke: active ? "#5eead4" : "#94a3b8", "stroke-width": active ? 2 : 1 }));
+      const label = svgEl("text", { x: point.x, y: point.y + 4, fill: "#e6edf3", "font-size": "11", "text-anchor": "middle" });
+      label.textContent = shortLabel(name);
+      svg.appendChild(label);
+      const basin = svgEl("text", { x: point.x, y: point.y + 61, fill: "#94a3b8", "font-size": "10", "text-anchor": "middle" });
+      basin.textContent = active ? "active basin" : "stability basin";
+      svg.appendChild(basin);
+    });
+    if (list) {
+      list.textContent = "";
+      const keys = Object.keys(transitions);
+      (keys.length ? keys : [current + "->" + current]).forEach(function (key) {
+        const item = document.createElement("div");
+        item.className = "mini-item";
+        item.textContent = key + " | weight " + clean(transitions[key] || 1);
+        list.appendChild(item);
+      });
+    }
+  }
+  function updateDriftTimeline(state) {
+    const svg = byId("drift-timeline-svg");
+    const list = byId("drift-timeline-list");
+    if (!svg) return;
+    const trustCurve = asArray(dashboardFrom(state).trust_field_evolution_curve);
+    const replayTimeline = asArray(asObject(latestReplay).cognitive_state_evolution).map(function (item) {
+      return { tick: item.tick, trust_field_evolution: asObject(item.trust_state).feedback_stability_index, regime_state: asObject(item.system_state).current_state };
+    });
+    const timeline = asArray(dashboardFrom(state).regime_state_timeline).concat(replayTimeline);
+    const points = trustCurve.length ? trustCurve : timeline.map(function (item, index) {
+      return { tick: item.tick || index, trust_field_evolution: 0.5, regime_state: item.regime_state };
+    });
+    svg.textContent = "";
+    const usable = points.slice(-18);
+    const maxTick = Math.max(1, usable.length - 1);
+    const values = usable.map(function (item) {
+      const raw = item.trust_field_evolution;
+      return typeof raw === "number" ? raw : (typeof state.trust_index === "number" ? state.trust_index : 0.5);
+    });
+    let path = "";
+    values.forEach(function (value, index) {
+      const x = 40 + index * (840 / Math.max(maxTick, 1));
+      const y = 270 - Math.max(0, Math.min(1, value)) * 220;
+      path += (index === 0 ? "M " : " L ") + x + " " + y;
+      svg.appendChild(svgEl("circle", { cx: x, cy: y, r: 4, fill: "#5eead4" }));
+    });
+    svg.appendChild(svgEl("path", { d: path || "M 40 160 L 880 160", fill: "none", stroke: "#5eead4", "stroke-width": 2.4 }));
+    svg.appendChild(svgEl("text", { x: 40, y: 28, fill: "#cbd5e1", "font-size": "12" })).textContent = "trust field evolution";
+    svg.appendChild(svgEl("line", { x1: 40, y1: 270, x2: 880, y2: 270, stroke: "#334155", "stroke-width": 1 }));
+    svg.appendChild(svgEl("line", { x1: 40, y1: 50, x2: 40, y2: 270, stroke: "#334155", "stroke-width": 1 }));
+    if (list) {
+      list.textContent = "";
+      usable.slice(-8).forEach(function (item, index) {
+        const row = document.createElement("div");
+        row.className = "timeline-item";
+        row.textContent = "tick " + clean(item.tick || index) + " | trust=" + clean(values[Math.max(0, values.length - usable.slice(-8).length + index)]) + " | regime=" + clean(item.regime_state || state.regime_state);
+        list.appendChild(row);
+      });
+    }
+  }
+  function shortLabel(value) {
+    const text = String(value || "Unknown").replace(/_/g, " ");
+    return text.length > 18 ? text.slice(0, 16) + ".." : text;
+  }
+  function svgEl(name, attrs) {
+    const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+    Object.keys(attrs || {}).forEach(function (key) { node.setAttribute(key, attrs[key]); });
+    return node;
+  }
+  function pushStream(state, packet) {
+    const stream = byId("event-stream");
+    if (!stream) return;
+    const tick = state.tick_counter || 0;
+    const action = packet.recommended_action || "neutral";
+    const signature = [tick, state.regime_state, state.trust_index, action].join("|");
+    if (signature === lastStreamSignature) return;
+    lastStreamSignature = signature;
+    const line = document.createElement("div");
+    line.className = "stream-line";
+    const now = new Date();
+    const time = document.createElement("time");
+    time.textContent = now.toLocaleTimeString();
+    const msg = document.createElement("span");
+    msg.textContent = "tick=" + tick + " regime=" + clean(state.regime_state) + " trust=" + clean(state.trust_index) + " decision=" + action;
+    line.appendChild(time);
+    line.appendChild(msg);
+    stream.prepend(line);
+    while (stream.children.length > 80) stream.removeChild(stream.lastChild);
+    setText("stream-clock", now.toLocaleTimeString());
+  }
+  async function refreshState() {
+    try {
+      const response = await fetch("/state", { cache: "no-store" });
+      if (!response.ok) throw new Error("state request failed");
+      const state = await response.json();
+      updateState(state);
+      refreshReplay(state.tick_counter || 0);
+    } catch (error) {
+      const pill = byId("runtime-status-pill");
+      if (pill) {
+        pill.textContent = "STOPPED";
+        pill.className = "status-pill status-stopped";
+      }
+      addChatLine("system", "State refresh failed: " + error.message);
+    }
+  }
+  async function refreshReplay(tick) {
+    const endTick = Math.max(1, Number(tick || 1));
+    const startTick = Math.max(0, endTick - 20);
+    try {
+      const response = await fetch("/replay?start_tick=" + startTick + "&end_tick=" + endTick + "&format=json", { cache: "no-store" });
+      if (response.ok) latestReplay = await response.json();
+    } catch (error) {
+      latestReplay = latestReplay || null;
+    }
+  }
+  function addChatLine(kind, text) {
+    const box = byId("chat-messages");
+    if (!box) return;
+    const line = document.createElement("div");
+    line.className = "chat-line " + (kind || "system");
+    line.textContent = text;
+    box.prepend(line);
+    while (box.children.length > 40) box.removeChild(box.lastChild);
+  }
+  async function postForm(url, values) {
+    const body = new URLSearchParams(values || {});
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body
+    });
+    return response.json();
+  }
+  function bindControls() {
+    bindOnboarding();
+    bindModeSwitcher();
+    bindWorkflowExplanation();
+    document.querySelectorAll("[data-open-overlay]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const target = byId(button.getAttribute("data-open-overlay"));
+        if (target) target.classList.remove("hidden");
+      });
+    });
+    document.querySelectorAll("[data-close-overlay]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const overlay = button.closest(".explainability-overlay");
+        if (overlay) overlay.classList.add("hidden");
+      });
+    });
+    document.querySelectorAll(".explainability-overlay").forEach(function (overlay) {
+      overlay.addEventListener("click", function (event) {
+        if (event.target === overlay) overlay.classList.add("hidden");
+      });
+    });
+    const form = byId("chat-form");
+    if (form) {
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const input = byId("chat-input");
+        const message = input ? input.value.trim() : "";
+        if (!message) return;
+        addChatLine("user", "You: " + message);
+        if (input) input.value = "";
+        try {
+          const result = await postForm("/chat/send", { message });
+          addChatLine("system", "Queued: " + clean(result.status));
+          refreshState();
+        } catch (error) {
+          addChatLine("system", "Queue failed: " + error.message);
+        }
+      });
+    }
+    const start = byId("runtime-start");
+    if (start) start.addEventListener("click", async function () {
+      try {
+        const result = await postForm("/control/start", {});
+        addChatLine("system", "Start: " + clean(result.status));
+        await refreshState();
+      }
+      catch (error) { addChatLine("system", "Start failed: " + error.message); }
+    });
+    const stop = byId("runtime-stop");
+    if (stop) stop.addEventListener("click", async function () {
+      try {
+        const result = await postForm("/control/stop", {});
+        addChatLine("system", "Stop: " + clean(result.status));
+        const pill = byId("runtime-status-pill");
+        if (pill) {
+          pill.textContent = "STOPPED";
+          pill.className = "status-pill status-stopped";
+        }
+        await refreshState();
+      }
+      catch (error) { addChatLine("system", "Stop failed: " + error.message); }
+    });
+    const interval = byId("tick-interval");
+    if (interval) interval.addEventListener("change", async function () {
+      try { addChatLine("system", "Tick interval saved: " + clean((await postForm("/control/set_interval", { interval_seconds: interval.value })).tick_interval_seconds) + "s"); }
+      catch (error) { addChatLine("system", "Interval update failed: " + error.message); }
+    });
+    const language = byId("language-select");
+    if (language) language.addEventListener("change", async function () {
+      try {
+        await postForm("/ui/language", { language: language.value });
+        window.location.reload();
+      } catch (error) {
+        addChatLine("system", "Language update failed: " + error.message);
+      }
+    });
+  }
+  function bindModeSwitcher() {
+    document.querySelectorAll("[data-v2-mode]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const mode = button.getAttribute("data-v2-mode");
+        document.querySelectorAll("[data-v2-mode]").forEach(function (item) { item.classList.toggle("active", item === button); });
+        document.querySelectorAll("[data-mode-panel]").forEach(function (panel) {
+          panel.classList.toggle("active", panel.getAttribute("data-mode-panel") === mode);
+        });
+      });
+    });
+  }
+  function bindWorkflowExplanation() {
+    document.querySelectorAll("[data-workflow-node]").forEach(function (node) {
+      node.addEventListener("click", function (event) {
+        event.preventDefault();
+        const panel = byId("workflow-node-explanation");
+        if (!panel) return;
+        document.querySelectorAll("[data-workflow-node]").forEach(function (item) { item.classList.remove("active"); });
+        node.classList.add("active");
+        panel.innerHTML = "<strong>" + node.textContent.trim() + "</strong><span>" + (node.getAttribute("data-explanation") || "") + "</span>";
+      });
+    });
+  }
+  function bindOnboarding() {
+    const overlay = byId("onboarding-overlay");
+    if (!overlay) return;
+    overlay.classList.remove("hidden");
+    runBootSequence();
+    const enter = byId("enter-dashboard");
+    if (enter) enter.addEventListener("click", function () {
+      overlay.classList.add("hidden");
+    });
+    const tour = byId("start-system-tour");
+    if (tour) tour.addEventListener("click", function () {
+      overlay.classList.add("hidden");
+      const target = byId("system-navigation-card") || document.querySelector(".nav-tabs");
+      if (target) {
+        target.classList.add("tour-highlight");
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        window.setTimeout(function () { target.classList.remove("tour-highlight"); }, 4200);
+      }
+      addChatLine("system", "Tour started: use System State for live regime, Roadmap for lifecycle, Dev Registry for history, and System Guide for state meanings.");
+    });
+  }
+  function runBootSequence() {
+    const steps = Array.from(document.querySelectorAll(".boot-step"));
+    steps.forEach(function (step) { step.classList.remove("active"); });
+    steps.forEach(function (step, index) {
+      window.setTimeout(function () {
+        steps.forEach(function (item) { item.classList.remove("active"); });
+        step.classList.add("active");
+      }, index * 2500);
+    });
+  }
+  bindControls();
+  refreshState();
+  window.setInterval(refreshState, pollMs);
+})();
+</script>
+</body>
+</html>

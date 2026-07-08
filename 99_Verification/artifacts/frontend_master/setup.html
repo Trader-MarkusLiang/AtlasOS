@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>设置 Atlas OS</title>
+<style>
+body { margin:0; background:#0b0f14; color:#edf2f7; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+.wrap { max-width:980px; margin:0 auto; padding:34px 22px; }
+.step { margin:14px 0; padding:18px; border:1px solid rgba(255,255,255,.12); border-radius:18px; background:rgba(255,255,255,.06); }
+label { display:grid; gap:7px; margin:10px 0; color:#aab4c3; }
+input, select, textarea, button { font:inherit; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:#101722; color:#edf2f7; padding:10px 12px; }
+button { background:#dbeafe; color:#0b0f14; cursor:pointer; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.asset-grid { display:grid; grid-template-columns:1.1fr .8fr .7fr 1fr; gap:10px; }
+.asset-extra { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+.muted { color:#9aa7b8; line-height:1.5; }
+.result { margin-top:14px; padding:12px 14px; border-radius:14px; background:rgba(255,255,255,.06); color:#dbeafe; min-height:44px; white-space:normal; }
+@media(max-width:720px) { .row { grid-template-columns:1fr; } }
+@media(max-width:820px) { .asset-grid, .asset-extra { grid-template-columns:1fr; } }
+</style></head><body><main class="wrap">
+<h1>设置 Atlas OS</h1>
+<p>只配置 Atlas 本地运行所需信息。API key 保存后不会再次明文显示。</p>
+<form id="setup-form">
+  <section class="step"><h2>1. 欢迎</h2><p>Atlas 运行非交易型认知循环。它观察、解释并记录责任链；不会执行交易。</p></section>
+  <section class="step"><h2>2. 语言</h2><select name="language"><option value="en" >English</option><option value="zh" selected>中文</option></select></section>
+  <section class="step"><h2>3. LLM Provider</h2><div class="row"><label>Provider<select name="active_provider"><option value="openai" >OpenAI</option>
+<option value="claude" >Claude</option>
+<option value="ollama" >Ollama</option>
+<option value="morecode" selected>MoreCode / cc switch</option>
+<option value="ark" >ARK Coding</option>
+<option value="volcano" >Volcano Coding</option>
+<option value="custom" >Custom Proxy</option>
+<option value="custom_1783468762016" >Custom Proxy</option></select></label><label>模型<input name="model" value="gpt-5.5" placeholder="gpt-5.5 / claude / local model"></label></div><label>Base URL<input name="base_url" value="http://127.0.0.1:15723/v1/chat/completions" placeholder="Provider endpoint"></label><label>API key<input name="api_key" type="password" autocomplete="off" placeholder="留空则保留现有 key"></label><button type="button" id="test-provider">测试连接</button></section>
+  <section class="step"><h2>4. 市场数据模式</h2><select name="market_data_mode"><option value="configured_assets">仅使用已配置资产</option><option value="simulation">模拟兜底</option></select></section>
+  <section class="step"><h2>5. 资产 / 组合百分比</h2><p class="muted">只填写百分比。Atlas 不需要账户金额、成本、券商信息或精确持仓数量。</p><div id="asset-rows"></div><button type="button" id="add-asset">添加资产</button></section>
+  <section class="step"><h2>6. 风险偏好</h2><select name="risk_preference"><option value="balanced">均衡</option><option value="conservative">保守</option><option value="research_only">仅研究</option></select></section>
+  <section class="step"><h2>7. 启动</h2><button type="submit">保存设置</button> <button type="button" id="start-runtime">启动 Runtime</button> <a href="/">查看第一份简报</a> <a href="/dashboard">询问 Atlas</a></section>
+</form>
+<div id="setup-result" class="result" role="status">等待设置。</div>
+</main>
+<script>
+const providerMeta = {"openai": {"base_url": "https://api.openai.com/v1/chat/completions", "model": "gpt-5.5"}, "claude": {"base_url": "https://api.anthropic.com/v1/messages", "model": "claude-sonnet-4-20250514"}, "ollama": {"base_url": "http://localhost:11434/api/generate", "model": "llama3.1"}, "morecode": {"base_url": "http://127.0.0.1:15723/v1/chat/completions", "model": "gpt-5.5"}, "ark": {"base_url": "http://127.0.0.1:15732/v1/chat/completions", "model": "kimi-k2.6"}, "volcano": {"base_url": "http://127.0.0.1:15732/v1/chat/completions", "model": "kimi-k2.6"}, "custom": {"base_url": "", "model": "custom-default"}, "custom_1783468762016": {"base_url": "", "model": "custom-default"}};
+const uiText = {"saving_before_test": "正在保存当前配置并测试 Provider...", "saved": "设置已保存。Atlas 现在可以使用这份配置。", "save_failed": "Provider 测试前保存设置失败。", "test_complete": "Provider 测试完成。", "starting": "正在启动 runtime...", "start_failed": "Runtime 启动失败"};
+function rowTemplate() {
+  return `<div class="step asset-row">
+    <div class="asset-grid">
+      <label>资产<input data-asset-field="asset" placeholder="AAPL"></label>
+      <label>市场<select data-asset-field="market"><option value="US">US</option><option value="HK">HK</option><option value="A-share">A-share</option><option value="ETF">ETF</option></select></label>
+      <label>百分比<input data-asset-field="portfolio_percentage" type="number" min="0" max="100" step="0.1" placeholder="12"></label>
+      <label>主题<input data-asset-field="theme" placeholder="AI / Memory / Platform"></label>
+    </div>
+    <div class="asset-extra">
+      <label>角色<input data-asset-field="role" placeholder="Core / Watch / Hedge"></label>
+      <label>风险备注<input data-asset-field="risk_note" placeholder="What should Atlas watch?"></label>
+    </div>
+    <label>投资假设<textarea data-asset-field="thesis" rows="2" placeholder="Why this asset matters to your portfolio"></textarea></label>
+  </div>`;
+}
+function addAssetRow() {
+  document.getElementById("asset-rows").insertAdjacentHTML("beforeend", rowTemplate());
+}
+function collectAssets() {
+  return Array.from(document.querySelectorAll(".asset-row")).map(row => {
+    const item = {};
+    row.querySelectorAll("[data-asset-field]").forEach(input => item[input.dataset.assetField] = input.value.trim());
+    item.portfolio_percentage = Number(item.portfolio_percentage || 0);
+    return item;
+  }).filter(item => item.asset);
+}
+function currentPayload() {
+  const form = new FormData(document.getElementById('setup-form'));
+  const provider = String(form.get('active_provider') || 'openai');
+  return {
+    active_provider: provider,
+    language: form.get('language'),
+    model: form.get('model'),
+    base_url: form.get('base_url'),
+    api_key: form.get('api_key'),
+    market_data_mode: form.get('market_data_mode'),
+    risk_preference: form.get('risk_preference'),
+    portfolio_json: JSON.stringify({ positions: collectAssets() })
+  };
+}
+function statusText(data, fallback) {
+  if (!data || typeof data !== "object") return fallback;
+  if (data.status === "saved") return uiText.saved;
+  if (data.status) return `Status: ${data.status}${data.error ? " · " + data.error : ""}${data.latency_ms !== undefined ? " · " + data.latency_ms + "ms" : ""}`;
+  return fallback;
+}
+document.querySelector('[name="active_provider"]').addEventListener('change', event => {
+  const meta = providerMeta[event.target.value] || {};
+  if (meta.base_url) document.querySelector('[name="base_url"]').value = meta.base_url;
+  if (meta.model) document.querySelector('[name="model"]').value = meta.model;
+});
+document.getElementById('add-asset').addEventListener('click', addAssetRow);
+addAssetRow();
+document.getElementById('setup-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const body = currentPayload();
+  const response = await fetch('/settings', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body) });
+  const data = await response.json();
+  document.getElementById('setup-result').textContent = statusText(data, uiText.saved);
+});
+document.getElementById('test-provider').addEventListener('click', async () => {
+  const setupResult = document.getElementById('setup-result');
+  const body = currentPayload();
+  setupResult.textContent = uiText.saving_before_test;
+  const saved = await fetch('/settings', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body) });
+  const savedData = await saved.json();
+  if (savedData.status !== "saved") {
+    setupResult.textContent = statusText(savedData, uiText.save_failed);
+    return;
+  }
+  const response = await fetch('/llm/provider/test', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({provider_id: body.active_provider}) });
+  const data = await response.json();
+  setupResult.textContent = statusText(data, uiText.test_complete);
+});
+document.getElementById('start-runtime').addEventListener('click', async () => {
+  const setupResult = document.getElementById('setup-result');
+  const body = currentPayload();
+  setupResult.textContent = uiText.starting;
+  const saved = await fetch('/settings', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body) });
+  const savedData = await saved.json();
+  if (savedData.status !== "saved") {
+    setupResult.textContent = statusText(savedData, uiText.save_failed);
+    return;
+  }
+  const response = await fetch('/control/start', { method:'POST' });
+  const data = await response.json();
+  setupResult.textContent = statusText(data, uiText.start_failed);
+});
+</script></body></html>

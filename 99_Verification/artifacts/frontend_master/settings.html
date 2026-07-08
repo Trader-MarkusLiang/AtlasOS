@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas 设置</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b0f14;
+  --panel: rgba(18, 24, 32, 0.74);
+  --panel-soft: rgba(255, 255, 255, 0.05);
+  --line: rgba(255, 255, 255, 0.08);
+  --text: #f4f7fb;
+  --muted: #8c97a6;
+  --accent: #f4f7fb;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-width: 360px;
+  background:
+    radial-gradient(circle at 24% 0%, rgba(148, 163, 184, 0.11), transparent 32%),
+    linear-gradient(180deg, rgba(255,255,255,0.04), transparent 24%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+a { color: inherit; text-decoration: none; }
+.settings-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+.settings-sidebar {
+  padding: 24px;
+  border-right: 1px solid var(--line);
+  background: rgba(11, 15, 20, 0.78);
+  backdrop-filter: blur(24px);
+}
+.settings-sidebar h1 { margin: 0 0 8px; font-size: 1.15rem; }
+.settings-sidebar p { margin: 0 0 22px; color: var(--muted); line-height: 1.45; }
+.settings-link {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  padding: 9px 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-soft);
+}
+.settings-main { padding: 28px; }
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.settings-header h2 { margin: 0; font-size: 1.8rem; letter-spacing: 0; }
+.settings-header p { margin: 6px 0 0; color: var(--muted); }
+.settings-actions { display: flex; align-items: center; gap: 10px; }
+.settings-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: 16px;
+}
+.settings-card {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--panel);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+.settings-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.settings-card-header h3 { margin: 0; font-size: 1rem; }
+.settings-card-body { padding: 16px 18px 18px; }
+.provider-health-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.provider-health-card {
+  min-height: 92px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.025)),
+    rgba(255, 255, 255, 0.035);
+}
+.provider-health-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.provider-health-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}
+.provider-list { display: grid; gap: 12px; }
+.provider-section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 14px 0 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+.provider-section-count {
+  min-width: 28px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  text-align: center;
+  color: var(--text);
+}
+.provider-secondary-details {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+}
+.provider-secondary-details summary {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+}
+.provider-secondary-details summary::-webkit-details-marker { display: none; }
+.provider-secondary-details summary::after {
+  content: "+";
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+}
+.provider-secondary-details[open] summary::after { content: "-"; }
+.provider-secondary-details .provider-list {
+  padding: 0 12px 12px;
+}
+.provider-empty {
+  min-height: 70px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.02);
+}
+.provider-card {
+  display: grid;
+  grid-template-columns: 1.05fr 0.8fr 0.95fr 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(255, 255, 255, 0.035);
+}
+.provider-card-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 2px;
+}
+.provider-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.provider-title strong {
+  overflow-wrap: anywhere;
+}
+.provider-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #64748b;
+  box-shadow: 0 0 0 5px rgba(100, 116, 139, 0.1);
+}
+.provider-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.model-picker {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+}
+.model-picker label {
+  min-width: 0;
+}
+.model-refresh {
+  min-width: 42px;
+  padding-inline: 12px;
+}
+.model-hint {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+.provider-telemetry {
+  min-height: 92px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  background: rgba(3, 7, 13, 0.34);
+}
+.provider-status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 760;
+}
+.status-healthy .provider-dot,
+.status-reachable .provider-dot { background: #86efac; box-shadow: 0 0 0 5px rgba(134, 239, 172, 0.12); }
+.status-healthy .provider-status-pill,
+.status-reachable .provider-status-pill { color: #bbf7d0; border-color: rgba(134, 239, 172, 0.34); }
+.status-not_configured .provider-dot { background: #facc15; box-shadow: 0 0 0 5px rgba(250, 204, 21, 0.12); }
+.status-not_configured .provider-status-pill { color: #fde68a; border-color: rgba(250, 204, 21, 0.34); }
+.status-error .provider-dot,
+.status-missing .provider-dot { background: #fb7185; box-shadow: 0 0 0 5px rgba(251, 113, 133, 0.12); }
+.status-error .provider-status-pill,
+.status-missing .provider-status-pill { color: #fecdd3; border-color: rgba(251, 113, 133, 0.34); }
+.latency-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.latency-value {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 760;
+}
+.latency-meter {
+  height: 6px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+}
+.latency-meter span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #86efac, #facc15, #fb7185);
+  transition: width 240ms ease;
+}
+.provider-mini {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.provider-error {
+  color: #fda4af;
+}
+label { display: block; color: var(--muted); font-size: 0.8rem; }
+input, select, textarea {
+  width: 100%;
+  margin-top: 6px;
+  min-height: 40px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(9, 13, 19, 0.86);
+  color: var(--text);
+  outline: none;
+}
+textarea {
+  min-height: 128px;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.84rem;
+}
+.compact-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.wide-row { display: grid; gap: 12px; }
+button {
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+  cursor: pointer;
+}
+button.primary { background: var(--text); color: var(--bg); }
+button.danger { color: #fecdd3; }
+.provider-status {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.notice {
+  margin-top: 14px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+@media (max-width: 1100px) {
+  .settings-shell { grid-template-columns: 1fr; }
+  .settings-sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+  .settings-grid { grid-template-columns: 1fr; }
+  .provider-health-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .provider-card { grid-template-columns: 1fr; }
+  .model-picker { grid-column: 1 / -1; }
+}
+</style>
+</head>
+<body>
+<div class="settings-shell">
+  <aside class="settings-sidebar">
+    <h1>Atlas OS</h1>
+    <p>本地 Provider、系统与资产配置。</p>
+    <a class="settings-link" href="/dashboard">仪表盘</a>
+    <a class="settings-link" href="/workflow">工作流</a>
+    <a class="settings-link" href="/roadmap">路线图</a>
+  </aside>
+  <main class="settings-main">
+    <div class="settings-header">
+      <div>
+        <h2>Atlas 设置</h2>
+        <p>配置仅为本地元数据，不执行交易，也不修改认知核心。</p>
+      </div>
+      <div class="settings-actions">
+        <label>语言
+          <select id="settings-language">
+            <option value="en">EN</option>
+            <option value="zh" selected>中文</option>
+          </select>
+        </label>
+        <button id="save-settings" class="primary" type="button">保存设置</button>
+      </div>
+    </div>
+
+    <div class="settings-grid">
+      <section id="llm-config" class="settings-card">
+        <div class="settings-card-header">
+          <h3>LLM Providers</h3>
+          <div class="provider-actions">
+            <button id="test-all-providers" type="button">全部测试</button>
+            <button id="add-provider" type="button">添加 Provider</button>
+          </div>
+        </div>
+        <div class="settings-card-body">
+          <div id="provider-health-overview" class="provider-health-overview">
+            <div class="provider-health-card">
+              <span>可用</span>
+              <strong id="provider-online-count">0/8</strong>
+            </div>
+            <div class="provider-health-card">
+              <span>最快 Provider</span>
+              <strong id="provider-fastest">暂无</strong>
+            </div>
+            <div class="provider-health-card">
+              <span>当前 Provider</span>
+              <strong id="provider-active-summary">MoreCode / cc switch</strong>
+            </div>
+            <div class="provider-health-card">
+              <span>最近检测</span>
+              <strong id="provider-last-checked">5h ago</strong>
+            </div>
+          </div>
+          <label>当前 Provider
+            <select id="active-provider"><option value="openai">OpenAI</option>
+<option value="claude">Claude</option>
+<option value="ollama">Ollama</option>
+<option value="morecode" selected>MoreCode / cc switch</option>
+<option value="ark">ARK Coding</option>
+<option value="volcano">Volcano Coding</option>
+<option value="custom">Custom Proxy</option>
+<option value="custom_1783468762016">Custom Proxy</option></select>
+          </label>
+          <div id="provider-list" class="provider-list" data-provider-list-root>
+            <div class="provider-section-label">
+              <span>可用 Provider</span>
+              <span id="provider-available-count" class="provider-section-count">0</span>
+            </div>
+            <div id="provider-available-list" class="provider-list" data-provider-available-list>
+              <div class="provider-empty">暂无可用 Provider</div>
+            </div>
+            <details id="provider-secondary-details" class="provider-secondary-details" open>
+              <summary>
+                <span>不可用 / 未配置</span>
+                <span id="provider-secondary-count" class="provider-section-count">8</span>
+              </summary>
+              <div id="provider-secondary-list" class="provider-list" data-provider-secondary-list>
+                
+    <div class="provider-card status-not_configured" data-provider-card data-provider-id="custom_1783468762016">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>Custom Proxy</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>未配置</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="custom_1783468762016" readonly></label>
+      <label>Type<select data-provider-field="type"><option value="openai">OpenAI</option>
+<option value="claude">Claude</option>
+<option value="ollama">Ollama</option>
+<option value="morecode">MoreCode / cc switch</option>
+<option value="ark">ARK Coding</option>
+<option value="volcano">Volcano Coding</option>
+<option value="custom" selected>Custom Proxy</option></select></label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-custom_1783468762016" value="custom-default" placeholder="选择接口返回的模型，或输入自定义模型名">
+          <datalist id="models-custom_1783468762016" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="从 Provider API 刷新模型列表">↻</button>
+        <div class="model-hint" data-provider-model-hint>这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>延迟</span><span class="latency-value" data-provider-latency>0ms</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 6%;"></span></div>
+        <div class="provider-mini" data-provider-checked>10h ago</div>
+        <div class="provider-mini provider-error" data-provider-error>base_url_missing</div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value=""></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider>删除</button>
+      </div>
+    </div>
+    
+
+    <div class="provider-card status-error" data-provider-card data-provider-id="morecode">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>MoreCode / cc switch</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>不可用</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="morecode" readonly></label>
+      <label>Type<select data-provider-field="type"><option value="openai">OpenAI</option>
+<option value="claude">Claude</option>
+<option value="ollama">Ollama</option>
+<option value="morecode" selected>MoreCode / cc switch</option>
+<option value="ark">ARK Coding</option>
+<option value="volcano">Volcano Coding</option>
+<option value="custom">Custom Proxy</option></select></label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-morecode" value="gpt-5.5" placeholder="选择接口返回的模型，或输入自定义模型名">
+          <datalist id="models-morecode" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="从 Provider API 刷新模型列表">↻</button>
+        <div class="model-hint" data-provider-model-hint>这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>延迟</span><span class="latency-value" data-provider-latency>781ms</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 26%;"></span></div>
+        <div class="provider-mini" data-provider-checked>5h ago</div>
+        <div class="provider-mini provider-error" data-provider-error>HTTP Error 401: Unauthorized</div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value="http://127.0.0.1:15723/v1/chat/completions"></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider disabled>删除</button>
+      </div>
+    </div>
+    
+
+    <div class="provider-card status-error" data-provider-card data-provider-id="ark">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>ARK Coding</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>不可用</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="ark" readonly></label>
+      <label>Type<select data-provider-field="type"><option value="openai">OpenAI</option>
+<option value="claude">Claude</option>
+<option value="ollama">Ollama</option>
+<option value="morecode">MoreCode / cc switch</option>
+<option value="ark" selected>ARK Coding</option>
+<option value="volcano">Volcano Coding</option>
+<option value="custom">Custom Proxy</option></select></label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-ark" value="kimi-k2.6" placeholder="选择接口返回的模型，或输入自定义模型名">
+          <datalist id="models-ark" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="从 Provider API 刷新模型列表">↻</button>
+        <div class="model-hint" data-provider-model-hint>这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>延迟</span><span class="latency-value" data-provider-latency>30000ms</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 100%;"></span></div>
+        <div class="provider-mini" data-provider-checked>5h ago</div>
+        <div class="provider-mini provider-error" data-provider-error>timed out</div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value="http://127.0.0.1:15732/v1/chat/completions"></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider>删除</button>
+      </div>
+    </div>
+    
+
+    <div class="provider-card status-error" data-provider-card data-provider-id="claude">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>Claude</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>不可用</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="claude" readonly></label>
+      <label>Type<select data-provider-field="type"><option value="openai">OpenAI</option>
+<option value="claude" selected>Claude</option>
+<option value="ollama">Ollama</option>
+<option value="morecode">MoreCode / cc switch</option>
+<option value="ark">ARK Coding</option>
+<option value="volcano">Volcano Coding</option>
+<option value="custom">Custom Proxy</option></select></label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-claude" value="claude-sonnet-4-20250514" placeholder="选择接口返回的模型，或输入自定义模型名">
+          <datalist id="models-claude" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="从 Provider API 刷新模型列表">↻</button>
+        <div class="model-hint" data-provider-model-hint>这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>延迟</span><span class="latency-value" data-provider-latency>0ms</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 6%;"></span></div>
+        <div class="provider-mini" data-provider-checked>5h ago</div>
+        <div class="provider-mini provider-error" data-provider-error>api_key_missing</div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value="https://api.anthropic.com/v1/messages"></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider>删除</button>
+      </div>
+    </div>
+    
+
+    <div class="provider-card status-error" data-provider-card data-provider-id="custom">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>Custom Proxy</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>不可用</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="custom" readonly></label>
+      <label>Type<select data-provider-field="type"><option value="openai">OpenAI</option>
+<option value="claude">Claude</option>
+<option value="ollama">Ollama</option>
+<option value="morecode">MoreCode / cc switch</option>
+<option value="ark">ARK Coding</option>
+<option value="volcano">Volcano Coding</option>
+<option value="custom" selected>Custom Proxy</option></select></label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-custom" value="custom-default" placeholder="选择接口返回的模型，或输入自定义模型名">
+          <datalist id="models-custom" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="从 Provider API 刷新模型列表">↻</button>
+        <div class="model-hint" data-provider-model-hint>这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>延迟</span><span class="latency-value" data-provider-latency>0ms</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 6%;"></span></div>
+        <div class="provider-mini" data-provider-checked>5h ago</div>
+        <div class="provider-mini provider-error" data-provider-error>base_url_missing</div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value=""></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider>删除</button>
+      </div>
+    </div>
+    
+
+    <div class="provider-card status-error" data-provider-card data-provider-id="ollama">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>Ollama</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>不可用</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="ollama" readonly></label>
+      <label>Type<select data-provider-field="type"><option value="openai">OpenAI</option>
+<option value="claude">Claude</option>
+<option value="ollama" selected>Ollama</option>
+<option value="morecode">MoreCode / cc switch</option>
+<option value="ark">ARK Coding</option>
+<option value="volcano">Volcano Coding</option>
+<option value="custom">Custom Proxy</option></select></label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-ollama" value="llama3.1" placeholder="选择接口返回的模型，或输入自定义模型名">
+          <datalist id="models-ollama" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="从 Provider API 刷新模型列表">↻</button>
+        <div class="model-hint" data-provider-model-hint>这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>延迟</span><span class="latency-value" data-provider-latency>5ms</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 6%;"></span></div>
+        <div class="provider-mini" data-provider-checked>5h ago</div>
+        <div class="provider-mini provider-error" data-provider-error>HTTP Error 404: Not Found</div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value="http://localhost:11434/api/generate"></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider>删除</button>
+      </div>
+    </div>
+    
+
+    <div class="provider-card status-error" data-provider-card data-provider-id="openai">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>OpenAI</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>不可用</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="openai" readonly></label>
+      <label>Type<select data-provider-field="type"><option value="openai" selected>OpenAI</option>
+<option value="claude">Claude</option>
+<option value="ollama">Ollama</option>
+<option value="morecode">MoreCode / cc switch</option>
+<option value="ark">ARK Coding</option>
+<option value="volcano">Volcano Coding</option>
+<option value="custom">Custom Proxy</option></select></label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-openai" value="gpt-5.5" placeholder="选择接口返回的模型，或输入自定义模型名">
+          <datalist id="models-openai" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="从 Provider API 刷新模型列表">↻</button>
+        <div class="model-hint" data-provider-model-hint>这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>延迟</span><span class="latency-value" data-provider-latency>0ms</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 6%;"></span></div>
+        <div class="provider-mini" data-provider-checked>5h ago</div>
+        <div class="provider-mini provider-error" data-provider-error>api_key_missing</div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value="https://api.openai.com/v1/chat/completions"></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider>删除</button>
+      </div>
+    </div>
+    
+
+    <div class="provider-card status-error" data-provider-card data-provider-id="volcano">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>Volcano Coding</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>不可用</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="volcano" readonly></label>
+      <label>Type<select data-provider-field="type"><option value="openai">OpenAI</option>
+<option value="claude">Claude</option>
+<option value="ollama">Ollama</option>
+<option value="morecode">MoreCode / cc switch</option>
+<option value="ark">ARK Coding</option>
+<option value="volcano" selected>Volcano Coding</option>
+<option value="custom">Custom Proxy</option></select></label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-volcano" value="kimi-k2.6" placeholder="选择接口返回的模型，或输入自定义模型名">
+          <datalist id="models-volcano" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="从 Provider API 刷新模型列表">↻</button>
+        <div class="model-hint" data-provider-model-hint>这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>延迟</span><span class="latency-value" data-provider-latency>30002ms</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 100%;"></span></div>
+        <div class="provider-mini" data-provider-checked>5h ago</div>
+        <div class="provider-mini provider-error" data-provider-error>timed out</div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value="http://127.0.0.1:15732/v1/chat/completions"></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider>删除</button>
+      </div>
+    </div>
+    
+              </div>
+            </details>
+          </div>
+          <label>Fallback 顺序
+            <input id="fallback-chain" value="morecode, ark, volcano, ollama, openai, claude, custom">
+          </label>
+          <p class="notice">API keys are stored locally in encrypted form inside ignored runtime config.</p>
+        </div>
+      </section>
+
+      <div class="wide-row">
+        <section id="system-config" class="settings-card">
+          <div class="settings-card-header"><h3>Atlas 系统配置</h3></div>
+          <div class="settings-card-body compact-row">
+            <label>Tick 间隔
+              <input id="tick-interval-setting" type="number" min="10" step="1" value="60">
+            </label>
+            <label>Runtime mode
+              <select id="runtime-mode-setting">
+                <option value="simulation" selected>simulation</option>
+                <option value="live">live</option>
+              </select>
+            </label>
+            <label>Trust threshold
+              <input id="trust-threshold-setting" type="number" min="0" max="1" step="0.01" value="0.45">
+            </label>
+            <label>Hypothesis sensitivity
+              <input id="hypothesis-sensitivity-setting" type="number" min="0" max="1" step="0.01" value="0.08">
+            </label>
+          </div>
+        </section>
+
+        <section id="asset-config" class="settings-card">
+          <div class="settings-card-header"><h3>用户资产配置</h3></div>
+          <div class="settings-card-body wide-row">
+            <label>Portfolio JSON
+              <textarea id="portfolio-json">{}</textarea>
+            </label>
+            <label>Asset list
+              <textarea id="asset-list" placeholder="AAPL&#10;MSFT"></textarea>
+            </label>
+            <label>Weights JSON
+              <textarea id="weights-json">{}</textarea>
+            </label>
+          </div>
+        </section>
+      </div>
+    </div>
+    <p id="settings-result" class="notice" role="status"></p>
+  </main>
+</div>
+<script>
+const I18N = {"language": "zh", "strings": {"app.title": "认知控制中心", "app.subtitle": "实时认知运行界面", "nav.dashboard": "仪表盘", "nav.workflow": "工作流", "nav.roadmap": "路线图", "nav.settings": "设置", "nav.language": "语言", "system.control": "系统控制", "system.start": "启动", "system.stop": "停止", "system.tick_interval": "Tick 间隔", "system.simulation_mode": "模拟模式", "model.config": "模型配置", "model.active_provider": "当前 Provider", "model.model": "模型", "model.health": "健康状态", "model.open_settings": "打开 Provider 设置", "asset.config": "资产配置", "asset.editor": "组合 / 资产 JSON", "asset.load": "加载", "asset.save": "保存配置", "workspace.system": "系统模式", "workspace.chat": "对话模式", "workspace.workflow": "工作流模式", "state.current_regime": "当前系统状态", "state.trust_score": "信任分数", "state.active_decision": "当前决策", "state.confidence": "置信度", "state.risk": "风险", "state.attention": "注意力", "state.liquidity": "流动性", "state.status": "系统状态", "state.tick": "Tick", "state.volatility": "波动率", "empty.signal": "等待足够认知信号", "empty.context": "系统上下文不足", "empty.initializing": "正在初始化推理层", "chat.placeholder": "发送安全的 Atlas 运行时问题", "chat.send": "发送", "right.reasoning": "推理摘要", "right.causal": "因果快照", "right.hypothesis": "假设状态", "right.health": "系统健康", "right.active": "当前", "right.shadow": "影子假设", "right.trust_trend": "信任趋势", "right.stability": "稳定性", "right.llm_calls": "LLM 调用", "right.latency": "延迟", "timeline.title": "事件 -> 决策 -> 反馈", "timeline.kicker": "执行时间线", "settings.title": "Atlas 设置", "settings.subtitle": "本地 Provider、系统与资产配置。", "settings.save": "保存设置", "settings.providers": "LLM Providers", "settings.add_provider": "添加 Provider", "settings.test": "测试", "settings.remove": "删除", "settings.api_key": "API Key", "settings.base_url": "Base URL", "settings.fallback": "Fallback 顺序", "settings.system": "Atlas 系统配置", "settings.assets": "用户资产配置", "settings.notice": "配置仅为本地元数据，不执行交易，也不修改认知核心。", "provider.test_all": "全部测试", "provider.online": "可用", "provider.reachable": "可达", "provider.needs_config": "未配置", "provider.error": "不可用", "provider.unknown": "未测试", "provider.latency": "延迟", "provider.fastest": "最快 Provider", "provider.last_checked": "最近检测", "provider.never_checked": "尚未检测", "provider.testing": "正在检测 Provider...", "provider.tested": "Provider 检测完成", "provider.none": "暂无", "provider.available_section": "可用 Provider", "provider.other_section": "不可用 / 未配置", "provider.none_available": "暂无可用 Provider", "provider.custom_model_placeholder": "选择接口返回的模型，或输入自定义模型名", "provider.refresh_models": "从 Provider API 刷新模型列表", "provider.model_custom_allowed": "这里显示 API 返回的模型；也允许自定义模型名，但运行时不一定可用。", "provider.loading_models": "正在加载模型...", "provider.models_loaded": "模型已加载", "provider.models_unavailable": "无法获取模型列表", "provider.custom_allowed_short": "可自定义", "home.nav.home": "首页", "home.nav.ask": "询问 Atlas", "home.nav.portfolio": "组合", "home.nav.markets": "市场", "home.nav.predictions": "预测", "home.nav.learning": "学习", "home.kicker": "今日 Atlas 简报", "home.waiting_summary": "Atlas 正在等待足够的认知信号。", "home.trust": "信任", "home.regime": "状态", "home.updated": "更新时间", "home.market_context": "当前市场上下文", "home.market_waiting": "等待市场刷新", "home.portfolio_impact": "组合影响", "home.no_portfolio": "尚未配置组合百分比", "home.exposure_sum": "暴露合计", "home.data_freshness": "数据新鲜度", "home.trigger_conditions": "触发条件", "home.trace_placeholder": "可在系统详情中查看原始轨迹。", "home.top_risks": "主要风险", "home.confidence": "置信度", "home.waiting_market": "等待市场通道。", "home.live": "实时", "home.simulated": "模拟", "home.needs_attention": "需要关注", "home.not_configured": "未配置", "home.waiting_signal": "等待足够市场信号。", "setup.title": "设置 Atlas OS", "setup.subtitle": "只配置 Atlas 本地运行所需信息。API key 保存后不会再次明文显示。", "setup.welcome_title": "1. 欢迎", "setup.welcome_body": "Atlas 运行非交易型认知循环。它观察、解释并记录责任链；不会执行交易。", "setup.language_title": "2. 语言", "setup.provider_title": "3. LLM Provider", "setup.provider": "Provider", "setup.model": "模型", "setup.base_url": "Base URL", "setup.api_key": "API key", "setup.api_key_hint": "留空则保留现有 key", "setup.test_connection": "测试连接", "setup.market_mode_title": "4. 市场数据模式", "setup.configured_assets": "仅使用已配置资产", "setup.simulation_fallback": "模拟兜底", "setup.assets_title": "5. 资产 / 组合百分比", "setup.assets_note": "只填写百分比。Atlas 不需要账户金额、成本、券商信息或精确持仓数量。", "setup.add_asset": "添加资产", "setup.asset": "资产", "setup.market": "市场", "setup.percentage": "百分比", "setup.theme": "主题", "setup.role": "角色", "setup.risk_note": "风险备注", "setup.thesis": "投资假设", "setup.risk_title": "6. 风险偏好", "setup.balanced": "均衡", "setup.conservative": "保守", "setup.research_only": "仅研究", "setup.start_title": "7. 启动", "setup.save": "保存设置", "setup.start_runtime": "启动 Runtime", "setup.show_brief": "查看第一份简报", "setup.ask_atlas": "询问 Atlas", "setup.waiting": "等待设置。", "setup.saving_before_test": "正在保存当前配置并测试 Provider...", "setup.saved": "设置已保存。Atlas 现在可以使用这份配置。", "setup.save_failed": "Provider 测试前保存设置失败。", "setup.test_complete": "Provider 测试完成。", "setup.starting": "正在启动 runtime...", "setup.start_failed": "Runtime 启动失败", "page.edit_assets": "编辑资产", "page.status": "状态", "page.consistency": "一致性", "page.exposure": "暴露", "page.privacy": "隐私", "portfolio.title": "组合上下文", "portfolio.theme_concentration": "主题集中度", "portfolio.positions": "已配置资产", "portfolio.no_percentages": "尚未配置组合百分比。", "portfolio.asset": "资产", "portfolio.market": "市场", "portfolio.percentage": "百分比", "portfolio.role": "角色", "portfolio.risk": "风险备注", "portfolio.thesis": "投资假设", "markets.title": "市场智能", "markets.degraded": "降级状态", "markets.events": "已入队事件", "markets.channel_status": "通道状态", "markets.latest_observations": "最新观察", "markets.channel": "通道", "markets.state": "状态", "markets.asset": "资产", "markets.source": "来源", "markets.type": "类型", "markets.freshness": "新鲜度", "markets.timestamp": "时间", "predictions.title": "预测账本", "predictions.open": "未完成", "predictions.evaluated": "已评估", "predictions.accuracy": "准确率", "predictions.low_sample": "样本不足", "predictions.create": "创建预测", "predictions.record": "记录预测", "predictions.ledger": "账本", "learning.title": "学习与责任链", "learning.prediction_error": "预测误差", "learning.evaluated_forecasts": "已评估预测", "learning.mean_forecast_error": "平均预测误差", "learning.calibration": "校准", "learning.mean_calibration_error": "平均校准误差", "learning.trust_state": "信任状态", "learning.rolling_trust": "滚动信任指数"}};
+const providerTypes = {"openai": {"label": "OpenAI", "base_url": "https://api.openai.com/v1/chat/completions", "model": "gpt-5.5", "protocol": "openai_compatible"}, "claude": {"label": "Claude", "base_url": "https://api.anthropic.com/v1/messages", "model": "claude-sonnet-4-20250514", "protocol": "anthropic"}, "ollama": {"label": "Ollama", "base_url": "http://localhost:11434/api/generate", "model": "llama3.1", "protocol": "ollama"}, "morecode": {"label": "MoreCode / cc switch", "base_url": "", "model": "morecode-default", "protocol": "openai_compatible"}, "ark": {"label": "ARK Coding", "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "model": "doubao-seed-1-6", "protocol": "openai_compatible"}, "volcano": {"label": "Volcano Coding", "base_url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "model": "doubao-seed-1-6", "protocol": "openai_compatible"}, "custom": {"label": "Custom Proxy", "base_url": "", "model": "custom-default", "protocol": "proxy"}};
+
+function tx(key) {
+  return I18N.strings?.[key] || key;
+}
+function providerTemplate(id, type, label, baseUrl, model) {
+  return `
+    <div class="provider-card status-unknown" data-provider-card data-provider-id="${escapeHtml(id)}">
+      <div class="provider-card-head">
+        <div class="provider-title">
+          <span class="provider-dot"></span>
+          <strong data-provider-label>${escapeHtml(label || id)}</strong>
+        </div>
+        <span class="provider-status-pill" data-provider-status>${tx("provider.unknown")}</span>
+      </div>
+      <label>ID<input data-provider-field="id" value="${escapeHtml(id)}" readonly></label>
+      <label>Type
+        <select data-provider-field="type">
+          ${Object.keys(providerTypes).map(key => `<option value="${key}" ${key === type ? "selected" : ""}>${providerTypes[key].label}</option>`).join("")}
+        </select>
+      </label>
+      <div class="model-picker">
+        <label>模型
+          <input data-provider-field="model" data-model-input list="models-${escapeHtml(id)}" value="${escapeHtml(model || "")}" placeholder="${tx("provider.custom_model_placeholder")}">
+          <datalist id="models-${escapeHtml(id)}" data-provider-model-options></datalist>
+        </label>
+        <button class="model-refresh" type="button" data-refresh-models title="${tx("provider.refresh_models")}">↻</button>
+        <div class="model-hint" data-provider-model-hint>${tx("provider.model_custom_allowed")}</div>
+      </div>
+      <div class="provider-telemetry">
+        <label>API Key<input data-provider-field="api_key" type="password" placeholder="••••••"></label>
+        <div class="latency-row"><span>${tx("provider.latency")}</span><span class="latency-value" data-provider-latency>--</span></div>
+        <div class="latency-meter"><span data-provider-latency-bar style="width: 0%;"></span></div>
+        <div class="provider-mini" data-provider-checked>${tx("provider.never_checked")}</div>
+        <div class="provider-mini provider-error" data-provider-error></div>
+      </div>
+      <label style="grid-column: 1 / -2;">Base URL<input data-provider-field="base_url" value="${escapeHtml(baseUrl || "")}"></label>
+      <div class="provider-actions">
+        <button type="button" data-test-provider>测试</button>
+        <button class="danger" type="button" data-remove-provider>删除</button>
+      </div>
+    </div>`;
+}
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function collectProviders() {
+  return Array.from(document.querySelectorAll("[data-provider-card]")).map(card => {
+    const item = {};
+    card.querySelectorAll("[data-provider-field]").forEach(input => {
+      item[input.getAttribute("data-provider-field")] = input.value;
+    });
+    item.label = card.querySelector("[data-provider-label]")?.textContent || providerTypes[item.type]?.label || item.id;
+    item.available_models = Array.from(card.querySelectorAll("[data-provider-model-options] option")).map(option => option.value).filter(Boolean);
+    item.enabled = true;
+    return item;
+  });
+}
+function payload() {
+  let weights = {};
+  try { weights = JSON.parse(document.getElementById("weights-json").value || "{}"); } catch (error) { weights = {}; }
+  return {
+    ui: { language: document.getElementById("settings-language").value },
+    llm_registry: {
+      active_provider: document.getElementById("active-provider").value,
+      fallback_chain: document.getElementById("fallback-chain").value.split(",").map(x => x.trim()).filter(Boolean),
+      providers: collectProviders()
+    },
+    system: {
+      tick_interval: Number(document.getElementById("tick-interval-setting").value || 60),
+      runtime_mode: document.getElementById("runtime-mode-setting").value,
+      trust_threshold: Number(document.getElementById("trust-threshold-setting").value || 0.45),
+      hypothesis_switching_sensitivity: Number(document.getElementById("hypothesis-sensitivity-setting").value || 0.08)
+    },
+    assets: {
+      portfolio_json: document.getElementById("portfolio-json").value || "{}",
+      asset_list: document.getElementById("asset-list").value.split("\n").map(x => x.trim()).filter(Boolean),
+      weights
+    },
+    metadata: { ui_only: true, no_runtime_reload: true, no_trading_execution: true }
+  };
+}
+async function saveSettings() {
+  const result = document.getElementById("settings-result");
+  const response = await fetch("/settings", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload())
+  });
+  const data = await response.json();
+  result.textContent = data.status === "saved" ? "Saved." : JSON.stringify(data);
+}
+async function testProvider(card) {
+  const id = card.querySelector('[data-provider-field="id"]').value;
+  const status = card.querySelector("[data-provider-status]");
+  status.textContent = tx("provider.testing");
+  await saveSettings();
+  const response = await fetch("/llm/provider/test", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ provider_id: id })
+  });
+  await response.json();
+  await refreshProviderHealth();
+}
+async function refreshModels(card) {
+  const id = card.querySelector('[data-provider-field="id"]').value;
+  const hint = card.querySelector("[data-provider-model-hint]");
+  hint.textContent = tx("provider.loading_models");
+  await saveSettings();
+  const response = await fetch("/llm/provider/models", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ provider_id: id })
+  });
+  const data = await response.json();
+  applyModelOptions(card, data.models || []);
+  hint.textContent = data.status === "ok"
+    ? `${tx("provider.models_loaded")} · ${(data.models || []).length}`
+    : `${tx("provider.models_unavailable")}${data.error ? " · " + data.error : ""}`;
+}
+async function testAllProviders() {
+  const result = document.getElementById("settings-result");
+  result.textContent = tx("provider.testing");
+  await saveSettings();
+  const response = await fetch("/llm/providers/test_all", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({})
+  });
+  const data = await response.json();
+  await refreshProviderHealth(data.registry || null);
+  result.textContent = `${tx("provider.tested")} · ${data.summary?.online_count || 0}/${data.summary?.total_count || 0}`;
+}
+async function refreshProviderHealth(registry) {
+  let data = registry;
+  if (!data) {
+    const response = await fetch("/llm/providers");
+    data = await response.json();
+  }
+  updateProviderSummary(data);
+  (data.providers || []).forEach(updateProviderCard);
+  reorderProviderCards(data);
+}
+function updateProviderSummary(registry) {
+  const providers = registry.providers || [];
+  const online = providers.filter(item => ["healthy", "reachable"].includes(item.health)).length;
+  const checked = providers
+    .filter(item => item.last_checked_at)
+    .sort((a, b) => Number(b.last_checked_at || 0) - Number(a.last_checked_at || 0));
+  const fastest = providers
+    .filter(item => ["healthy", "reachable"].includes(item.health) && item.last_latency_ms !== null && item.last_latency_ms !== undefined)
+    .sort((a, b) => Number(a.last_latency_ms) - Number(b.last_latency_ms))[0];
+  const active = providers.find(item => item.id === registry.active_provider);
+  document.getElementById("provider-online-count").textContent = `${online}/${providers.length}`;
+  document.getElementById("provider-fastest").textContent = fastest ? `${fastest.label || fastest.id} · ${fastest.last_latency_ms}ms` : tx("provider.none");
+  document.getElementById("provider-active-summary").textContent = active ? (active.label || active.id) : (registry.active_provider || "--");
+  document.getElementById("provider-last-checked").textContent = checked[0] ? formatChecked(checked[0].last_checked_at) : tx("provider.never_checked");
+}
+function reorderProviderCards(registry) {
+  const providers = registry.providers || [];
+  const availableList = document.getElementById("provider-available-list");
+  const secondaryList = document.getElementById("provider-secondary-list");
+  const empty = availableList.querySelector(".provider-empty");
+  if (empty) empty.remove();
+  const ordered = [...providers].sort(providerSort);
+  let availableCount = 0;
+  let secondaryCount = 0;
+  ordered.forEach(provider => {
+    const card = document.querySelector(`[data-provider-card][data-provider-id="${cssEscape(provider.id)}"]`);
+    if (!card) return;
+    if (isAvailableProvider(provider)) {
+      availableList.appendChild(card);
+      availableCount += 1;
+    } else {
+      secondaryList.appendChild(card);
+      secondaryCount += 1;
+    }
+  });
+  if (!availableCount) {
+    const div = document.createElement("div");
+    div.className = "provider-empty";
+    div.textContent = tx("provider.none_available");
+    availableList.appendChild(div);
+  }
+  document.getElementById("provider-available-count").textContent = availableCount;
+  document.getElementById("provider-secondary-count").textContent = secondaryCount;
+  document.getElementById("provider-secondary-details").open = availableCount === 0;
+}
+function providerSort(a, b) {
+  const aAvailable = isAvailableProvider(a);
+  const bAvailable = isAvailableProvider(b);
+  if (aAvailable !== bAvailable) return aAvailable ? -1 : 1;
+  const aLatency = Number(a.last_latency_ms ?? 999999);
+  const bLatency = Number(b.last_latency_ms ?? 999999);
+  if (aAvailable && aLatency !== bLatency) return aLatency - bLatency;
+  return String(a.label || a.id).localeCompare(String(b.label || b.id));
+}
+function isAvailableProvider(provider) {
+  return ["healthy", "reachable"].includes(provider.health || "");
+}
+function updateProviderCard(provider) {
+  const card = document.querySelector(`[data-provider-card][data-provider-id="${cssEscape(provider.id)}"]`);
+  if (!card) return;
+  const health = provider.health || "unknown";
+  card.className = card.className.replace(/status-[a-z_]+/g, "").trim() + " status-" + health;
+  card.querySelector("[data-provider-label]").textContent = provider.label || provider.id;
+  card.querySelector("[data-provider-status]").textContent = healthLabel(health);
+  card.querySelector("[data-provider-latency]").textContent = provider.last_latency_ms === null || provider.last_latency_ms === undefined ? "--" : provider.last_latency_ms + "ms";
+  card.querySelector("[data-provider-latency-bar]").style.width = latencyWidth(provider.last_latency_ms) + "%";
+  card.querySelector("[data-provider-checked]").textContent = provider.last_checked_at ? formatChecked(provider.last_checked_at) : tx("provider.never_checked");
+  card.querySelector("[data-provider-error]").textContent = provider.last_error || "";
+  applyModelOptions(card, provider.available_models || []);
+}
+function applyModelOptions(card, models) {
+  const datalist = card.querySelector("[data-provider-model-options]");
+  if (!datalist) return;
+  datalist.innerHTML = "";
+  (models || []).forEach(model => {
+    const option = document.createElement("option");
+    option.value = model;
+    datalist.appendChild(option);
+  });
+  const hint = card.querySelector("[data-provider-model-hint]");
+  if (hint && (models || []).length) {
+    hint.textContent = `${tx("provider.models_loaded")} · ${models.length} · ${tx("provider.custom_allowed_short")}`;
+  }
+}
+function healthLabel(health) {
+  return {
+    healthy: tx("provider.online"),
+    reachable: tx("provider.reachable"),
+    not_configured: tx("provider.needs_config"),
+    error: tx("provider.error"),
+    missing: tx("provider.error"),
+    unknown: tx("provider.unknown")
+  }[health || "unknown"] || health;
+}
+function latencyWidth(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return 0;
+  return Math.max(6, Math.min(100, Math.round(Number(value) / 30)));
+}
+function formatChecked(value) {
+  const seconds = Math.max(0, Math.round(Date.now() / 1000 - Number(value || 0)));
+  if (seconds < 60) return `${seconds}s ago`;
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.round(minutes / 60);
+  return `${hours}h ago`;
+}
+function cssEscape(value) {
+  if (window.CSS && CSS.escape) return CSS.escape(String(value));
+  return String(value).replace(/[^a-zA-Z0-9_-]/g, "\\$&");
+}
+function bindProviderControls() {
+  document.getElementById("add-provider").addEventListener("click", () => {
+    const type = "custom";
+    const id = "custom_" + Date.now();
+    const meta = providerTypes[type];
+    document.getElementById("provider-secondary-list").insertAdjacentHTML("beforeend", providerTemplate(id, type, meta.label, meta.base_url, meta.model));
+    document.getElementById("provider-secondary-details").open = true;
+    document.getElementById("provider-secondary-count").textContent = document.querySelectorAll("#provider-secondary-list [data-provider-card]").length;
+  });
+  document.getElementById("test-all-providers").addEventListener("click", testAllProviders);
+  document.addEventListener("click", event => {
+    const card = event.target.closest("[data-provider-card]");
+    if (!card) return;
+    if (event.target.matches("[data-remove-provider]")) card.remove();
+    if (event.target.matches("[data-test-provider]")) testProvider(card);
+    if (event.target.matches("[data-refresh-models]")) refreshModels(card);
+  });
+}
+document.getElementById("save-settings").addEventListener("click", saveSettings);
+document.getElementById("settings-language").addEventListener("change", async () => {
+  await saveSettings();
+  window.location.reload();
+});
+bindProviderControls();
+</script>
+</body>
+</html>
