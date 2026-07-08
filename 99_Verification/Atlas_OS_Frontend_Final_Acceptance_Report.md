@@ -30,7 +30,7 @@ FRONTEND_PRODUCTION_TRIAL_CANDIDATE
 | Accessibility audit completes | PASS_WITH_TOOL_NOTE |
 | Stale UI server risk handled | PASS: 8765 restarted to latest PID |
 | Locally fixable P0/P1/P2 UX defects closed | PASS |
-| Remote branch pushed | PENDING UNTIL GIT PUSH STEP |
+| Remote branch pushed | PASS |
 
 ## Evidence Index
 
@@ -41,6 +41,12 @@ FRONTEND_PRODUCTION_TRIAL_CANDIDATE
 - Browser E2E: `99_Verification/artifacts/frontend_master/exact_24_step_e2e.json`
 - Responsive: `99_Verification/artifacts/frontend_master/exact_responsive_audit.json`
 - Accessibility: `99_Verification/artifacts/frontend_master/exact_accessibility_audit.json`
+
+## Remote Auditability
+
+- Remote branch: `origin/codex/frontend-master-upgrade`
+- Remote HEAD after first push: `b25349f494ad17df2f9a046b14154650dcce2303`
+- Note: a final documentation/session closure commit is added after this first remote proof and pushed again.
 
 ## Validation Commands
 
