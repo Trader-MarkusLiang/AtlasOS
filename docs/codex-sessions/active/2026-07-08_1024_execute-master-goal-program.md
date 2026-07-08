@@ -213,6 +213,15 @@ v0.8.
     2-hour real-duration daemon stability is proven, 24-hour unattended stability is not proven;
   - advanced `GOAL_STATUS.json` current cursor to `GOAL_08_RELEASE_READINESS`;
   - committed GOAL 07 two-hour proof as `951e0f6908f234f1b847526217660231c226d7da`.
+- 2026-07-08 14:36 CST GOAL 08 release readiness:
+  - added `99_Verification/validate_goal_08_release_readiness.py`;
+  - first validator run failed because it assumed incorrect GOAL 04/05 artifact key names;
+  - repaired the validator to match actual artifact schema without weakening checks;
+  - reran validator successfully with final classification `PRODUCTION_TRIAL_CANDIDATE`;
+  - added `99_Verification/GOAL_08_Release_Readiness_Report.md`;
+  - added `99_Verification/Atlas_OS_Master_Goal_Final_Report.md`;
+  - updated master/GOAL 08 evidence, status registry, changelog, README, VERSION, and roadmap;
+  - `GOAL_STATUS.json` now records `status: COMPLETE`.
 
 ## Files Changed
 
@@ -268,6 +277,10 @@ v0.8.
 - `VERSION.md`
 - `CHANGELOG.md`
 - `docs/atlas_roadmap.json`
+- `99_Verification/validate_goal_08_release_readiness.py`
+- `99_Verification/artifacts/goal_08_release_readiness/tribunal_result.json`
+- `99_Verification/GOAL_08_Release_Readiness_Report.md`
+- `99_Verification/Atlas_OS_Master_Goal_Final_Report.md`
 
 ## Decisions
 
@@ -310,6 +323,8 @@ v0.8.
   proven or explicitly accepted as a release blocker.
 - GOAL 07 now has two-hour real-duration daemon proof and is committed as `PROVEN_COMPLETE`; the
   execution cursor is `GOAL_08_RELEASE_READINESS`.
+- GOAL 08 validator passed and classified Atlas OS as `PRODUCTION_TRIAL_CANDIDATE`; Master Goal
+  status is ready to commit as `COMPLETE`.
 - A temporary UI server process is still visible on port `8876`; stop or reuse it intentionally
   before further browser tests.
 
@@ -347,15 +362,18 @@ v0.8.
 - GOAL 07 long-soak artifact JSON check: PASS.
 - GOAL 07 long-soak runner compile check: PASS.
 - GOAL 07 two-hour reconciliation `git diff --check`: PASS.
+- GOAL 08 validator first run: FAIL due validator artifact-key assumptions.
+- GOAL 08 validator repaired.
+- GOAL 08 validator rerun: PASS, final classification `PRODUCTION_TRIAL_CANDIDATE`.
 
 ## Resume Instructions
 
 1. Read `docs/goals/status/GOAL_STATUS.json`.
-2. Confirm `current_goal` is `GOAL_08_RELEASE_READINESS`.
-3. Read `docs/goals/GOAL_08_RELEASE_READINESS.md` and
-   `docs/goals/evidence/GOAL_08_EVIDENCE.md`.
-4. Create and run the GOAL 08 release-readiness tribunal against the current evidence set.
-5. Preserve hard boundaries: no broker/trading execution, no cognition rewrites, no speculative
+2. Confirm `status` is `COMPLETE` and `master_goal.classification` is
+   `PRODUCTION_TRIAL_CANDIDATE`.
+3. Read `99_Verification/GOAL_08_Release_Readiness_Report.md` and
+   `99_Verification/Atlas_OS_Master_Goal_Final_Report.md`.
+4. Preserve hard boundaries: no broker/trading execution, no cognition rewrites, no speculative
    engines, no private config commits.
 
 ## Open Questions

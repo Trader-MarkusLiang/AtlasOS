@@ -12,14 +12,14 @@ Stage: Run First + Capital Deployment Engine
 
 Presentation stage: Decision Experience v1.1 RC
 
-Productization track: Prompt D real-world activation hardening
+Productization track: Master Goal complete; production trial candidate, not Release Candidate
 
 Parallel version model:
 
 - Atlas Core / Knowledge OS: v2.1 RC
 - Atlas Runtime: real daemon / EventStream / DecisionLoop path proven through GOAL 07 two-hour wall-clock soak; no 24h proof
 - Atlas Cognitive Overlay: symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence
-- Atlas UI / Product: UI v2.x + provider configuration v1.4.x + Decision Brief-first Home; browser UX evidence is partial
+- Atlas UI / Product: UI v2.x + provider configuration v1.4.x + Decision Brief-first Home; first-user path proven, exhaustive bilingual parity and stale-server guard partial
 - Atlas Data / Market Intelligence: live market fetch attempted; daemon path currently degraded by provider/rate-limit failures
 
 Current evidence classification:
@@ -29,6 +29,7 @@ Current evidence classification:
 - Forecast lineage and self-iteration: `REAL_RUNTIME_PROVEN`
 - Daily-cycle dispatch: `REAL_RUNTIME_PROVEN`
 - Live market observation: `PARTIAL` / `EXTERNAL_BLOCKER`
+- Release readiness: `PRODUCTION_TRIAL_CANDIDATE`; not RC, not production-ready
 - Real-duration stability: `REAL_RUNTIME_PROVEN` for 2h GOAL 07 soak; 24h still not proven
 
 Release lifecycle: Alpha -> RC -> Production Trial -> Final

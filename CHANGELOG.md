@@ -1,5 +1,16 @@
 # Changelog
 
+## GOAL 08 Release Readiness Tribunal - 2026-07-08
+
+- Added GOAL 08 release-readiness validator and final tribunal artifact.
+- Classified Atlas OS as `PRODUCTION_TRIAL_CANDIDATE`, not Release Candidate and not
+  production-ready.
+- Added final GOAL 08 report and Atlas Master Goal final report.
+- Marked 24-hour stability, complete live-market coverage, exhaustive bilingual parity, and
+  long-run provider stability as remaining release risks.
+- Did not modify Event Fusion, CIL, LMSE, MPCE, MLE, CDE, Decision Contract semantics, trading
+  execution, prediction behavior, or portfolio mutation.
+
 ## GOAL 07 Two-Hour Autonomous Operations Proof - 2026-07-08
 
 - Added a 2-hour real-duration daemon soak runner and compact artifact for GOAL 07 autonomous

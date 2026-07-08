@@ -8,9 +8,9 @@ ChatGPT, and future agents.
 
 Current Core stage: v2.1 Production Trial.
 
-Current productization stage: Prompt D real-world activation hardening. Atlas Core remains an
-investment research operating system; the runtime and UI layers are product surfaces around that
-core, not replacements for the reasoning framework or CDE.
+Current productization stage: Master Goal complete; production trial candidate, not Release
+Candidate. Atlas Core remains an investment research operating system; the runtime and UI layers
+are product surfaces around that core, not replacements for the reasoning framework or CDE.
 
 ## Repository Map
 
@@ -43,7 +43,7 @@ Runtime, UI, and Data tracks use separate version labels because they mature ind
 | Atlas Core / Knowledge OS | v2.1 RC Production Trial |
 | Atlas Runtime | real daemon / EventStream / DecisionLoop path proven through GOAL 07 two-hour wall-clock soak; no 24h proof |
 | Atlas Cognitive Overlay | symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence |
-| Atlas UI / Product | control center and settings routes render; browser UX is partial and stale-server risk remains |
+| Atlas UI / Product | first-user setup/start/ask/stop path proven; exhaustive bilingual parity and stale-server guard remain partial |
 | Atlas Data / Market Intelligence | live market fetch attempted; daemon path currently degraded by provider/rate-limit failures; breadth/news/macro/narrative channels explicitly not configured |
 
 Current evidence levels:
@@ -55,6 +55,7 @@ Current evidence levels:
 | Forecast lineage and self-iteration | `REAL_RUNTIME_PROVEN` / `LIVE_PROVEN` for treatment-control behavioral delta |
 | Daily cycle dispatch | `REAL_RUNTIME_PROVEN` through daemon phase dispatch |
 | Live market observation | `PARTIAL` / `EXTERNAL_BLOCKER` due provider disconnects and rate limits |
+| Release readiness | `PRODUCTION_TRIAL_CANDIDATE`; not RC, not production-ready |
 | Real-duration stability | `REAL_RUNTIME_PROVEN` for 2h GOAL 07 soak; 24h still not proven |
 
 Latest release tag: ais-v1.0.

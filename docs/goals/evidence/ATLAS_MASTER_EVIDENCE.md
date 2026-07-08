@@ -2,11 +2,10 @@
 
 ## Current Classification
 
-`PARTIAL`
+`PRODUCTION_TRIAL_CANDIDATE`
 
-Atlas is a partially real-runtime-proven internal alpha. It is not Release Candidate, not
-production, not complete-live-market proven, and not 24h stable. GOAL 07 has now proven a 2-hour
-real-duration daemon soak.
+Atlas completed the autonomous goal program and is a guarded production-trial candidate. It is not
+Release Candidate, not production-ready, not complete-live-market proven, and not 24h stable.
 
 ## Supporting Evidence
 
@@ -21,6 +20,8 @@ real-duration daemon soak.
 | GOAL 06 self-iteration reality | `99_Verification/GOAL_06_True_Self_Iteration_Report.md` | `REAL_RUNTIME_BEHAVIORAL_LOOP` |
 | GOAL 07 autonomous operations | `99_Verification/GOAL_07_Autonomous_Operations_Report.md` | `PROVEN_COMPLETE` |
 | GOAL 07 2h soak artifact | `99_Verification/artifacts/goal_07_autonomous_operations/long_soak_2h_result.json` | `REAL_DURATION_2H_PROVEN` |
+| GOAL 08 release readiness | `99_Verification/GOAL_08_Release_Readiness_Report.md` | `PRODUCTION_TRIAL_CANDIDATE` |
+| Master final report | `99_Verification/Atlas_OS_Master_Goal_Final_Report.md` | `COMPLETE` |
 
 ## Proven Areas
 
@@ -33,6 +34,7 @@ real-duration daemon soak.
 - Daily-cycle daemon dispatch, 500-cycle accelerated operations, and 2-hour real-duration daemon
   soak through GOAL 07.
 - Failure recovery for tested cases through GOAL 07.
+- Release-readiness tribunal through GOAL 08.
 
 ## Open Gaps
 
@@ -42,10 +44,10 @@ real-duration daemon soak.
 
 ## Next Evidence To Collect
 
-1. GOAL 08 release-readiness tribunal.
-2. 24h wall-clock soak report.
-3. Provider stability evidence during a longer run.
-4. Oscillation and stability monitoring for forecast-feedback loops.
+1. 24h wall-clock soak report.
+2. Provider stability evidence during a longer run.
+3. Additional live market-channel configuration.
+4. Exhaustive bilingual parity and stale-server recovery proof.
 
 ## Non-Evidence
 

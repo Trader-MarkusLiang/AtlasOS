@@ -1,0 +1,108 @@
+{
+  "checks": {
+    "daily_all_phases": true,
+    "daily_cycle_pass": true,
+    "diff_check_clean": true,
+    "first_time_user_flow_artifact": true,
+    "first_time_user_language_zh": true,
+    "first_time_user_report_pass": true,
+    "forecast_lifecycle_pass": true,
+    "forecast_metrics_computed": true,
+    "forecast_required_cases": true,
+    "goal_08_status_consistent": true,
+    "goals_00_to_07_completed": true,
+    "live_llm_provider_proven": true,
+    "live_market_price_volume": true,
+    "llm_decision_contract_valid": true,
+    "llm_fallback_matrix_pass": true,
+    "llm_telemetry_secret_safe": true,
+    "market_missing_channels_explicit": true,
+    "market_no_trading_execution": true,
+    "market_ui_freshness_visible": true,
+    "portfolio_differential_pass": true,
+    "portfolio_multiple_cases": true,
+    "portfolio_no_private_amounts": true,
+    "python_compile_regression": true,
+    "recovery_matrix_pass": true,
+    "secret_shape_scan_clean": true,
+    "self_iteration_behavioral_loop": true,
+    "self_iteration_feedback_applied": true,
+    "self_iteration_pass": true,
+    "status_cursor_goal_08": true,
+    "two_hour_no_trading_execution": true,
+    "two_hour_soak_pass": true,
+    "two_hour_zero_tick_errors": true
+  },
+  "date": "2026-07-08T06:39:42.267073+00:00",
+  "failures": [],
+  "final_classification": "PRODUCTION_TRIAL_CANDIDATE",
+  "live_market_complete_claim_allowed": false,
+  "master_goal_status_recommendation": "COMPLETE",
+  "no_trading_execution": true,
+  "production_ready_claim_allowed": false,
+  "rc_readiness": "NOT_RC_READY",
+  "release_candidate_claim_allowed": false,
+  "release_risks": [
+    "24h unattended stability is not proven.",
+    "Breadth/news/macro/narrative live market channels remain NOT_CONFIGURED.",
+    "Bilingual parity is proven on primary path, not every UI page.",
+    "Provider long-run stability sample is small and the 2h soak used failsafe provider degradation.",
+    "Stale UI server guard remains a known product risk."
+  ],
+  "status": "PASS",
+  "tribunal": {
+    "autonomous_operations": {
+      "classification": "REAL_RUNTIME_PROVEN",
+      "evidence": "Daily phases, recovery, 500 accelerated cycles, and 2h real-duration soak are proven."
+    },
+    "background_runtime": {
+      "classification": "REAL_RUNTIME_PROVEN",
+      "evidence": "Daemon, EventStream, DecisionLoop, persistence, scheduler sleep, and two-hour loop are proven."
+    },
+    "bilingual_parity": {
+      "classification": "PARTIAL",
+      "evidence": "Primary setup/home zh/en path is proven; exhaustive page-level parity is not proven."
+    },
+    "forecast_accountability": {
+      "classification": "REAL_RUNTIME_PROVEN",
+      "evidence": "Forecast lifecycle records expectations before outcomes and computes errors."
+    },
+    "llm_routing": {
+      "classification": "LIVE_PROVEN",
+      "evidence": "Volcano fallback route and Decision Contract parse were live-proven; failure matrix is repeatable."
+    },
+    "market_awareness": {
+      "classification": "LIVE_PROVEN",
+      "evidence": "At least one live price/volume observation reached daemon/EventStream/DecisionLoop/UI."
+    },
+    "market_freshness": {
+      "classification": "PARTIAL",
+      "evidence": "Price/volume freshness is visible; breadth/news/macro/narrative remain NOT_CONFIGURED."
+    },
+    "portfolio_cognition": {
+      "classification": "REAL_RUNTIME_PROVEN",
+      "evidence": "UI-configured portfolios change normal runtime output under same market state."
+    },
+    "recovery": {
+      "classification": "REAL_RUNTIME_PROVEN",
+      "evidence": "Daemon restart, UI restart, stale PID, malformed JSONL, provider outage, and market outage passed."
+    },
+    "security": {
+      "classification": "REAL_RUNTIME_PROVEN",
+      "evidence": "Secret masking, no raw secret artifact, and tracked secret-shape scan passed."
+    },
+    "self_iteration": {
+      "classification": "REAL_RUNTIME_PROVEN",
+      "evidence": "Treatment/control forecast miss changes later trust, hypothesis scores, and structural shift."
+    },
+    "stability": {
+      "classification": "PARTIAL",
+      "evidence": "2h real-duration stability is proven; 24h unattended stability is not proven."
+    },
+    "ui_usability": {
+      "classification": "REAL_RUNTIME_PROVEN",
+      "evidence": "First-time setup/start/ask/stop path has browser and repeatable validation evidence."
+    }
+  },
+  "twenty_four_hour_stability_claim_allowed": false
+}
