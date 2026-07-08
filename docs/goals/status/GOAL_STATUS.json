@@ -1,9 +1,26 @@
 {
-  "schema_version": "1.0",
-  "last_updated": "2026-07-08",
+  "schema_version": "1.1",
+  "last_updated": "2026-07-08T10:24:00+08:00",
   "project": "Atlas OS",
   "branch": "codex/overnight-productization-sprint",
+  "current_commit": "fd76611913551eb6c6cc1679b6c9d810a385d8e8",
   "release_position": "internal_alpha_real_world_activation_hardening",
+  "master_goal_name": "Atlas OS Autonomous Productization",
+  "current_goal": "GOAL_01_USER_ACTIVATION",
+  "status": "IN_PROGRESS",
+  "completed_goals": [
+    "GOAL_00_TRUTH_BASELINE"
+  ],
+  "partial_goals": [
+    "GOAL_01_USER_ACTIVATION",
+    "GOAL_03_MARKET_INTELLIGENCE",
+    "GOAL_07_AUTONOMOUS_OPERATIONS",
+    "GOAL_08_RELEASE_READINESS"
+  ],
+  "blocked_goals": [
+    "GOAL_03_MARKET_INTELLIGENCE"
+  ],
+  "next_goal": "GOAL_02_LIVE_LLM_ACTIVATION",
   "evidence_directory": "docs/goals/evidence/",
   "master_goal": {
     "id": "ATLAS_MASTER_GOAL",
@@ -13,6 +30,12 @@
     "classification": "PARTIAL",
     "summary": "Move Atlas from controlled-fixture internal alpha toward real-world production trial readiness through evidence-gated goals."
   },
+  "goal_classification_labels": [
+    "PROVEN_COMPLETE",
+    "PROVEN_PARTIAL",
+    "FAILED",
+    "EXTERNAL_BLOCKER"
+  ],
   "evidence_labels": [
     "LIVE_PROVEN",
     "REAL_RUNTIME_PROVEN",
@@ -26,90 +49,110 @@
   "goals": [
     {
       "id": "GOAL_00",
+      "canonical_id": "GOAL_00_TRUTH_BASELINE",
       "name": "Truth Baseline",
       "file": "docs/goals/GOAL_00_TRUTH_BASELINE.md",
       "evidence_index": "docs/goals/evidence/GOAL_00_EVIDENCE.md",
-      "status": "active",
-      "classification": "REAL_RUNTIME_PROVEN",
-      "next_action": "Keep public claims synchronized with Prompt D evidence."
+      "status": "completed",
+      "classification": "PROVEN_COMPLETE",
+      "evidence_level": "REAL_RUNTIME_PROVEN",
+      "report": "99_Verification/GOAL_00_Truth_Baseline_Report.md",
+      "next_action": "Use GOAL 00 baseline as the execution truth source for GOAL 01."
     },
     {
       "id": "GOAL_01",
+      "canonical_id": "GOAL_01_USER_ACTIVATION",
       "name": "User Activation",
       "file": "docs/goals/GOAL_01_USER_ACTIVATION.md",
       "evidence_index": "docs/goals/evidence/GOAL_01_EVIDENCE.md",
-      "status": "active",
-      "classification": "PARTIAL",
+      "status": "in_progress",
+      "classification": "PROVEN_PARTIAL",
+      "evidence_level": "PARTIAL",
       "next_action": "Run full browser click-path study and add stale-server guard."
     },
     {
       "id": "GOAL_02",
+      "canonical_id": "GOAL_02_LIVE_LLM_ACTIVATION",
       "name": "Live LLM Activation",
       "file": "docs/goals/GOAL_02_LIVE_LLM_ACTIVATION.md",
       "evidence_index": "docs/goals/evidence/GOAL_02_EVIDENCE.md",
-      "status": "active",
-      "classification": "LIVE_PROVEN",
+      "status": "pending",
+      "classification": "PROVEN_PARTIAL",
+      "evidence_level": "LIVE_PROVEN",
       "next_action": "Resolve MoreCode authorization or keep it explicitly blocked."
     },
     {
       "id": "GOAL_03",
+      "canonical_id": "GOAL_03_MARKET_INTELLIGENCE",
       "name": "Market Intelligence",
       "file": "docs/goals/GOAL_03_MARKET_INTELLIGENCE.md",
       "evidence_index": "docs/goals/evidence/GOAL_03_EVIDENCE.md",
       "status": "blocked_external",
-      "classification": "PARTIAL",
-      "secondary_classification": "EXTERNAL_BLOCKER",
+      "classification": "EXTERNAL_BLOCKER",
+      "evidence_level": "PARTIAL",
+      "secondary_evidence_level": "EXTERNAL_BLOCKER",
       "next_action": "Stabilize one live price/volume daemon path."
     },
     {
       "id": "GOAL_04",
+      "canonical_id": "GOAL_04_PORTFOLIO_COGNITION",
       "name": "Portfolio Cognition",
       "file": "docs/goals/GOAL_04_PORTFOLIO_COGNITION.md",
       "evidence_index": "docs/goals/evidence/GOAL_04_EVIDENCE.md",
-      "status": "active",
-      "classification": "REAL_RUNTIME_PROVEN",
+      "status": "pending",
+      "classification": "PROVEN_PARTIAL",
+      "evidence_level": "REAL_RUNTIME_PROVEN",
       "next_action": "Keep percentage-only local config and privacy validation."
     },
     {
       "id": "GOAL_05",
+      "canonical_id": "GOAL_05_FORECAST_ACCOUNTABILITY",
       "name": "Forecast Accountability",
       "file": "docs/goals/GOAL_05_FORECAST_ACCOUNTABILITY.md",
       "evidence_index": "docs/goals/evidence/GOAL_05_EVIDENCE.md",
-      "status": "active",
-      "classification": "REAL_RUNTIME_PROVEN",
+      "status": "pending",
+      "classification": "PROVEN_PARTIAL",
+      "evidence_level": "REAL_RUNTIME_PROVEN",
       "next_action": "Grow live forecast sample size through normal runtime use."
     },
     {
       "id": "GOAL_06",
+      "canonical_id": "GOAL_06_SELF_ITERATION_REALITY",
       "name": "Self-Iteration Reality",
       "file": "docs/goals/GOAL_06_SELF_ITERATION_REALITY.md",
       "evidence_index": "docs/goals/evidence/GOAL_06_EVIDENCE.md",
-      "status": "active",
-      "classification": "LIVE_PROVEN",
+      "status": "pending",
+      "classification": "PROVEN_PARTIAL",
+      "evidence_level": "LIVE_PROVEN",
       "sample_warning": "low_sample",
       "next_action": "Repeat treatment/control experiments across more event types."
     },
     {
       "id": "GOAL_07",
+      "canonical_id": "GOAL_07_AUTONOMOUS_OPERATIONS",
       "name": "Autonomous Operations",
       "file": "docs/goals/GOAL_07_AUTONOMOUS_OPERATIONS.md",
       "evidence_index": "docs/goals/evidence/GOAL_07_EVIDENCE.md",
-      "status": "active",
-      "classification": "PARTIAL",
+      "status": "pending",
+      "classification": "PROVEN_PARTIAL",
+      "evidence_level": "PARTIAL",
       "next_action": "Run 2h real-duration soak before stronger operations claims."
     },
     {
       "id": "GOAL_08",
+      "canonical_id": "GOAL_08_RELEASE_READINESS",
       "name": "Release Readiness",
       "file": "docs/goals/GOAL_08_RELEASE_READINESS.md",
       "evidence_index": "docs/goals/evidence/GOAL_08_EVIDENCE.md",
       "status": "not_ready",
-      "classification": "PARTIAL",
+      "classification": "PROVEN_PARTIAL",
+      "evidence_level": "PARTIAL",
       "merge_readiness": "INTERNAL_ALPHA_MERGEABLE",
       "next_action": "Keep release status at internal alpha until live market and soak blockers close."
     }
   ],
   "source_reports": [
+    "99_Verification/GOAL_00_Truth_Baseline_Report.md",
     "99_Verification/Atlas_OS_Real_World_Activation_Tribunal.md",
     "99_Verification/Atlas_OS_Prompt_D_Final_Report.md",
     "99_Verification/Atlas_OS_Merge_Readiness_Report.md"
