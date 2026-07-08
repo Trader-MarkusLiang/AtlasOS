@@ -100,6 +100,7 @@ v0.8.
     `docs/goals/status/GOAL_STATUS.json`, and
     `docs/goals/status/GOAL_EXECUTION_LOG.md` so GOAL 01 is `PROVEN_COMPLETE` and current
     execution advances to `GOAL_02_LIVE_LLM_ACTIVATION`.
+  - committed GOAL 01 completion as `bbfd2c058d183aaa8061376e627533aaab06ac19`.
 
 ## Files Changed
 
