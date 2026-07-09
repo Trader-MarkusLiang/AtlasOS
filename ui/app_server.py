@@ -81,10 +81,11 @@ from ui.system_control_panel import (
 
 try:  # pragma: no cover - fallback is for environments without FastAPI.
     from fastapi import FastAPI, Request
-    from fastapi.responses import HTMLResponse, JSONResponse
+    from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 except ModuleNotFoundError:  # pragma: no cover
     FastAPI = None  # type: ignore[assignment]
     Request = object  # type: ignore[assignment]
+    FileResponse = None  # type: ignore[assignment]
     HTMLResponse = None  # type: ignore[assignment]
     JSONResponse = None  # type: ignore[assignment]
 
@@ -253,6 +254,13 @@ def create_app() -> Any:
     @app.get("/ui/i18n")
     async def ui_i18n() -> Any:
         return JSONResponse(translation_payload())
+
+    @app.get("/assets/{asset_name}")
+    async def asset(asset_name: str) -> Any:
+        path = _asset_file_path(asset_name)
+        if path is None:
+            return JSONResponse({"status": "error", "error": "asset_not_found"}, status_code=404)
+        return FileResponse(path)
 
     @app.get("/workflow", response_class=HTMLResponse)
     async def workflow(stage: str = "event_stream") -> Any:
@@ -2627,6 +2635,18 @@ def _roadmap_path() -> Optional[str]:
     return os.environ.get("ATLAS_ROADMAP_PATH") or "docs/atlas_roadmap.json"
 
 
+def _asset_file_path(asset_name: str) -> Path | None:
+    if not asset_name or "/" in asset_name or "\\" in asset_name:
+        return None
+    if Path(asset_name).suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp", ".svg"}:
+        return None
+    root = Path("docs/assets").resolve()
+    path = (root / Path(asset_name).name).resolve()
+    if root not in path.parents or not path.is_file():
+        return None
+    return path
+
+
 def _user_config_path() -> Optional[str]:
     return os.environ.get("ATLAS_USER_CONFIG") or "runtime/config/user_config.json"
 
@@ -2762,6 +2782,12 @@ class _StdlibHandler(BaseHTTPRequestHandler):
             self._send_html(_product_shell("settings", content, state, page_script=script))
         elif parsed.path == "/llm/providers":
             self._send_json(_safe_provider_registry())
+        elif parsed.path.startswith("/assets/"):
+            path = _asset_file_path(parsed.path.rsplit("/", 1)[-1])
+            if path is None:
+                self.send_error(404)
+            else:
+                self._send_file(path)
         elif parsed.path == "/workflow":
             state = state_api()
             content, script = workflow_content(state)
@@ -2909,6 +2935,21 @@ class _StdlibHandler(BaseHTTPRequestHandler):
         body = str(value.body.decode("utf-8") if hasattr(value, "body") else value).encode("utf-8")
         self.send_response(status)
         self.send_header("content-type", "text/html; charset=utf-8")
+        self.send_header("content-length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _send_file(self, path: Path, status: int = 200) -> None:
+        body = path.read_bytes()
+        content_type = {
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".webp": "image/webp",
+            ".svg": "image/svg+xml",
+        }.get(path.suffix.lower(), "application/octet-stream")
+        self.send_response(status)
+        self.send_header("content-type", content_type)
         self.send_header("content-length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)

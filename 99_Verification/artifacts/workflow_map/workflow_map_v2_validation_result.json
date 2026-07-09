@@ -1,0 +1,98 @@
+{
+  "status": "PASS",
+  "workflow_url": "http://127.0.0.1:8765/workflow",
+  "checks": {
+    "route_reachable": {
+      "passed": true,
+      "evidence": "GET /workflow returned HTML"
+    },
+    "static_grid_removed": {
+      "passed": true,
+      "evidence": "Old static SVG/grid is absent from active /workflow HTML"
+    },
+    "five_stage_flow": {
+      "passed": true,
+      "evidence": "Input / Understand / Model / Decide / Learn stage containers exist"
+    },
+    "required_nodes": {
+      "passed": true,
+      "evidence": "All required node groups are rendered"
+    },
+    "feedback_loop": {
+      "passed": true,
+      "evidence": "Explicit feedback loop and restrained animation exist"
+    },
+    "concept_first_default": {
+      "passed": true,
+      "evidence": "Default mode is Simple and conceptual labels exist"
+    },
+    "acronyms_secondary": {
+      "passed": true,
+      "evidence": "Acronyms are secondary and hidden by default Simple mode"
+    },
+    "main_support_distinct": {
+      "passed": true,
+      "evidence": "Primary path and support systems are visually distinct"
+    },
+    "latest_tick_path": {
+      "passed": true,
+      "evidence": "Latest Tick path is encoded"
+    },
+    "status_encoding": {
+      "passed": true,
+      "evidence": "ACTIVE / COMPLETED / WAITING / DEGRADED / FAILED / NOT_USED styles exist"
+    },
+    "node_interaction": {
+      "passed": true,
+      "evidence": "Node selection, dependency highlighting, and dimming are implemented"
+    },
+    "inspector": {
+      "passed": true,
+      "evidence": "Context inspector includes required sections and collapsed technical detail"
+    },
+    "simple_expert_modes": {
+      "passed": true,
+      "evidence": "Simple and Expert modes exist and persist preference"
+    },
+    "latest_full_modes": {
+      "passed": true,
+      "evidence": "Latest Tick and Full Architecture modes exist and persist preference"
+    },
+    "keyboard": {
+      "passed": true,
+      "evidence": "Enter / Space select and Escape clears selection"
+    },
+    "reduced_motion": {
+      "passed": true,
+      "evidence": "Reduced-motion media query exists"
+    },
+    "bilingual": {
+      "passed": true,
+      "evidence": "Chinese and English strings exist for core workflow controls"
+    },
+    "zoom_fit_reset": {
+      "passed": true,
+      "evidence": "Zoom In / Zoom Out / Fit / Reset controls exist"
+    },
+    "responsive": {
+      "passed": true,
+      "evidence": "Responsive stage stacking rules exist"
+    },
+    "verification_reports": {
+      "passed": true,
+      "evidence": "Required workflow map reports exist"
+    },
+    "e2e_artifacts": {
+      "passed": true,
+      "evidence": "24-step E2E result and final screenshot artifacts exist"
+    }
+  },
+  "missing_reports": [],
+  "missing_e2e_artifacts": [],
+  "boundary": {
+    "ui_only": true,
+    "runtime_semantics_modified": false,
+    "cognition_semantics_modified": false,
+    "decision_contract_modified": false
+  }
+}

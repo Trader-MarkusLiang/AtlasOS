@@ -8,6 +8,8 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-09_1840_workflow-map-v2-rebuild.md`
+- `docs/codex-sessions/completed/2026-07-09_1749_architecture-diagram-ui-placement.md`
 - `docs/codex-sessions/completed/2026-07-09_1409_push-recent-changes.md`
 - `docs/codex-sessions/completed/2026-07-09_1340_home-freshness-ui-audit.md`
 - `docs/codex-sessions/completed/2026-07-09_1250_local-portfolio-config.md`

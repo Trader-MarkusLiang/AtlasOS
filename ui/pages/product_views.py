@@ -11,10 +11,15 @@ import json
 from html import escape
 from typing import Any, Iterable, Mapping
 
+from ui.components.cognitive_flow_map import render_cognitive_flow_map
 from ui.i18n.i18n import current_language, t
 
 
 ATLAS_ACTIONS = {"observe", "hold", "reduce", "build", "accumulate"}
+ARCHITECTURE_MAPS = {
+    "en": "atlas-os-architecture-20260709.png",
+    "zh": "atlas-os-architecture-cn-20260709.png",
+}
 
 
 def home_content(state: Mapping[str, Any]) -> str:
@@ -352,40 +357,29 @@ def learning_content(ledger: Mapping[str, Any], state: Mapping[str, Any]) -> str
 
 def workflow_content(state: Mapping[str, Any]) -> tuple[str, str]:
     lang = current_language()
-    active = _active_workflow(state)
+    flow_html, flow_script = render_cognitive_flow_map(state, lang)
     content = f"""
-    <section class="hero-panel">
-      <span class="kicker">{escape(t("workflow.full_map", lang))}</span>
-      <h1 class="hero-title">{escape(t("workflow.active_path", lang))}</h1>
-      <p class="hero-copy">External information moves through safe input routing, cognition, forecasts, the Decision Contract, LLM routing, feedback, trust, and a Decision Brief.</p>
+    <section class="hero-panel workflow-hero-panel">
+      <span class="kicker">{escape(t("architecture.kicker", lang))}</span>
+      <h1 class="hero-title">{escape(t("workflow.hero_title", lang))}</h1>
+      <p class="hero-copy">{escape(t("workflow.hero_copy", lang))}</p>
+      <div class="button-row workflow-hero-actions">
+        <a class="primary-button" href="#architecture-map">{escape(t("workflow.jump_architecture", lang))}</a>
+        <a class="secondary-button" href="#cognitive-flow-map">{escape(t("workflow.jump_path", lang))}</a>
+      </div>
     </section>
-    <section class="visual-card">
-      <span class="kicker">{escape(t("workflow.full_map", lang))}</span>
-      <h2>{escape(t("workflow.full_map", lang))}</h2>
-      {_workflow_svg(active)}
-    </section>
-    <section class="focus-card" id="workflow-node-detail">
-      <span class="kicker">{escape(t("right.inspector", lang))}</span>
-      <h2>{escape(active.replace("_", " ").title())}</h2>
-      <p>{escape(t("workflow.active_path", lang))}</p>
+    {_architecture_map(lang)}
+    {_workflow_reading_path(lang)}
+    <section class="workflow-map-section" id="cognitive-flow-map" aria-labelledby="workflow-global-map-title">
+      <div class="workflow-section-intro">
+        <span class="kicker">{escape(t("workflow.interactive_map", lang))}</span>
+        <h2 id="workflow-global-map-title">{escape(t("workflow.map_title", lang))}</h2>
+        <p>{escape(t("workflow.path_copy", lang))}</p>
+      </div>
+      {flow_html}
     </section>
     """
-    script = """
-    <script>
-    document.querySelectorAll("[data-workflow-node]").forEach(function (node) {
-      node.addEventListener("click", function () {
-        document.querySelectorAll("[data-workflow-node]").forEach(function (item) { item.classList.remove("active"); });
-        node.classList.add("active");
-        const detail = document.getElementById("workflow-node-detail");
-        if (detail) {
-          detail.querySelector("h2").textContent = node.getAttribute("data-label") || "";
-          detail.querySelector("p").textContent = node.getAttribute("data-description") || "";
-        }
-      });
-    });
-    </script>
-    """
-    return content, script
+    return content, flow_script
 
 
 def roadmap_content(payload: Mapping[str, Any]) -> str:
@@ -413,6 +407,77 @@ def roadmap_content(payload: Mapping[str, Any]) -> str:
         <span class="kicker">Evidence</span>
         <ul class="plain-list">{_roadmap_layer_rows(layers[:6])}</ul>
       </article>
+    </section>
+    {_architecture_entry_card(lang)}
+    """
+
+
+def _architecture_map(lang: str) -> str:
+    selected = ARCHITECTURE_MAPS.get(lang, ARCHITECTURE_MAPS["en"])
+    english = ARCHITECTURE_MAPS["en"]
+    chinese = ARCHITECTURE_MAPS["zh"]
+    title = t("architecture.title", lang)
+    subtitle = t("architecture.subtitle", lang)
+    return f"""
+    <section class="visual-card architecture-card architecture-card-primary" id="architecture-map">
+      <div class="architecture-card-header">
+        <div>
+          <span class="kicker">{escape(t("architecture.kicker", lang))}</span>
+          <h2>{escape(title)}</h2>
+          <p>{escape(subtitle)}</p>
+        </div>
+        <div class="button-row">
+          <a class="secondary-button" href="/assets/{escape(chinese)}" target="_blank" rel="noopener">{escape(t("architecture.open_cn", lang))}</a>
+          <a class="secondary-button" href="/assets/{escape(english)}" target="_blank" rel="noopener">{escape(t("architecture.open_en", lang))}</a>
+        </div>
+      </div>
+      <a class="architecture-image-frame" href="/assets/{escape(selected)}" target="_blank" rel="noopener" aria-label="{escape(title)}">
+        <img src="/assets/{escape(selected)}" alt="{escape(title)}" loading="lazy">
+      </a>
+    </section>
+    """
+
+
+def _workflow_reading_path(lang: str) -> str:
+    steps = [
+        ("01", t("workflow.step_overview_title", lang), t("workflow.step_overview_copy", lang)),
+        ("02", t("workflow.step_map_title", lang), t("workflow.step_map_copy", lang)),
+        ("03", t("workflow.step_inspector_title", lang), t("workflow.step_inspector_copy", lang)),
+    ]
+    cards = "".join(
+        f"""
+        <article class="workflow-reading-step">
+          <span>{escape(number)}</span>
+          <div>
+            <strong>{escape(title)}</strong>
+            <p>{escape(copy)}</p>
+          </div>
+        </article>
+        """
+        for number, title, copy in steps
+    )
+    return f"""
+    <section class="workflow-reading-path" aria-label="{escape(t("workflow.reading_path", lang))}">
+      <div>
+        <span class="kicker">{escape(t("workflow.reading_path", lang))}</span>
+        <h2>{escape(t("workflow.reading_title", lang))}</h2>
+      </div>
+      <div class="workflow-reading-steps">{cards}</div>
+    </section>
+    """
+
+
+def _architecture_entry_card(lang: str) -> str:
+    selected = ARCHITECTURE_MAPS.get(lang, ARCHITECTURE_MAPS["en"])
+    return f"""
+    <section class="focus-card architecture-entry-card">
+      <div>
+        <span class="kicker">{escape(t("architecture.kicker", lang))}</span>
+        <h2>{escape(t("architecture.title", lang))}</h2>
+        <p>{escape(t("architecture.roadmap_hint", lang))}</p>
+      </div>
+      <a class="primary-button" href="/workflow#architecture-map">{escape(t("architecture.view_in_workflow", lang))}</a>
+      <a class="secondary-button" href="/assets/{escape(selected)}" target="_blank" rel="noopener">{escape(t("architecture.open_full", lang))}</a>
     </section>
     """
 

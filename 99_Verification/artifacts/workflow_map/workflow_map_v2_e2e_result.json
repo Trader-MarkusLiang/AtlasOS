@@ -1,0 +1,157 @@
+{
+  "status": "PASS",
+  "url": "http://127.0.0.1:8765/workflow",
+  "step_count": 24,
+  "steps": [
+    {
+      "step": 1,
+      "name": "Open /workflow",
+      "passed": true,
+      "details": "true"
+    },
+    {
+      "step": 2,
+      "name": "Default Simple mode",
+      "passed": true,
+      "details": "{\"architectureMode\":\"full\",\"ariaPressed\":null,\"bodyScrollWidth\":1280,\"className\":\"cognitive-flow-shell\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":7,\"overflowNodes\":0,\"rootMode\":\"simple\",\"selected\":\"\",\"supportDisplay\":\"block\",\"text\":\"简洁视图 专家视图 最近一次 Tick 完整架构 放大 缩小 适配视图 重置选择 01 输入 信息进入的位置 外部信息 外部信息 — 在 UI / 运行时边界接收市场、新闻、用户与系统输入。 — COMPLETED 市场数据 市场数据 — 提供价格、成交量、波动和新鲜度观察。 — DEGRADED 组合上下文 组合上下文 — 加入只读的资产、主题和暴露相关性。 — COMPLETED 用户上下文 用户上下文 — 承载安全问题和配置偏好。 — COMPLETED Provider 上下文 Provider 上下文 — 提供当前 LLM Provider、模型、健康和延迟状态。 — COMPLETED 02 理解 把事件转成上下文 输入路由 输入路由 — 把安全事件路由到运行路径，不改变认知语义。 — COMPLETED 事件流 事件流 — 排队每次 tick 的标准化事件。 — COMPLETED 事件融合 事件融合 — 把多类事件融合成一致的观察框架。 — COMPLETED 记忆 Regime Memory 记忆 — 提供近期状态与反馈上下文。 — COMPLETED 因果理解 CI\",\"visibleAcronymCount\":0}"
+    },
+    {
+      "step": 3,
+      "name": "Latest Tick selected",
+      "passed": true,
+      "details": "{\"architectureMode\":\"latest\",\"ariaPressed\":null,\"bodyScrollWidth\":1280,\"className\":\"cognitive-flow-shell\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":7,\"overflowNodes\":0,\"rootMode\":\"simple\",\"selected\":\"\",\"supportDisplay\":\"none\",\"text\":\"简洁视图 专家视图 最近一次 Tick 完整架构 放大 缩小 适配视图 重置选择 01 输入 信息进入的位置 外部信息 外部信息 — 在 UI / 运行时边界接收市场、新闻、用户与系统输入。 — COMPLETED 市场数据 市场数据 — 提供价格、成交量、波动和新鲜度观察。 — DEGRADED 组合上下文 组合上下文 — 加入只读的资产、主题和暴露相关性。 — COMPLETED 用户上下文 用户上下文 — 承载安全问题和配置偏好。 — COMPLETED Provider 上下文 Provider 上下文 — 提供当前 LLM Provider、模型、健康和延迟状态。 — COMPLETED 02 理解 把事件转成上下文 输入路由 输入路由 — 把安全事件路由到运行路径，不改变认知语义。 — COMPLETED 事件流 事件流 — 排队每次 tick 的标准化事件。 — COMPLETED 事件融合 事件融合 — 把多类事件融合成一致的观察框架。 — COMPLETED 记忆 Regime Memory 记忆 — 提供近期状态与反馈上下文。 — COMPLETED 因果理解 CI\",\"visibleAcronymCount\":0}"
+    },
+    {
+      "step": 4,
+      "name": "Active path visible",
+      "passed": true,
+      "details": "{\"architectureMode\":\"latest\",\"ariaPressed\":\"false\",\"bodyScrollWidth\":1280,\"className\":\"flow-node flow-node-primary status-completed current-path concept-node\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":7,\"overflowNodes\":0,\"rootMode\":\"simple\",\"selected\":\"\",\"supportDisplay\":\"none\",\"text\":\"外部信息 外部信息 — 在 UI / 运行时边界接收市场、新闻、用户与系统输入。 — COMPLETED\",\"visibleAcronymCount\":0}"
+    },
+    {
+      "step": 5,
+      "name": "Click Input Router",
+      "passed": true,
+      "details": "{\"architectureMode\":\"latest\",\"ariaPressed\":\"true\",\"bodyScrollWidth\":1280,\"className\":\"flow-node flow-node-primary status-completed current-path concept-node selected\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":7,\"overflowNodes\":0,\"rootMode\":\"simple\",\"selected\":\"input_router\",\"supportDisplay\":\"none\",\"text\":\"输入路由 输入路由 — 把安全事件路由到运行路径，不改变认知语义。 — COMPLETED\",\"visibleAcronymCount\":0}"
+    },
+    {
+      "step": 6,
+      "name": "Upstream/downstream highlight",
+      "passed": true,
+      "details": "{\"upstream\":4,\"downstream\":21,\"unrelated\":5}"
+    },
+    {
+      "step": 7,
+      "name": "Inspector updates",
+      "passed": true,
+      "details": "上下文检查器 输入路由 输入路由 作用 把安全事件路由到运行路径，不改变认知语义。 接收 外部信息市场数据用户上下文 产出 类型化事件 当前状态 COMPLETED · Tick 566 最近活跃 Tick 566 信任 / 置信度 信任数据不足 影响 事件流 为什么影响决策简报 让简报只基于已验证输入。 技术细节 input_router"
+    },
+    {
+      "step": 8,
+      "name": "Click World Model",
+      "passed": true,
+      "details": "上下文检查器 世界模型 世界模型 作用 维护可解释的市场表征。 接收 记忆上下文因果候选 产出 市场表征 当前状态 COMPLETED · Tick 566 最近活跃 Tick 566 信任 / 置信度 信任数据不足 影响 因果假设预测记录决策契约 为什么影响决策简报 为预测和决策设置结构性上下文。 技术细节 world_model"
+    },
+    {
+      "step": 9,
+      "name": "Dependency highlight updates",
+      "passed": true,
+      "details": "{\"upstream\":31,\"downstream\":19}"
+    },
+    {
+      "step": 10,
+      "name": "Click Decision Brief",
+      "passed": true,
+      "details": "上下文检查器 决策简报 决策简报 作用 呈现面向用户的核心认知输出。 接收 DecisionPacket推理组合上下文 产出 简报观察条件风险姿态 当前状态 ACTIVE · Tick 566 最近活跃 Tick 566 信任 / 置信度 0.40 影响 反馈用户上下文 为什么影响决策简报 这是用户最先应该阅读的核心输出。 技术细节 decision_brief"
+    },
+    {
+      "step": 11,
+      "name": "Output inspector visible",
+      "passed": true,
+      "details": "{\"architectureMode\":\"latest\",\"ariaPressed\":\"true\",\"bodyScrollWidth\":1280,\"className\":\"flow-node flow-node-output status-active current-path concept-node downstream upstream selected\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":7,\"overflowNodes\":0,\"rootMode\":\"simple\",\"selected\":\"decision_brief\",\"supportDisplay\":\"none\",\"text\":\"决策简报 决策简报 — 呈现面向用户的核心认知输出。 — ACTIVE\",\"visibleAcronymCount\":0}"
+    },
+    {
+      "step": 12,
+      "name": "Click Feedback",
+      "passed": true,
+      "details": "上下文检查器 反馈 反馈 作用 把有边界的误差和推理变化回流到未来上下文。 接收 评估决策简报LLM 推理 产出 有边界的更新信号 当前状态 COMPLETED · Tick 566 最近活跃 Tick 566 信任 / 置信度 0.40 影响 信任更新记忆世界模型 为什么影响决策简报 解释系统如何改变后续行为。 技术细节 feedback"
+    },
+    {
+      "step": 13,
+      "name": "Feedback loop visible",
+      "passed": true,
+      "details": "反馈回路 现实与预测误差回流到记忆 / 世界模型"
+    },
+    {
+      "step": 14,
+      "name": "Switch Expert mode",
+      "passed": true,
+      "details": "{\"architectureMode\":\"latest\",\"ariaPressed\":null,\"bodyScrollWidth\":1280,\"className\":\"cognitive-flow-shell\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":0,\"overflowNodes\":0,\"rootMode\":\"expert\",\"selected\":\"feedback\",\"supportDisplay\":\"none\",\"text\":\"简洁视图 专家视图 最近一次 Tick 完整架构 放大 缩小 适配视图 重置选择 01 输入 信息进入的位置 外部信息 外部信息 — 在 UI / 运行时边界接收市场、新闻、用户与系统输入。 — COMPLETED 市场数据 市场数据 — 提供价格、成交量、波动和新鲜度观察。 — DEGRADED 组合上下文 组合上下文 — 加入只读的资产、主题和暴露相关性。 — COMPLETED 用户上下文 用户上下文 — 承载安全问题和配置偏好。 — COMPLETED Provider 上下文 Provider 上下文 — 提供当前 LLM Provider、模型、健康和延迟状态。 — COMPLETED 02 理解 把事件转成上下文 输入路由 输入路由 — 把安全事件路由到运行路径，不改变认知语义。 — COMPLETED 事件流 事件流 — 排队每次 tick 的标准化事件。 — COMPLETED 事件融合 事件融合 — 把多类事件融合成一致的观察框架。 — COMPLETED 记忆 Regime Memory 记忆 — 提供近期状态与反馈上下文。 — COMPLETED 因果理解 CI\",\"visibleAcronymCount\":7}"
+    },
+    {
+      "step": 15,
+      "name": "LMSE/MPCE/MLE/UMIS visible",
+      "passed": true,
+      "details": "[\"Regime Memory\",\"CIL\",\"LMSE\",\"MPCE\",\"MLE\",\"UMIS\",\"CDE\"]"
+    },
+    {
+      "step": 16,
+      "name": "Switch Full Architecture",
+      "passed": true,
+      "details": "{\"architectureMode\":\"full\",\"ariaPressed\":null,\"bodyScrollWidth\":1280,\"className\":\"cognitive-flow-shell\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":0,\"overflowNodes\":0,\"rootMode\":\"expert\",\"selected\":\"feedback\",\"supportDisplay\":\"block\",\"text\":\"简洁视图 专家视图 最近一次 Tick 完整架构 放大 缩小 适配视图 重置选择 01 输入 信息进入的位置 外部信息 外部信息 — 在 UI / 运行时边界接收市场、新闻、用户与系统输入。 — COMPLETED 市场数据 市场数据 — 提供价格、成交量、波动和新鲜度观察。 — DEGRADED 组合上下文 组合上下文 — 加入只读的资产、主题和暴露相关性。 — COMPLETED 用户上下文 用户上下文 — 承载安全问题和配置偏好。 — COMPLETED Provider 上下文 Provider 上下文 — 提供当前 LLM Provider、模型、健康和延迟状态。 — COMPLETED 02 理解 把事件转成上下文 输入路由 输入路由 — 把安全事件路由到运行路径，不改变认知语义。 — COMPLETED 事件流 事件流 — 排队每次 tick 的标准化事件。 — COMPLETED 事件融合 事件融合 — 把多类事件融合成一致的观察框架。 — COMPLETED 记忆 Regime Memory 记忆 — 提供近期状态与反馈上下文。 — COMPLETED 因果理解 CI\",\"visibleAcronymCount\":7}"
+    },
+    {
+      "step": 17,
+      "name": "Support systems visible",
+      "passed": true,
+      "details": "{\"architectureMode\":\"full\",\"ariaPressed\":null,\"bodyScrollWidth\":1280,\"className\":\"cognitive-flow-shell\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":0,\"overflowNodes\":0,\"rootMode\":\"expert\",\"selected\":\"feedback\",\"supportDisplay\":\"block\",\"text\":\"简洁视图 专家视图 最近一次 Tick 完整架构 放大 缩小 适配视图 重置选择 01 输入 信息进入的位置 外部信息 外部信息 — 在 UI / 运行时边界接收市场、新闻、用户与系统输入。 — COMPLETED 市场数据 市场数据 — 提供价格、成交量、波动和新鲜度观察。 — DEGRADED 组合上下文 组合上下文 — 加入只读的资产、主题和暴露相关性。 — COMPLETED 用户上下文 用户上下文 — 承载安全问题和配置偏好。 — COMPLETED Provider 上下文 Provider 上下文 — 提供当前 LLM Provider、模型、健康和延迟状态。 — COMPLETED 02 理解 把事件转成上下文 输入路由 输入路由 — 把安全事件路由到运行路径，不改变认知语义。 — COMPLETED 事件流 事件流 — 排队每次 tick 的标准化事件。 — COMPLETED 事件融合 事件融合 — 把多类事件融合成一致的观察框架。 — COMPLETED 记忆 Regime Memory 记忆 — 提供近期状态与反馈上下文。 — COMPLETED 因果理解 CI\",\"visibleAcronymCount\":7}"
+    },
+    {
+      "step": 18,
+      "name": "Keyboard focus node",
+      "passed": true,
+      "details": "true"
+    },
+    {
+      "step": 19,
+      "name": "Enter selects",
+      "passed": true,
+      "details": "{\"architectureMode\":\"full\",\"ariaPressed\":\"true\",\"bodyScrollWidth\":1280,\"className\":\"flow-node flow-node-primary status-completed current-path expert-node downstream upstream selected\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":0,\"overflowNodes\":0,\"rootMode\":\"expert\",\"selected\":\"causal_inference\",\"supportDisplay\":\"block\",\"text\":\"因果理解 CIL 因果理解 — 识别观察变化背后的可能因果驱动。 — COMPLETED\",\"visibleAcronymCount\":7}"
+    },
+    {
+      "step": 20,
+      "name": "Escape clears",
+      "passed": true,
+      "details": "{\"architectureMode\":\"full\",\"ariaPressed\":null,\"bodyScrollWidth\":1280,\"className\":\"cognitive-flow-shell\",\"clientWidth\":1280,\"exists\":true,\"hiddenAcronymCount\":0,\"overflowNodes\":0,\"rootMode\":\"expert\",\"selected\":\"\",\"supportDisplay\":\"block\",\"text\":\"简洁视图 专家视图 最近一次 Tick 完整架构 放大 缩小 适配视图 重置选择 01 输入 信息进入的位置 外部信息 外部信息 — 在 UI / 运行时边界接收市场、新闻、用户与系统输入。 — COMPLETED 市场数据 市场数据 — 提供价格、成交量、波动和新鲜度观察。 — DEGRADED 组合上下文 组合上下文 — 加入只读的资产、主题和暴露相关性。 — COMPLETED 用户上下文 用户上下文 — 承载安全问题和配置偏好。 — COMPLETED Provider 上下文 Provider 上下文 — 提供当前 LLM Provider、模型、健康和延迟状态。 — COMPLETED 02 理解 把事件转成上下文 输入路由 输入路由 — 把安全事件路由到运行路径，不改变认知语义。 — COMPLETED 事件流 事件流 — 排队每次 tick 的标准化事件。 — COMPLETED 事件融合 事件融合 — 把多类事件融合成一致的观察框架。 — COMPLETED 记忆 Regime Memory 记忆 — 提供近期状态与反馈上下文。 — COMPLETED 因果理解 CI\",\"visibleAcronymCount\":7}"
+    },
+    {
+      "step": 21,
+      "name": "Zoom in",
+      "passed": true,
+      "details": "1.08"
+    },
+    {
+      "step": 22,
+      "name": "Fit view",
+      "passed": true,
+      "details": "fit"
+    },
+    {
+      "step": 23,
+      "name": "Switch Chinese",
+      "passed": true,
+      "details": "{\"lang\":\"zh\",\"hasInput\":true}"
+    },
+    {
+      "step": 24,
+      "name": "Confirm Chinese labels and no overflow",
+      "passed": true,
+      "details": "{\"overflowNodes\":[],\"lang\":\"zh\",\"width\":1280,\"scrollWidth\":1280}"
+    }
+  ],
+  "screenshots": {
+    "final": "/Users/markus/AtlasOS/99_Verification/artifacts/workflow_map/workflow_map_v2_e2e_final.png",
+    "responsive_1440": "/Users/markus/AtlasOS/99_Verification/artifacts/workflow_map/workflow_map_v2_e2e_1440.png",
+    "responsive_1280": "/Users/markus/AtlasOS/99_Verification/artifacts/workflow_map/workflow_map_v2_responsive_1280.png",
+    "responsive_1024": "/Users/markus/AtlasOS/99_Verification/artifacts/workflow_map/workflow_map_v2_responsive_1024.png"
+  }
+}
