@@ -36,19 +36,25 @@ SUPPORTED_PROVIDERS = {
         "provider": "openai",
         "env_key": "OPENAI_API_KEY",
         "endpoint": "https://api.openai.com/v1/chat/completions",
-        "default_model": "gpt-5.5",
+        "default_model": "gpt5.5",
     },
     "gpt": {
         "provider": "openai",
         "env_key": "OPENAI_API_KEY",
         "endpoint": "https://api.openai.com/v1/chat/completions",
-        "default_model": "gpt-5.5",
+        "default_model": "gpt5.5",
     },
     "gpt-5.5": {
         "provider": "openai",
         "env_key": "OPENAI_API_KEY",
         "endpoint": "https://api.openai.com/v1/chat/completions",
-        "default_model": "gpt-5.5",
+        "default_model": "gpt5.5",
+    },
+    "gpt5.5": {
+        "provider": "openai",
+        "env_key": "OPENAI_API_KEY",
+        "endpoint": "https://api.openai.com/v1/chat/completions",
+        "default_model": "gpt5.5",
     },
     "claude": {
         "provider": "anthropic",
@@ -369,7 +375,7 @@ def _route_args_for_model(model: str) -> tuple[Optional[str], Optional[str]]:
 
 def _use_active_provider(model: str) -> bool:
     alias = str(model or "").strip().lower()
-    return alias in {"", "gpt", "gpt-5.5"}
+    return alias in {"", "gpt", "gpt-5.5", "gpt5.5"}
 
 
 def _provider_id_for_model(model: str) -> str:
@@ -377,6 +383,7 @@ def _provider_id_for_model(model: str) -> str:
     return {
         "gpt": "openai",
         "gpt-5.5": "openai",
+        "gpt5.5": "openai",
         "openai": "openai",
         "claude": "claude",
         "claude-sonnet": "claude",

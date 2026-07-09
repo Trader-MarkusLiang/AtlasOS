@@ -96,7 +96,7 @@ def run_runtime(
     event_type: Optional[str] = None,
     log_path: Optional[str] = None,
     db_path: Optional[str] = None,
-    llm_model: str = "gpt-5.5",
+    llm_model: str = "gpt5.5",
 ) -> Dict[str, Any]:
     """Route a runtime trigger and return execution status.
 
@@ -232,7 +232,7 @@ def run_state_runtime(
     event: Optional[Dict[str, Any]] = None,
     log_path: Optional[str] = None,
     db_path: Optional[str] = None,
-    llm_model: str = "gpt-5.5",
+    llm_model: str = "gpt5.5",
 ) -> Dict[str, Any]:
     """Route autonomous runtime by state-machine state and event context."""
 

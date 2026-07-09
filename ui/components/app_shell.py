@@ -90,7 +90,21 @@ SHELL_JS = """
   }
   function freshness(state) {
     const market = state && state.market_intelligence ? state.market_intelligence : {};
-    return market.timestamp || (market.status === "not_run" ? "System initializing reasoning layer" : "Insufficient system context");
+    const channels = market.channels || {};
+    const observations = Array.isArray(market.observations) ? market.observations : [];
+    const keys = Object.keys(channels);
+    if (keys.length) {
+      const live = keys.filter((key) => String(channels[key]).toUpperCase() === "LIVE").length;
+      const failed = keys.filter((key) => ["FAILED", "RATE_LIMITED"].includes(String(channels[key]).toUpperCase())).length;
+      const missing = keys.filter((key) => String(channels[key]).toUpperCase() === "NOT_CONFIGURED").length;
+      const available = observations.filter((item) => item && item.data_quality_status === "Available").length;
+      const zh = document.documentElement.lang === "zh";
+      const prefix = observations.length ? (zh ? `价格 ${available}/${observations.length}` : `price ${available}/${observations.length}`) : (zh ? `${live} 实时` : `${live} live`);
+      if (failed) return zh ? `${prefix} · ${failed} 失败` : `${prefix} · ${failed} failed`;
+      if (missing) return zh ? `${prefix} · ${missing} 未配置` : `${prefix} · ${missing} not configured`;
+      return zh ? `${prefix} · 可用` : `${prefix} · available`;
+    }
+    return market.status === "not_run" ? "System initializing reasoning layer" : "Insufficient system context";
   }
   async function refreshTopbar() {
     try {
@@ -104,8 +118,13 @@ SHELL_JS = """
       const runtime = state.runtime || {};
       const statusNode = document.querySelector("[data-runtime-status]");
       if (statusNode) {
-        const status = String(runtime.status || "stopped").toLowerCase();
+        const status = String(runtime.status || (runtime.running === true ? "running" : "stopped")).toLowerCase();
         statusNode.className = "status-pill status-" + status;
+        const zh = document.documentElement.lang === "zh";
+        const labels = zh
+          ? { running: "运行中", starting: "启动中", stopped: "已停止", degraded: "降级", error: "错误" }
+          : { running: "Running", starting: "Starting", stopped: "Stopped", degraded: "Degraded", error: "Error" };
+        statusNode.innerHTML = '<i class="status-dot"></i>' + (labels[status] || labels.degraded);
       }
     } catch (error) {
       const statusNode = document.querySelector("[data-runtime-status]");

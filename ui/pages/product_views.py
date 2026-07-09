@@ -50,6 +50,8 @@ def home_content(state: Mapping[str, Any]) -> str:
       </div>
     </section>
 
+    {_proactive_update_card(state, lang)}
+
     <section class="section-grid">
       <article class="visual-card">
         <span class="kicker">{escape(t("home.portfolio_meaning", lang))}</span>
@@ -503,7 +505,13 @@ def settings_content(config: Mapping[str, Any], state: Mapping[str, Any]) -> tup
     <section class="focus-card">
       <span class="kicker">{escape(t("settings.system", lang))}</span>
       <div class="form-grid">
-        <label>{escape(t("system.tick_interval", lang))}<input id="tick-interval-setting" type="number" min="10" value="{escape(str(system.get("tick_interval", 60)))}"></label>
+        <div class="metric-card">
+          <span>{escape(t("system.tick_interval", lang))}</span>
+          <strong>{escape(t("system.tick_interval_fixed", lang))}</strong>
+          <p>{escape(t("system.tick_interval_note", lang))}</p>
+          <input id="tick-interval-setting" type="hidden" value="60">
+        </div>
+        <label>Proactive update cadence (seconds)<input id="proactive-update-interval-setting" type="number" min="60" value="{escape(str(system.get("proactive_update_interval_seconds", 7200)))}"></label>
         <label>Runtime mode<select id="runtime-mode-setting"><option value="simulation"{_selected(system.get("runtime_mode"), "simulation")}>simulation</option><option value="live"{_selected(system.get("runtime_mode"), "live")}>live</option></select></label>
         <label>Trust threshold<input id="trust-threshold-setting" type="number" min="0" max="1" step="0.01" value="{escape(str(system.get("trust_threshold", 0.45)))}"></label>
         <label>Hypothesis sensitivity<input id="hypothesis-sensitivity-setting" type="number" min="0" max="1" step="0.01" value="{escape(str(system.get("hypothesis_switching_sensitivity", 0.08)))}"></label>
@@ -647,11 +655,14 @@ SETTINGS_JS = """
       ui: { language: document.getElementById("global-language-select") ? document.getElementById("global-language-select").value : "en" },
       llm_registry: {
         active_provider: document.getElementById("settings-active-provider").value,
+        strict_provider_list: true,
         fallback_chain: providerCards().map(function (p) { return p.id; }),
         providers: providerCards()
       },
       system: {
         tick_interval: Number(document.getElementById("tick-interval-setting").value || 60),
+        proactive_update_enabled: true,
+        proactive_update_interval_seconds: Number(document.getElementById("proactive-update-interval-setting").value || 7200),
         runtime_mode: document.getElementById("runtime-mode-setting").value,
         trust_threshold: Number(document.getElementById("trust-threshold-setting").value || 0.45),
         hypothesis_switching_sensitivity: Number(document.getElementById("hypothesis-sensitivity-setting").value || 0.08)
@@ -867,15 +878,80 @@ def _main_change(market: Mapping[str, Any], packet: Mapping[str, Any], lang: str
     if "llm reasoning unavailable" in summary.lower():
         summary = ""
     if summary and summary.lower() not in {"unknown", "none", "null"}:
-        return summary[:120]
+        headline = _headline_from_summary(summary)
+        if headline:
+            return headline
+    regime = _clean(packet.get("regime_state"), "").split("/")[0].strip()
+    if regime:
+        return _regime_headline(regime, lang)
     channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
     live = [key for key, value in channels.items() if str(value) == "LIVE"]
     failed = [key for key, value in channels.items() if str(value) in {"FAILED", "RATE_LIMITED"}]
     if live:
-        return f"Live market context is active through {', '.join(live[:2])}."
+        return "实时市场上下文部分可用" if lang == "zh" else "Live market context active"
     if failed:
-        return f"Market data is degraded around {', '.join(failed[:2])}."
+        return "市场数据通道降级" if lang == "zh" else "Market data degraded"
     return t("home.default_change", lang)
+
+
+def _headline_from_summary(summary: str) -> str:
+    text = " ".join(summary.replace("\n", " ").split())
+    lowered = text.lower()
+    markers = [
+        "primary driver is ",
+        "dominated by ",
+        "dominant pressure source is ",
+    ]
+    for marker in markers:
+        index = lowered.find(marker)
+        if index < 0:
+            continue
+        start = index + len(marker)
+        fragment = text[start:]
+        for stop in [", where ", ", with ", ", while ", ", and ", ": ", ". "]:
+            stop_index = fragment.lower().find(stop)
+            if 0 <= stop_index <= 72:
+                fragment = fragment[:stop_index]
+                break
+        return _headline_text(fragment)
+    for token in ["RISK_OFF", "ATTENTION_EXPANSION", "BREAKOUT", "NORMAL"]:
+        if token in text:
+            return token.replace("_", " ").title()
+    return ""
+
+
+def _headline_text(value: str) -> str:
+    text = value.strip(" .,:;")
+    if not text:
+        return ""
+    if len(text) <= 58:
+        return text
+    words = text.split()
+    output: list[str] = []
+    for word in words:
+        candidate = " ".join(output + [word])
+        if len(candidate) > 58:
+            break
+        output.append(word)
+    return " ".join(output).strip(" .,:;") or text[:58].strip(" .,:;")
+
+
+def _regime_headline(regime: str, lang: str) -> str:
+    key = regime.strip().upper().replace(" ", "_")
+    zh = {
+        "RISK_OFF": "风险防御",
+        "ATTENTION_EXPANSION": "注意力扩张",
+        "BREAKOUT": "突破观察",
+        "NORMAL": "中性观察",
+    }
+    en = {
+        "RISK_OFF": "Risk-off Review",
+        "ATTENTION_EXPANSION": "Attention Expansion",
+        "BREAKOUT": "Breakout Watch",
+        "NORMAL": "Neutral Market State",
+    }
+    mapping = zh if lang == "zh" else en
+    return mapping.get(key, regime.replace("_", " ").title())
 
 
 def _portfolio_headline(portfolio: Mapping[str, Any], lang: str) -> str:
@@ -1041,7 +1117,99 @@ def _freshness_map(market: Mapping[str, Any]) -> str:
     channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
     if not channels:
         return _viz_shell("data_freshness_map", "viz.data_freshness", '<div class="empty-state">Live market data is unavailable. Atlas is running in degraded mode.</div>')
-    return _viz_shell("data_freshness_map", "viz.data_freshness", '<div class="pill-row">' + _channel_pills(channels) + "</div>")
+    summary = _market_freshness_summary(market, current_language())
+    observations = _observation_health_rows(market)
+    return _viz_shell(
+        "data_freshness_map",
+        "viz.data_freshness",
+        f'<div class="freshness-summary">{escape(summary)}</div><div class="pill-row">{_channel_pills(channels)}</div>{observations}',
+    )
+
+
+def _market_freshness_summary(market: Mapping[str, Any], lang: str) -> str:
+    channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
+    observations = market.get("observations") if isinstance(market.get("observations"), list) else []
+    live = sum(1 for value in channels.values() if str(value).upper() == "LIVE")
+    simulated = sum(1 for value in channels.values() if str(value).upper() == "SIMULATED")
+    failed = sum(1 for value in channels.values() if str(value).upper() in {"FAILED", "RATE_LIMITED"})
+    missing = sum(1 for value in channels.values() if str(value).upper() == "NOT_CONFIGURED")
+    available_assets = sum(1 for item in observations if isinstance(item, Mapping) and item.get("data_quality_status") == "Available")
+    total_assets = len([item for item in observations if isinstance(item, Mapping)])
+    if lang == "zh":
+        parts = [f"价格 {available_assets}/{total_assets} 可用"] if total_assets else []
+        parts.append(f"{live} 个实时通道")
+        if simulated:
+            parts.append(f"{simulated} 个模拟通道")
+        if failed:
+            parts.append(f"{failed} 个失败通道")
+        if missing:
+            parts.append(f"{missing} 个未配置")
+        return " · ".join(parts)
+    parts = [f"Price {available_assets}/{total_assets} available"] if total_assets else []
+    parts.append(f"{live} live channels")
+    if simulated:
+        parts.append(f"{simulated} simulated")
+    if failed:
+        parts.append(f"{failed} failed")
+    if missing:
+        parts.append(f"{missing} not configured")
+    return " · ".join(parts)
+
+
+def _observation_health_rows(market: Mapping[str, Any]) -> str:
+    observations = market.get("observations") if isinstance(market.get("observations"), list) else []
+    rows = []
+    for item in observations[:4]:
+        if not isinstance(item, Mapping):
+            continue
+        status = str(item.get("data_quality_status") or "Unknown")
+        source = str(item.get("source") or "none")
+        asset = str(item.get("asset") or "Unknown")
+        css = "ok" if status == "Available" else "warn" if status == "Partial" else "bad"
+        rows.append(
+            f'<div class="freshness-row {css}"><span>{escape(asset)}</span><strong>{escape(status)}</strong><em>{escape(source)}</em></div>'
+        )
+    if not rows:
+        return ""
+    return '<div class="freshness-rows">' + "".join(rows) + "</div>"
+
+
+def _proactive_update_card(state: Mapping[str, Any], lang: str) -> str:
+    proactive = state.get("proactive_update_state") if isinstance(state.get("proactive_update_state"), Mapping) else {}
+    zh = lang == "zh"
+    title = "主动更新" if zh else "Proactive update"
+    subtitle = "Atlas 会按周期读取组合与市场通道，决定下一轮要刷新什么。" if zh else "Atlas periodically reads portfolio and channel freshness to decide what to refresh next."
+    if not proactive:
+        waiting = "等待首次主动更新运行" if zh else "Waiting for the first proactive update"
+        return f"""
+        <section class="focus-card">
+          <span class="kicker">{escape(title)}</span>
+          <h2>{escape(waiting)}</h2>
+          <p>{escape(subtitle)}</p>
+        </section>
+        """
+    focus = proactive.get("research_focus") if isinstance(proactive.get("research_focus"), list) else []
+    channels = proactive.get("market_channels_to_refresh") if isinstance(proactive.get("market_channels_to_refresh"), list) else []
+    cadence = _duration_text(proactive.get("cadence_seconds"), lang)
+    last_run = _compact(proactive.get("timestamp"), "Waiting for signal")
+    next_due = _compact(proactive.get("next_due_at"), "Waiting for signal")
+    status = _compact(proactive.get("status"), "Waiting for signal").replace("_", " ").title()
+    focus_items = focus[:5] or (["No configured portfolio yet; refresh broad context"] if not zh else ["尚未配置组合；先刷新宽口径市场上下文"])
+    channel_text = ", ".join(str(item).replace("_", " ") for item in channels[:6]) or ("waiting for channel status" if not zh else "等待通道状态")
+    return f"""
+    <section class="focus-card">
+      <span class="kicker">{escape(title)} · {escape(status)}</span>
+      <h2>{escape("下一轮关注什么" if zh else "What Atlas will refresh next")}</h2>
+      <p>{escape(subtitle)}</p>
+      <div class="pill-row" style="margin: 10px 0 12px;">
+        <span class="tag">{escape("周期" if zh else "Cadence")}: {escape(cadence)}</span>
+        <span class="tag">{escape("上次" if zh else "Last")}: {escape(last_run)}</span>
+        <span class="tag">{escape("下次" if zh else "Next")}: {escape(next_due)}</span>
+      </div>
+      <p><strong>{escape("刷新通道" if zh else "Channels")}:</strong> {escape(channel_text)}</p>
+      <ul class="plain-list">{_list_items(focus_items)}</ul>
+    </section>
+    """
 
 
 def _channel_pills(channels: Mapping[str, Any]) -> str:
@@ -1236,6 +1404,7 @@ def _provider_card(provider: Mapping[str, Any], active: str, lang: str) -> str:
     health_label = _provider_health_label(health, lang)
     latency = provider.get("last_latency_ms")
     model = str(provider.get("model") or "")
+    reasoning_effort = str(provider.get("reasoning_effort") or ("medium" if provider_id in {"morecode", "openai"} else ""))
     models = provider.get("available_models") if isinstance(provider.get("available_models"), list) else []
     return f"""
     <article class="metric-card" data-provider-card data-label="{escape(str(provider.get("label") or provider_id))}">
@@ -1244,6 +1413,7 @@ def _provider_card(provider: Mapping[str, Any], active: str, lang: str) -> str:
       <p>{escape(t("provider.latency", lang))}: {escape(str(latency) + 'ms' if latency is not None else '--')}</p>
       <input type="hidden" data-provider-field="id" value="{escape(provider_id)}">
       <input type="hidden" data-provider-field="type" value="{escape(str(provider.get("type") or provider_id))}">
+      <input type="hidden" data-provider-field="reasoning_effort" value="{escape(reasoning_effort)}">
       <label>{escape(t("model.model", lang))}
         <input data-provider-field="model" list="models-{escape(provider_id)}" value="{escape(model)}" placeholder="{escape(t("provider.custom_model_placeholder", lang))}">
         <datalist id="models-{escape(provider_id)}">{''.join(f'<option value="{escape(str(m))}"></option>' for m in models)}</datalist>
@@ -1331,7 +1501,19 @@ def _expert_payload(state: Mapping[str, Any]) -> Mapping[str, Any]:
         "trust_index": state.get("trust_index"),
         "last_decision_packet": state.get("last_decision_packet"),
         "market_intelligence": state.get("market_intelligence"),
+        "proactive_update_state": state.get("proactive_update_state"),
     }
+
+
+def _duration_text(value: Any, lang: str) -> str:
+    seconds = _num(value, 0)
+    if seconds >= 3600:
+        hours = seconds / 3600
+        return f"{hours:.1f} 小时" if lang == "zh" else f"{hours:.1f}h"
+    if seconds >= 60:
+        minutes = seconds / 60
+        return f"{minutes:.0f} 分钟" if lang == "zh" else f"{minutes:.0f}m"
+    return f"{seconds:.0f} 秒" if lang == "zh" else f"{seconds:.0f}s"
 
 
 def _selected(value: Any, selected: Any) -> str:

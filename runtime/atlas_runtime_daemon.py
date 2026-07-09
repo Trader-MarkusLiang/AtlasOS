@@ -21,7 +21,7 @@ import sys
 import threading
 import time
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -39,6 +39,7 @@ try:
     from runtime.logging import utc_now_iso
     from runtime.market_intelligence import refresh_market_intelligence
     from runtime.output_logger import RuntimeOutputLogger
+    from runtime.proactive_update import DEFAULT_PROACTIVE_UPDATE_SECONDS, build_proactive_update_plan, skipped_proactive_update_state
     from runtime.scheduler import RuntimeScheduleConfig, next_run_time
     from runtime.state_store import StateStore
     from runtime.telemetry.decision_trace_logger import log_decision_trace
@@ -51,6 +52,7 @@ except ModuleNotFoundError:  # pragma: no cover
     from runtime.logging import utc_now_iso
     from runtime.market_intelligence import refresh_market_intelligence
     from runtime.output_logger import RuntimeOutputLogger
+    from runtime.proactive_update import DEFAULT_PROACTIVE_UPDATE_SECONDS, build_proactive_update_plan, skipped_proactive_update_state
     from runtime.scheduler import RuntimeScheduleConfig, next_run_time
     from runtime.state_store import StateStore
     from runtime.telemetry.decision_trace_logger import log_decision_trace
@@ -65,7 +67,7 @@ class AtlasRuntimeDaemonConfig:
     db_path: Optional[str] = None
     inbox_dir: Optional[str] = None
     ui_inbox_path: Optional[str] = None
-    llm_model: str = "gpt-5.5"
+    llm_model: str = "gpt5.5"
     max_events_per_cycle: int = 10
     no_sleep: bool = False
     market_refresh_enabled: bool = True
@@ -73,6 +75,9 @@ class AtlasRuntimeDaemonConfig:
     market_config_path: Optional[str] = None
     market_max_assets: int = 12
     daily_cycle_now: Optional[str] = None
+    proactive_update_enabled: bool = True
+    proactive_update_every_seconds: int = DEFAULT_PROACTIVE_UPDATE_SECONDS
+    proactive_update_run_on_start: bool = True
 
 
 class AtlasRuntimeDaemon:
@@ -114,10 +119,12 @@ class AtlasRuntimeDaemon:
         cycle: Dict[str, Any] = {}
         ui_events_ingested = 0
         market_refresh: Dict[str, Any] = {}
+        proactive_update: Dict[str, Any] = {}
 
         try:
             ui_events_ingested = self._ingest_ui_inbox_events()
             market_refresh = self._refresh_market_if_due(tick_index)
+            proactive_update = self._proactive_update_if_due(tick_index, market_refresh)
             raw_event = self.event_source.get_event()
             runtime_event = event_to_runtime_event(raw_event)
             self.loop.event_stream.enqueue_event(
@@ -142,6 +149,7 @@ class AtlasRuntimeDaemon:
             duration_ms=int((time.time() - started) * 1000),
             ui_events_ingested=ui_events_ingested,
             market_refresh=market_refresh,
+            proactive_update=proactive_update,
         )
         self._write_telemetry(tick_index, entry)
         self.output_logger.log_tick(entry)
@@ -176,6 +184,7 @@ class AtlasRuntimeDaemon:
         duration_ms: int,
         ui_events_ingested: int = 0,
         market_refresh: Optional[Dict[str, Any]] = None,
+        proactive_update: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         cognition = self.store.get_state("cognition_state")
         latest_brief = self.store.get_latest_decision_brief()
@@ -255,6 +264,10 @@ class AtlasRuntimeDaemon:
                 "market_refresh_status": (market_refresh or {}).get("status", "not_run"),
                 "market_events_enqueued": int((market_refresh or {}).get("events_enqueued", 0) or 0),
                 "market_channels": (market_refresh or {}).get("channels", {}),
+                "proactive_update_status": (proactive_update or {}).get("status", "not_run"),
+                "proactive_update_cycle_id": (proactive_update or {}).get("update_cycle_id"),
+                "proactive_update_focus": (proactive_update or {}).get("research_focus", []),
+                "proactive_update_next_due_at": (proactive_update or {}).get("next_due_at"),
                 "daily_cycle": self._daily_cycle_status(),
                 "next_run_time": next_run_time(self.schedule).isoformat(),
                 "no_trading_execution": True,
@@ -286,6 +299,45 @@ class AtlasRuntimeDaemon:
         )
         self.store.set_state("daily_cycle_state", result)
         return result
+
+    def _proactive_update_if_due(self, tick_index: int, market_refresh: Dict[str, Any]) -> Dict[str, Any]:
+        """Plan and enqueue a read-only proactive context refresh when due."""
+
+        cadence = max(60, int(self.config.proactive_update_every_seconds or DEFAULT_PROACTIVE_UPDATE_SECONDS))
+        if not self.config.proactive_update_enabled:
+            return {"status": "disabled", "cadence_seconds": cadence}
+        previous = self.store.get_state("proactive_update_state")
+        now_epoch = time.time()
+        last_epoch = _float(previous.get("last_run_epoch"), 0.0)
+        due = tick_index == 0 and self.config.proactive_update_run_on_start
+        due = due or not last_epoch or now_epoch - last_epoch >= cadence
+        next_due_at = _epoch_iso((last_epoch or now_epoch) + cadence)
+        if not due:
+            return skipped_proactive_update_state(
+                cadence_seconds=cadence,
+                last_run_at=previous.get("timestamp"),
+                next_due_at=next_due_at,
+            )
+        daily_cycle_state = self._daily_cycle_status()
+        market_state = market_refresh if market_refresh else self.store.get_state("market_intelligence_state")
+        plan = build_proactive_update_plan(
+            config_path=self.config.market_config_path,
+            market_state=market_state,
+            daily_cycle_state=daily_cycle_state,
+            cadence_seconds=cadence,
+        )
+        self.loop.event_stream.enqueue_event(
+            "market_event",
+            payload=plan.get("event_payload", {}),
+            priority=55,
+            source="proactive_update",
+            created_at=plan.get("timestamp"),
+        )
+        plan["event_enqueued"] = True
+        plan["last_run_epoch"] = now_epoch
+        plan["next_due_at"] = _epoch_iso(now_epoch + cadence)
+        self.store.set_state("proactive_update_state", plan)
+        return plan
 
     def _ingest_ui_inbox_events(self) -> int:
         """Ingest UI server JSONL events without calling cognition directly."""
@@ -355,6 +407,7 @@ class AtlasRuntimeDaemon:
                     "runtime_status": entry.get("system_metrics", {}).get("status"),
                     "decision_brief_id": entry.get("decision_brief", {}).get("id"),
                     "market_refresh_status": entry.get("system_metrics", {}).get("market_refresh_status"),
+                    "proactive_update_status": entry.get("system_metrics", {}).get("proactive_update_status"),
                 },
             )
         except Exception as exc:
@@ -370,13 +423,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--db-path", default=None)
     parser.add_argument("--inbox-dir", default=None)
     parser.add_argument("--ui-inbox-path", default=None)
-    parser.add_argument("--llm-model", default="gpt-5.5")
+    parser.add_argument("--llm-model", default="gpt5.5")
     parser.add_argument("--no-sleep", action="store_true", help="test mode: run cycles without sleeping")
     parser.add_argument("--disable-market-refresh", action="store_true")
     parser.add_argument("--market-refresh-every-cycles", type=int, default=5)
     parser.add_argument("--market-config-path", default=None)
     parser.add_argument("--market-max-assets", type=int, default=12)
     parser.add_argument("--daily-cycle-now", default=None, help="controlled ISO timestamp for daily-cycle validation")
+    parser.add_argument("--disable-proactive-update", action="store_true")
+    parser.add_argument("--proactive-update-every-seconds", type=int, default=DEFAULT_PROACTIVE_UPDATE_SECONDS)
+    parser.add_argument("--no-proactive-update-on-start", action="store_true")
     return parser
 
 
@@ -397,6 +453,9 @@ def main() -> None:
             market_config_path=args.market_config_path,
             market_max_assets=args.market_max_assets,
             daily_cycle_now=args.daily_cycle_now,
+            proactive_update_enabled=not args.disable_proactive_update,
+            proactive_update_every_seconds=args.proactive_update_every_seconds,
+            proactive_update_run_on_start=not args.no_proactive_update_on_start,
         )
     )
     signal.signal(signal.SIGINT, daemon.stop)
@@ -417,6 +476,17 @@ def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
         return datetime.fromisoformat(value)
     except ValueError:
         return None
+
+
+def _epoch_iso(value: float) -> str:
+    return datetime.fromtimestamp(value, tz=timezone.utc).isoformat()
+
+
+def _float(value: Any, fallback: float) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return fallback
 
 
 if __name__ == "__main__":

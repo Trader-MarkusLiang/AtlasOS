@@ -36,16 +36,37 @@ def _safe_float(value: Any) -> Optional[float]:
 
 
 def _market_to_yfinance_symbol(ticker: str, market: str) -> str:
-    if "." in ticker:
-        return ticker
-    if market == "HK":
-        normalized = ticker[-4:].zfill(4)
+    clean = str(ticker or "").strip().upper()
+    base, suffix = _split_symbol(clean)
+    if market == "HK" or suffix == "HK":
+        normalized = "".join(ch for ch in base if ch.isdigit())[-4:].zfill(4)
         return f"{normalized}.HK"
-    if market == "A-share":
-        if ticker.startswith(("6", "9")):
-            return f"{ticker}.SS"
-        return f"{ticker}.SZ"
-    return ticker
+    if market == "A-share" or suffix in {"SH", "SS", "SZ"}:
+        normalized = base.zfill(6) if base.isdigit() else base
+        if suffix == "SZ":
+            return f"{normalized}.SZ"
+        if suffix in {"SH", "SS"} or normalized.startswith(("6", "9")):
+            return f"{normalized}.SS"
+        return f"{normalized}.SZ"
+    return clean
+
+
+def _market_to_akshare_symbol(ticker: str, market: str) -> str:
+    clean = str(ticker or "").strip().upper()
+    base, suffix = _split_symbol(clean)
+    if market == "HK" or suffix == "HK":
+        normalized = "".join(ch for ch in base if ch.isdigit())[-5:].zfill(5)
+        return normalized
+    if market == "A-share" or suffix in {"SH", "SS", "SZ"}:
+        return base.zfill(6) if base.isdigit() else base
+    return clean
+
+
+def _split_symbol(symbol: str) -> tuple[str, str]:
+    if "." not in symbol:
+        return symbol, ""
+    base, suffix = symbol.rsplit(".", 1)
+    return base, suffix
 
 
 def _period_to_yfinance_period(period: str) -> str:
@@ -66,10 +87,11 @@ def _akshare_history(ticker: str, market: str, period: str) -> pd.DataFrame:
 
     end_date = datetime.now().strftime("%Y%m%d")
     start_date = (datetime.now() - timedelta(days=220)).strftime("%Y%m%d")
+    symbol = _market_to_akshare_symbol(ticker, market)
 
     if market == "A-share":
         df = ak.stock_zh_a_hist(
-            symbol=ticker,
+            symbol=symbol,
             period="daily",
             start_date=start_date,
             end_date=end_date,
@@ -77,7 +99,7 @@ def _akshare_history(ticker: str, market: str, period: str) -> pd.DataFrame:
         )
     elif market == "HK":
         df = ak.stock_hk_hist(
-            symbol=ticker,
+            symbol=symbol,
             period="daily",
             start_date=start_date,
             end_date=end_date,

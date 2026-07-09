@@ -8,6 +8,11 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-09_1409_push-recent-changes.md`
+- `docs/codex-sessions/completed/2026-07-09_1340_home-freshness-ui-audit.md`
+- `docs/codex-sessions/completed/2026-07-09_1250_local-portfolio-config.md`
+- `docs/codex-sessions/completed/2026-07-09_1240_tick-default-settings.md`
+- `docs/codex-sessions/completed/2026-07-09_0931_morecode-autoupdate-config.md`
 - `docs/codex-sessions/completed/2026-07-09_0901_getting-started-center.md`
 - `docs/codex-sessions/completed/2026-07-09_0715_frontend-master-execution.md`
 - `docs/codex-sessions/completed/2026-07-08_2345_frontend-master-current-closure.md`

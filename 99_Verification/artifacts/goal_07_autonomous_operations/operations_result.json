@@ -1,7 +1,7 @@
 {
   "accelerated_soak": {
     "accelerated": true,
-    "cpu_seconds": 12.9102,
+    "cpu_seconds": 12.8027,
     "cycles": 500,
     "db_counts": {
       "attention_history": 0,
@@ -15,22 +15,22 @@
     "db_growth_bytes": 8556544,
     "db_size_after_bytes": 8556544,
     "db_size_before_bytes": 0,
-    "elapsed_seconds": 13.9255,
+    "elapsed_seconds": 13.7801,
     "hypothesis_switches": 0,
-    "max_rss_after": 36552704,
-    "max_rss_before": 27181056,
+    "max_rss_after": 40468480,
+    "max_rss_before": 28835840,
     "no_trading_execution": true,
     "pending_queue_depth": 0,
     "provider_failures": 500,
-    "rss_growth": 9371648,
+    "rss_growth": 11632640,
     "runtime_log_lines": 500,
     "tick_errors": 0,
     "trust_drift": {
       "available": true,
-      "delta": -0.0347,
-      "first": 0.7216,
-      "last": 0.6869,
-      "max": 0.7216,
+      "delta": -0.0281,
+      "first": 0.7138,
+      "last": 0.6857,
+      "max": 0.7138,
       "min": 0.5489
     }
   },
@@ -55,7 +55,7 @@
   "classification": "PROVEN_PARTIAL",
   "daily_cycles": {
     "intraday": {
-      "next_run_time": "2026-07-08T04:12:27.801203+00:00",
+      "next_run_time": "2026-07-08T09:30:50.745108+00:00",
       "no_trading_execution": true,
       "output_keys": [
         "anomaly_check",
@@ -70,7 +70,7 @@
       "status": "completed"
     },
     "morning": {
-      "next_run_time": "2026-07-08T04:12:27.779827+00:00",
+      "next_run_time": "2026-07-08T09:30:50.724376+00:00",
       "no_trading_execution": true,
       "output_keys": [
         "freshness_check",
@@ -85,7 +85,7 @@
       "status": "completed"
     },
     "overnight": {
-      "next_run_time": "2026-07-08T04:12:27.849777+00:00",
+      "next_run_time": "2026-07-08T09:30:50.788600+00:00",
       "no_trading_execution": true,
       "output_keys": [
         "hypothesis_review",
@@ -99,7 +99,7 @@
       "status": "completed"
     },
     "post_market": {
-      "next_run_time": "2026-07-08T04:12:27.825320+00:00",
+      "next_run_time": "2026-07-08T09:30:50.765680+00:00",
       "no_trading_execution": true,
       "output_keys": [
         "closing_state_synthesis",
@@ -132,7 +132,7 @@
       "state_transitions": 2,
       "system_logs": 6
     },
-    "elapsed_seconds": 10.0563,
+    "elapsed_seconds": 10.0664,
     "no_sleep": false,
     "no_trading_execution": true,
     "tick_errors": 0
@@ -179,7 +179,7 @@
       "error": "all_providers_failed",
       "fallback_attempts": [
         {
-          "error": "HTTP Error 502: Bad Gateway",
+          "error": "timed out",
           "provider": "down"
         }
       ],
@@ -191,7 +191,7 @@
       "runtime_status": {
         "feedback_stability_index": null,
         "pid": 99999999,
-        "pid_file": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-vymjrdgg/recovery/stale_pid/stale.pid",
+        "pid_file": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-9nbj61x7/recovery/stale_pid/stale.pid",
         "rolling_trust_index": null,
         "running": false
       },

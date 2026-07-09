@@ -32,7 +32,9 @@ def start_runtime_daemon(
     inbox_dir: Optional[str] = None,
     ui_inbox_path: Optional[str] = None,
     market_config_path: Optional[str] = None,
-    llm_model: str = "gpt-5.5",
+    llm_model: str = "gpt5.5",
+    proactive_update_enabled: bool = True,
+    proactive_update_every_seconds: int = 7200,
     pid_file: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Start the runtime daemon as a background process."""
@@ -61,7 +63,13 @@ def start_runtime_daemon(
         cmd.extend(["--ui-inbox-path", ui_inbox_path])
     if market_config_path:
         cmd.extend(["--market-config-path", market_config_path])
-    process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if not proactive_update_enabled:
+        cmd.append("--disable-proactive-update")
+    cmd.extend(["--proactive-update-every-seconds", str(max(60, int(proactive_update_every_seconds or 7200)))])
+    env = os.environ.copy()
+    if market_config_path:
+        env["ATLAS_USER_CONFIG"] = market_config_path
+    process = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env, start_new_session=True)
     pid_path.parent.mkdir(parents=True, exist_ok=True)
     pid_path.write_text(str(process.pid), encoding="utf-8")
     return {"status": "started", "pid": process.pid, "command": cmd, "pid_file": str(pid_path)}
@@ -98,6 +106,13 @@ def runtime_status(*, pid_file: Optional[str] = None, db_path: Optional[str] = N
             running = False
         if not running:
             pid_path.unlink(missing_ok=True)
+    if not running:
+        discovered = _discover_runtime_pid()
+        if discovered is not None:
+            pid = discovered
+            running = True
+            pid_path.parent.mkdir(parents=True, exist_ok=True)
+            pid_path.write_text(str(pid), encoding="utf-8")
     trust = StateStore(db_path=db_path).get_state("system_trust_state")
     return {
         "running": running,
@@ -212,3 +227,25 @@ def _wait_for_process_exit(pid: int, timeout_seconds: float = 3.0) -> bool:
             return True
         time.sleep(0.1)
     return not _process_is_running(pid)
+
+
+def _discover_runtime_pid() -> Optional[int]:
+    try:
+        output = subprocess.run(
+            ["pgrep", "-f", "runtime/atlas_runtime_daemon.py"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=1,
+        ).stdout
+    except Exception:
+        return None
+    pids = []
+    for line in output.splitlines():
+        try:
+            candidate = int(line.strip())
+        except ValueError:
+            continue
+        if _process_is_running(candidate):
+            pids.append(candidate)
+    return max(pids) if pids else None

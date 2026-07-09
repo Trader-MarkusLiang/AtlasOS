@@ -30,15 +30,11 @@ def render_control_panel(provider_summary: dict | None = None) -> str:
           <button id="runtime-start" class="v2-primary-button" type="button">{t("system.start")}</button>
           <button id="runtime-stop" class="v2-secondary-button" type="button">{t("system.stop")}</button>
         </div>
-        <label class="v2-field">
+        <div class="v2-provider-mini">
           <span>{t("system.tick_interval")}</span>
-          <select id="tick-interval" name="tick_interval">
-            <option value="10">10 seconds</option>
-            <option value="30">30 seconds</option>
-            <option value="60" selected>60 seconds</option>
-            <option value="300">5 minutes</option>
-          </select>
-        </label>
+          <strong>{t("system.tick_interval_fixed")}</strong>
+        </div>
+        <input id="tick-interval" name="tick_interval" type="hidden" value="60">
         <label class="v2-toggle">
           <input id="simulation-mode" type="checkbox" checked>
           <span>{t("system.simulation_mode")}</span>

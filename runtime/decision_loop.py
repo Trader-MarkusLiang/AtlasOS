@@ -88,7 +88,7 @@ class DecisionLoopConfig:
     log_path: Optional[str] = None
     db_path: Optional[str] = None
     inbox_dir: Optional[str] = None
-    llm_model: str = "gpt-5.5"
+    llm_model: str = "gpt5.5"
 
 
 class DecisionLoop:

@@ -124,13 +124,16 @@ def _call_openai_compatible(provider: Mapping[str, Any], prompt: str, context: M
     if not api_key and not local_endpoint:
         raise ValueError("api_key_missing")
     payload = {
-        "model": str(provider.get("model") or "gpt-5.5"),
+        "model": _provider_request_model(provider),
         "messages": [
             {"role": "system", "content": "You are Atlas OS runtime. Never output trade execution."},
             {"role": "user", "content": f"{prompt}\n\nContext:\n{json.dumps(context, ensure_ascii=False)}"},
         ],
         "temperature": 0.2,
     }
+    reasoning_effort = _reasoning_effort(provider)
+    if reasoning_effort:
+        payload["reasoning_effort"] = reasoning_effort
     if local_endpoint:
         payload["max_tokens"] = int(provider.get("max_tokens") or 2048)
     headers = {"Content-Type": "application/json"}
@@ -232,6 +235,19 @@ def _provider_timeout_seconds(provider: Mapping[str, Any]) -> float:
     except (TypeError, ValueError):
         timeout = DEFAULT_PROVIDER_TIMEOUT_SECONDS
     return max(0.25, timeout)
+
+
+def _provider_request_model(provider: Mapping[str, Any]) -> str:
+    model = str(provider.get("model") or "gpt5.5").strip()
+    if str(provider.get("id") or provider.get("type") or "").lower() == "morecode" and model == "gpt5.5":
+        return "gpt-5.5"
+    return model
+
+
+def _reasoning_effort(provider: Mapping[str, Any]) -> str:
+    value = str(provider.get("reasoning_effort") or provider.get("reasoning_level") or "").strip().lower()
+    allowed = {"low", "medium", "high"}
+    return value if value in allowed else ""
 
 
 def _failsafe_raw_json(reason: str) -> str:

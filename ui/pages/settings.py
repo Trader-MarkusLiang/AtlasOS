@@ -30,6 +30,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "ui": {"language": "en"},
     "system": {
         "tick_interval": 60,
+        "proactive_update_enabled": True,
+        "proactive_update_interval_seconds": 7200,
         "runtime_mode": "simulation",
         "trust_threshold": 0.45,
         "hypothesis_switching_sensitivity": 0.08,
@@ -528,8 +530,14 @@ button.danger {{ color: #fecdd3; }}
         <section id="system-config" class="settings-card">
           <div class="settings-card-header"><h3>{escape(t("settings.system", lang))}</h3></div>
           <div class="settings-card-body compact-row">
-            <label>{escape(t("system.tick_interval", lang))}
-              <input id="tick-interval-setting" type="number" min="10" step="1" value="{escape(str(system.get("tick_interval", 60)))}">
+            <div class="provider-health-card">
+              <span>{escape(t("system.tick_interval", lang))}</span>
+              <strong>{escape(t("system.tick_interval_fixed", lang))}</strong>
+              <p>{escape(t("system.tick_interval_note", lang))}</p>
+              <input id="tick-interval-setting" type="hidden" value="60">
+            </div>
+            <label>Proactive update cadence
+              <input id="proactive-update-interval-setting" type="number" min="60" step="60" value="{escape(str(system.get("proactive_update_interval_seconds", 7200)))}">
             </label>
             <label>Runtime mode
               <select id="runtime-mode-setting">
@@ -583,6 +591,7 @@ function providerTemplate(id, type, label, baseUrl, model) {{
         <span class="provider-status-pill" data-provider-status>${{tx("provider.unknown")}}</span>
       </div>
       <label>ID<input data-provider-field="id" value="${{escapeHtml(id)}}" readonly></label>
+      <input type="hidden" data-provider-field="reasoning_effort" value="${{type === 'openai' || type === 'morecode' ? 'medium' : ''}}">
       <label>Type
         <select data-provider-field="type">
           ${{Object.keys(providerTypes).map(key => `<option value="${{key}}" ${{key === type ? "selected" : ""}}>${{providerTypes[key].label}}</option>`).join("")}}
@@ -632,11 +641,14 @@ function payload() {{
     ui: {{ language: document.getElementById("settings-language").value }},
     llm_registry: {{
       active_provider: document.getElementById("active-provider").value,
+      strict_provider_list: true,
       fallback_chain: document.getElementById("fallback-chain").value.split(",").map(x => x.trim()).filter(Boolean),
       providers: collectProviders()
     }},
     system: {{
       tick_interval: Number(document.getElementById("tick-interval-setting").value || 60),
+      proactive_update_enabled: true,
+      proactive_update_interval_seconds: Number(document.getElementById("proactive-update-interval-setting").value || 7200),
       runtime_mode: document.getElementById("runtime-mode-setting").value,
       trust_threshold: Number(document.getElementById("trust-threshold-setting").value || 0.45),
       hypothesis_switching_sensitivity: Number(document.getElementById("hypothesis-sensitivity-setting").value || 0.08)
@@ -881,6 +893,7 @@ def _provider_card(provider: Mapping[str, Any], active_provider: str, lang: str)
         <span class="provider-status-pill" data-provider-status>{escape(_health_label(health, lang))}</span>
       </div>
       <label>ID<input data-provider-field="id" value="{escape(provider_id)}" readonly></label>
+      <input type="hidden" data-provider-field="reasoning_effort" value="{escape(str(provider.get("reasoning_effort") or ("medium" if provider_id in {"morecode", "openai"} else "")))}">
       <label>Type<select data-provider-field="type">{_provider_type_options(provider_type)}</select></label>
       <div class="model-picker">
         <label>{escape(t("model.model", lang))}
@@ -1004,6 +1017,8 @@ def _config_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
             "llm_registry": registry,
             "system": {
                 "tick_interval": _int(system.get("tick_interval"), 60),
+                "proactive_update_enabled": bool(system.get("proactive_update_enabled", True)),
+                "proactive_update_interval_seconds": _int(system.get("proactive_update_interval_seconds"), 7200),
                 "runtime_mode": str(system.get("runtime_mode") or "simulation"),
                 "trust_threshold": _float(system.get("trust_threshold"), 0.45),
                 "hypothesis_switching_sensitivity": _float(system.get("hypothesis_switching_sensitivity"), 0.08),
@@ -1036,6 +1051,8 @@ def _config_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
         "ui": {"language": str(payload.get("language") or current_language())},
         "system": {
             "tick_interval": _int(payload.get("tick_interval"), 60),
+            "proactive_update_enabled": True,
+            "proactive_update_interval_seconds": _int(payload.get("proactive_update_interval_seconds"), 7200),
             "runtime_mode": str(payload.get("runtime_mode") or "simulation"),
             "trust_threshold": _float(payload.get("trust_threshold"), 0.45),
             "hypothesis_switching_sensitivity": _float(payload.get("hypothesis_switching_sensitivity"), 0.08),

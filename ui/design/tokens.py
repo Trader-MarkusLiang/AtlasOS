@@ -218,9 +218,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .hero-title {
   max-width: 900px;
   margin: 12px 0 0;
-  font-size: clamp(2.4rem, 5.2vw, 5.6rem);
-  line-height: 0.95;
+  font-size: clamp(2.15rem, 4.4vw, 4.8rem);
+  line-height: 1.02;
   font-weight: 760;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 .hero-copy {
   max-width: 760px;
@@ -326,6 +328,46 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-size: 0.78rem;
 }
 .viz-selected .viz-feedback { color: var(--accent); }
+.freshness-summary {
+  margin-bottom: 10px;
+  color: var(--subtle);
+  font-weight: 700;
+  line-height: 1.45;
+}
+.freshness-rows {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+.freshness-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 34px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r12);
+  background: rgba(255, 255, 255, 0.035);
+}
+.freshness-row span,
+.freshness-row strong,
+.freshness-row em {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.freshness-row strong {
+  color: var(--subtle);
+  font-size: 0.78rem;
+}
+.freshness-row em {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-style: normal;
+}
+.freshness-row.ok { border-color: rgba(158, 230, 184, 0.35); }
+.freshness-row.warn { border-color: rgba(246, 215, 122, 0.35); }
+.freshness-row.bad { border-color: rgba(244, 165, 179, 0.35); }
 .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .tag, .signal-pill {
   display: inline-flex;

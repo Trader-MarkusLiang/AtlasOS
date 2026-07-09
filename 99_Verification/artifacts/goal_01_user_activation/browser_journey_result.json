@@ -1,0 +1,78 @@
+{
+  "base": "http://127.0.0.1:8891",
+  "steps": [
+    {
+      "step": "open_setup",
+      "title": "Atlas Setup",
+      "url": "http://127.0.0.1:8891/setup",
+      "hasSetup": true,
+      "hasNoJsonTextarea": true
+    },
+    {
+      "step": "test_provider",
+      "result": "Status: error · http_502 · 2989ms"
+    },
+    {
+      "step": "save_setup",
+      "result": "Setup saved. Atlas can now use this configuration."
+    },
+    {
+      "step": "open_dashboard",
+      "hasRuntimeStart": false,
+      "hasChatInput": false
+    },
+    {
+      "step": "start_runtime",
+      "messages": ""
+    },
+    {
+      "step": "switch_chat_mode",
+      "panel": {
+        "chatInputDisplay": "block",
+        "chatInputVisibleParent": true,
+        "chatPanelClass": "v2-mode-panel",
+        "chatPanelDisplay": "none"
+      }
+    },
+    {
+      "step": "onboarding_overlay",
+      "state": {
+        "enterText": "Enter Dashboard",
+        "overlayClass": "onboarding-overlay"
+      }
+    },
+    {
+      "step": "enter_dashboard",
+      "state": {
+        "overlayClass": "onboarding-overlay hidden"
+      }
+    },
+    {
+      "step": "start_runtime_after_overlay",
+      "messages": "Start: started"
+    },
+    {
+      "step": "switch_chat_mode_after_overlay",
+      "panel": {
+        "chatClass": "v2-mode-panel active",
+        "chatDisplay": "block",
+        "chatInputOffsetParent": false,
+        "systemClass": "v2-mode-panel"
+      }
+    },
+    {
+      "step": "ask_atlas_after_overlay",
+      "messages": "Queued: queued\nYou: What changed in my Atlas brief after setup?\nStart: started"
+    },
+    {
+      "step": "home_first_brief_after_overlay",
+      "hasBrief": false,
+      "hasPortfolio": false,
+      "excerpt": "Home\nAsk Atlas\nPortfolio\nMarkets\nPredictions\nLearning\nWorkflow\nRoadmap\nSettings\nTODAY'S ATLAS BRIEF\nNEUTRAL\n\nLLM reasoning unavailable or invalid.\n\nTrust: 0.4817 · Regime: ATTENTION_EXPANSION · Last updated: 2026-07-08T02:49:50.299608+00:00\nCURRENT MARKET CONTEXT\nok\n\nLive: portfolio_relevance · Needs attention: price_volume · Not configured: liquidity_proxy, macro_policy, market_breadth, narrative_attention\n\nPORTFOLIO IMPACT\nconfigured\n\nExposure sum: 25.0\n\nDATA FRESHNESS\n2026-07-08T02:49:42.374076+00:00\n\nTrue\n\nTRIGGER CONDITIONS\n\"all_providers_failed\"\nTOP RISKS\nunknown\n\nConfidence: 0.0"
+    },
+    {
+      "step": "stop_runtime_after_overlay",
+      "messages": "Stop: stop_requested"
+    }
+  ]
+}

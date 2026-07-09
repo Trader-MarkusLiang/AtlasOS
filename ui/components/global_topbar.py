@@ -53,8 +53,29 @@ def render_global_topbar(active: str, state: Mapping[str, Any], lang: str) -> st
 
 
 def _freshness_label(market: Mapping[str, Any], lang: str) -> str:
-    if market.get("timestamp"):
-        return str(market.get("timestamp"))
+    channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
+    observations = market.get("observations") if isinstance(market.get("observations"), list) else []
+    if channels:
+        live = sum(1 for value in channels.values() if str(value).upper() == "LIVE")
+        failed = sum(1 for value in channels.values() if str(value).upper() in {"FAILED", "RATE_LIMITED"})
+        missing = sum(1 for value in channels.values() if str(value).upper() == "NOT_CONFIGURED")
+        available_assets = sum(1 for item in observations if isinstance(item, Mapping) and item.get("data_quality_status") == "Available")
+        total_assets = len([item for item in observations if isinstance(item, Mapping)])
+        if lang == "zh":
+            prefix = f"价格 {available_assets}/{total_assets}" if total_assets else f"{live} 实时"
+            suffix = "可用"
+            if failed:
+                suffix = f"{failed} 失败"
+            elif missing:
+                suffix = f"{missing} 未配置"
+            return f"{prefix} · {suffix}"
+        prefix = f"price {available_assets}/{total_assets}" if total_assets else f"{live} live"
+        suffix = "available"
+        if failed:
+            suffix = f"{failed} failed"
+        elif missing:
+            suffix = f"{missing} not configured"
+        return f"{prefix} · {suffix}"
     status = str(market.get("status") or "")
     if status == "not_run":
         return t("empty.initializing", lang)

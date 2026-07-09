@@ -247,9 +247,12 @@ def render_getting_started_page(
           <h2>{escape(t("getting.runtime_title", lang))}</h2>
           <p>{escape(t("getting.runtime_body", lang))}</p>
           <div class="form-grid">
-            <label>{escape(t("system.tick_interval", lang))}
-              <select id="getting-interval">{_interval_options(_int(system.get("tick_interval"), 60))}</select>
-            </label>
+            <div class="metric-card">
+              <span>{escape(t("system.tick_interval", lang))}</span>
+              <strong>{escape(t("system.tick_interval_fixed", lang))}</strong>
+              <p>{escape(t("system.tick_interval_note", lang))}</p>
+              <input id="getting-interval" type="hidden" value="60">
+            </div>
             <label>{escape(t("system.simulation_mode", lang))}
               <select id="getting-runtime-mode">
                 <option value="simulation"{_selected(system.get("runtime_mode"), "simulation")}>{escape(t("getting.simulation", lang))}</option>

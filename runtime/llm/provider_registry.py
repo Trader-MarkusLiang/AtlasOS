@@ -28,7 +28,7 @@ SUPPORTED_PROVIDER_TYPES = {
     "openai": {
         "label": "OpenAI",
         "base_url": "https://api.openai.com/v1/chat/completions",
-        "model": "gpt-5.5",
+        "model": "gpt5.5",
         "protocol": "openai_compatible",
     },
     "claude": {
@@ -46,7 +46,7 @@ SUPPORTED_PROVIDER_TYPES = {
     "morecode": {
         "label": "MoreCode / cc switch",
         "base_url": "",
-        "model": "morecode-default",
+        "model": "gpt5.5",
         "protocol": "openai_compatible",
     },
     "ark": {
@@ -89,11 +89,14 @@ def default_provider_registry() -> dict[str, Any]:
                 "last_error": "",
                 "available_models": [],
                 "last_models_error": "",
+                "reasoning_effort": "medium" if provider_id in {"openai", "morecode"} else "",
+                "timeout_seconds": 30 if provider_id == "morecode" else 8,
             }
         )
     return {
         "active_provider": "openai",
         "fallback_chain": ["openai", "claude", "ollama", "custom"],
+        "strict_provider_list": False,
         "providers": providers,
     }
 
@@ -213,6 +216,7 @@ def safe_registry_view(registry: Mapping[str, Any] | None = None) -> dict[str, A
     return {
         "active_provider": normalized["active_provider"],
         "fallback_chain": list(normalized["fallback_chain"]),
+        "strict_provider_list": bool(normalized.get("strict_provider_list", False)),
         "providers": safe_providers,
         "supported_provider_types": SUPPORTED_PROVIDER_TYPES,
     }
@@ -379,9 +383,13 @@ def _load_config(path: str | None = None) -> dict[str, Any]:
 
 def _normalize_registry(value: Mapping[str, Any]) -> dict[str, Any]:
     default = default_provider_registry()
-    providers_by_id = {provider["id"]: provider for provider in default["providers"]}
     incoming = value if isinstance(value, Mapping) else {}
-    for provider in incoming.get("providers", []):
+    incoming_providers = incoming.get("providers", [])
+    strict_provider_list = bool(incoming.get("strict_provider_list", False))
+    providers_by_id = {} if strict_provider_list and isinstance(incoming_providers, list) else {
+        provider["id"]: provider for provider in default["providers"]
+    }
+    for provider in incoming_providers:
         if not isinstance(provider, Mapping):
             continue
         provider_id = _safe_provider_id(str(provider.get("id") or provider.get("type") or "custom"))
@@ -404,17 +412,27 @@ def _normalize_registry(value: Mapping[str, Any]) -> dict[str, Any]:
                 "last_error": "",
                 "available_models": [],
                 "last_models_error": "",
+                "reasoning_effort": "medium" if provider_id in {"openai", "morecode"} else "",
+                "timeout_seconds": 30 if provider_id == "morecode" else 8,
             }
         base.update({key: provider[key] for key in provider if key != "api_key"})
         base["id"] = provider_id
         base["type"] = provider_type if provider_type in SUPPORTED_PROVIDER_TYPES else "custom"
         providers_by_id[provider_id] = base
+    if not providers_by_id:
+        providers_by_id = {provider["id"]: provider for provider in default["providers"]}
+        strict_provider_list = False
     active = str(incoming.get("active_provider") or default["active_provider"])
     fallback = incoming.get("fallback_chain", default["fallback_chain"])
     fallback_chain = [_safe_provider_id(str(item)) for item in fallback if str(item).strip()] if isinstance(fallback, list) else default["fallback_chain"]
+    if strict_provider_list:
+        fallback_chain = [item for item in fallback_chain if item in providers_by_id]
+        if _safe_provider_id(active) not in providers_by_id:
+            active = next(iter(providers_by_id))
     return {
         "active_provider": _safe_provider_id(active),
         "fallback_chain": fallback_chain,
+        "strict_provider_list": strict_provider_list,
         "providers": list(providers_by_id.values()),
     }
 

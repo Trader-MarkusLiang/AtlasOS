@@ -308,14 +308,18 @@ def create_app() -> Any:
 
     @app.post("/control/start")
     async def control_start() -> Any:
+        runtime_options = _configured_runtime_options()
         return JSONResponse(
             start_runtime_daemon(
-                interval_seconds=_configured_interval(),
+                interval_seconds=runtime_options["tick_interval"],
                 db_path=_db_path(),
                 log_path=_runtime_log_path(),
                 inbox_dir=_event_inbox_dir(),
                 ui_inbox_path=_ui_inbox_path(),
                 market_config_path=_user_config_path(),
+                llm_model=runtime_options["llm_model"],
+                proactive_update_enabled=runtime_options["proactive_update_enabled"],
+                proactive_update_every_seconds=runtime_options["proactive_update_interval_seconds"],
                 pid_file=_pid_file(),
             )
         )
@@ -387,6 +391,7 @@ def state_api() -> Dict[str, Any]:
         "last_decision_brief_id": latest_brief.get("id"),
         "portfolio_context": portfolio_context,
         "market_intelligence": market_intelligence,
+        "proactive_update_state": store.get_state("proactive_update_state"),
         "daily_cycle": store.get_state("daily_cycle_state"),
         "runtime": runtime_status(pid_file=_pid_file(), db_path=_db_path()),
         "llm_trace_summary": llm_summary,
@@ -2635,14 +2640,46 @@ def _ui_config_path() -> Optional[str]:
 
 
 def _configured_interval() -> int:
+    user_config = load_user_config(_user_config_path())
+    system = user_config.get("system") if isinstance(user_config.get("system"), dict) else {}
+    if system.get("tick_interval") is not None:
+        try:
+            interval = int(system.get("tick_interval"))
+            if interval in {10, 30, 60, 300}:
+                return interval
+        except (TypeError, ValueError):
+            pass
     path = _ui_config_path()
     if not path or not Path(path).exists():
         return 60
     try:
         value = json.loads(Path(path).read_text(encoding="utf-8")).get("tick_interval_seconds", 60)
-        return int(value)
+        interval = int(value)
+        return interval if interval in {10, 30, 60, 300} else 60
     except (OSError, json.JSONDecodeError, TypeError, ValueError):
         return 60
+
+
+def _configured_runtime_options() -> Dict[str, Any]:
+    config = load_user_config(_user_config_path())
+    system = config.get("system") if isinstance(config.get("system"), dict) else {}
+    registry = load_provider_registry(_user_config_path())
+    active = str(registry.get("active_provider") or "morecode")
+    provider = next((item for item in registry.get("providers", []) if item.get("id") == active), {})
+    return {
+        "tick_interval": _configured_interval(),
+        "llm_model": str(provider.get("model") or "gpt5.5"),
+        "proactive_update_enabled": bool(system.get("proactive_update_enabled", True)),
+        "proactive_update_interval_seconds": _positive_int(system.get("proactive_update_interval_seconds"), 7200),
+    }
+
+
+def _positive_int(value: Any, fallback: int) -> int:
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return fallback
+    return max(60, number)
 
 
 class _FallbackApp:
@@ -2797,14 +2834,18 @@ class _StdlibHandler(BaseHTTPRequestHandler):
                 )
             )
         elif parsed.path == "/control/start":
+            runtime_options = _configured_runtime_options()
             self._send_json(
                 start_runtime_daemon(
-                    interval_seconds=_configured_interval(),
+                    interval_seconds=runtime_options["tick_interval"],
                     db_path=_db_path(),
                     log_path=_runtime_log_path(),
                     inbox_dir=_event_inbox_dir(),
                     ui_inbox_path=_ui_inbox_path(),
                     market_config_path=_user_config_path(),
+                    llm_model=runtime_options["llm_model"],
+                    proactive_update_enabled=runtime_options["proactive_update_enabled"],
+                    proactive_update_every_seconds=runtime_options["proactive_update_interval_seconds"],
                     pid_file=_pid_file(),
                 )
             )

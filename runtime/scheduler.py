@@ -76,7 +76,7 @@ def next_run_time(
 def daily_run(
     log_path: Optional[str] = None,
     db_path: Optional[str] = None,
-    llm_model: str = "gpt-5.5",
+    llm_model: str = "gpt5.5",
 ) -> Dict[str, Any]:
     """Run the daily Atlas runtime route."""
 
@@ -96,7 +96,7 @@ def intraday_run(
 def weekly_run(
     log_path: Optional[str] = None,
     db_path: Optional[str] = None,
-    llm_model: str = "gpt-5.5",
+    llm_model: str = "gpt5.5",
 ) -> Dict[str, Any]:
     """Run the weekly Atlas runtime route with simulation placeholder only."""
 
@@ -107,7 +107,7 @@ def event_trigger(
     event_type: str,
     log_path: Optional[str] = None,
     db_path: Optional[str] = None,
-    llm_model: str = "gpt-5.5",
+    llm_model: str = "gpt5.5",
 ) -> Dict[str, Any]:
     """Run event-triggered Atlas runtime route."""
 
