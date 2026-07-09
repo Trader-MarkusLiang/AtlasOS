@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-10_0015_git-submit-current-branch.md`
 - `docs/codex-sessions/completed/2026-07-10_0007_commit-ui-market-fixes.md`
 - `docs/codex-sessions/completed/2026-07-09_2327_home-market-freshness-repair.md`
 - `docs/codex-sessions/completed/2026-07-09_2318_workflow-dated-architecture-fix.md`
