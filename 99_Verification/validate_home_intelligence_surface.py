@@ -73,6 +73,10 @@ def validate_home_html(html: str, language: str) -> list[dict[str, object]]:
     if language == "zh":
         terms = ["当前状态", "市场前瞻", "组合影响", "研究候选", "预测与兑现", "专家分析", "原始证据"]
         safety = "候选排序不是交易动作"
+        language_checks = [
+            check("zh home localizes Raw Evidence heading", "Raw Evidence" not in html),
+            check("zh home localizes data-quality limitation", "置信度受到" in html or "置信度受限" in html),
+        ]
     else:
         terms = [
             "Current State",
@@ -84,6 +88,7 @@ def validate_home_html(html: str, language: str) -> list[dict[str, object]]:
             "Raw Evidence",
         ]
         safety = "Candidate Ranking is not a trading action"
+        language_checks = []
     checks = [check(f"{language} home contains {term}", term in html) for term in terms]
     checks.extend(
         [
@@ -95,6 +100,7 @@ def validate_home_html(html: str, language: str) -> list[dict[str, object]]:
             check(f"{language} home has candidate filters", "data-candidate-filter" in html),
         ]
     )
+    checks.extend(language_checks)
     return checks
 
 

@@ -1,0 +1,382 @@
+{
+  "status": "PASS",
+  "generated_at": "2026-07-09T16:56:12.332Z",
+  "url": "http://127.0.0.1:8765/",
+  "steps": [
+    {
+      "step": 0,
+      "name": "Language selector exists for setup",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 1,
+      "name": "Open Home",
+      "passed": true,
+      "details": {
+        "url": "http://127.0.0.1:8765/"
+      }
+    },
+    {
+      "step": 2,
+      "name": "Confirm Current State",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 3,
+      "name": "Confirm action",
+      "passed": true,
+      "details": {
+        "actionText": "观察\nObserve"
+      }
+    },
+    {
+      "step": 4,
+      "name": "Confirm confidence",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 5,
+      "name": "Outlook tab unique",
+      "passed": true,
+      "details": {
+        "selector": "button[data-home-mode=\"outlook\"]",
+        "count": 1
+      }
+    },
+    {
+      "step": 5,
+      "name": "Open Outlook",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 6,
+      "name": "Confirm base case",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 7,
+      "name": "Confirm horizon",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 8,
+      "name": "Confirm invalidation",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 9,
+      "name": "Candidates tab unique",
+      "passed": true,
+      "details": {
+        "selector": "button[data-home-mode=\"candidates\"]",
+        "count": 1
+      }
+    },
+    {
+      "step": 9,
+      "name": "Open Candidates",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 10,
+      "name": "Confirm candidate list",
+      "passed": true,
+      "details": {
+        "rows": 5
+      }
+    },
+    {
+      "step": 11,
+      "name": "Confirm no Buy/Sell",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 12,
+      "name": "Portfolio-related filter unique",
+      "passed": true,
+      "details": {
+        "selector": "button[data-candidate-filter=\"portfolio\"]",
+        "count": 1
+      }
+    },
+    {
+      "step": 12,
+      "name": "Filter portfolio-related",
+      "passed": true,
+      "details": {
+        "visible": 5,
+        "total": 5
+      }
+    },
+    {
+      "step": 13,
+      "name": "Candidate detail summary available",
+      "passed": true,
+      "details": {
+        "selector": "#home-research-candidates .candidate-detail summary",
+        "index": 0,
+        "count": 5
+      }
+    },
+    {
+      "step": 13,
+      "name": "Open candidate detail",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 14,
+      "name": "Brief tab unique",
+      "passed": true,
+      "details": {
+        "selector": "button[data-home-mode=\"brief\"]",
+        "count": 1
+      }
+    },
+    {
+      "step": 14,
+      "name": "Return Home",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 15,
+      "name": "Inspect Portfolio Impact",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 16,
+      "name": "Inspect Forecast Accountability",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 17,
+      "name": "Open forecast timeline",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 18,
+      "name": "Forecast link scoped present",
+      "passed": true,
+      "details": {
+        "forecastLinks": 2
+      }
+    },
+    {
+      "step": 18,
+      "name": "Open /predictions",
+      "passed": true,
+      "details": {
+        "text": "预测\n先看决策，需要时再展开细节\n运行中\n当前 Provider:\nmorecode\n新鲜度:\n价格 3/3 · 4 未配置\nTick:\n809\n设置\n语言\nEN\n中文\n预测账本\n结果摘要\n\nLow sample size: calibration is directional only, not statistically reliable.\n\n未完成\n100\n\n未完成预测\n\n已评估\n0\n\n结果摘要\n\n准确率\n样本不足\n\n置信度可靠性\n\n校准图\n校准图\nAtlas 的置信度是否经过校准？\nAtlas has not recorded enough prediction outcomes yet.\n点击或聚焦这个图表，查看它解释的问题。\n预测时间线\n预测时间线\n哪些预测仍然开放、成熟或已验证？\nOPEN\nOPEN\nOPEN\nOPEN\nOPEN\nOPEN\nOPEN\nOPEN\n点击或聚焦这个图表，查看它解释的问题。\n未完成预测\nruntime_market_structure\nNon-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.\nruntime_market_structure\nNon-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.\nruntime_market_structure\nNon-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.\nruntime_market_structure\nNon-binding structural runtime forecast: current causal structure remains coherent until contradicted",
+        "url": "http://127.0.0.1:8765/predictions"
+      }
+    },
+    {
+      "step": 19,
+      "name": "Return Home after predictions",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 20,
+      "name": "Expand Expert Analysis",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 21,
+      "name": "Inspect Causal Chain",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 22,
+      "name": "Inspect Hypothesis State",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 23,
+      "name": "Inspect Confidence Composition",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 24,
+      "name": "Inspect Data Quality",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 25,
+      "name": "Inspect Forecast Evidence",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 26,
+      "name": "Inspect Invalidation",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 27,
+      "name": "Raw Evidence summary unique",
+      "passed": true,
+      "details": {
+        "selector": ".raw-evidence-details > summary",
+        "count": 1
+      }
+    },
+    {
+      "step": 27,
+      "name": "Expand Raw Evidence",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 28,
+      "name": "Raw Evidence summary collapse unique",
+      "passed": true,
+      "details": {
+        "selector": ".raw-evidence-details > summary",
+        "count": 1
+      }
+    },
+    {
+      "step": 28,
+      "name": "Collapse Raw Evidence",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 29,
+      "name": "Language select unique and switched",
+      "passed": true,
+      "details": {}
+    },
+    {
+      "step": 29,
+      "name": "Switch Chinese/English",
+      "passed": true,
+      "details": {
+        "languageValue": "en"
+      }
+    },
+    {
+      "step": 30,
+      "name": "Confirm persistence and no overflow",
+      "passed": true,
+      "details": {
+        "languageValue": "zh",
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      }
+    },
+    {
+      "step": 30,
+      "name": "Responsive no overflow 1440",
+      "passed": true,
+      "details": {
+        "width": 1440,
+        "height": 1100,
+        "shot": "/Users/markus/AtlasOS/99_Verification/artifacts/home_intelligence/e2e_responsive_1440.png",
+        "hasNoOverflow": true,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "viewportWidth": 1440
+      }
+    },
+    {
+      "step": 30,
+      "name": "Responsive no overflow 1280",
+      "passed": true,
+      "details": {
+        "width": 1280,
+        "height": 1000,
+        "shot": "/Users/markus/AtlasOS/99_Verification/artifacts/home_intelligence/e2e_responsive_1280.png",
+        "hasNoOverflow": true,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "viewportWidth": 1280
+      }
+    },
+    {
+      "step": 30,
+      "name": "Responsive no overflow 1024",
+      "passed": true,
+      "details": {
+        "width": 1024,
+        "height": 1000,
+        "shot": "/Users/markus/AtlasOS/99_Verification/artifacts/home_intelligence/e2e_responsive_1024.png",
+        "hasNoOverflow": true,
+        "scrollWidth": 1024,
+        "clientWidth": 1024,
+        "viewportWidth": 1024
+      }
+    }
+  ],
+  "responsive": [
+    {
+      "width": 1440,
+      "height": 1100,
+      "shot": "/Users/markus/AtlasOS/99_Verification/artifacts/home_intelligence/e2e_responsive_1440.png",
+      "hasNoOverflow": true,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "viewportWidth": 1440
+    },
+    {
+      "width": 1280,
+      "height": 1000,
+      "shot": "/Users/markus/AtlasOS/99_Verification/artifacts/home_intelligence/e2e_responsive_1280.png",
+      "hasNoOverflow": true,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "viewportWidth": 1280
+    },
+    {
+      "width": 1024,
+      "height": 1000,
+      "shot": "/Users/markus/AtlasOS/99_Verification/artifacts/home_intelligence/e2e_responsive_1024.png",
+      "hasNoOverflow": true,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "viewportWidth": 1024
+    }
+  ],
+  "screenshots": [
+    "e2e_01_home_open.png",
+    "e2e_02_outlook.png",
+    "e2e_03_candidates_portfolio_filter.png",
+    "e2e_04_candidate_detail_open.png",
+    "e2e_05_predictions.png",
+    "e2e_06_expert_expanded.png",
+    "e2e_07_raw_evidence_open.png",
+    "e2e_08_language_en.png",
+    "e2e_responsive_1440.png",
+    "e2e_responsive_1280.png",
+    "e2e_responsive_1024.png"
+  ],
+  "exact_flow_steps": 30,
+  "hard_checks": {
+    "action_text": "观察\nObserve",
+    "candidate_rows": 5,
+    "no_buy_sell_in_candidate_section": true,
+    "forecast_links": 2,
+    "expert_sections_visible": true,
+    "zh_restored": true
+  }
+}

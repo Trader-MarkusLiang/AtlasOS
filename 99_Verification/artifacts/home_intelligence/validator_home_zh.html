@@ -66,18 +66,18 @@
     <section class="hero-panel home-current-state" id="home-current-state" data-home-zone="current">
       <div class="home-zone-label"><span>01</span><strong>当前状态</strong></div>
       <span class="kicker">当前主导状态</span>
-      <h1 class="hero-title localized-hero-title"><span>注意力压力</span><small>Attention Pressure</small></h1>
-      <p class="hero-copy">当前运行状态主要由注意力压力主导，组合相关性是次要驱动因素。 组合已配置约 80.0% 暴露，在A股、港股与半导体材料、PCB / 材料 / AI 基础设施上有集中暴露，因此该状态会影响组合解释。 部分数据通道仍不完整（未配置：宏观政策、市场广度、叙事与注意力、新闻与公告），当前判断置信度有限。</p>
+      <h1 class="hero-title localized-hero-title"><span>流动性压力</span><small>Liquidity Stress</small></h1>
+      <p class="hero-copy">当前运行状态主要由流动性压力主导，波动冲击是次要驱动因素。 组合已配置约 80.0% 暴露，在A股、港股与半导体材料、PCB / 材料 / AI 基础设施上有集中暴露，因此该状态会影响组合解释。 部分数据通道仍不完整（未配置：宏观政策、市场广度、叙事与注意力、新闻与公告），当前判断置信度有限。</p>
       <div class="primary-decision home-primary-decision">
         <div>
           <span class="kicker">Atlas 当前观点</span>
           <div class="decision-action localized-action"><span>降低暴露</span><small>Reduce</small></div>
-          <p class="hero-copy">风险: <span class="inline-dual">高<small>High</small></span> · 置信度: 45%</p>
+          <p class="hero-copy">风险: <span class="inline-dual">高<small>High</small></span> · 置信度: 35%</p>
         </div>
-        <div class="gauge" style="--value:45;" aria-label="confidence"><span>45%</span></div>
+        <div class="gauge" style="--value:35;" aria-label="confidence"><span>35%</span></div>
       </div>
       <div class="home-key-drivers" aria-label="关键驱动">
-        <span class="tag">注意力: attention not dominant; pressure moderate at 45 with narrative intensity low-to-moderate</span><span class="tag">流动性: Neutral; liquidity score 45 with regional liquidity sensitivity present</span><span class="tag">波动率: Low</span><span class="tag">信任分数: 0.35</span>
+        <span class="tag">注意力: attention not dominant; attention pressure low relative to liquidity-driven stress</span><span class="tag">流动性: Liquidity Shock with liquidity score at 0 and stress score at 80</span><span class="tag">波动率: Low</span><span class="tag">信任分数: 0.30</span>
       </div>
     </section>
 
@@ -101,11 +101,11 @@
       <div class="home-outlook-layout">
         <article class="focus-card home-outlook-main">
           <span class="kicker">市场前瞻</span>
-          <h2>基准：中性状态延续</h2>
-          <p>Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</p>
+          <h2>基准：风险防御仍需观察</h2>
+          <p>非约束性结构预测：当前因果结构仍保持一致，除非后续观测状态与之冲突。</p>
           <div class="pill-row">
             <span class="tag">观察周期: next_runtime_cycle</span>
-            <span class="tag">置信度: 45.0%</span>
+            <span class="tag">置信度: 35.0%</span>
             <span class="tag">来源: forecast_ledger + current_runtime_state</span>
           </div>
         </article>
@@ -115,17 +115,17 @@
     <div class="home-scenario-grid">
         <article class="scenario-card scenario-base">
           <strong>基准情景</strong>
-          <p>Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</p>
+          <p>非约束性结构预测：当前因果结构仍保持一致，除非后续观测状态与之冲突。</p>
         </article>
         
         <article class="scenario-card scenario-upside">
           <strong>上行情景</strong>
-          <p>Evidence quality improves and the current state stabilizes.</p>
+          <p>流动性改善，同时市场广度与数据新鲜度修复。</p>
         </article>
         
         <article class="scenario-card scenario-downside">
           <strong>下行情景</strong>
-          <p>Trust, data freshness, or portfolio-sensitive channels weaken.</p>
+          <p>流动性与信用敏感信号同步恶化。</p>
         </article>
         </div>
     <p class="home-safety-note">市场前瞻是当前对未来的判断；预测账本是已记录、可验证的责任链。</p>
@@ -298,7 +298,7 @@
     <dl class="expert-dl">
       <dt>最新未完成预测</dt><dd>Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</dd>
       <dt>观察周期</dt><dd>next_runtime_cycle</dd>
-      <dt>置信度</dt><dd>45.0%</dd>
+      <dt>置信度</dt><dd>35.0%</dd>
     </dl>
     
           <div class="button-row">
@@ -315,24 +315,24 @@
     <details class="expert-details home-expert-panel" id="expert-analysis-panel">
       <summary><span>专家分析</span><strong>9</strong></summary>
       <div class="expert-grid">
-        <article class="expert-section"><span>A</span><h3>因果链</h3><div class="causal-chain"><span>Narrative Pressure -&gt; Attention</span><span>Institutional Flow -&gt; Liquidity</span><span>Price Momentum -&gt; Attention</span><span>Liquidity -&gt; Volatility</span></div><p class="home-safety-note">主导边</p><ul class="plain-list"><li>Narrative Pressure → Attention · Δ -0.0082</li><li>Institutional Flow → Liquidity · Δ -0.0049</li><li>Price Momentum → Attention · Δ -0.0042</li><li>Liquidity → Volatility · Δ -0.0007</li></ul></article>
+        <article class="expert-section"><span>A</span><h3>因果链</h3><div class="causal-chain"><span>Narrative Pressure -&gt; Attention</span><span>Price Momentum -&gt; Attention</span><span>Liquidity -&gt; Volatility</span><span>Attention -&gt; Retail Flow</span></div><p class="home-safety-note">主导边</p><ul class="plain-list"><li>Narrative Pressure → Attention · Δ -0.0101</li><li>Price Momentum → Attention · Δ -0.0101</li><li>Liquidity → Volatility · Δ 0.0096</li><li>Attention → Retail Flow · Δ -0.0061</li></ul></article>
         <article class="expert-section"><span>B</span><h3>假设状态</h3>
     <dl class="expert-dl">
       <dt>主假设</dt><dd>H_ATTENTION_FLOW</dd>
-      <dt>置信度</dt><dd>45.0%</dd>
-      <dt>近期变化</dt><dd>Structural shift index 0.0425</dd>
+      <dt>置信度</dt><dd>35.0%</dd>
+      <dt>近期变化</dt><dd>Structural shift index 0.0753</dd>
     </dl>
     <p><strong>竞争假设</strong></p>
     <ul class="plain-list"><li>No competing hypothesis exposed by current state.</li></ul>
     </article>
         <article class="expert-section"><span>C</span><h3>市场状态</h3>
     <dl class="expert-dl">
-      <dt>当前系统状态</dt><dd>ATTENTION_EXPANSION</dd>
-      <dt>建议状态</dt><dd>ATTENTION_EXPANSION</dd>
+      <dt>当前系统状态</dt><dd>RISK_OFF</dd>
+      <dt>建议状态</dt><dd>RISK_OFF</dd>
       <dt>波动率</dt><dd>Low</dd>
     </dl>
     </article>
-        <article class="expert-section"><span>D</span><h3>置信度构成</h3><div class="confidence-row"><span>evidence quality</span><strong>50%</strong><i style="width:50%"></i><small>market channel status</small></div><div class="confidence-row"><span>market data completeness</span><strong>50%</strong><i style="width:50%"></i><small>market_intelligence.channels</small></div><div class="confidence-row"><span>hypothesis stability</span><strong>35%</strong><i style="width:35%"></i><small>system_trust_state</small></div><div class="confidence-row"><span>portfolio relevance</span><strong>1%</strong><i style="width:1%"></i><small>portfolio_context</small></div><div class="confidence-row"><span>forecast history</span><strong>0%</strong><i style="width:0%"></i><small>forecast_ledger</small></div></article>
+        <article class="expert-section"><span>D</span><h3>置信度构成</h3><div class="confidence-row"><span>证据质量</span><strong>50%</strong><i style="width:50%"></i><small>市场通道状态</small></div><div class="confidence-row"><span>市场数据完整度</span><strong>50%</strong><i style="width:50%"></i><small>市场情报通道</small></div><div class="confidence-row"><span>假设稳定性</span><strong>30%</strong><i style="width:30%"></i><small>系统信任状态</small></div><div class="confidence-row"><span>组合相关性</span><strong>1%</strong><i style="width:1%"></i><small>组合上下文</small></div><div class="confidence-row"><span>预测历史</span><strong>0%</strong><i style="width:0%"></i><small>预测账本</small></div></article>
         <article class="expert-section"><span>E</span><h3>数据质量</h3>
     <div class="forecast-status-strip expert-data-strip">
       <span><strong>2</strong>实时通道</span>
@@ -340,7 +340,7 @@
       <span><strong>4</strong>缺失通道</span>
       <span><strong>0</strong>过期通道</span>
     </div>
-    <p>Confidence is limited by missing, stale, or unconfigured market channels.</p>
+    <p>置信度受到缺失、过期或未配置市场通道的限制。</p>
     </article>
         <article class="expert-section"><span>F</span><h3>组合敏感性</h3>
     <ul class="plain-list"><li>688019.SH · 34.0%</li><li>00148.HK · 26.0%</li><li>002384.SZ · 20.0%</li></ul>
@@ -348,27 +348,27 @@
     </article>
         <article class="expert-section"><span>G</span><h3>预测证据</h3>
     <dl class="expert-dl">
-      <dt>ID</dt><dd>runtime-dfd7b3a3-0d47-4af5-bb33-6ec5ec1e7026</dd>
+      <dt>ID</dt><dd>runtime-a7ec1028-0af2-44e5-8df6-0ef66a50f161</dd>
       <dt>状态</dt><dd>OPEN</dd>
       <dt>观察周期</dt><dd>next_runtime_cycle</dd>
     </dl>
-    <p>Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</p>
-    <ul class="plain-list"><li>Mixed / Low Signal</li><li>attention not dominant</li></ul>
+    <p>非约束性结构预测：当前因果结构仍保持一致，除非后续观测状态与之冲突。</p>
+    <ul class="plain-list"><li>Liquidity Stress</li><li>attention not dominant</li></ul>
     </article>
         <article class="expert-section"><span>H</span><h3>失效条件</h3><ul class="plain-list"><li>后续运行状态与当前结构判断冲突</li><li>预测在支持的生命周期中被标记为失效</li></ul></article>
         <article class="expert-section"><span>I</span><h3>原始证据</h3>
     <details class="raw-evidence-details">
-      <summary>Raw Evidence</summary>
+      <summary>原始证据</summary>
       <pre>{
-  &quot;regime_state&quot;: &quot;ATTENTION_EXPANSION&quot;,
+  &quot;regime_state&quot;: &quot;RISK_OFF&quot;,
   &quot;last_decision_packet&quot;: {
-    &quot;attention_state&quot;: &quot;attention not dominant; pressure moderate at 45 with narrative intensity low-to-moderate&quot;,
-    &quot;causal_summary&quot;: &quot;Runtime remains in HIGH_VOLATILITY because transition to NORMAL is not allowed despite low fused stress. Primary driver is mixed and low signal, with data insufficiency carrying the largest probability weight and portfolio relevance elevated by theme and regional concentration.&quot;,
-    &quot;confidence&quot;: 0.45,
-    &quot;liquidity_state&quot;: &quot;Neutral; liquidity score 45 with regional liquidity sensitivity present&quot;,
-    &quot;reasoning_trace&quot;: &quot;Inputs indicate confidence limited event stream, mixed low-signal primary driver, data_insufficient probability 55, distribution_risk 25, crash_stress 20, fusion stress score 0, attention pressure 45, and neutral liquidity. Controller proposes NORMAL but blocks transition, so the operative state remains HIGH_VOLATILITY. Portfolio context shows 80 percent assigned exposure with concentration in semiconductor materials, PCB materials, AI infrastructure, A-share, and HK sensitivity. Given high stated risk level, limited confidence, blocked regime transition, and configured risk-review pipeline, the bounded non-execution recommendation is reduce.&quot;,
+    &quot;attention_state&quot;: &quot;attention not dominant; attention pressure low relative to liquidity-driven stress&quot;,
+    &quot;causal_summary&quot;: &quot;Primary pressure is liquidity stress, with volatility shock as the secondary driver. The controller remains in RISK_OFF, transition is allowed, and the dominant structure is a liquidity_stress_basin unified structure. Data confidence is limited, with data_insufficient at 55%, distribution_risk at 25%, and crash_stress at 20%.&quot;,
+    &quot;confidence&quot;: 0.35,
+    &quot;liquidity_state&quot;: &quot;Liquidity Shock with liquidity score at 0 and stress score at 80&quot;,
+    &quot;reasoning_trace&quot;: &quot;Inputs indicate high fusion stress, liquidity shock, and a RISK_OFF controller state. Attention pressure is not the dominant driver, so the regime interpretation is centered on liquidity-to-volatility transmission rather than narrative intensity. Portfolio context shows regional liquidity sensitivity, theme cluster sensitivity, and concentrated exposure across semiconductor materials and PCB/AI hardware-linked themes. Because trading execution, portfolio modification, prediction, and CDE bypass are forbidden, this output is limited to runtime risk posture classification and a permitted high-level action bias.&quot;,
     &quot;recommended_action&quot;: &quot;reduce&quot;,
-    &quot;regime_state&quot;: &quot;HIGH_VOLATILITY / Runtime State Context&quot;,
+    &quot;regime_state&quot;: &quot;RISK_OFF / Runtime State Context&quot;,
     &quot;risk_level&quot;: &quot;high&quot;
   },
   &quot;market_intelligence&quot;: {
@@ -419,45 +419,35 @@
       },
       {
         &quot;asset&quot;: &quot;002384.SZ&quot;,
-        &quot;change_20d_pct&quot;: null,
-        &quot;change_5d_pct&quot;: null,
-        &quot;change_60d_pct&quot;: null,
+        &quot;change_20d_pct&quot;: 5.8645294207004595,
+        &quot;change_5d_pct&quot;: -3.5524339599404597,
+        &quot;change_60d_pct&quot;: 80.1061474991665,
         &quot;channel&quot;: &quot;price_volume&quot;,
-        &quot;confidence&quot;: 0.45,
-        &quot;daily_change_pct&quot;: 10.0,
-        &quot;data_quality_status&quot;: &quot;Partial&quot;,
+        &quot;confidence&quot;: 0.75,
+        &quot;daily_change_pct&quot;: 0.2913000614809258,
+        &quot;data_quality_status&quot;: &quot;Available&quot;,
         &quot;freshness&quot;: &quot;Available&quot;,
         &quot;latest_price_available&quot;: true,
         &quot;market&quot;: &quot;A-share&quot;,
         &quot;normalized_event_type&quot;: &quot;price_breakout&quot;,
         &quot;portfolio_relevant&quot;: true,
         &quot;raw_reference&quot;: {
-          &quot;errors&quot;: [
-            &quot;eastmoney_kline: RemoteDisconnected: Remote end closed connection without response&quot;,
-            &quot;akshare: RuntimeError: akshare exited without result&quot;,
-            &quot;yfinance: RuntimeError: yfinance exited without result&quot;,
-            &quot;yahoo_chart: URLError: &lt;urlopen error _ssl.c:1112: The handshake operation timed out&gt;&quot;,
-            &quot;eastmoney_quote: RemoteDisconnected: Remote end closed connection without response&quot;
-          ],
+          &quot;errors&quot;: [],
           &quot;missing_fields&quot;: [
-            &quot;change_5d_pct&quot;,
-            &quot;change_20d_pct&quot;,
-            &quot;change_60d_pct&quot;,
-            &quot;ma20&quot;,
-            &quot;ma60&quot;,
+            &quot;turnover&quot;,
             &quot;market_cap (optional)&quot;,
             &quot;pe (optional)&quot;,
             &quot;pb (optional)&quot;
           ],
-          &quot;provider&quot;: &quot;tencent_quote&quot;,
+          &quot;provider&quot;: &quot;yahoo_chart&quot;,
           &quot;ticker&quot;: &quot;002384.SZ&quot;
         },
-        &quot;source&quot;: &quot;tencent_quote&quot;,
+        &quot;source&quot;: &quot;yahoo_chart&quot;,
         &quot;source_type&quot;: &quot;market_data_provider&quot;,
         &quot;theme&quot;: &quot;PCB / AI Hardware Manufacturing&quot;,
-        &quot;timestamp&quot;: &quot;2026-07-09T16:14:03&quot;,
-        &quot;turnover&quot;: 27786395311.0,
-        &quot;volume&quot;: 1123457.0
+        &quot;timestamp&quot;: &quot;2026-07-08T01:30:00+00:00&quot;,
+        &quot;turnover&quot;: null,
+        &quot;volume&quot;: 96285472.0
       },
       {
         &quot;asset&quot;: &quot;688019.SH&quot;,
@@ -572,7 +562,7 @@
       &quot;minimum_sample_size_met&quot;: false
     },
     &quot;sample_warning&quot;: &quot;Low sample size: calibration is directional only, not statistically reliable.&quot;,
-    &quot;latest_forecast_id&quot;: &quot;runtime-dfd7b3a3-0d47-4af5-bb33-6ec5ec1e7026&quot;
+    &quot;latest_forecast_id&quot;: &quot;runtime-a7ec1028-0af2-44e5-8df6-0ef66a50f161&quot;
   },
   &quot;structural_coevolution_state&quot;: {
     &quot;status&quot;: &quot;applied&quot;,
@@ -587,7 +577,7 @@
     &quot;status&quot;: &quot;applied&quot;,
     &quot;bounded&quot;: true,
     &quot;trust_gate&quot;: &quot;open&quot;,
-    &quot;structural_shift_index&quot;: 0.0425
+    &quot;structural_shift_index&quot;: 0.0753
   }
 }</pre>
     </details>

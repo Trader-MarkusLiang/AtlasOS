@@ -1247,6 +1247,24 @@ textarea { resize: vertical; min-height: 96px; }
   }
 }
 @media (max-width: 1180px) {
+  .atlas-shell { grid-template-columns: 1fr; }
+  .atlas-sidebar {
+    position: static;
+    height: auto;
+    padding: 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .atlas-brand { padding-bottom: 10px; }
+  .sidebar-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sidebar-status-card { margin-top: 10px; }
+  .global-topbar {
+    position: static;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px;
+  }
+  .topbar-controls { justify-content: flex-start; }
   .workspace { grid-template-columns: 1fr; }
   .context-inspector { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .section-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1267,10 +1285,7 @@ textarea { resize: vertical; min-height: 96px; }
   .support-node-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 900px) {
-  .atlas-shell { grid-template-columns: 1fr; }
-  .atlas-sidebar { position: static; height: auto; }
   .sidebar-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .global-topbar { position: static; align-items: flex-start; flex-direction: column; }
   .section-grid, .two-grid, .context-inspector, .form-grid { grid-template-columns: 1fr; }
   .workflow-priority-strip,
   .workflow-section-intro { grid-template-columns: 1fr; }

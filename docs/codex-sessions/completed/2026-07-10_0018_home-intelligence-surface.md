@@ -7,7 +7,7 @@
 - Project: Atlas OS
 - Workspace: `/Users/markus/AtlasOS`
 - Task: Execute Home Intelligence Surface Rebuild Goal
-- Status: active
+- Status: completed
 - Branch: `codex/frontend-master-upgrade`
 
 ## User Request Summary
@@ -50,6 +50,20 @@ candidates, or present candidate ranking as a capital action.
 - Ran `python3 99_Verification/validate_home_intelligence_surface.py`; result: PASS.
 - Ran a repository-scoped sensitive information scan over changed UI, verification, and session
   files; result: no matches.
+- Re-ran the required browser E2E 30-step flow against `http://127.0.0.1:8765/`; result: PASS.
+- Captured responsive browser screenshots at 1440, 1280, and 1024 widths; all passed no-overflow
+  checks.
+- Found and fixed a 1024px horizontal overflow caused by the global shell/sidebar breakpoint.
+- Localized the Chinese-mode Raw Evidence heading, known runtime outlook strings, confidence
+  component labels, and data-quality limitation text.
+- Normalized UI display of neutral/unknown/wait primary action to Observe while preserving raw
+  DecisionPacket evidence.
+- Added required verification reports:
+  - `99_Verification/Atlas_OS_Home_Intelligence_Baseline.md`
+  - `99_Verification/Atlas_OS_Candidate_Pool_Audit.md`
+  - `99_Verification/Atlas_OS_Market_Outlook_Report.md`
+  - `99_Verification/Atlas_OS_Expert_Analysis_Report.md`
+  - `99_Verification/Atlas_OS_Home_Intelligence_Final_Acceptance.md`
 
 ## Decisions
 
@@ -58,21 +72,22 @@ candidates, or present candidate ranking as a capital action.
   portfolio mutation, scheduler semantics, and self-iteration semantics are frozen.
 - Candidate presentation must be sourced from existing repo/runtime evidence or explicitly shown
   as absent; no invented candidate ranking.
+- Candidate ranking is displayed as research priority only and is not capital authority.
 
 ## Current State
 
 - Current branch: `codex/frontend-master-upgrade`.
-- Home intelligence UI implementation and static validation are in place.
-- Browser E2E was started in the prior run and produced screenshots, but the full 30-step flow has
-  not yet been completed because the latest user instruction was to commit directly.
-- No runtime config, logs, local portfolio files, or provider secrets are staged.
+- Home Intelligence Surface Rebuild is implemented and verified.
+- Static validator: PASS.
+- Browser E2E: PASS.
+- Responsive checks: PASS at 1440 / 1280 / 1024.
+- No runtime config, logs, local portfolio files, or provider secrets were intentionally staged.
 
 ## Resume Instructions
 
-- Read `/Users/markus/.codex/attachments/9a4d3bf3-36e6-42c3-8ffb-a1c890a8297a/pasted-text-1.txt`.
-- Check `git status --short --branch`.
-- Continue browser-level E2E from the Home Intelligence Surface goal.
-- Complete the remaining verification reports before marking the active goal complete.
+- Read `99_Verification/Atlas_OS_Home_Intelligence_Final_Acceptance.md`.
+- Read `99_Verification/artifacts/home_intelligence/browser_e2e_results.json`.
+- Check current branch head and remote status if more release work continues.
 
 ## Open Questions
 

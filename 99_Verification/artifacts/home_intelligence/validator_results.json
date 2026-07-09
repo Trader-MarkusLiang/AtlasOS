@@ -73,6 +73,14 @@
       "passed": true
     },
     {
+      "name": "zh home localizes Raw Evidence heading",
+      "passed": true
+    },
+    {
+      "name": "zh home localizes data-quality limitation",
+      "passed": true
+    },
+    {
       "name": "zh candidates page title",
       "passed": true
     },

@@ -193,6 +193,9 @@ def build_cognitive_presentation(state: Mapping[str, Any], lang: str = "en") -> 
 
 def localized_action(value: Any, lang: str = "en") -> dict[str, str]:
     key = str(value or "neutral").strip().lower()
+    if key in {"neutral", "unknown", "wait"}:
+        labels = ACTION_LABELS["observe"]
+        return _dual(labels, lang, raw=key)
     labels = ACTION_LABELS.get(key, ACTION_LABELS["neutral"])
     return _dual(labels, lang, raw=key)
 

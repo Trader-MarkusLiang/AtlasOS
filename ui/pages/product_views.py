@@ -228,7 +228,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         <article class="focus-card home-outlook-main">
           <span class="kicker">{escape(_home_label("market_outlook", lang))}</span>
           <h2>{escape(_home_outlook_title(outlook, lang))}</h2>
-          <p>{escape(str(outlook.get("base_case") or _home_label("insufficient_outlook", lang)))}</p>
+          <p>{escape(_localized_outlook_text(outlook.get("base_case"), lang) or _home_label("insufficient_outlook", lang))}</p>
           <div class="pill-row">
             <span class="tag">{escape(_home_label("horizon", lang))}: {escape(str(outlook.get("horizon") or _home_label("insufficient_evidence", lang)))}</span>
             <span class="tag">{escape(t("state.confidence", lang))}: {escape(_pct_text(float(outlook.get("confidence") or 0) * 100))}</span>
@@ -349,7 +349,7 @@ def _scenario_map(outlook: Mapping[str, Any], lang: str) -> str:
         f"""
         <article class="scenario-card scenario-{escape(kind)}">
           <strong>{escape(label)}</strong>
-          <p>{escape(str(text or _home_label("insufficient_evidence", lang)))}</p>
+          <p>{escape(_localized_outlook_text(text, lang) or _home_label("insufficient_evidence", lang))}</p>
         </article>
         """
         for kind, label, text in scenarios
@@ -358,6 +358,22 @@ def _scenario_map(outlook: Mapping[str, Any], lang: str) -> str:
     <div class="home-scenario-grid">{cards}</div>
     <p class="home-safety-note">{escape(_home_label("forecast_vs_outlook", lang))}</p>
     """
+
+
+def _localized_outlook_text(value: Any, lang: str) -> str:
+    text = str(value or "").strip()
+    if not text or lang != "zh":
+        return text
+    mapping = {
+        "Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.": "非约束性结构预测：当前因果结构仍保持一致，除非后续观测状态与之冲突。",
+        "Liquidity improves while market breadth and data freshness recover.": "流动性改善，同时市场广度与数据新鲜度修复。",
+        "Liquidity and credit-sensitive signals deteriorate together.": "流动性与信用敏感信号同步恶化。",
+        "Evidence quality improves and the current state stabilizes.": "证据质量改善，当前状态趋于稳定。",
+        "Trust, data freshness, or portfolio-sensitive channels weaken.": "信任、数据新鲜度或组合敏感通道转弱。",
+        "Attention converts into broader market participation and confirmed liquidity.": "注意力转化为更广泛的市场参与，并得到流动性确认。",
+        "Attention remains elevated but liquidity confirmation fails.": "注意力仍然偏高，但流动性确认失败。",
+    }
+    return mapping.get(text, text)
 
 
 def _localized_invalidations(items: Any, lang: str) -> list[str]:
@@ -568,7 +584,7 @@ def _expert_analysis_panel(expert: Mapping[str, Any], lang: str) -> str:
         {_expert_section("F", _home_label("portfolio_sensitivity", lang), _expert_portfolio(expert, lang))}
         {_expert_section("G", _home_label("forecast_evidence", lang), _expert_forecast(expert, lang))}
         {_expert_section("H", _home_label("invalidation_conditions", lang), '<ul class="plain-list">' + _list_items(_localized_invalidations(expert.get("invalidation_conditions"), lang)) + '</ul>')}
-        {_expert_section("I", _home_label("raw_evidence", lang), _expert_raw(expert))}
+        {_expert_section("I", _home_label("raw_evidence", lang), _expert_raw(expert, lang))}
       </div>
     </details>
     """
@@ -619,12 +635,30 @@ def _expert_regime(expert: Mapping[str, Any], lang: str) -> str:
 def _expert_confidence(expert: Mapping[str, Any], lang: str) -> str:
     rows = []
     components = expert.get("confidence_composition") if isinstance(expert.get("confidence_composition"), list) else []
+    name_map = {
+        "evidence_quality": "证据质量",
+        "market_data_completeness": "市场数据完整度",
+        "hypothesis_stability": "假设稳定性",
+        "portfolio_relevance": "组合相关性",
+        "forecast_history": "预测历史",
+    }
+    source_map = {
+        "market channel status": "市场通道状态",
+        "market_intelligence.channels": "市场情报通道",
+        "system_trust_state": "系统信任状态",
+        "portfolio_context": "组合上下文",
+        "forecast_ledger": "预测账本",
+    }
     for item in components:
         if not isinstance(item, Mapping):
             continue
         pct = max(0, min(100, float(item.get("value") or 0) * 100))
+        raw_name = str(item.get("name") or "")
+        raw_source = str(item.get("source") or "")
+        name = name_map.get(raw_name, raw_name.replace("_", " ")) if lang == "zh" else raw_name.replace("_", " ")
+        source = source_map.get(raw_source, raw_source) if lang == "zh" else raw_source
         rows.append(
-            f'<div class="confidence-row"><span>{escape(str(item.get("name") or "").replace("_", " "))}</span><strong>{pct:.0f}%</strong><i style="width:{pct:.0f}%"></i><small>{escape(str(item.get("source") or ""))}</small></div>'
+            f'<div class="confidence-row"><span>{escape(name)}</span><strong>{pct:.0f}%</strong><i style="width:{pct:.0f}%"></i><small>{escape(source)}</small></div>'
         )
     return "".join(rows) or f'<p>{escape(t("empty.context", lang))}</p>'
 
@@ -638,8 +672,21 @@ def _expert_data_quality(expert: Mapping[str, Any], lang: str) -> str:
       <span><strong>{escape(str(data.get("missing_channels", 0)))}</strong>{escape(_home_label("missing_channels", lang))}</span>
       <span><strong>{escape(str(data.get("stale_channels", 0)))}</strong>{escape(_home_label("stale_channels", lang))}</span>
     </div>
-    <p>{escape(str(data.get("limitation") or ""))}</p>
+    <p>{escape(_localized_data_quality_limitation(data.get("limitation"), lang))}</p>
     """
+
+
+def _localized_data_quality_limitation(value: Any, lang: str) -> str:
+    text = str(value or "").strip()
+    if not text or lang != "zh":
+        return text
+    mapping = {
+        "Confidence is limited by missing, stale, or unconfigured market channels.": "置信度受到缺失、过期或未配置市场通道的限制。",
+        "Confidence is limited because some channels are simulated.": "部分通道仍为模拟数据，因此置信度受限。",
+        "Live channels are available, but forecast outcomes still need accumulation.": "已有实时通道，但预测结果样本仍需继续积累。",
+        "Confidence is limited because no market channels are currently available.": "当前没有可用市场通道，因此置信度受限。",
+    }
+    return mapping.get(text, text)
 
 
 def _expert_portfolio(expert: Mapping[str, Any], lang: str) -> str:
@@ -665,16 +712,16 @@ def _expert_forecast(expert: Mapping[str, Any], lang: str) -> str:
       <dt>{escape(_home_label("status", lang))}</dt><dd>{escape(str(forecast.get("status") or t("empty.context", lang)))}</dd>
       <dt>{escape(_home_label("horizon", lang))}</dt><dd>{escape(str(forecast.get("horizon") or t("empty.context", lang)))}</dd>
     </dl>
-    <p>{escape(str(forecast.get("statement") or t("empty.context", lang)))}</p>
+    <p>{escape(_localized_outlook_text(forecast.get("statement"), lang) or t("empty.context", lang))}</p>
     <ul class="plain-list">{_list_items(drivers[:3])}</ul>
     """
 
 
-def _expert_raw(expert: Mapping[str, Any]) -> str:
+def _expert_raw(expert: Mapping[str, Any], lang: str) -> str:
     raw = expert.get("raw_evidence") if isinstance(expert.get("raw_evidence"), Mapping) else {}
     return f"""
     <details class="raw-evidence-details">
-      <summary>{escape("Raw Evidence")}</summary>
+      <summary>{escape(_home_label("raw_evidence", lang))}</summary>
       <pre>{escape(json.dumps(raw, ensure_ascii=False, indent=2))}</pre>
     </details>
     """
