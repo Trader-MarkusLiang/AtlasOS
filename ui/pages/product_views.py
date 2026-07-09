@@ -18,12 +18,162 @@ from ui.presentation.cognitive_localization import (
     localize_market_freshness,
     localize_proactive_update,
 )
+from ui.presentation.home_intelligence import build_home_intelligence
 
 
 ATLAS_ACTIONS = {"observe", "hold", "reduce", "build", "accumulate"}
 ARCHITECTURE_MAPS = {
     "en": "atlas-os-architecture-20260709.png",
     "zh": "atlas-os-architecture-cn-20260709.png",
+}
+
+HOME_INTELLIGENCE_TEXT = {
+    "en": {
+        "view_modes": "Home view modes",
+        "brief": "Brief",
+        "outlook": "Outlook",
+        "candidates": "Candidates",
+        "expert": "Expert",
+        "current_state": "Current State",
+        "forward_outlook": "Forward Outlook",
+        "portfolio_impact": "Portfolio Impact",
+        "research_candidates": "Research Candidates",
+        "forecast_accountability": "Forecast Accountability",
+        "expert_analysis": "Expert Analysis",
+        "key_drivers": "Key drivers",
+        "market_outlook": "Market Outlook",
+        "scenario_map": "Scenario Map",
+        "base_case": "Base Case",
+        "upside_scenario": "Upside Scenario",
+        "downside_scenario": "Downside Scenario",
+        "horizon": "Horizon",
+        "source": "Source",
+        "invalidation_conditions": "Invalidation Conditions",
+        "insufficient_evidence": "insufficient evidence",
+        "insufficient_outlook": "Insufficient evidence to form a forward view.",
+        "why_holdings_matter": "Why this matters to current holdings",
+        "candidate_pool": "Candidate Pool",
+        "view_full_candidate_pool": "View Full Candidate Pool",
+        "candidate_safety": "Candidate Ranking is not a trading action. It shows research priority only.",
+        "all": "All",
+        "portfolio_related": "Portfolio-related",
+        "high_priority": "High priority",
+        "new": "New",
+        "changed_recently": "Changed recently",
+        "asset_theme": "Asset / theme",
+        "priority": "Priority",
+        "relevance": "Relevance",
+        "evidence_strength": "Evidence strength",
+        "thesis_direction": "Thesis direction",
+        "status": "Status",
+        "details": "Details",
+        "no_candidates": "No research candidate pool has formed yet.",
+        "candidate_changes": "Candidate Changes",
+        "no_candidate_changes": "No recent candidate changes recorded in source.",
+        "forecast_ledger": "Forecast Ledger",
+        "forecast_accountability_title": "Does Atlas deserve trust?",
+        "view_all_forecasts": "View all forecasts",
+        "does_atlas_deserve_trust": "Trust check",
+        "low_sample": "Sample is still small; calibration is directional only.",
+        "latest_open": "Latest open forecast",
+        "no_forecasts": "Atlas has not accumulated enough verifiable forecasts yet.",
+        "causal_chain": "Causal Chain",
+        "hypothesis_state": "Hypothesis State",
+        "regime_state": "Regime State",
+        "confidence_composition": "Confidence Composition",
+        "data_quality": "Data Quality",
+        "portfolio_sensitivity": "Portfolio Sensitivity",
+        "forecast_evidence": "Forecast Evidence",
+        "raw_evidence": "Raw Evidence",
+        "expand_raw": "Raw evidence",
+        "dominant_edges": "Dominant edges",
+        "active_hypothesis": "Active hypothesis",
+        "competing_hypotheses": "Competing hypotheses",
+        "recent_change": "Recent change",
+        "live_channels": "Live channels",
+        "simulated_channels": "Simulated channels",
+        "missing_channels": "Missing channels",
+        "stale_channels": "Stale channels",
+        "forecast_vs_outlook": "Market Outlook is the current forward view. Forecast Ledger is the accountability record.",
+        "research_only": "Research",
+        "watch": "Watch",
+        "elevated": "Elevated",
+        "deprioritized": "Deprioritized",
+        "observe": "Observe",
+    },
+    "zh": {
+        "view_modes": "首页视图切换",
+        "brief": "简报",
+        "outlook": "前瞻",
+        "candidates": "候选",
+        "expert": "专家",
+        "current_state": "当前状态",
+        "forward_outlook": "前瞻判断",
+        "portfolio_impact": "组合影响",
+        "research_candidates": "研究候选",
+        "forecast_accountability": "预测与兑现",
+        "expert_analysis": "专家分析",
+        "key_drivers": "关键驱动",
+        "market_outlook": "市场前瞻",
+        "scenario_map": "情景图",
+        "base_case": "基准情景",
+        "upside_scenario": "上行情景",
+        "downside_scenario": "下行情景",
+        "horizon": "观察周期",
+        "source": "来源",
+        "invalidation_conditions": "失效条件",
+        "insufficient_evidence": "证据不足",
+        "insufficient_outlook": "当前证据不足，无法形成更强前瞻判断。",
+        "why_holdings_matter": "为什么这会影响当前持仓",
+        "candidate_pool": "候选池",
+        "view_full_candidate_pool": "查看完整候选池",
+        "candidate_safety": "候选排序不是交易动作，只代表研究优先级。",
+        "all": "全部",
+        "portfolio_related": "组合相关",
+        "high_priority": "高优先级",
+        "new": "新进入",
+        "changed_recently": "近期变化",
+        "asset_theme": "资产 / 主题",
+        "priority": "优先级",
+        "relevance": "相关性",
+        "evidence_strength": "证据强度",
+        "thesis_direction": "论点方向",
+        "status": "状态",
+        "details": "详情",
+        "no_candidates": "尚未形成研究候选池。",
+        "candidate_changes": "候选变化",
+        "no_candidate_changes": "来源中没有记录近期候选变化。",
+        "forecast_ledger": "预测账本",
+        "forecast_accountability_title": "Atlas 是否值得信任？",
+        "view_all_forecasts": "查看全部预测",
+        "does_atlas_deserve_trust": "信任检查",
+        "low_sample": "样本仍然较少，校准只能作为方向参考。",
+        "latest_open": "最新未完成预测",
+        "no_forecasts": "Atlas 尚未积累足够的可验证预测。",
+        "causal_chain": "因果链",
+        "hypothesis_state": "假设状态",
+        "regime_state": "市场状态",
+        "confidence_composition": "置信度构成",
+        "data_quality": "数据质量",
+        "portfolio_sensitivity": "组合敏感性",
+        "forecast_evidence": "预测证据",
+        "raw_evidence": "原始证据",
+        "expand_raw": "原始证据",
+        "dominant_edges": "主导边",
+        "active_hypothesis": "主假设",
+        "competing_hypotheses": "竞争假设",
+        "recent_change": "近期变化",
+        "live_channels": "实时通道",
+        "simulated_channels": "模拟通道",
+        "missing_channels": "缺失通道",
+        "stale_channels": "过期通道",
+        "forecast_vs_outlook": "市场前瞻是当前对未来的判断；预测账本是已记录、可验证的责任链。",
+        "research_only": "研究",
+        "watch": "观察",
+        "elevated": "重点研究",
+        "deprioritized": "降优先级",
+        "observe": "观察",
+    },
 }
 
 
@@ -35,21 +185,29 @@ def home_content(state: Mapping[str, Any]) -> str:
     packet = _packet(state)
     market = _market(state)
     portfolio = _portfolio(state)
+    intelligence = build_home_intelligence(state)
+    outlook = intelligence["market_outlook"]
+    forecast = intelligence["forecast_accountability"]
+    candidates = intelligence["candidate_pool"]
+    expert = intelligence["expert_analysis"]
     action = decision["action"]
     risk = decision["risk"]
     summary = str(hero.get("summary") or t("home.default_meaning", lang))
-    triggers = [
-        t("home.trigger_attention", lang),
-        t("home.trigger_liquidity", lang),
-        t("home.trigger_freshness", lang),
-    ]
-    invalidations = _invalidation_items(market, lang)
     return f"""
-    <section class="hero-panel">
+    {_home_intelligence_style()}
+    <nav class="home-view-switch" aria-label="{escape(_home_label("view_modes", lang))}">
+      <button class="active" type="button" data-home-mode="brief" data-home-target="home-current-state">{escape(_home_label("brief", lang))}</button>
+      <button type="button" data-home-mode="outlook" data-home-target="home-forward-outlook">{escape(_home_label("outlook", lang))}</button>
+      <button type="button" data-home-mode="candidates" data-home-target="home-research-candidates">{escape(_home_label("candidates", lang))}</button>
+      <button type="button" data-home-mode="expert" data-home-target="home-expert-analysis">{escape(_home_label("expert", lang))}<span>{escape(str(expert.get("section_count") or 0))}</span></button>
+    </nav>
+
+    <section class="hero-panel home-current-state" id="home-current-state" data-home-zone="current">
+      <div class="home-zone-label"><span>01</span><strong>{escape(_home_label("current_state", lang))}</strong></div>
       <span class="kicker">{escape(str(hero.get("kicker") or t("home.today_change", lang)))}</span>
       <h1 class="hero-title localized-hero-title">{_dual_block(hero.get("title"), hero.get("secondary"))}</h1>
       <p class="hero-copy">{escape(summary)}</p>
-      <div class="primary-decision" style="margin-top: 22px;">
+      <div class="primary-decision home-primary-decision">
         <div>
           <span class="kicker">{escape(t("home.current_view", lang))}</span>
           <div class="decision-action localized-action">{_dual_block(action.get("primary"), action.get("secondary"))}</div>
@@ -57,49 +215,591 @@ def home_content(state: Mapping[str, Any]) -> str:
         </div>
         {_gauge(_confidence_value(packet))}
       </div>
+      <div class="home-key-drivers" aria-label="{escape(_home_label("key_drivers", lang))}">
+        {_driver_chips(packet, state, lang)}
+      </div>
     </section>
 
     {_proactive_update_card(state, lang)}
 
-    <section class="section-grid">
-      <article class="visual-card">
-        <span class="kicker">{escape(t("home.portfolio_meaning", lang))}</span>
-        <h2>{escape(_portfolio_headline(portfolio, lang))}</h2>
-        {_portfolio_minimap(portfolio)}
-      </article>
-      <article class="visual-card">
-        <span class="kicker">{escape(t("markets.trajectory", lang))}</span>
-        <h2>{escape(t("markets.regime", lang))}</h2>
-        {_regime_trajectory(state)}
-      </article>
-      <article class="visual-card">
-        <span class="kicker">{escape(t("home.data_freshness", lang))}</span>
-        <h2>{escape(t("markets.data_health", lang))}</h2>
-        {_freshness_map(market)}
+    <section class="home-zone home-forward-outlook" id="home-forward-outlook" data-home-zone="outlook">
+      <div class="home-zone-label"><span>02</span><strong>{escape(_home_label("forward_outlook", lang))}</strong></div>
+      <div class="home-outlook-layout">
+        <article class="focus-card home-outlook-main">
+          <span class="kicker">{escape(_home_label("market_outlook", lang))}</span>
+          <h2>{escape(_home_outlook_title(outlook, lang))}</h2>
+          <p>{escape(str(outlook.get("base_case") or _home_label("insufficient_outlook", lang)))}</p>
+          <div class="pill-row">
+            <span class="tag">{escape(_home_label("horizon", lang))}: {escape(str(outlook.get("horizon") or _home_label("insufficient_evidence", lang)))}</span>
+            <span class="tag">{escape(t("state.confidence", lang))}: {escape(_pct_text(float(outlook.get("confidence") or 0) * 100))}</span>
+            <span class="tag">{escape(_home_label("source", lang))}: {escape(str(outlook.get("source") or ""))}</span>
+          </div>
+        </article>
+        <article class="visual-card">
+          <span class="kicker">{escape(_home_label("scenario_map", lang))}</span>
+          {_scenario_map(outlook, lang)}
+        </article>
+      </div>
+      <article class="focus-card home-invalidation-card">
+        <span class="kicker">{escape(_home_label("invalidation_conditions", lang))}</span>
+        <ul class="plain-list">{_list_items(_localized_invalidations(outlook.get("invalidation_conditions"), lang))}</ul>
       </article>
     </section>
 
-    <section class="two-grid">
+    <section class="home-zone home-portfolio-impact" id="home-portfolio-impact" data-home-zone="portfolio">
+      <div class="home-zone-label"><span>03</span><strong>{escape(_home_label("portfolio_impact", lang))}</strong></div>
+      <div class="two-grid">
+        <article class="visual-card">
+          <span class="kicker">{escape(t("home.portfolio_meaning", lang))}</span>
+          <h2>{escape(_portfolio_headline(portfolio, lang))}</h2>
+          {_portfolio_minimap(portfolio)}
+        </article>
+        <article class="focus-card">
+          <span class="kicker">{escape(_home_label("why_holdings_matter", lang))}</span>
+          {_portfolio_impact_summary(portfolio, market, lang)}
+        </article>
+      </div>
+    </section>
+
+    <section class="home-zone home-research-candidates" id="home-research-candidates" data-home-zone="candidates">
+      <div class="home-zone-label"><span>04</span><strong>{escape(_home_label("research_candidates", lang))}</strong></div>
       <article class="focus-card">
-        <span class="kicker">{escape(t("home.watch_next", lang))}</span>
-        <ul class="plain-list">{_list_items(triggers)}</ul>
-      </article>
-      <article class="focus-card">
-        <span class="kicker">{escape(t("home.invalidate", lang))}</span>
-        <ul class="plain-list">{_list_items(invalidations)}</ul>
+        <div class="home-section-header">
+          <div>
+            <span class="kicker">{escape(_home_label("candidate_pool", lang))}</span>
+            <h2>{escape(_candidate_title(candidates, lang))}</h2>
+          </div>
+          <a class="secondary-button" href="/candidates">{escape(_home_label("view_full_candidate_pool", lang))}</a>
+        </div>
+        <p class="home-safety-note">{escape(_home_label("candidate_safety", lang))}</p>
+        {_candidate_filters(candidates, lang)}
+        {_candidate_table(candidates.get("top_items") or candidates.get("items") or [], lang, limit=5)}
+        {_candidate_changes(candidates.get("changes"), lang)}
       </article>
     </section>
 
-    <section class="visual-card">
-      <span class="kicker">{escape(t("home.trust", lang))}</span>
-      <h2>{escape(t("state.trust_score", lang))}</h2>
-      {_trust_trend(state)}
+    <section class="home-zone home-forecast-accountability" id="home-forecast-accountability" data-home-zone="forecast">
+      <div class="home-zone-label"><span>05</span><strong>{escape(_home_label("forecast_accountability", lang))}</strong></div>
+      <div class="two-grid">
+        <article class="visual-card">
+          <span class="kicker">{escape(_home_label("forecast_ledger", lang))}</span>
+          <h2>{escape(_home_label("forecast_accountability_title", lang))}</h2>
+          {_forecast_status_strip(forecast, lang)}
+          {_forecast_timeline(forecast.get("latest") if isinstance(forecast.get("latest"), list) else [])}
+          <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
+        </article>
+        <article class="focus-card">
+          <span class="kicker">{escape(_home_label("does_atlas_deserve_trust", lang))}</span>
+          {_forecast_accountability_copy(forecast, lang)}
+          <div class="button-row">
+            <a class="secondary-button" href="/predictions">{escape(t("nav.predictions", lang))}</a>
+            <a class="secondary-button" href="/learning">{escape(t("nav.learning", lang))}</a>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <details class="expert-details">
-      <summary>{escape(t("home.expert", lang))}</summary>
-      <pre>{escape(json.dumps(_expert_payload(state), ensure_ascii=False, indent=2))}</pre>
+    <section class="home-zone home-expert-analysis" id="home-expert-analysis" data-home-zone="expert">
+      <div class="home-zone-label"><span>06</span><strong>{escape(_home_label("expert_analysis", lang))}</strong></div>
+      {_expert_analysis_panel(expert, lang)}
+    </section>
+    {_home_intelligence_script()}
+    """
+
+
+def _home_label(key: str, lang: str) -> str:
+    return HOME_INTELLIGENCE_TEXT.get(lang, HOME_INTELLIGENCE_TEXT["en"]).get(key, key.replace("_", " ").title())
+
+
+def _home_outlook_title(outlook: Mapping[str, Any], lang: str) -> str:
+    base_state = str(outlook.get("base_state") or "").replace("_", " ").strip()
+    if not base_state or base_state.lower() == "unknown":
+        return _home_label("insufficient_outlook", lang)
+    if lang == "zh":
+        mapping = {
+            "RISK OFF": "基准：风险防御仍需观察",
+            "NORMAL": "基准：中性状态延续",
+            "ATTENTION EXPANSION": "基准：注意力扩张待确认",
+            "BREAKOUT": "基准：突破信号待验证",
+        }
+        return mapping.get(base_state.upper(), f"基准：{base_state}")
+    return f"Base case: {base_state.title()}"
+
+
+def _driver_chips(packet: Mapping[str, Any], state: Mapping[str, Any], lang: str) -> str:
+    drivers = [
+        (t("state.attention", lang), packet.get("attention_state") or state.get("attention")),
+        (t("state.liquidity", lang), packet.get("liquidity_state") or state.get("liquidity")),
+        (t("state.volatility", lang), state.get("volatility")),
+        (t("state.trust_score", lang), state.get("trust_index")),
+    ]
+    return "".join(
+        f'<span class="tag">{escape(str(label))}: {escape(_compact(value, t("empty.signal", lang)))}</span>'
+        for label, value in drivers
+    )
+
+
+def _scenario_map(outlook: Mapping[str, Any], lang: str) -> str:
+    scenarios = [
+        ("base", _home_label("base_case", lang), outlook.get("base_case")),
+        ("upside", _home_label("upside_scenario", lang), outlook.get("upside_scenario")),
+        ("downside", _home_label("downside_scenario", lang), outlook.get("downside_scenario")),
+    ]
+    cards = "".join(
+        f"""
+        <article class="scenario-card scenario-{escape(kind)}">
+          <strong>{escape(label)}</strong>
+          <p>{escape(str(text or _home_label("insufficient_evidence", lang)))}</p>
+        </article>
+        """
+        for kind, label, text in scenarios
+    )
+    return f"""
+    <div class="home-scenario-grid">{cards}</div>
+    <p class="home-safety-note">{escape(_home_label("forecast_vs_outlook", lang))}</p>
+    """
+
+
+def _localized_invalidations(items: Any, lang: str) -> list[str]:
+    raw = items if isinstance(items, list) else []
+    if not raw:
+        return [_home_label("insufficient_evidence", lang)]
+    if lang != "zh":
+        return [str(item).replace("_", " ") for item in raw[:5]]
+    mapping = {
+        "live_market_channel_interrupts_or_delays": "实时市场通道中断或延迟",
+        "market_data_remains_unavailable": "市场数据持续不可用",
+        "trust_score_deteriorates": "信任分数继续下降",
+        "portfolio_exposure_changes_materially": "组合暴露发生明显变化",
+        "later_runtime_state_conflicts_with_expected_structure": "后续运行状态与当前结构判断冲突",
+        "forecast_outcome_marked_invalidated_through_supported_lifecycle": "预测在支持的生命周期中被标记为失效",
+    }
+    return [mapping.get(str(item), str(item).replace("_", " ")) for item in raw[:5]]
+
+
+def _portfolio_impact_summary(portfolio: Mapping[str, Any], market: Mapping[str, Any], lang: str) -> str:
+    exposure = portfolio.get("exposure_map") if isinstance(portfolio.get("exposure_map"), Mapping) else {}
+    holdings = exposure.get("asset_concentration") if isinstance(exposure.get("asset_concentration"), list) else []
+    clusters = exposure.get("correlated_risk_clusters") if isinstance(exposure.get("correlated_risk_clusters"), list) else []
+    top_holdings = "".join(
+        f'<li><strong>{escape(str(item.get("asset") or "Asset"))}</strong> · {escape(_pct_text(item.get("exposure_pct")))}</li>'
+        for item in holdings[:3]
+        if isinstance(item, Mapping)
+    )
+    cluster_rows = "".join(
+        f'<li>{escape(str(item.get("cluster") or "Cluster"))}: {escape(_pct_text(item.get("exposure_pct")))} · {escape(str(item.get("risk") or ""))}</li>'
+        for item in clusters[:3]
+        if isinstance(item, Mapping)
+    )
+    buffer_label = "未分配缓冲" if lang == "zh" else "Unallocated buffer"
+    market_label = "当前市场影响" if lang == "zh" else "Current market impact"
+    return f"""
+    <div class="home-impact-stack">
+      <div><strong>{escape(_home_label("portfolio_related", lang))}</strong><ul class="plain-list">{top_holdings or f'<li>{escape(t("portfolio.no_percentages", lang))}</li>'}</ul></div>
+      <div><strong>{escape("集中风险" if lang == "zh" else "Concentration risk")}</strong><ul class="plain-list">{cluster_rows or f'<li>{escape(t("empty.context", lang))}</li>'}</ul></div>
+      <div class="pill-row">
+        <span class="tag">{escape(buffer_label)}: {escape(_pct_text(portfolio.get("cash_or_unassigned_pct")))}</span>
+        <span class="tag">{escape(market_label)}: {escape(_clean(market.get("status"), t("empty.signal", lang)))}</span>
+      </div>
+    </div>
+    """
+
+
+def _candidate_title(candidates: Mapping[str, Any], lang: str) -> str:
+    count = len(candidates.get("items") if isinstance(candidates.get("items"), list) else [])
+    if count:
+        return f"{count} {_home_label('research_candidates', lang)}"
+    return _home_label("no_candidates", lang)
+
+
+def _candidate_filters(candidates: Mapping[str, Any], lang: str) -> str:
+    filters = candidates.get("filters") if isinstance(candidates.get("filters"), Mapping) else {}
+    entries = [
+        ("all", _home_label("all", lang)),
+        ("portfolio", _home_label("portfolio_related", lang)),
+        ("high", _home_label("high_priority", lang)),
+        ("new", _home_label("new", lang)),
+        ("changed", _home_label("changed_recently", lang)),
+    ]
+    counts = {
+        "all": filters.get("all", 0),
+        "portfolio": filters.get("portfolio_related", 0),
+        "high": filters.get("high_priority", 0),
+        "new": filters.get("new", 0),
+        "changed": filters.get("changed_recently", 0),
+    }
+    buttons = "".join(
+        f'<button class="secondary-button candidate-filter{" active" if key == "all" else ""}" type="button" data-candidate-filter="{escape(key)}">{escape(label)} <span>{escape(str(counts.get(key, 0)))}</span></button>'
+        for key, label in entries
+    )
+    return f'<div class="candidate-filter-row">{buttons}</div>'
+
+
+def _candidate_table(items: Any, lang: str, *, limit: int | None = None) -> str:
+    candidates = [item for item in (items if isinstance(items, list) else []) if isinstance(item, Mapping)]
+    if limit:
+        candidates = candidates[:limit]
+    if not candidates:
+        return f'<div class="empty-state">{escape(_home_label("no_candidates", lang))}</div>'
+    rows = []
+    for index, item in enumerate(candidates):
+        priority = str(item.get("current_priority") or "")
+        relationship = str(item.get("portfolio_relationship") or "None")
+        status = _candidate_status_label(str(item.get("status") or "Watch"), lang)
+        filters = ["all"]
+        if relationship != "None":
+            filters.append("portfolio")
+        if priority in {"S", "A"}:
+            filters.append("high")
+        if index < 2:
+            filters.append("changed")
+        rows.append(
+            f"""
+            <article class="candidate-row" data-candidate-row data-candidate-filters="{escape(' '.join(filters))}">
+              <div>
+                <strong>{escape(str(item.get("asset") or ""))}</strong>
+                <span>{escape(str(item.get("theme") or ""))}</span>
+              </div>
+              <span>{escape(priority)}</span>
+              <span>{escape(_relationship_label(relationship, lang))}</span>
+              <span>{escape(str(item.get("evidence_strength") or _home_label("insufficient_evidence", lang)))}</span>
+              <span>{escape(status)}</span>
+              <details class="candidate-detail">
+                <summary>{escape(_home_label("details", lang))}</summary>
+                <p><strong>{escape(_home_label("thesis_direction", lang))}:</strong> {escape(str(item.get("thesis_direction") or ""))}</p>
+                <p><strong>{escape(t("home.top_risks", lang))}:</strong> {escape(str(item.get("key_risk") or ""))}</p>
+                <p><strong>{escape("Next trigger" if lang == "en" else "下一触发")}:</strong> {escape(str(item.get("next_trigger") or ""))}</p>
+                <p><strong>{escape(_home_label("source", lang))}:</strong> {escape(str(item.get("source_category") or ""))} · {escape(str(item.get("source") or ""))}</p>
+              </details>
+            </article>
+            """
+        )
+    return f"""
+    <div class="candidate-table" role="table" aria-label="{escape(_home_label("research_candidates", lang))}">
+      <div class="candidate-header" role="row">
+        <span>{escape(_home_label("asset_theme", lang))}</span>
+        <span>{escape(_home_label("priority", lang))}</span>
+        <span>{escape(_home_label("relevance", lang))}</span>
+        <span>{escape(_home_label("evidence_strength", lang))}</span>
+        <span>{escape(_home_label("status", lang))}</span>
+        <span>{escape(_home_label("details", lang))}</span>
+      </div>
+      {''.join(rows)}
+    </div>
+    """
+
+
+def _candidate_status_label(status: str, lang: str) -> str:
+    key = status.strip().lower().replace(" ", "_")
+    return {
+        "research": _home_label("research_only", lang),
+        "watch": _home_label("watch", lang),
+        "elevated": _home_label("elevated", lang),
+        "deprioritized": _home_label("deprioritized", lang),
+        "observe": _home_label("observe", lang),
+    }.get(key, status)
+
+
+def _relationship_label(value: str, lang: str) -> str:
+    if lang == "zh":
+        return {"Direct": "直接相关", "Indirect": "间接相关", "None": "无直接暴露", "Unknown": "未知"}.get(value, value)
+    return value
+
+
+def _candidate_changes(changes: Any, lang: str) -> str:
+    data = [item for item in (changes if isinstance(changes, list) else []) if isinstance(item, Mapping)]
+    if not data:
+        return f'<section class="candidate-changes"><h3>{escape(_home_label("candidate_changes", lang))}</h3><p>{escape(_home_label("no_candidate_changes", lang))}</p></section>'
+    labels = {
+        "entered_candidate_pool": "新进入候选池" if lang == "zh" else "Entered candidate pool",
+        "priority_raised": "研究优先级上调" if lang == "zh" else "Priority raised",
+        "priority_lowered": "研究优先级下调" if lang == "zh" else "Priority lowered",
+        "thesis_strengthened": "论点增强" if lang == "zh" else "Thesis strengthened",
+        "thesis_weakened": "论点减弱" if lang == "zh" else "Thesis weakened",
+    }
+    rows = "".join(
+        f'<li><strong>{escape(str(item.get("asset") or ""))}</strong> · {escape(labels.get(str(item.get("change_type")), str(item.get("change_type"))))}<br>{escape(str(item.get("why") or ""))}</li>'
+        for item in data[:4]
+    )
+    return f'<section class="candidate-changes"><h3>{escape(_home_label("candidate_changes", lang))}</h3><ul class="plain-list">{rows}</ul></section>'
+
+
+def _forecast_status_strip(forecast: Mapping[str, Any], lang: str) -> str:
+    counts = forecast.get("counts") if isinstance(forecast.get("counts"), Mapping) else {}
+    labels = [
+        ("open", "进行中" if lang == "zh" else "OPEN"),
+        ("matured", "已到期" if lang == "zh" else "MATURED"),
+        ("verified", "已验证" if lang == "zh" else "VERIFIED"),
+        ("invalidated", "已失效" if lang == "zh" else "INVALIDATED"),
+        ("inconclusive", "无法判断" if lang == "zh" else "INCONCLUSIVE"),
+    ]
+    return '<div class="forecast-status-strip">' + "".join(
+        f'<span><strong>{escape(str(counts.get(key, 0)))}</strong>{escape(label)}</span>'
+        for key, label in labels
+    ) + "</div>"
+
+
+def _forecast_accountability_copy(forecast: Mapping[str, Any], lang: str) -> str:
+    latest = forecast.get("latest") if isinstance(forecast.get("latest"), list) else []
+    recent = latest[0] if latest and isinstance(latest[0], Mapping) else {}
+    if not recent:
+        return f'<p>{escape(_home_label("no_forecasts", lang))}</p>'
+    sample = str(forecast.get("sample_warning") or _home_label("low_sample", lang))
+    return f"""
+    <p>{escape(sample)}</p>
+    <dl class="expert-dl">
+      <dt>{escape(_home_label("latest_open", lang))}</dt><dd>{escape(str(recent.get("forecast_statement") or recent.get("expected_direction_state") or ""))}</dd>
+      <dt>{escape(_home_label("horizon", lang))}</dt><dd>{escape(str(recent.get("horizon") or ""))}</dd>
+      <dt>{escape(t("state.confidence", lang))}</dt><dd>{escape(_pct_text(float(recent.get("confidence") or 0) * 100))}</dd>
+    </dl>
+    """
+
+
+def _expert_analysis_panel(expert: Mapping[str, Any], lang: str) -> str:
+    return f"""
+    <details class="expert-details home-expert-panel" id="expert-analysis-panel">
+      <summary><span>{escape(_home_label("expert_analysis", lang))}</span><strong>{escape(str(expert.get("section_count") or 0))}</strong></summary>
+      <div class="expert-grid">
+        {_expert_section("A", _home_label("causal_chain", lang), _expert_causal_chain(expert, lang))}
+        {_expert_section("B", _home_label("hypothesis_state", lang), _expert_hypothesis(expert, lang))}
+        {_expert_section("C", _home_label("regime_state", lang), _expert_regime(expert, lang))}
+        {_expert_section("D", _home_label("confidence_composition", lang), _expert_confidence(expert, lang))}
+        {_expert_section("E", _home_label("data_quality", lang), _expert_data_quality(expert, lang))}
+        {_expert_section("F", _home_label("portfolio_sensitivity", lang), _expert_portfolio(expert, lang))}
+        {_expert_section("G", _home_label("forecast_evidence", lang), _expert_forecast(expert, lang))}
+        {_expert_section("H", _home_label("invalidation_conditions", lang), '<ul class="plain-list">' + _list_items(_localized_invalidations(expert.get("invalidation_conditions"), lang)) + '</ul>')}
+        {_expert_section("I", _home_label("raw_evidence", lang), _expert_raw(expert))}
+      </div>
     </details>
+    """
+
+
+def _expert_section(letter: str, title: str, body: str) -> str:
+    return f'<article class="expert-section"><span>{escape(letter)}</span><h3>{escape(title)}</h3>{body}</article>'
+
+
+def _expert_causal_chain(expert: Mapping[str, Any], lang: str) -> str:
+    chain = expert.get("causal_chain") if isinstance(expert.get("causal_chain"), list) else []
+    edges = expert.get("causal_edges") if isinstance(expert.get("causal_edges"), list) else []
+    chain_html = '<div class="causal-chain">' + "".join(f'<span>{escape(str(item))}</span>' for item in chain[:5]) + "</div>"
+    edge_html = "".join(
+        f'<li>{escape(str(edge.get("from")))} → {escape(str(edge.get("to")))} · Δ {escape(str(edge.get("weight_delta")))}</li>'
+        for edge in edges[:4]
+        if isinstance(edge, Mapping)
+    )
+    empty_row = f"<li>{escape(t('empty.context', lang))}</li>"
+    return chain_html + f'<p class="home-safety-note">{escape(_home_label("dominant_edges", lang))}</p><ul class="plain-list">{edge_html or empty_row}</ul>'
+
+
+def _expert_hypothesis(expert: Mapping[str, Any], lang: str) -> str:
+    hypo = expert.get("hypothesis_state") if isinstance(expert.get("hypothesis_state"), Mapping) else {}
+    competitors = hypo.get("competing") if isinstance(hypo.get("competing"), list) else []
+    return f"""
+    <dl class="expert-dl">
+      <dt>{escape(_home_label("active_hypothesis", lang))}</dt><dd>{escape(str(hypo.get("active") or t("empty.context", lang)))}</dd>
+      <dt>{escape(t("state.confidence", lang))}</dt><dd>{escape(_pct_text(float(hypo.get("confidence") or 0) * 100))}</dd>
+      <dt>{escape(_home_label("recent_change", lang))}</dt><dd>{escape(str(hypo.get("recent_change") or ""))}</dd>
+    </dl>
+    <p><strong>{escape(_home_label("competing_hypotheses", lang))}</strong></p>
+    <ul class="plain-list">{_list_items(competitors[:3])}</ul>
+    """
+
+
+def _expert_regime(expert: Mapping[str, Any], lang: str) -> str:
+    regime = expert.get("regime_state") if isinstance(expert.get("regime_state"), Mapping) else {}
+    return f"""
+    <dl class="expert-dl">
+      <dt>{escape(t("state.current_regime", lang))}</dt><dd>{escape(str(regime.get("current") or t("empty.signal", lang)))}</dd>
+      <dt>{escape("Proposed" if lang == "en" else "建议状态")}</dt><dd>{escape(str(regime.get("proposed") or t("empty.signal", lang)))}</dd>
+      <dt>{escape(t("state.volatility", lang))}</dt><dd>{escape(str(regime.get("volatility") or t("empty.signal", lang)))}</dd>
+    </dl>
+    """
+
+
+def _expert_confidence(expert: Mapping[str, Any], lang: str) -> str:
+    rows = []
+    components = expert.get("confidence_composition") if isinstance(expert.get("confidence_composition"), list) else []
+    for item in components:
+        if not isinstance(item, Mapping):
+            continue
+        pct = max(0, min(100, float(item.get("value") or 0) * 100))
+        rows.append(
+            f'<div class="confidence-row"><span>{escape(str(item.get("name") or "").replace("_", " "))}</span><strong>{pct:.0f}%</strong><i style="width:{pct:.0f}%"></i><small>{escape(str(item.get("source") or ""))}</small></div>'
+        )
+    return "".join(rows) or f'<p>{escape(t("empty.context", lang))}</p>'
+
+
+def _expert_data_quality(expert: Mapping[str, Any], lang: str) -> str:
+    data = expert.get("data_quality") if isinstance(expert.get("data_quality"), Mapping) else {}
+    return f"""
+    <div class="forecast-status-strip expert-data-strip">
+      <span><strong>{escape(str(data.get("live_channels", 0)))}</strong>{escape(_home_label("live_channels", lang))}</span>
+      <span><strong>{escape(str(data.get("simulated_channels", 0)))}</strong>{escape(_home_label("simulated_channels", lang))}</span>
+      <span><strong>{escape(str(data.get("missing_channels", 0)))}</strong>{escape(_home_label("missing_channels", lang))}</span>
+      <span><strong>{escape(str(data.get("stale_channels", 0)))}</strong>{escape(_home_label("stale_channels", lang))}</span>
+    </div>
+    <p>{escape(str(data.get("limitation") or ""))}</p>
+    """
+
+
+def _expert_portfolio(expert: Mapping[str, Any], lang: str) -> str:
+    portfolio = expert.get("portfolio_sensitivity") if isinstance(expert.get("portfolio_sensitivity"), Mapping) else {}
+    holdings = portfolio.get("largest_positions") if isinstance(portfolio.get("largest_positions"), list) else []
+    rows = "".join(
+        f'<li>{escape(str(item.get("asset") or ""))} · {escape(_pct_text(item.get("exposure_pct")))}</li>'
+        for item in holdings
+        if isinstance(item, Mapping)
+    )
+    return f"""
+    <ul class="plain-list">{rows or f'<li>{escape(t("portfolio.no_percentages", lang))}</li>'}</ul>
+    <p>{escape("Privacy: percentage-only; no account value is exposed." if lang == "en" else "隐私：仅展示百分比，不展示账户金额。")}</p>
+    """
+
+
+def _expert_forecast(expert: Mapping[str, Any], lang: str) -> str:
+    forecast = expert.get("forecast_evidence") if isinstance(expert.get("forecast_evidence"), Mapping) else {}
+    drivers = forecast.get("drivers") if isinstance(forecast.get("drivers"), list) else []
+    return f"""
+    <dl class="expert-dl">
+      <dt>ID</dt><dd>{escape(str(forecast.get("latest_forecast_id") or t("empty.context", lang)))}</dd>
+      <dt>{escape(_home_label("status", lang))}</dt><dd>{escape(str(forecast.get("status") or t("empty.context", lang)))}</dd>
+      <dt>{escape(_home_label("horizon", lang))}</dt><dd>{escape(str(forecast.get("horizon") or t("empty.context", lang)))}</dd>
+    </dl>
+    <p>{escape(str(forecast.get("statement") or t("empty.context", lang)))}</p>
+    <ul class="plain-list">{_list_items(drivers[:3])}</ul>
+    """
+
+
+def _expert_raw(expert: Mapping[str, Any]) -> str:
+    raw = expert.get("raw_evidence") if isinstance(expert.get("raw_evidence"), Mapping) else {}
+    return f"""
+    <details class="raw-evidence-details">
+      <summary>{escape("Raw Evidence")}</summary>
+      <pre>{escape(json.dumps(raw, ensure_ascii=False, indent=2))}</pre>
+    </details>
+    """
+
+
+def _home_intelligence_style() -> str:
+    return """
+    <style>
+    .home-view-switch { position: sticky; top: 82px; z-index: 7; display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px solid var(--line); border-radius:var(--r16); background:rgba(11,15,20,.72); backdrop-filter:blur(18px); }
+    .home-view-switch button { min-height:36px; display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); color:var(--subtle); cursor:pointer; }
+    .home-view-switch button.active { background:var(--accent); color:var(--bg); }
+    .home-view-switch span { min-width:22px; min-height:22px; display:grid; place-items:center; border-radius:999px; background:rgba(0,0,0,.14); font-size:.72rem; }
+    .home-zone { display:grid; gap:14px; scroll-margin-top:140px; }
+    .home-zone-label { display:inline-flex; align-items:center; gap:10px; color:var(--subtle); font-weight:740; }
+    .home-zone-label span { width:34px; height:34px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-size:.78rem; }
+    .home-primary-decision { margin-top:22px; }
+    .home-key-drivers { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+    .home-outlook-layout { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr); gap:14px; }
+    .home-outlook-main { min-height:230px; }
+    .home-scenario-grid { display:grid; gap:10px; }
+    .scenario-card { padding:13px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); }
+    .scenario-card strong { display:block; margin-bottom:7px; }
+    .scenario-base { border-color:rgba(219,234,254,.3); }
+    .scenario-upside { border-color:rgba(158,230,184,.28); }
+    .scenario-downside { border-color:rgba(244,165,179,.28); }
+    .home-safety-note { color:var(--muted); font-size:.86rem; line-height:1.45; }
+    .home-impact-stack { display:grid; gap:12px; }
+    .home-section-header { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+    .candidate-filter-row { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .candidate-filter.active { background:var(--accent); color:var(--bg); }
+    .candidate-table { display:grid; gap:7px; overflow-x:auto; }
+    .candidate-header, .candidate-row { min-width:840px; display:grid; grid-template-columns:1.5fr .48fr .7fr .8fr .7fr 1fr; gap:8px; align-items:start; padding:10px; border:1px solid var(--line); border-radius:var(--r12); }
+    .candidate-header { color:var(--muted); background:rgba(255,255,255,.025); font-size:.78rem; font-weight:760; text-transform:uppercase; }
+    .candidate-row { background:rgba(255,255,255,.04); }
+    .candidate-row strong, .candidate-row span { overflow-wrap:anywhere; }
+    .candidate-row > div > span { display:block; margin-top:4px; color:var(--muted); font-size:.78rem; }
+    .candidate-detail summary { cursor:pointer; color:var(--accent); }
+    .candidate-detail p { margin:8px 0 0; font-size:.86rem; }
+    .candidate-changes { margin-top:16px; }
+    .forecast-status-strip { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:12px 0; }
+    .forecast-status-strip span { min-height:70px; display:grid; place-items:center; gap:4px; padding:9px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); color:var(--muted); text-align:center; font-size:.72rem; }
+    .forecast-status-strip strong { color:var(--text); font-size:1.25rem; }
+    .home-expert-panel summary { justify-content:space-between; gap:12px; }
+    .home-expert-panel summary strong { min-width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:var(--accent); color:var(--bg); }
+    .expert-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:14px; border-top:1px solid var(--line); }
+    .expert-section { min-height:160px; padding:14px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); }
+    .expert-section > span { display:inline-grid; place-items:center; width:28px; height:28px; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-weight:780; }
+    .expert-section h3 { margin:9px 0; font-size:1rem; }
+    .causal-chain { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .causal-chain span { display:inline-flex; align-items:center; min-height:34px; padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); }
+    .causal-chain span:not(:last-child)::after { content:"↓"; margin-left:9px; color:var(--accent); }
+    .expert-dl { display:grid; grid-template-columns:minmax(100px,.45fr) minmax(0,1fr); gap:8px; margin:0; }
+    .expert-dl dt { color:var(--muted); }
+    .expert-dl dd { margin:0; overflow-wrap:anywhere; }
+    .confidence-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; align-items:center; margin:8px 0; }
+    .confidence-row i { grid-column:1 / -1; display:block; height:7px; border-radius:999px; background:var(--accent); }
+    .confidence-row small { grid-column:1 / -1; color:var(--muted); }
+    .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
+    @media (max-width:1180px) { .home-outlook-layout, .expert-grid { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    </style>
+    """
+
+
+def _home_intelligence_script() -> str:
+    return """
+    <script>
+    (function () {
+      const savedMode = localStorage.getItem("atlasHomeMode") || "brief";
+      function activateMode(mode, scroll) {
+        document.querySelectorAll("[data-home-mode]").forEach(function (button) {
+          const active = button.getAttribute("data-home-mode") === mode;
+          button.classList.toggle("active", active);
+          if (active && scroll) {
+            const target = document.getElementById(button.getAttribute("data-home-target"));
+            if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+        localStorage.setItem("atlasHomeMode", mode);
+      }
+      document.querySelectorAll("[data-home-mode]").forEach(function (button) {
+        button.addEventListener("click", function () { activateMode(button.getAttribute("data-home-mode"), true); });
+      });
+      activateMode(savedMode, false);
+      const expert = document.getElementById("expert-analysis-panel");
+      if (expert) {
+        expert.open = localStorage.getItem("atlasExpertOpen") === "yes";
+        expert.addEventListener("toggle", function () { localStorage.setItem("atlasExpertOpen", expert.open ? "yes" : "no"); });
+      }
+      document.querySelectorAll("[data-candidate-filter]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const filter = button.getAttribute("data-candidate-filter") || "all";
+          document.querySelectorAll("[data-candidate-filter]").forEach(function (item) { item.classList.toggle("active", item === button); });
+          document.querySelectorAll("[data-candidate-row]").forEach(function (row) {
+            const filters = (row.getAttribute("data-candidate-filters") || "all").split(" ");
+            row.style.display = filters.indexOf(filter) >= 0 ? "" : "none";
+          });
+        });
+      });
+    })();
+    </script>
+    """
+
+
+def candidate_pool_content(state: Mapping[str, Any]) -> str:
+    lang = current_language()
+    candidates = build_home_intelligence(state)["candidate_pool"]
+    return f"""
+    {_home_intelligence_style()}
+    <section class="hero-panel">
+      <span class="kicker">{escape(_home_label("candidate_pool", lang))}</span>
+      <h1 class="hero-title">{escape(_candidate_title(candidates, lang))}</h1>
+      <p class="hero-copy">{escape(_home_label("candidate_safety", lang))}</p>
+      <div class="pill-row" style="margin-top:18px;">
+        <span class="tag">{escape(_home_label("source", lang))}: {escape(str(candidates.get("source") or ""))}</span>
+        <span class="tag">{escape(_home_label("status", lang))}: {escape(str(candidates.get("status") or ""))}</span>
+      </div>
+    </section>
+    <section class="focus-card">
+      {_candidate_filters(candidates, lang)}
+      {_candidate_table(candidates.get("items"), lang)}
+      {_candidate_changes(candidates.get("changes"), lang)}
+    </section>
+    {_home_intelligence_script()}
     """
 
 

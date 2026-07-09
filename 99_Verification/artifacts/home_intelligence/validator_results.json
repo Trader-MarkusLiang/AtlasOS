@@ -1,0 +1,153 @@
+{
+  "checks": [
+    {
+      "name": "state exposes candidate_pool",
+      "passed": true
+    },
+    {
+      "name": "state exposes forecast_ledger",
+      "passed": true
+    },
+    {
+      "name": "market outlook distinct from ledger",
+      "passed": true
+    },
+    {
+      "name": "expert analysis has nine sections",
+      "passed": true
+    },
+    {
+      "name": "candidate ranking safety flag",
+      "passed": true
+    },
+    {
+      "name": "zh home contains 当前状态",
+      "passed": true
+    },
+    {
+      "name": "zh home contains 市场前瞻",
+      "passed": true
+    },
+    {
+      "name": "zh home contains 组合影响",
+      "passed": true
+    },
+    {
+      "name": "zh home contains 研究候选",
+      "passed": true
+    },
+    {
+      "name": "zh home contains 预测与兑现",
+      "passed": true
+    },
+    {
+      "name": "zh home contains 专家分析",
+      "passed": true
+    },
+    {
+      "name": "zh home contains 原始证据",
+      "passed": true
+    },
+    {
+      "name": "zh home includes candidate safety",
+      "passed": true
+    },
+    {
+      "name": "zh home no Buy/Sell candidate action",
+      "passed": true
+    },
+    {
+      "name": "zh home has forecast link",
+      "passed": true
+    },
+    {
+      "name": "zh home has candidate route link",
+      "passed": true
+    },
+    {
+      "name": "zh home has expert raw nested details",
+      "passed": true
+    },
+    {
+      "name": "zh home has candidate filters",
+      "passed": true
+    },
+    {
+      "name": "zh candidates page title",
+      "passed": true
+    },
+    {
+      "name": "zh candidates page has details",
+      "passed": true
+    },
+    {
+      "name": "zh candidates page no Buy/Sell",
+      "passed": true
+    },
+    {
+      "name": "en home contains Current State",
+      "passed": true
+    },
+    {
+      "name": "en home contains Market Outlook",
+      "passed": true
+    },
+    {
+      "name": "en home contains Portfolio Impact",
+      "passed": true
+    },
+    {
+      "name": "en home contains Research Candidates",
+      "passed": true
+    },
+    {
+      "name": "en home contains Forecast Accountability",
+      "passed": true
+    },
+    {
+      "name": "en home contains Expert Analysis",
+      "passed": true
+    },
+    {
+      "name": "en home contains Raw Evidence",
+      "passed": true
+    },
+    {
+      "name": "en home includes candidate safety",
+      "passed": true
+    },
+    {
+      "name": "en home no Buy/Sell candidate action",
+      "passed": true
+    },
+    {
+      "name": "en home has forecast link",
+      "passed": true
+    },
+    {
+      "name": "en home has candidate route link",
+      "passed": true
+    },
+    {
+      "name": "en home has expert raw nested details",
+      "passed": true
+    },
+    {
+      "name": "en home has candidate filters",
+      "passed": true
+    },
+    {
+      "name": "en candidates page title",
+      "passed": true
+    },
+    {
+      "name": "en candidates page has details",
+      "passed": true
+    },
+    {
+      "name": "en candidates page no Buy/Sell",
+      "passed": true
+    }
+  ],
+  "status": "PASS"
+}

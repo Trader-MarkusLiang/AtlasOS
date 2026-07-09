@@ -41,6 +41,7 @@ from ui.components.structural_drift_timeline import render_structural_drift_time
 from ui.components.workflow_graph import infer_active_workflow_stage, render_workflow_graph
 from ui.i18n.i18n import current_language, set_language, t, translation_payload
 from ui.presentation.cognitive_localization import build_cognitive_presentation
+from ui.presentation.home_intelligence import build_candidate_pool
 from ui.pages.dev_registry import load_roadmap, render_dev_registry_page, roadmap_api_payload
 from ui.pages.getting_started import build_getting_started_status, render_getting_started_page
 from ui.pages.home import render_home_page
@@ -55,6 +56,7 @@ from ui.pages.system_guide import render_system_guide_page
 from ui.pages.workflow import render_workflow_page
 from ui.pages.product_views import (
     ask_content,
+    candidate_pool_content,
     control_content,
     dev_registry_content,
     home_content,
@@ -155,6 +157,16 @@ def create_app() -> Any:
     async def portfolio() -> Any:
         state = state_api()
         return _product_shell("portfolio", portfolio_content(state), state)
+
+    @app.get("/candidates", response_class=HTMLResponse)
+    async def candidates() -> Any:
+        state = state_api()
+        return _product_shell("candidates", candidate_pool_content(state), state)
+
+    @app.get("/research-candidates", response_class=HTMLResponse)
+    async def research_candidates() -> Any:
+        state = state_api()
+        return _product_shell("candidates", candidate_pool_content(state), state)
 
     @app.get("/markets", response_class=HTMLResponse)
     async def markets(format: str = "html") -> Any:
@@ -385,6 +397,8 @@ def state_api() -> Dict[str, Any]:
     transitions = store.get_state_transitions(limit=1000)
     llm_summary = _llm_trace_summary(read_llm_traces(log_path=_llm_trace_path(), limit=100))
     portfolio_context = build_portfolio_context(config_path=_user_config_path())
+    forecast_ledger = list_forecasts(db_path=_db_path(), limit=25)
+    candidate_pool = build_candidate_pool(portfolio_context=portfolio_context)
     market_intelligence = _market_intelligence_state()
     payload = {
         "timestamp": utc_now_iso(),
@@ -399,6 +413,8 @@ def state_api() -> Dict[str, Any]:
         "last_decision_packet": metadata.get("decision_packet", {}),
         "last_decision_brief_id": latest_brief.get("id"),
         "portfolio_context": portfolio_context,
+        "forecast_ledger": forecast_ledger,
+        "candidate_pool": candidate_pool,
         "market_intelligence": market_intelligence,
         "proactive_update_state": store.get_state("proactive_update_state"),
         "daily_cycle": store.get_state("daily_cycle_state"),
@@ -2815,6 +2831,9 @@ class _StdlibHandler(BaseHTTPRequestHandler):
         elif parsed.path == "/portfolio":
             state = state_api()
             self._send_html(_product_shell("portfolio", portfolio_content(state), state))
+        elif parsed.path in {"/candidates", "/research-candidates"}:
+            state = state_api()
+            self._send_html(_product_shell("candidates", candidate_pool_content(state), state))
         elif parsed.path == "/markets":
             data = _market_intelligence_state()
             if query.get("format") == "json":
