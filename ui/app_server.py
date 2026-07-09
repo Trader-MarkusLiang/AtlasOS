@@ -41,6 +41,7 @@ from ui.components.structural_drift_timeline import render_structural_drift_time
 from ui.components.workflow_graph import infer_active_workflow_stage, render_workflow_graph
 from ui.i18n.i18n import set_language, t, translation_payload
 from ui.pages.dev_registry import load_roadmap, render_dev_registry_page, roadmap_api_payload
+from ui.pages.getting_started import build_getting_started_status, render_getting_started_page
 from ui.pages.home import render_home_page
 from ui.pages.learning import render_learning_page
 from ui.pages.markets import render_markets_page
@@ -102,18 +103,30 @@ def create_app() -> Any:
     @app.get("/", response_class=HTMLResponse)
     async def landing() -> Any:
         state = state_api()
-        return _product_shell("home", home_content(state), state)
+        return _product_shell("home", _home_content_with_setup_banner(state), state)
 
     @app.get("/home", response_class=HTMLResponse)
     async def home() -> Any:
         state = state_api()
-        return _product_shell("home", home_content(state), state)
+        return _product_shell("home", _home_content_with_setup_banner(state), state)
 
     @app.get("/setup", response_class=HTMLResponse)
     async def setup() -> Any:
         state = state_api()
         content, script = setup_content(load_user_config(_user_config_path()))
         return _product_shell("setup", content, state, page_script=script)
+
+    @app.get("/getting-started", response_class=HTMLResponse)
+    async def getting_started() -> Any:
+        state = state_api()
+        config = load_user_config(_user_config_path())
+        readiness = build_getting_started_status(config, state)
+        content, script = render_getting_started_page(config, state, readiness)
+        return _product_shell("getting_started", content, state, page_script=script)
+
+    @app.get("/getting-started/status")
+    async def getting_started_status() -> Any:
+        return JSONResponse(getting_started_status_api())
 
     @app.get("/chat", response_class=HTMLResponse)
     async def chat_page() -> Any:
@@ -389,6 +402,14 @@ def state_api() -> Dict[str, Any]:
     }
 
 
+def getting_started_status_api() -> Dict[str, Any]:
+    """Return a no-secret readiness projection for the guided start center."""
+
+    state = state_api()
+    config = load_user_config(_user_config_path())
+    return build_getting_started_status(config, state)
+
+
 async def _request_payload(request: Request) -> Dict[str, Any]:
     content_type = request.headers.get("content-type", "") if hasattr(request, "headers") else ""
     raw = await request.body()
@@ -481,6 +502,39 @@ def _product_shell(
         page_script=page_script,
         include_inspector=include_inspector,
     )
+
+
+def _home_content_with_setup_banner(state: Dict[str, Any]) -> str:
+    config = load_user_config(_user_config_path())
+    readiness = build_getting_started_status(config, state)
+    overall = readiness.get("overall_readiness", {}) if isinstance(readiness.get("overall_readiness"), dict) else {}
+    if overall.get("can_start"):
+        return home_content(state)
+    lang = str(config.get("ui", {}).get("language") or "en") if isinstance(config.get("ui"), dict) else "en"
+    banner = f"""
+    <section class="focus-card" id="setup-incomplete-banner" data-setup-incomplete-banner>
+      <span class="kicker">{_escape(t("getting.banner_kicker", lang))}</span>
+      <h2>{_escape(t("getting.banner_title", lang))}</h2>
+      <p>{_escape(t("getting.banner_body", lang))}</p>
+      <div class="button-row">
+        <a class="primary-button" href="/getting-started">{_escape(t("getting.continue_setup", lang))}</a>
+        <button class="secondary-button" type="button" id="dismiss-setup-banner">{_escape(t("getting.dismiss", lang))}</button>
+      </div>
+    </section>
+    <script>
+    (function () {{
+      var banner = document.getElementById("setup-incomplete-banner");
+      if (!banner) return;
+      if (localStorage.getItem("atlasSetupBannerDismissed") === "yes") banner.style.display = "none";
+      var button = document.getElementById("dismiss-setup-banner");
+      if (button) button.addEventListener("click", function () {{
+        localStorage.setItem("atlasSetupBannerDismissed", "yes");
+        banner.style.display = "none";
+      }});
+    }})();
+    </script>
+    """
+    return banner + home_content(state)
 
 
 def _system_interface_page() -> Any:
@@ -2621,14 +2675,22 @@ class _StdlibHandler(BaseHTTPRequestHandler):
         query = {key: values[-1] for key, values in parse_qs(parsed.query).items() if values}
         if parsed.path == "/":
             state = state_api()
-            self._send_html(_product_shell("home", home_content(state), state))
+            self._send_html(_product_shell("home", _home_content_with_setup_banner(state), state))
         elif parsed.path == "/home":
             state = state_api()
-            self._send_html(_product_shell("home", home_content(state), state))
+            self._send_html(_product_shell("home", _home_content_with_setup_banner(state), state))
         elif parsed.path == "/setup":
             state = state_api()
             content, script = setup_content(load_user_config(_user_config_path()))
             self._send_html(_product_shell("setup", content, state, page_script=script))
+        elif parsed.path == "/getting-started":
+            state = state_api()
+            config = load_user_config(_user_config_path())
+            readiness = build_getting_started_status(config, state)
+            content, script = render_getting_started_page(config, state, readiness)
+            self._send_html(_product_shell("getting_started", content, state, page_script=script))
+        elif parsed.path == "/getting-started/status":
+            self._send_json(getting_started_status_api())
         elif parsed.path == "/chat":
             state = state_api()
             content, script = ask_content(state)

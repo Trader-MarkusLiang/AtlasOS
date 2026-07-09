@@ -10,6 +10,7 @@ from ui.i18n.i18n import t
 
 PRIMARY_NAV = [
     ("home", "/", "nav.home"),
+    ("getting_started", "/getting-started", "nav.getting_started"),
     ("ask", "/dashboard", "nav.ask"),
     ("portfolio", "/portfolio", "nav.portfolio"),
     ("markets", "/markets", "nav.markets"),

@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-09_0901_getting-started-center.md`
 - `docs/codex-sessions/completed/2026-07-09_0715_frontend-master-execution.md`
 - `docs/codex-sessions/completed/2026-07-08_2345_frontend-master-current-closure.md`
 - `docs/codex-sessions/completed/2026-07-08_2235_frontend-master-productization.md`

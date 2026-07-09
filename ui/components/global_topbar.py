@@ -12,6 +12,7 @@ from ui.i18n.i18n import t
 
 PAGE_TITLES = {
     "home": "page.home",
+    "getting_started": "page.getting_started",
     "ask": "page.ask",
     "portfolio": "page.portfolio",
     "markets": "page.markets",
