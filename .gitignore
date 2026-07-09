@@ -16,3 +16,7 @@ build/
 # Local portfolio data
 portfolio.local.yaml
 06_Portfolio/portfolio.local.yaml
+
+# Local verification artifacts that may include private portfolio context
+99_Verification/artifacts/home_localization/
+99_Verification/artifacts/workflow_map/

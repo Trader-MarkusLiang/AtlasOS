@@ -216,6 +216,53 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .workflow-hero-actions {
   margin-top: 22px;
 }
+.workflow-priority-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 980px;
+  margin-top: 24px;
+}
+.workflow-priority-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-height: 92px;
+  padding: 14px;
+  border: 1px solid rgba(219, 234, 254, 0.16);
+  border-radius: var(--r16);
+  background: rgba(255,255,255,0.052);
+  transition: transform var(--fast), border-color var(--fast), background var(--fast);
+}
+.workflow-priority-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(219, 234, 254, 0.32);
+  background: rgba(255,255,255,0.074);
+}
+.workflow-priority-item > span,
+.workflow-section-label strong {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(219, 234, 254, 0.12);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 780;
+  flex: 0 0 auto;
+}
+.workflow-priority-item strong {
+  display: block;
+  line-height: 1.2;
+}
+.workflow-priority-item p {
+  margin: 6px 0 0;
+  color: var(--subtle);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
 .focus-card { padding: 22px; }
 .panel { padding: 16px; box-shadow: none; }
 .kicker {
@@ -232,6 +279,27 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-weight: 760;
   overflow-wrap: anywhere;
   text-wrap: balance;
+}
+.localized-hero-title,
+.localized-action {
+  display: grid;
+  gap: 8px;
+}
+.localized-hero-title small,
+.localized-action small,
+.v2-regime-title small,
+.v2-decision-line strong small,
+.inline-dual small {
+  display: block;
+  color: var(--muted);
+  font-size: clamp(0.86rem, 1.2vw, 1.02rem);
+  font-weight: 640;
+  line-height: 1.25;
+}
+.inline-dual {
+  display: inline-grid;
+  gap: 2px;
+  vertical-align: middle;
 }
 .hero-copy {
   max-width: 760px;
@@ -325,9 +393,20 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 .workflow-section-intro {
   display: grid;
-  gap: 8px;
-  max-width: 860px;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  max-width: 940px;
   padding: 4px 2px 0;
+}
+.workflow-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  margin-bottom: 10px;
+  color: var(--subtle);
+  font-size: 0.86rem;
+  font-weight: 720;
 }
 .workflow-section-intro h2 {
   margin: 0;
@@ -719,11 +798,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   position: relative;
   overflow: hidden;
   scroll-margin-top: 96px;
-  padding: 20px;
+  padding: 22px;
   border-color: rgba(219, 234, 254, 0.26);
   background:
-    radial-gradient(circle at 18% 0%, rgba(219, 234, 254, 0.12), transparent 34%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)),
+    linear-gradient(135deg, rgba(219, 234, 254, 0.11), rgba(158, 230, 184, 0.045) 42%, rgba(255, 255, 255, 0.026)),
     var(--surface-muted);
 }
 .architecture-card-primary::before {
@@ -748,6 +826,28 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   max-width: 760px;
   margin: 0;
 }
+.architecture-card-header h2 {
+  font-size: clamp(1.35rem, 2.2vw, 2.35rem);
+  line-height: 1.08;
+}
+.architecture-meta-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.architecture-meta-pills span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 1px solid rgba(219, 234, 254, 0.18);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.055);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 720;
+}
 .architecture-image-frame {
   display: block;
   overflow: auto;
@@ -767,6 +867,60 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   max-height: min(76vh, 840px);
   border-color: rgba(219, 234, 254, 0.24);
 }
+.architecture-lens {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.52fr) minmax(0, 1.8fr);
+  gap: 14px;
+  align-items: stretch;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(219, 234, 254, 0.14);
+  border-radius: var(--r16);
+  background: rgba(6, 12, 22, 0.42);
+}
+.architecture-lens h3 {
+  max-width: 320px;
+  margin: 7px 0 0;
+  font-size: 1.05rem;
+  line-height: 1.18;
+}
+.architecture-lens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+.architecture-lens-card {
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r12);
+  background: rgba(255,255,255,0.045);
+}
+.architecture-lens-card > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(219, 234, 254, 0.11);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 780;
+}
+.architecture-lens-card strong {
+  display: block;
+  line-height: 1.2;
+  font-size: 0.88rem;
+}
+.architecture-lens-card p {
+  margin: 6px 0 0;
+  color: var(--subtle);
+  font-size: 0.8rem;
+  line-height: 1.42;
+}
 .workflow-reading-path {
   display: grid;
   grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.6fr);
@@ -785,9 +939,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-size: 1.25rem;
   line-height: 1.18;
 }
+.workflow-reading-path > div > p {
+  max-width: 460px;
+  margin: 10px 0 0;
+  color: var(--subtle);
+  font-size: 0.92rem;
+  line-height: 1.48;
+}
 .workflow-reading-steps {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 10px;
 }
 .workflow-reading-step {
@@ -901,6 +1062,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   min-width: 0;
   overflow-wrap: anywhere;
 }
+.freshness-row span small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.28;
+}
 .freshness-row strong {
   color: var(--subtle);
   font-size: 0.78rem;
@@ -928,6 +1096,37 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .signal-live { color: var(--positive); border-color: rgba(158, 230, 184, 0.34); }
 .signal-failed { color: var(--danger); border-color: rgba(244, 165, 179, 0.34); }
 .signal-simulated { color: var(--warning); border-color: rgba(246, 215, 122, 0.34); }
+.localized-reason-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.localized-reason-list li {
+  display: grid;
+  gap: 5px;
+}
+.localized-reason-list strong {
+  color: var(--text);
+  font-size: 0.86rem;
+}
+.localized-reason-list span {
+  color: var(--subtle);
+  line-height: 1.48;
+}
+.factor-chip small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.tag small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.68rem;
+}
 .plain-list { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .plain-list li {
   padding: 10px 12px;
@@ -1052,6 +1251,8 @@ textarea { resize: vertical; min-height: 96px; }
   .context-inspector { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .section-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .workflow-reading-path { grid-template-columns: 1fr; }
+  .architecture-lens { grid-template-columns: 1fr; }
+  .architecture-lens-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .flow-workspace { grid-template-columns: 1fr; }
   .flow-inspector { position: static; }
   .flow-stage-grid {
@@ -1071,12 +1272,15 @@ textarea { resize: vertical; min-height: 96px; }
   .sidebar-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .global-topbar { position: static; align-items: flex-start; flex-direction: column; }
   .section-grid, .two-grid, .context-inspector, .form-grid { grid-template-columns: 1fr; }
+  .workflow-priority-strip,
+  .workflow-section-intro { grid-template-columns: 1fr; }
   .flow-toolbar { align-items: stretch; flex-direction: column; }
   .segmented-control, .flow-zoom-controls { border-radius: var(--r16); }
   .flow-stage-grid { grid-template-columns: 1fr; }
   .flow-stage { min-height: auto; }
   .support-node-row { grid-template-columns: 1fr; }
   .workflow-reading-steps { grid-template-columns: 1fr; }
+  .architecture-lens-grid { grid-template-columns: 1fr; }
   .architecture-card-header { flex-direction: column; }
   .architecture-image-frame img { min-width: 760px; }
   .asset-row { grid-template-columns: 1fr; }

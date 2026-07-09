@@ -13,23 +13,31 @@ from typing import Any, Iterable, Mapping
 
 from ui.components.cognitive_flow_map import render_cognitive_flow_map
 from ui.i18n.i18n import current_language, t
+from ui.presentation.cognitive_localization import (
+    build_cognitive_presentation,
+    localize_market_freshness,
+    localize_proactive_update,
+)
 
 
 ATLAS_ACTIONS = {"observe", "hold", "reduce", "build", "accumulate"}
 ARCHITECTURE_MAPS = {
-    "en": "atlas-os-architecture-20260709.png",
-    "zh": "atlas-os-architecture-cn-20260709.png",
+    "en": "atlas-os-v2.2-architecture_en.png",
+    "zh": "atlas-os-v2.2-architecture.png",
 }
 
 
 def home_content(state: Mapping[str, Any]) -> str:
     lang = current_language()
+    presentation = build_cognitive_presentation(state, lang)
+    hero = presentation["hero"]
+    decision = presentation["decision"]
     packet = _packet(state)
     market = _market(state)
     portfolio = _portfolio(state)
-    action = _safe_action(packet.get("recommended_action"))
-    summary = _clean(packet.get("causal_summary"), t("home.default_meaning", lang))
-    main_change = _main_change(market, packet, lang)
+    action = decision["action"]
+    risk = decision["risk"]
+    summary = str(hero.get("summary") or t("home.default_meaning", lang))
     triggers = [
         t("home.trigger_attention", lang),
         t("home.trigger_liquidity", lang),
@@ -42,14 +50,14 @@ def home_content(state: Mapping[str, Any]) -> str:
     ]
     return f"""
     <section class="hero-panel">
-      <span class="kicker">{escape(t("home.today_change", lang))}</span>
-      <h1 class="hero-title">{escape(main_change)}</h1>
+      <span class="kicker">{escape(str(hero.get("kicker") or t("home.today_change", lang)))}</span>
+      <h1 class="hero-title localized-hero-title">{_dual_block(hero.get("title"), hero.get("secondary"))}</h1>
       <p class="hero-copy">{escape(summary)}</p>
       <div class="primary-decision" style="margin-top: 22px;">
         <div>
           <span class="kicker">{escape(t("home.current_view", lang))}</span>
-          <div class="decision-action">{escape(action)}</div>
-          <p class="hero-copy">{escape(t("state.risk", lang))}: {escape(_clean(packet.get("risk_level"), t("empty.signal", lang)))} · {escape(t("state.confidence", lang))}: {escape(_confidence(packet))}</p>
+          <div class="decision-action localized-action">{_dual_block(action.get("primary"), action.get("secondary"))}</div>
+          <p class="hero-copy">{escape(t("state.risk", lang))}: {_inline_dual(risk)} · {escape(t("state.confidence", lang))}: {escape(str(decision.get("confidence") or _confidence(packet)))}</p>
         </div>
         {_gauge(_confidence_value(packet))}
       </div>
@@ -97,6 +105,22 @@ def home_content(state: Mapping[str, Any]) -> str:
       <pre>{escape(json.dumps(_expert_payload(state), ensure_ascii=False, indent=2))}</pre>
     </details>
     """
+
+
+def _dual_block(primary: Any, secondary: Any = "") -> str:
+    primary_text = str(primary or "").strip()
+    secondary_text = str(secondary or "").strip()
+    if not secondary_text:
+        return f"<span>{escape(primary_text)}</span>"
+    return f"<span>{escape(primary_text)}</span><small>{escape(secondary_text)}</small>"
+
+
+def _inline_dual(label: Mapping[str, Any]) -> str:
+    primary = str(label.get("primary") or "").strip()
+    secondary = str(label.get("secondary") or "").strip()
+    if secondary:
+        return f'<span class="inline-dual">{escape(primary)}<small>{escape(secondary)}</small></span>'
+    return escape(primary)
 
 
 def ask_content(state: Mapping[str, Any]) -> tuple[str, str]:
@@ -367,19 +391,47 @@ def workflow_content(state: Mapping[str, Any]) -> tuple[str, str]:
         <a class="primary-button" href="#architecture-map">{escape(t("workflow.jump_architecture", lang))}</a>
         <a class="secondary-button" href="#cognitive-flow-map">{escape(t("workflow.jump_path", lang))}</a>
       </div>
+      {_workflow_priority_strip(lang)}
     </section>
     {_architecture_map(lang)}
     {_workflow_reading_path(lang)}
     <section class="workflow-map-section" id="cognitive-flow-map" aria-labelledby="workflow-global-map-title">
       <div class="workflow-section-intro">
-        <span class="kicker">{escape(t("workflow.interactive_map", lang))}</span>
-        <h2 id="workflow-global-map-title">{escape(t("workflow.map_title", lang))}</h2>
-        <p>{escape(t("workflow.path_copy", lang))}</p>
+        <span class="workflow-section-label"><strong>02</strong>{escape(t("workflow.step_map_title", lang))}</span>
+        <div>
+          <span class="kicker">{escape(t("workflow.interactive_map", lang))}</span>
+          <h2 id="workflow-global-map-title">{escape(t("workflow.map_title", lang))}</h2>
+          <p>{escape(t("workflow.path_copy", lang))}</p>
+        </div>
       </div>
       {flow_html}
     </section>
     """
     return content, flow_script
+
+
+def _workflow_priority_strip(lang: str) -> str:
+    cards = [
+        ("01", t("workflow.step_overview_title", lang), t("workflow.priority_architecture", lang), "#architecture-map"),
+        ("02", t("workflow.step_map_title", lang), t("workflow.priority_map", lang), "#cognitive-flow-map"),
+    ]
+    items = "".join(
+        f"""
+        <a class="workflow-priority-item" href="{escape(href)}">
+          <span>{escape(number)}</span>
+          <div>
+            <strong>{escape(title)}</strong>
+            <p>{escape(copy)}</p>
+          </div>
+        </a>
+        """
+        for number, title, copy, href in cards
+    )
+    return f"""
+    <nav class="workflow-priority-strip" aria-label="{escape(t("workflow.reading_path", lang))}">
+      {items}
+    </nav>
+    """
 
 
 def roadmap_content(payload: Mapping[str, Any]) -> str:
@@ -418,13 +470,36 @@ def _architecture_map(lang: str) -> str:
     chinese = ARCHITECTURE_MAPS["zh"]
     title = t("architecture.title", lang)
     subtitle = t("architecture.subtitle", lang)
+    lenses = [
+        ("01", t("workflow.lens_surface_title", lang), t("workflow.lens_surface_copy", lang)),
+        ("02", t("workflow.lens_cognition_title", lang), t("workflow.lens_cognition_copy", lang)),
+        ("03", t("workflow.lens_decision_title", lang), t("workflow.lens_decision_copy", lang)),
+        ("04", t("workflow.lens_feedback_title", lang), t("workflow.lens_feedback_copy", lang)),
+    ]
+    lens_cards = "".join(
+        f"""
+        <article class="architecture-lens-card">
+          <span>{escape(number)}</span>
+          <div>
+            <strong>{escape(label)}</strong>
+            <p>{escape(copy)}</p>
+          </div>
+        </article>
+        """
+        for number, label, copy in lenses
+    )
     return f"""
     <section class="visual-card architecture-card architecture-card-primary" id="architecture-map">
       <div class="architecture-card-header">
         <div>
+          <span class="workflow-section-label"><strong>01</strong>{escape(t("workflow.step_overview_title", lang))}</span>
           <span class="kicker">{escape(t("architecture.kicker", lang))}</span>
           <h2>{escape(title)}</h2>
           <p>{escape(subtitle)}</p>
+          <div class="architecture-meta-pills" aria-label="{escape(t("architecture.kicker", lang))}">
+            <span>{escape(t("architecture.current_map", lang))}</span>
+            <span>{escape(t("architecture.version_badge", lang))}</span>
+          </div>
         </div>
         <div class="button-row">
           <a class="secondary-button" href="/assets/{escape(chinese)}" target="_blank" rel="noopener">{escape(t("architecture.open_cn", lang))}</a>
@@ -434,6 +509,13 @@ def _architecture_map(lang: str) -> str:
       <a class="architecture-image-frame" href="/assets/{escape(selected)}" target="_blank" rel="noopener" aria-label="{escape(title)}">
         <img src="/assets/{escape(selected)}" alt="{escape(title)}" loading="lazy">
       </a>
+      <div class="architecture-lens">
+        <div>
+          <span class="kicker">{escape(t("workflow.map_lens", lang))}</span>
+          <h3>{escape(t("workflow.map_lens_title", lang))}</h3>
+        </div>
+        <div class="architecture-lens-grid">{lens_cards}</div>
+      </div>
     </section>
     """
 
@@ -461,6 +543,7 @@ def _workflow_reading_path(lang: str) -> str:
       <div>
         <span class="kicker">{escape(t("workflow.reading_path", lang))}</span>
         <h2>{escape(t("workflow.reading_title", lang))}</h2>
+        <p>{escape(t("workflow.reading_copy", lang))}</p>
       </div>
       <div class="workflow-reading-steps">{cards}</div>
     </section>
@@ -1022,7 +1105,7 @@ def _regime_headline(regime: str, lang: str) -> str:
 def _portfolio_headline(portfolio: Mapping[str, Any], lang: str) -> str:
     if portfolio.get("status") == "configured":
         exposure = portfolio.get("exposure_sum_pct")
-        return f"Configured exposure: {_pct_text(exposure)}"
+        return f"已配置暴露：{_pct_text(exposure)}" if lang == "zh" else f"Configured exposure: {_pct_text(exposure)}"
     return t("home.no_portfolio", lang)
 
 
@@ -1179,15 +1262,18 @@ def _theme_landscape(state: Mapping[str, Any]) -> str:
 
 
 def _freshness_map(market: Mapping[str, Any]) -> str:
+    lang = current_language()
     channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
+    view = localize_market_freshness(market, lang)
     if not channels:
-        return _viz_shell("data_freshness_map", "viz.data_freshness", '<div class="empty-state">Live market data is unavailable. Atlas is running in degraded mode.</div>')
-    summary = _market_freshness_summary(market, current_language())
-    observations = _observation_health_rows(market)
+        return _viz_shell("data_freshness_map", "viz.data_freshness", f'<div class="empty-state">{escape(str(view.get("empty") or ""))}</div>')
+    summary = str(view.get("summary") or "")
+    observations = _observation_health_rows(view.get("observations") if isinstance(view.get("observations"), list) else [])
+    pills = _localized_channel_pills(view.get("channels") if isinstance(view.get("channels"), list) else [])
     return _viz_shell(
         "data_freshness_map",
         "viz.data_freshness",
-        f'<div class="freshness-summary">{escape(summary)}</div><div class="pill-row">{_channel_pills(channels)}</div>{observations}',
+        f'<div class="freshness-summary">{escape(summary)}</div><div class="pill-row">{pills}</div>{observations}',
     )
 
 
@@ -1221,18 +1307,21 @@ def _market_freshness_summary(market: Mapping[str, Any], lang: str) -> str:
     return " · ".join(parts)
 
 
-def _observation_health_rows(market: Mapping[str, Any]) -> str:
-    observations = market.get("observations") if isinstance(market.get("observations"), list) else []
+def _observation_health_rows(observations: Any) -> str:
+    if not isinstance(observations, list):
+        observations = []
     rows = []
     for item in observations[:4]:
         if not isinstance(item, Mapping):
             continue
-        status = str(item.get("data_quality_status") or "Unknown")
+        status = item.get("status") if isinstance(item.get("status"), Mapping) else {}
+        status_text = str(status.get("primary") or item.get("data_quality_status") or "Unknown")
         source = str(item.get("source") or "none")
-        asset = str(item.get("asset") or "Unknown")
-        css = "ok" if status == "Available" else "warn" if status == "Partial" else "bad"
+        asset = str(item.get("asset_display") or item.get("asset") or "Unknown")
+        description = str(item.get("description") or "")
+        css = str(item.get("css") or "bad")
         rows.append(
-            f'<div class="freshness-row {css}"><span>{escape(asset)}</span><strong>{escape(status)}</strong><em>{escape(source)}</em></div>'
+            f'<div class="freshness-row {css}"><span>{escape(asset)}<small>{escape(description)}</small></span><strong>{escape(status_text)}</strong><em>{escape(source)}</em></div>'
         )
     if not rows:
         return ""
@@ -1241,11 +1330,11 @@ def _observation_health_rows(market: Mapping[str, Any]) -> str:
 
 def _proactive_update_card(state: Mapping[str, Any], lang: str) -> str:
     proactive = state.get("proactive_update_state") if isinstance(state.get("proactive_update_state"), Mapping) else {}
-    zh = lang == "zh"
-    title = "主动更新" if zh else "Proactive update"
-    subtitle = "Atlas 会按周期读取组合与市场通道，决定下一轮要刷新什么。" if zh else "Atlas periodically reads portfolio and channel freshness to decide what to refresh next."
+    view = localize_proactive_update(proactive, lang)
+    title = str(view.get("title") or ("主动更新" if lang == "zh" else "Proactive update"))
+    subtitle = str(view.get("subtitle") or "")
     if not proactive:
-        waiting = "等待首次主动更新运行" if zh else "Waiting for the first proactive update"
+        waiting = str(view.get("heading") or "")
         return f"""
         <section class="focus-card">
           <span class="kicker">{escape(title)}</span>
@@ -1253,28 +1342,36 @@ def _proactive_update_card(state: Mapping[str, Any], lang: str) -> str:
           <p>{escape(subtitle)}</p>
         </section>
         """
-    focus = proactive.get("research_focus") if isinstance(proactive.get("research_focus"), list) else []
-    channels = proactive.get("market_channels_to_refresh") if isinstance(proactive.get("market_channels_to_refresh"), list) else []
-    cadence = _duration_text(proactive.get("cadence_seconds"), lang)
-    last_run = _compact(proactive.get("timestamp"), "Waiting for signal")
-    next_due = _compact(proactive.get("next_due_at"), "Waiting for signal")
-    status = _compact(proactive.get("status"), "Waiting for signal").replace("_", " ").title()
-    focus_items = focus[:5] or (["No configured portfolio yet; refresh broad context"] if not zh else ["尚未配置组合；先刷新宽口径市场上下文"])
-    channel_text = ", ".join(str(item).replace("_", " ") for item in channels[:6]) or ("waiting for channel status" if not zh else "等待通道状态")
+    status = view.get("status") if isinstance(view.get("status"), Mapping) else {}
+    status_text = str(status.get("primary") or "")
+    focus_items = view.get("focus_items") if isinstance(view.get("focus_items"), list) else []
+    channel_text = str(view.get("channels_text") or ("等待通道状态" if lang == "zh" else "waiting for channel status"))
     return f"""
     <section class="focus-card">
-      <span class="kicker">{escape(title)} · {escape(status)}</span>
-      <h2>{escape("下一轮关注什么" if zh else "What Atlas will refresh next")}</h2>
+      <span class="kicker">{escape(title)} · {escape(status_text)}</span>
+      <h2>{escape(str(view.get("heading") or ""))}</h2>
       <p>{escape(subtitle)}</p>
       <div class="pill-row" style="margin: 10px 0 12px;">
-        <span class="tag">{escape("周期" if zh else "Cadence")}: {escape(cadence)}</span>
-        <span class="tag">{escape("上次" if zh else "Last")}: {escape(last_run)}</span>
-        <span class="tag">{escape("下次" if zh else "Next")}: {escape(next_due)}</span>
+        <span class="tag">{escape("周期" if lang == "zh" else "Cadence")}: {escape(str(view.get("cadence") or ""))}</span>
+        <span class="tag">{escape(str(view.get("last_run") or ""))}</span>
+        <span class="tag">{escape(str(view.get("next_due") or ""))}</span>
       </div>
-      <p><strong>{escape("刷新通道" if zh else "Channels")}:</strong> {escape(channel_text)}</p>
+      <p><strong>{escape("刷新通道" if lang == "zh" else "Channels")}:</strong> {escape(channel_text)}</p>
       <ul class="plain-list">{_list_items(focus_items)}</ul>
     </section>
     """
+
+
+def _localized_channel_pills(channels: list[Any]) -> str:
+    parts = []
+    for item in channels:
+        if not isinstance(item, Mapping):
+            continue
+        status = item.get("status") if isinstance(item.get("status"), Mapping) else {}
+        parts.append(
+            f'<span class="signal-pill {escape(str(item.get("css") or ""))}">{escape(str(item.get("label") or ""))}: {escape(str(status.get("primary") or ""))}</span>'
+        )
+    return "".join(parts)
 
 
 def _channel_pills(channels: Mapping[str, Any]) -> str:

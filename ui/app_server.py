@@ -39,7 +39,8 @@ from ui.components.system_state_panel import render_system_state_panel
 from ui.components.top_bar import render_top_bar
 from ui.components.structural_drift_timeline import render_structural_drift_timeline
 from ui.components.workflow_graph import infer_active_workflow_stage, render_workflow_graph
-from ui.i18n.i18n import set_language, t, translation_payload
+from ui.i18n.i18n import current_language, set_language, t, translation_payload
+from ui.presentation.cognitive_localization import build_cognitive_presentation
 from ui.pages.dev_registry import load_roadmap, render_dev_registry_page, roadmap_api_payload
 from ui.pages.getting_started import build_getting_started_status, render_getting_started_page
 from ui.pages.home import render_home_page
@@ -385,7 +386,7 @@ def state_api() -> Dict[str, Any]:
     llm_summary = _llm_trace_summary(read_llm_traces(log_path=_llm_trace_path(), limit=100))
     portfolio_context = build_portfolio_context(config_path=_user_config_path())
     market_intelligence = _market_intelligence_state()
-    return {
+    payload = {
         "timestamp": utc_now_iso(),
         "regime_state": system_state.get("current_state", "Unknown"),
         "proposed_state": system_state.get("proposed_state", "Unknown"),
@@ -413,6 +414,8 @@ def state_api() -> Dict[str, Any]:
             limit=20,
         ),
     }
+    payload["ui_presentation"] = build_cognitive_presentation(payload, current_language())
+    return payload
 
 
 def getting_started_status_api() -> Dict[str, Any]:
@@ -1890,6 +1893,22 @@ pre {
       node.classList.remove("empty-pulse");
     }
   }
+  function setDualText(id, label) {
+    const node = byId(id);
+    if (!node) return;
+    const data = asObject(label);
+    const primary = clean(data.primary || label || "");
+    const secondary = clean(data.secondary || "");
+    node.textContent = "";
+    const main = document.createElement("span");
+    main.textContent = primary;
+    node.appendChild(main);
+    if (secondary && secondary !== "System initializing reasoning layer") {
+      const small = document.createElement("small");
+      small.textContent = secondary;
+      node.appendChild(small);
+    }
+  }
   function clean(value) {
     if (value === null || value === undefined || value === "") return "System initializing reasoning layer";
     const textValue = String(value).trim();
@@ -1931,19 +1950,23 @@ pre {
   }
   function updateState(state) {
     const packet = packetFrom(state);
-    setText("state-regime", state.regime_state);
+    const presentation = asObject(state.ui_presentation);
+    const hero = asObject(presentation.hero);
+    const decision = asObject(presentation.decision);
+    const inspector = asObject(presentation.inspector);
+    setDualText("state-regime", { primary: hero.title || state.regime_state, secondary: hero.secondary || "" });
     setText("state-trust", state.trust_index);
     setText("state-liquidity", state.liquidity);
     setText("state-attention", state.attention);
     setText("state-volatility", state.volatility);
     setText("state-tick", state.tick_counter || 0);
-    setText("decision-action", packet.recommended_action || "neutral");
-    setText("decision-confidence", "Confidence " + clean(packet.confidence || 0));
-    setText("decision-risk", packet.risk_level || "unknown");
-    setText("decision-attention", packet.attention_state || state.attention);
-    setText("decision-liquidity", packet.liquidity_state || state.liquidity);
-    setText("decision-summary", packet.causal_summary || "Waiting for DecisionPacket.");
-    setText("causal-summary", packet.causal_summary || "Unknown");
+    setDualText("decision-action", decision.action || { primary: packet.recommended_action || "neutral" });
+    setText("decision-confidence", (decision.confidence ? "Confidence " + decision.confidence : "Confidence " + clean(packet.confidence || 0)));
+    setDualText("decision-risk", decision.risk || { primary: packet.risk_level || "unknown" });
+    setDualText("decision-attention", decision.attention || { primary: packet.attention_state || state.attention });
+    setDualText("decision-liquidity", decision.liquidity || { primary: packet.liquidity_state || state.liquidity });
+    setText("decision-summary", decision.summary || packet.causal_summary || "Waiting for DecisionPacket.");
+    setText("causal-summary", inspector.causal_summary || decision.summary || packet.causal_summary || "Unknown");
     setText("llm-call-count", (state.llm_trace_summary || {}).call_count || 0);
     setText("llm-model", (state.llm_trace_summary || {}).latest_model);
     setText("llm-latency", clean((state.llm_trace_summary || {}).latest_latency_ms) + " ms");
@@ -1953,8 +1976,8 @@ pre {
     const trust = typeof state.trust_index === "number" ? Math.max(0, Math.min(1, state.trust_index)) : 0;
     const meter = byId("trust-meter");
     if (meter) meter.style.width = (trust * 100).toFixed(1) + "%";
-    setText("trust-trend", trust >= 0.7 ? "Stable trust field" : trust >= 0.4 ? "Moderate trust field" : "Low trust field");
-    setText("stability-index", trust >= 0.7 ? "Stable" : trust >= 0.4 ? "Watchful" : "Insufficient system context");
+    setText("trust-trend", inspector.trust_trend || (trust >= 0.7 ? "Stable trust field" : trust >= 0.4 ? "Moderate trust field" : "Low trust field"));
+    setText("stability-index", inspector.stability || (trust >= 0.7 ? "Stable" : trust >= 0.4 ? "Watchful" : "Insufficient system context"));
 
     const decisionTrace = {
       tick: state.tick_counter || 0,
@@ -1974,12 +1997,12 @@ pre {
       structuralNode.textContent = structuralSummary;
     }
     updateHypothesisState(state);
-    updateDecisionExplanation(state, packet);
+    updateDecisionExplanation(state, packet, inspector);
     updateCausalGraph(state);
     updateRegimeMap(state);
     updateDriftTimeline(state);
     updateRuntimeStatus(state.tick_counter || 0);
-    pushStream(state, packet);
+    pushStream(state, packet, decision);
   }
   function updateHypothesisState(state) {
     const structural = asObject(state.structural_coevolution_state || state.self_organization_state);
@@ -2007,25 +2030,58 @@ pre {
     setText("active-provider-model", provider.model || "System initializing reasoning layer");
     setText("active-provider-health", provider.health || "unknown");
   }
-  function updateDecisionExplanation(state, packet) {
-    const factors = dominantFactors(state, packet);
-    const action = packet.recommended_action || "neutral";
+  function updateDecisionExplanation(state, packet, inspector) {
+    inspector = asObject(inspector);
+    const factors = asArray(inspector.factors).length ? asArray(inspector.factors) : dominantFactors(state, packet).map(function (item) { return { primary: item, secondary: "" }; });
+    const action = asObject(asObject(state.ui_presentation).decision).action || { primary: packet.recommended_action || "neutral" };
     const regime = state.regime_state || "Unknown";
     const trust = typeof state.trust_index === "number" ? state.trust_index : null;
     const reason = packet.reasoning_trace || packet.causal_summary || "System initializing reasoning layer";
-    setText("decision-why", action + " because " + reason);
-    setText("regime-influence", regime + " -> " + action);
-    setText("trust-impact", trust === null ? "Unknown" : (trust >= 0.7 ? "High trust supports explanation weight" : trust >= 0.4 ? "Medium trust tempers explanation weight" : "Low trust limits explanation weight"));
+    renderReasonSections("decision-why", inspector.sections, inspector.reasoning_summary || reason);
+    setText("regime-influence", inspector.regime_influence || (regime + " -> " + clean(action.primary || action)));
+    setText("trust-impact", inspector.trust_impact || (trust === null ? "Unknown" : (trust >= 0.7 ? "High trust supports explanation weight" : trust >= 0.4 ? "Medium trust tempers explanation weight" : "Low trust limits explanation weight")));
     const list = byId("dominant-causal-factors");
     if (list) {
       list.textContent = "";
       factors.forEach(function (factor) {
         const chip = document.createElement("span");
         chip.className = "factor-chip";
-        chip.textContent = factor;
+        const label = asObject(factor);
+        const primary = document.createElement("span");
+        primary.textContent = clean(label.primary || factor);
+        chip.appendChild(primary);
+        if (label.secondary) {
+          const small = document.createElement("small");
+          small.textContent = clean(label.secondary);
+          chip.appendChild(small);
+        }
         list.appendChild(chip);
       });
     }
+  }
+  function renderReasonSections(id, sections, fallback) {
+    const node = byId(id);
+    if (!node) return;
+    const usable = asArray(sections);
+    if (!usable.length) {
+      setText(id, fallback);
+      return;
+    }
+    node.textContent = "";
+    const list = document.createElement("ul");
+    list.className = "localized-reason-list";
+    usable.slice(0, 3).forEach(function (section) {
+      const data = asObject(section);
+      const item = document.createElement("li");
+      const title = document.createElement("strong");
+      const body = document.createElement("span");
+      title.textContent = clean(data.title);
+      body.textContent = clean(data.body);
+      item.appendChild(title);
+      item.appendChild(body);
+      list.appendChild(item);
+    });
+    node.appendChild(list);
   }
   function dominantFactors(state, packet) {
     const factors = [];
@@ -2229,11 +2285,11 @@ pre {
     Object.keys(attrs || {}).forEach(function (key) { node.setAttribute(key, attrs[key]); });
     return node;
   }
-  function pushStream(state, packet) {
+  function pushStream(state, packet, decision) {
     const stream = byId("event-stream");
     if (!stream) return;
     const tick = state.tick_counter || 0;
-    const action = packet.recommended_action || "neutral";
+    const action = asObject(asObject(decision).action).primary || packet.recommended_action || "neutral";
     const signature = [tick, state.regime_state, state.trust_index, action].join("|");
     if (signature === lastStreamSignature) return;
     lastStreamSignature = signature;
