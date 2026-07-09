@@ -472,10 +472,13 @@ def _market_summary(channels: Mapping[str, Any], observations: list[Mapping[str,
     simulated = sum(1 for value in channels.values() if str(value).upper() == "SIMULATED")
     failed = sum(1 for value in channels.values() if str(value).upper() in {"FAILED", "RATE_LIMITED"})
     missing = sum(1 for value in channels.values() if str(value).upper() == "NOT_CONFIGURED")
-    available = sum(1 for item in observations if item.get("status_key") == "Available")
+    available = sum(1 for item in observations if item.get("status_key") in {"Available", "Partial"})
+    partial = sum(1 for item in observations if item.get("status_key") == "Partial")
     total = len(observations)
     if lang == "zh":
-        parts = [f"价格 {available}/{total} 可用"] if total else []
+        parts = [f"价格 {available}/{total} 有信号"] if total else []
+        if partial:
+            parts.append(f"{partial} 个部分可用")
         parts.append(f"{live} 个实时通道")
         if simulated:
             parts.append(f"{simulated} 个模拟通道")
@@ -484,7 +487,9 @@ def _market_summary(channels: Mapping[str, Any], observations: list[Mapping[str,
         if missing:
             parts.append(f"{missing} 个未配置")
         return " · ".join(parts)
-    parts = [f"Price {available}/{total} available"] if total else []
+    parts = [f"Price {available}/{total} with signal"] if total else []
+    if partial:
+        parts.append(f"{partial} partial")
     parts.append(f"{live} live channels")
     if simulated:
         parts.append(f"{simulated} simulated")

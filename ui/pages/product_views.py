@@ -22,8 +22,8 @@ from ui.presentation.cognitive_localization import (
 
 ATLAS_ACTIONS = {"observe", "hold", "reduce", "build", "accumulate"}
 ARCHITECTURE_MAPS = {
-    "en": "atlas-os-v2.2-architecture_en.png",
-    "zh": "atlas-os-v2.2-architecture.png",
+    "en": "atlas-os-architecture-20260709.png",
+    "zh": "atlas-os-architecture-cn-20260709.png",
 }
 
 
@@ -43,11 +43,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         t("home.trigger_liquidity", lang),
         t("home.trigger_freshness", lang),
     ]
-    invalidations = [
-        t("home.invalid_no_data", lang),
-        t("home.invalid_trust", lang),
-        t("home.invalid_portfolio", lang),
-    ]
+    invalidations = _invalidation_items(market, lang)
     return f"""
     <section class="hero-panel">
       <span class="kicker">{escape(str(hero.get("kicker") or t("home.today_change", lang)))}</span>
@@ -121,6 +117,23 @@ def _inline_dual(label: Mapping[str, Any]) -> str:
     if secondary:
         return f'<span class="inline-dual">{escape(primary)}<small>{escape(secondary)}</small></span>'
     return escape(primary)
+
+
+def _invalidation_items(market: Mapping[str, Any], lang: str) -> list[str]:
+    data_item = t("home.invalid_data_interruption", lang) if _price_has_signal(market) else t("home.invalid_no_data", lang)
+    return [
+        data_item,
+        t("home.invalid_trust", lang),
+        t("home.invalid_portfolio", lang),
+    ]
+
+
+def _price_has_signal(market: Mapping[str, Any]) -> bool:
+    observations = market.get("observations") if isinstance(market.get("observations"), list) else []
+    return any(
+        isinstance(item, Mapping) and item.get("data_quality_status") in {"Available", "Partial"}
+        for item in observations
+    )
 
 
 def ask_content(state: Mapping[str, Any]) -> tuple[str, str]:

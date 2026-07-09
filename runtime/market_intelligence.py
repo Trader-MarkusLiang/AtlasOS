@@ -28,6 +28,8 @@ NORMALIZED_CHANNELS = [
     "portfolio_relevance",
 ]
 
+USABLE_DATA_STATUSES = {"Available", "Partial"}
+
 
 def refresh_market_intelligence(
     *,
@@ -68,7 +70,7 @@ def refresh_market_intelligence(
         "observations": observations,
         "events_prepared": len(events),
         "events_enqueued": enqueued,
-        "degraded": not observations or any(item.get("data_quality_status") != "Available" for item in observations),
+        "degraded": not observations or any(item.get("data_quality_status") not in USABLE_DATA_STATUSES for item in observations),
         "proof_mode": _proof_mode(observations),
         "read_only": True,
         "no_trading_execution": True,
@@ -105,7 +107,7 @@ def channel_status(observations: list[Mapping[str, Any]]) -> dict[str, Any]:
     """Report which mandated channels are real vs missing."""
 
     price_observations = [item for item in observations if item.get("channel") == "price_volume"]
-    price_available = any(item.get("data_quality_status") == "Available" for item in price_observations)
+    price_available = any(item.get("data_quality_status") in USABLE_DATA_STATUSES for item in price_observations)
     price_fixture = any(item.get("source_type") == "controlled_fixture" for item in price_observations)
     price_failed = bool(price_observations) and not price_available
     portfolio_available = any(item.get("portfolio_relevant") for item in observations)
@@ -230,6 +232,6 @@ def _proof_mode(observations: list[Mapping[str, Any]]) -> str:
         return "NO_CONFIGURED_ASSETS"
     if any(item.get("source_type") == "controlled_fixture" for item in observations):
         return "CONTROLLED_FIXTURE_PROOF"
-    if any(item.get("data_quality_status") == "Available" for item in observations):
+    if any(item.get("data_quality_status") in USABLE_DATA_STATUSES for item in observations):
         return "LIVE_OR_PROVIDER_PROOF"
     return "DEGRADED_PROVIDER_PROOF"

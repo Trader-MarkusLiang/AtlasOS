@@ -8,6 +8,9 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-10_0007_commit-ui-market-fixes.md`
+- `docs/codex-sessions/completed/2026-07-09_2327_home-market-freshness-repair.md`
+- `docs/codex-sessions/completed/2026-07-09_2318_workflow-dated-architecture-fix.md`
 - `docs/codex-sessions/completed/2026-07-09_2121_home-localization-decision-brief.md`
 - `docs/codex-sessions/completed/2026-07-09_2212_workflow-v22-architecture-polish.md`
 - `docs/codex-sessions/completed/2026-07-09_2124_workflow-architecture-first-polish.md`

@@ -12,6 +12,7 @@ import os
 import queue
 import signal
 import threading
+import urllib.parse
 import urllib.request
 from contextlib import contextmanager
 from datetime import datetime, timedelta
@@ -62,6 +63,32 @@ def _market_to_akshare_symbol(ticker: str, market: str) -> str:
     return clean
 
 
+def _market_to_eastmoney_secid(ticker: str, market: str) -> str:
+    clean = str(ticker or "").strip().upper()
+    base, suffix = _split_symbol(clean)
+    if market == "HK" or suffix == "HK":
+        normalized = "".join(ch for ch in base if ch.isdigit())[-5:].zfill(5)
+        return f"116.{normalized}"
+    normalized = base.zfill(6) if base.isdigit() else base
+    if market == "A-share" or suffix in {"SH", "SS", "SZ"}:
+        exchange = "1" if suffix in {"SH", "SS"} or normalized.startswith(("6", "9")) else "0"
+        return f"{exchange}.{normalized}"
+    return clean
+
+
+def _market_to_tencent_symbol(ticker: str, market: str) -> str:
+    clean = str(ticker or "").strip().upper()
+    base, suffix = _split_symbol(clean)
+    if market == "HK" or suffix == "HK":
+        normalized = "".join(ch for ch in base if ch.isdigit())[-5:].zfill(5)
+        return f"hk{normalized}"
+    normalized = base.zfill(6) if base.isdigit() else base
+    if market == "A-share" or suffix in {"SH", "SS", "SZ"}:
+        prefix = "sh" if suffix in {"SH", "SS"} or normalized.startswith(("6", "9")) else "sz"
+        return f"{prefix}{normalized}"
+    return clean.lower()
+
+
 def _split_symbol(symbol: str) -> tuple[str, str]:
     if "." not in symbol:
         return symbol, ""
@@ -80,6 +107,55 @@ def _period_to_yfinance_period(period: str) -> str:
         except ValueError:
             pass
     return period
+
+
+def _eastmoney_kline_history(ticker: str, market: str, period: str) -> pd.DataFrame:
+    secid = _market_to_eastmoney_secid(ticker, market)
+    if "." not in secid:
+        raise ValueError(f"eastmoney does not support ticker={ticker!r} market={market!r}")
+    params = {
+        "secid": secid,
+        "fields1": "f1,f2,f3,f4,f5,f6",
+        "fields2": "f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61",
+        "klt": "101",
+        "fqt": "0",
+        "beg": "0",
+        "end": "20500101",
+        "lmt": "160",
+    }
+    url = "https://push2his.eastmoney.com/api/qt/stock/kline/get?" + urllib.parse.urlencode(params)
+    payload = _read_json_url(url)
+    data = payload.get("data") if isinstance(payload, dict) else {}
+    klines = data.get("klines") if isinstance(data, dict) else None
+    if not isinstance(klines, list) or not klines:
+        return pd.DataFrame()
+
+    rows = []
+    for raw in klines[-180:]:
+        parts = str(raw or "").split(",")
+        if len(parts) < 7:
+            continue
+        rows.append(
+            {
+                "date": pd.to_datetime(parts[0], errors="coerce"),
+                "open": _safe_float(parts[1]),
+                "close": _safe_float(parts[2]),
+                "high": _safe_float(parts[3]),
+                "low": _safe_float(parts[4]),
+                "volume": _eastmoney_volume(parts[5], market),
+                "turnover": _safe_float(parts[6]),
+                "daily_change_pct": _safe_float(parts[8]) if len(parts) > 8 else None,
+            }
+        )
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return df
+    for col in ["open", "high", "low", "close", "volume", "turnover", "daily_change_pct"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+    df = df.dropna(subset=["close"])
+    df.attrs["source"] = "eastmoney_kline"
+    return df
 
 
 def _akshare_history(ticker: str, market: str, period: str) -> pd.DataFrame:
@@ -204,6 +280,7 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
 
     attempts: list[str] = []
     if market in {"A-share", "HK"}:
+        attempts.append("eastmoney_kline")
         attempts.append("akshare")
     if market in {"A-share", "HK", "US", "US / ETF", "ETF"}:
         attempts.append("yfinance")
@@ -226,6 +303,8 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
 
 
 def _run_history_loader(source: str, ticker: str, market: str, period: str) -> pd.DataFrame:
+    if source == "eastmoney_kline":
+        return _eastmoney_kline_history(ticker, market, period)
     if source == "akshare":
         return _akshare_history(ticker, market, period)
     if source == "yfinance":
@@ -384,6 +463,12 @@ def get_market_snapshot(ticker: str, market: str) -> Dict[str, Any]:
     result["errors"] = history.attrs.get("errors", [])
 
     if history.empty:
+        fallback = _quote_fallback_snapshot(ticker, market, errors=result["errors"])
+        if fallback:
+            result.update(fallback)
+            result["missing_fields"] = _missing_fields(result)
+            result["data_status"] = _data_status(result)
+            return result
         result["missing_fields"] = _missing_fields(result)
         return result
 
@@ -406,6 +491,88 @@ def get_market_snapshot(ticker: str, market: str) -> Dict[str, Any]:
     return result
 
 
+def _quote_fallback_snapshot(ticker: str, market: str, errors: List[str]) -> Optional[Dict[str, Any]]:
+    quote_errors = list(errors)
+    for source, loader in (
+        ("eastmoney_quote", _eastmoney_quote_snapshot),
+        ("tencent_quote", _tencent_quote_snapshot),
+    ):
+        try:
+            snapshot = loader(ticker, market)
+        except Exception as exc:
+            quote_errors.append(f"{source}: {type(exc).__name__}: {exc}")
+            continue
+        if snapshot and snapshot.get("latest_price") is not None:
+            snapshot["errors"] = quote_errors
+            return snapshot
+        quote_errors.append(f"{source}: empty")
+    return None
+
+
+def _eastmoney_quote_snapshot(ticker: str, market: str) -> Optional[Dict[str, Any]]:
+    secid = _market_to_eastmoney_secid(ticker, market)
+    if "." not in secid:
+        return None
+    params = {
+        "secid": secid,
+        "fields": "f43,f44,f45,f46,f47,f48,f57,f58,f116,f117,f162,f167,f170",
+    }
+    url = "https://push2.eastmoney.com/api/qt/stock/get?" + urllib.parse.urlencode(params)
+    payload = _read_json_url(url)
+    data = payload.get("data") if isinstance(payload, dict) else {}
+    if not isinstance(data, dict):
+        return None
+    price_scale = 1000.0 if market == "HK" or str(ticker).upper().endswith(".HK") else 100.0
+    return {
+        "ticker": ticker,
+        "market": market,
+        "source": "eastmoney_quote",
+        "timestamp": _quote_timestamp(),
+        "latest_price": _scaled(data.get("f43"), price_scale),
+        "daily_change_pct": _scaled(data.get("f170"), 100.0),
+        "volume": _eastmoney_volume(data.get("f47"), market),
+        "turnover": _safe_float(data.get("f48")),
+        "market_cap": _safe_float(data.get("f116")),
+        "pe": _scaled(data.get("f162"), 100.0),
+        "pb": _scaled(data.get("f167"), 100.0),
+    }
+
+
+def _tencent_quote_snapshot(ticker: str, market: str) -> Optional[Dict[str, Any]]:
+    symbol = _market_to_tencent_symbol(ticker, market)
+    if not symbol:
+        return None
+    url = f"https://qt.gtimg.cn/q={urllib.parse.quote(symbol)}"
+    request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(request, timeout=min(6.0, _provider_attempt_timeout_seconds())) as response:
+        body = response.read().decode("gbk", "ignore")
+    if "~" not in body:
+        return None
+    raw = body.split('"', 1)[1].rsplit('"', 1)[0] if '"' in body else body
+    parts = raw.split("~")
+    if len(parts) < 35:
+        return None
+    volume = _safe_float(_safe_part(parts, 6))
+    turnover = None
+    packed = str(_safe_part(parts, 35) or "") if len(parts) > 35 else ""
+    if "/" in packed:
+        packed_parts = packed.split("/")
+        if len(packed_parts) >= 3:
+            turnover = _safe_float(packed_parts[2])
+    if turnover is None and len(parts) > 37:
+        turnover = _safe_float(_safe_part(parts, 37))
+    return {
+        "ticker": ticker,
+        "market": market,
+        "source": "tencent_quote",
+        "timestamp": _quote_timestamp(_safe_part(parts, 30)),
+        "latest_price": _safe_float(_safe_part(parts, 3)),
+        "daily_change_pct": _safe_float(_safe_part(parts, 32)),
+        "volume": _tencent_volume(volume, symbol),
+        "turnover": turnover,
+    }
+
+
 def _timestamp_to_iso(value: Any) -> Optional[str]:
     if value is None or pd.isna(value):
         return None
@@ -419,6 +586,50 @@ def _safe_index(values: Any, index: int) -> Any:
     if isinstance(values, list) and index < len(values):
         return values[index]
     return None
+
+
+def _safe_part(parts: List[str], index: int) -> Optional[str]:
+    return parts[index] if index < len(parts) else None
+
+
+def _read_json_url(url: str) -> Dict[str, Any]:
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0",
+            "Referer": "https://quote.eastmoney.com/",
+            "Accept": "application/json,text/plain,*/*",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=min(6.0, _provider_attempt_timeout_seconds())) as response:
+        return json.loads(response.read().decode("utf-8") or "{}")
+
+
+def _scaled(value: Any, scale: float) -> Optional[float]:
+    number = _safe_float(value)
+    if number is None:
+        return None
+    return number / scale
+
+
+def _eastmoney_volume(value: Any, market: str) -> Optional[float]:
+    volume = _safe_float(value)
+    if volume is None:
+        return None
+    return volume if market == "HK" else volume * 100.0
+
+
+def _tencent_volume(value: Optional[float], symbol: str) -> Optional[float]:
+    if value is None:
+        return None
+    return value * 100.0 if str(symbol).startswith("sz") else value
+
+
+def _quote_timestamp(value: Any = None) -> str:
+    parsed = pd.to_datetime(value, errors="coerce") if value else pd.NaT
+    if parsed is not pd.NaT and not pd.isna(parsed):
+        return pd.Timestamp(parsed).isoformat()
+    return datetime.utcnow().isoformat() + "Z"
 
 
 def _moving_average(df: pd.DataFrame, window: int) -> Optional[float]:

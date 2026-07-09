@@ -97,10 +97,12 @@ SHELL_JS = """
       const live = keys.filter((key) => String(channels[key]).toUpperCase() === "LIVE").length;
       const failed = keys.filter((key) => ["FAILED", "RATE_LIMITED"].includes(String(channels[key]).toUpperCase())).length;
       const missing = keys.filter((key) => String(channels[key]).toUpperCase() === "NOT_CONFIGURED").length;
-      const available = observations.filter((item) => item && item.data_quality_status === "Available").length;
+      const available = observations.filter((item) => item && ["Available", "Partial"].includes(item.data_quality_status)).length;
+      const partial = observations.filter((item) => item && item.data_quality_status === "Partial").length;
       const zh = document.documentElement.lang === "zh";
       const prefix = observations.length ? (zh ? `价格 ${available}/${observations.length}` : `price ${available}/${observations.length}`) : (zh ? `${live} 实时` : `${live} live`);
       if (failed) return zh ? `${prefix} · ${failed} 失败` : `${prefix} · ${failed} failed`;
+      if (partial) return zh ? `${prefix} · ${partial} 部分` : `${prefix} · ${partial} partial`;
       if (missing) return zh ? `${prefix} · ${missing} 未配置` : `${prefix} · ${missing} not configured`;
       return zh ? `${prefix} · 可用` : `${prefix} · available`;
     }

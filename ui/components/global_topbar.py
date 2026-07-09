@@ -59,11 +59,14 @@ def _freshness_label(market: Mapping[str, Any], lang: str) -> str:
         live = sum(1 for value in channels.values() if str(value).upper() == "LIVE")
         failed = sum(1 for value in channels.values() if str(value).upper() in {"FAILED", "RATE_LIMITED"})
         missing = sum(1 for value in channels.values() if str(value).upper() == "NOT_CONFIGURED")
-        available_assets = sum(1 for item in observations if isinstance(item, Mapping) and item.get("data_quality_status") == "Available")
+        available_assets = sum(1 for item in observations if isinstance(item, Mapping) and item.get("data_quality_status") in {"Available", "Partial"})
+        partial_assets = sum(1 for item in observations if isinstance(item, Mapping) and item.get("data_quality_status") == "Partial")
         total_assets = len([item for item in observations if isinstance(item, Mapping)])
         if lang == "zh":
             prefix = f"价格 {available_assets}/{total_assets}" if total_assets else f"{live} 实时"
             suffix = "可用"
+            if partial_assets:
+                suffix = f"{partial_assets} 部分"
             if failed:
                 suffix = f"{failed} 失败"
             elif missing:
@@ -71,6 +74,8 @@ def _freshness_label(market: Mapping[str, Any], lang: str) -> str:
             return f"{prefix} · {suffix}"
         prefix = f"price {available_assets}/{total_assets}" if total_assets else f"{live} live"
         suffix = "available"
+        if partial_assets:
+            suffix = f"{partial_assets} partial"
         if failed:
             suffix = f"{failed} failed"
         elif missing:
