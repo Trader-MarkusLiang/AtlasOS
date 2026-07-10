@@ -4,6 +4,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Active Sessions
 
+- `docs/codex-sessions/active/2026-07-10_1231_practical-decision-brief.md`
 - `docs/codex-sessions/active/2026-07-08_0020_overnight-productization-sprint.md`
 
 ## Completed Sessions
