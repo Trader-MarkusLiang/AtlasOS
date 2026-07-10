@@ -1,0 +1,426 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "A_home_begins_with_action_today",
+      "passed": true,
+      "details": [
+        "action_today",
+        "core_judgment",
+        "strongest_predictions",
+        "ai_bottleneck_index",
+        "capital_relay",
+        "current_holdings",
+        "capital_allocation",
+        "waiting_triggers",
+        "research_tasks",
+        "intelligence_alerts",
+        "counter_argument",
+        "review_plan"
+      ]
+    },
+    {
+      "name": "B_one_line_core_judgment",
+      "passed": true,
+      "details": {
+        "headline": {
+          "en": "AI infrastructure thesis is not invalidated, but Atlas should wait for confirmation before expanding risk.",
+          "zh": "AI 基建主线未被证伪，但 Atlas 需要等待确认后再扩大风险暴露。"
+        },
+        "supporting_sentence": {
+          "en": "Runtime is unknown, 3 portfolio-linked price observations are live, and the relay map still points toward Equipment / Materials; unassigned buffer is 20.0%.",
+          "zh": "运行态为 unknown，3 个组合相关价量观测可用，资本接力仍指向 Equipment / Materials；未部署缓冲为 20.0%。"
+        },
+        "source": "DecisionPacket + market_intelligence + portfolio_context + Capital Relay snapshot",
+        "relay_stage": {
+          "en": "Memory strengthening -> Equipment relay -> Materials starting.",
+          "zh": "Memory 强化 → Equipment 接力 → Materials 启动。"
+        }
+      }
+    },
+    {
+      "name": "C_strongest_predictions_max_3",
+      "passed": true,
+      "details": 1
+    },
+    {
+      "name": "D_prediction_required_fields",
+      "passed": true,
+      "details": [
+        {
+          "judgment": {
+            "en": "Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.",
+            "zh": "当前因果结构仍可作为工作假设，但必须等待后续观测验证。"
+          },
+          "quality_label": {
+            "en": "Strongest available runtime forecast; low conviction, not a high-conviction call.",
+            "zh": "当前最强可追踪运行态预测；低置信，不是高强度判断。"
+          },
+          "confidence": 0.0,
+          "confidence_text": "0%",
+          "horizon": "next_runtime_cycle",
+          "evidence": [
+            "Mixed / Low Signal",
+            "attention not dominant",
+            "fresh_portfolio_price_volume_observations"
+          ],
+          "invalidation": [
+            "later_runtime_state_conflicts_with_expected_structure",
+            "forecast_outcome_marked_invalidated_through_supported_lifecycle"
+          ],
+          "source": "forecast_ledger",
+          "forecast_id": "runtime-d7db56c3-a465-4cc0-a3e1-7d8050e40948"
+        }
+      ]
+    },
+    {
+      "name": "E_ai_bottleneck_index_exists",
+      "passed": true,
+      "details": [
+        "Bandwidth",
+        "Equipment",
+        "Industry AI",
+        "Materials",
+        "Memory",
+        "Power",
+        "Workflow"
+      ]
+    },
+    {
+      "name": "F_capital_relay_exists",
+      "passed": true,
+      "details": {
+        "status": "available",
+        "source": [
+          "01_Framework/Capital_Relay.md",
+          "04_Current_State/AI_Capital_Map_v1.md"
+        ],
+        "source_type": "framework_snapshot",
+        "current_stage": {
+          "en": "Memory strengthening -> Equipment relay -> Materials starting.",
+          "zh": "Memory 强化 → Equipment 接力 → Materials 启动。"
+        },
+        "path": [
+          {
+            "name": "Memory",
+            "state": "strengthening",
+            "state_zh": "强化",
+            "evidence_type": "INFERRED"
+          },
+          {
+            "name": "PCB / CCL",
+            "state": "leading",
+            "state_zh": "主导",
+            "evidence_type": "INFERRED"
+          },
+          {
+            "name": "Equipment",
+            "state": "relay",
+            "state_zh": "接力",
+            "evidence_type": "INFERRED"
+          },
+          {
+            "name": "Materials",
+            "state": "emerging",
+            "state_zh": "启动",
+            "evidence_type": "INFERRED"
+          },
+          {
+            "name": "Bandwidth",
+            "state": "upgraded",
+            "state_zh": "升级",
+            "evidence_type": "HYPOTHESIZED"
+          }
+        ],
+        "distinction": {
+          "en": "Capital relay is inferred from Atlas framework snapshots; portfolio price observations are observed separately.",
+          "zh": "资本迁移来自 Atlas 框架快照推断；组合价量观测另行标记为已观测。"
+        }
+      }
+    },
+    {
+      "name": "G_actual_configured_holdings_connected",
+      "passed": true,
+      "details": {
+        "home": [
+          "00148.HK",
+          "002384.SZ",
+          "688019.SH"
+        ],
+        "configured": [
+          "00148.HK",
+          "002384.SZ",
+          "688019.SH"
+        ]
+      }
+    },
+    {
+      "name": "H_capital_allocation_board_exists",
+      "passed": true,
+      "details": {
+        "rebalance_today": "NO",
+        "source_of_funds": [
+          {
+            "en": "Unassigned buffer (20.0% allocation)",
+            "zh": "未部署缓冲（20.0% 配置）"
+          },
+          {
+            "en": "Extended current holding review only if trigger evidence appears.",
+            "zh": "只有触发证据出现时，才复核高位持仓是否可成为资金来源。"
+          }
+        ],
+        "destination": {
+          "en": "Equipment / Materials observation pool",
+          "zh": "Equipment / Materials 观察池"
+        },
+        "trigger_status": "2 / 6",
+        "execution_style": {
+          "en": "Wait; do not front-run without trigger confirmation.",
+          "zh": "等待，不提前抢跑。"
+        },
+        "funding_flow": {
+          "source": {
+            "en": "Unassigned buffer / reviewed extended exposure",
+            "zh": "未部署缓冲 / 经复核的高位暴露"
+          },
+          "destination": {
+            "en": "Equipment / Materials observation pool",
+            "zh": "Equipment / Materials 观察池"
+          },
+          "why": {
+            "en": "Improves optionality only if relay evidence and risk/reward reset confirm together.",
+            "zh": "只有资本接力证据与风险收益重置同时确认时，才改善组合选择权。"
+          }
+        },
+        "source": "03_Trading_OS/Capital_Allocation_Board.md",
+        "no_trading_execution": true
+      }
+    },
+    {
+      "name": "I_funding_source_destination_logic",
+      "passed": true,
+      "details": {
+        "source": {
+          "en": "Unassigned buffer / reviewed extended exposure",
+          "zh": "未部署缓冲 / 经复核的高位暴露"
+        },
+        "destination": {
+          "en": "Equipment / Materials observation pool",
+          "zh": "Equipment / Materials 观察池"
+        },
+        "why": {
+          "en": "Improves optionality only if relay evidence and risk/reward reset confirm together.",
+          "zh": "只有资本接力证据与风险收益重置同时确认时，才改善组合选择权。"
+        }
+      }
+    },
+    {
+      "name": "J_waiting_triggers_exist",
+      "passed": true,
+      "details": 6
+    },
+    {
+      "name": "K_trigger_state_visible",
+      "passed": true,
+      "details": [
+        "MET",
+        "NOT_MET",
+        "PARTIAL",
+        "UNKNOWN"
+      ]
+    },
+    {
+      "name": "L_top_3_research_tasks_only",
+      "passed": true,
+      "details": 3
+    },
+    {
+      "name": "M_full_candidate_pool_not_dumped_on_home",
+      "passed": true,
+      "details": {
+        "candidate_rows": 0
+      }
+    },
+    {
+      "name": "N_candidate_source_truth_labeled",
+      "passed": true,
+      "details": {
+        "source": "02_Databases/AI_Shovel_100.md",
+        "classification": "static_markdown_manual_priority_with_portfolio_overlay",
+        "label": {
+          "en": "Static research pool with manual S/A/B priority; Home only overlays current configured-holding relevance.",
+          "zh": "静态研究池 + 人工 S/A/B 优先级；首页只叠加当前配置持仓相关性。"
+        },
+        "not_runtime_dynamic": true,
+        "candidate_ranking_not_trading_action": true,
+        "count": 27
+      }
+    },
+    {
+      "name": "O_intelligence_alerts_compact",
+      "passed": true,
+      "details": 5
+    },
+    {
+      "name": "P_counter_argument_exists",
+      "passed": true,
+      "details": {
+        "thesis": {
+          "en": "If AI CapEx ROI deteriorates, AI infrastructure supplier logic can face valuation compression even if infrastructure demand remains visible.",
+          "zh": "如果 AI CapEx ROI 继续恶化，即使基础设施需求仍可见，AI 基建供应链逻辑也可能面临估值压缩。"
+        },
+        "supporting_evidence": {
+          "en": "Risk Radar records high-severity risks: price already reflects thesis, ROI deterioration, and backlog decline weakening Equipment relay.",
+          "zh": "Risk Radar 记录了高严重度风险：价格已反映论点、ROI 恶化、backlog 下滑削弱 Equipment 接力。"
+        },
+        "more_likely_if": {
+          "en": "CapEx guidance stays high while AI revenue, FCF, backlog, or utilization evidence weakens.",
+          "zh": "CapEx 指引维持高位，但 AI 收入、FCF、backlog 或利用率证据转弱。"
+        },
+        "source": "02_Databases/Risk_Radar.md"
+      }
+    },
+    {
+      "name": "Q_review_plan_exists",
+      "passed": true,
+      "details": {
+        "next_review_time": {
+          "en": "next scheduled proactive update (~7200s cadence)",
+          "zh": "下一次计划主动更新（约 7200 秒周期）"
+        },
+        "recheck": [
+          {
+            "en": "Capital relay confirmation",
+            "zh": "资本迁移是否确认"
+          },
+          {
+            "en": "Forecast deviation or maturity",
+            "zh": "预测是否偏离或到期"
+          },
+          {
+            "en": "Waiting trigger count and status",
+            "zh": "等待触发条件数量与状态"
+          },
+          {
+            "en": "Holding-specific evidence refresh",
+            "zh": "持仓个别证据刷新"
+          }
+        ],
+        "forecast_due": "runtime-d7db56c3-a465-4cc0-a3e1-7d8050e40948",
+        "triggers_may_change": [
+          {
+            "condition": {
+              "en": "Equipment / Materials remain confirmed in Bottleneck Map.",
+              "zh": "Equipment / Materials 仍在瓶颈图中被确认。"
+            },
+            "status": "MET",
+            "source": "04_Current_State/Bottleneck_Map_v1.md"
+          },
+          {
+            "condition": {
+              "en": "Portfolio-linked price/volume observations are fresh.",
+              "zh": "组合相关价量观测保持新鲜。"
+            },
+            "status": "MET",
+            "source": "market_intelligence.observations"
+          },
+          {
+            "condition": {
+              "en": "Market breadth channel confirms participation.",
+              "zh": "市场广度通道确认参与度。"
+            },
+            "status": "NOT_MET",
+            "source": "market_intelligence.channels.market_breadth"
+          }
+        ]
+      }
+    },
+    {
+      "name": "R_forecast_accountability_accessible",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "S_expert_analysis_secondary",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "T_no_buy_sell_language",
+      "passed": true,
+      "details": {
+        "zh": {
+          "buy": -1,
+          "sell": -1,
+          "买": -1,
+          "卖": -1
+        },
+        "en": {
+          "buy": -1,
+          "sell": -1,
+          "买": -1,
+          "卖": -1
+        }
+      }
+    },
+    {
+      "name": "U_no_exact_private_amounts_or_secrets",
+      "passed": true,
+      "details": []
+    },
+    {
+      "name": "V_chinese_mode_covers_required_chain",
+      "passed": true,
+      "details": [
+        "今日是否行动",
+        "今日总判断",
+        "最强预测",
+        "AI 瓶颈指数",
+        "资本迁移",
+        "当前持仓",
+        "资金调度",
+        "等待触发条件",
+        "今日研究任务",
+        "情报与预警",
+        "反方观点",
+        "复盘计划"
+      ]
+    },
+    {
+      "name": "V2_english_mode_covers_required_chain",
+      "passed": true,
+      "details": [
+        "Action Today",
+        "Today's Core Judgment",
+        "Highest-Conviction Predictions",
+        "AI Bottleneck Index",
+        "Capital Relay",
+        "Current Holdings",
+        "Capital Allocation Board",
+        "Waiting Triggers",
+        "Today's Research Tasks",
+        "Intelligence & Alerts",
+        "Counter Argument",
+        "Review Plan"
+      ]
+    },
+    {
+      "name": "chain_order_exact",
+      "passed": true,
+      "details": [
+        "action_today",
+        "core_judgment",
+        "strongest_predictions",
+        "ai_bottleneck_index",
+        "capital_relay",
+        "current_holdings",
+        "capital_allocation",
+        "waiting_triggers",
+        "research_tasks",
+        "intelligence_alerts",
+        "counter_argument",
+        "review_plan"
+      ]
+    }
+  ]
+}

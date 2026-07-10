@@ -1,0 +1,78 @@
+{
+  "enCheck": {
+    "forbidden": [],
+    "lang": "en",
+    "terms": {
+      "AI Bottleneck Index": true,
+      "Action Today": true,
+      "Capital Allocation Board": true,
+      "Capital Relay": true,
+      "Counter Argument": true,
+      "Current Holdings": true,
+      "Highest-Conviction Predictions": true,
+      "Intelligence & Alerts": true,
+      "Review Plan": true,
+      "Today's Core Judgment": true,
+      "Today's Research Tasks": true,
+      "Waiting Triggers": true
+    }
+  },
+  "responsiveCheck": {
+    "clientWidth": 1024,
+    "layout": true,
+    "overflowX": false,
+    "scrollWidth": 1024,
+    "width": 1024
+  },
+  "routeChecks": [
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/workflow",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/workflow"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/predictions",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/predictions"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/portfolio",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/portfolio"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/markets",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/markets"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/learning",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/learning"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/getting-started",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/getting-started"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/settings",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/settings"
+    }
+  ]
+}

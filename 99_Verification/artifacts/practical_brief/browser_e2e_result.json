@@ -1,0 +1,328 @@
+{
+  "steps": [
+    {
+      "step": 1,
+      "name": "Open Home",
+      "passed": true
+    },
+    {
+      "step": 2,
+      "name": "Identify Action Today",
+      "passed": true
+    },
+    {
+      "step": 3,
+      "name": "Confirm YES/NO/CONDITIONAL",
+      "passed": true
+    },
+    {
+      "step": 4,
+      "name": "Confirm Atlas posture",
+      "passed": true
+    },
+    {
+      "step": 5,
+      "name": "Read Core Judgment",
+      "passed": true
+    },
+    {
+      "step": 6,
+      "name": "Confirm only one main judgment",
+      "passed": true
+    },
+    {
+      "step": 7,
+      "name": "Inspect strongest prediction",
+      "passed": true
+    },
+    {
+      "step": 8,
+      "name": "Confirm confidence",
+      "passed": true
+    },
+    {
+      "step": 9,
+      "name": "Confirm horizon",
+      "passed": true
+    },
+    {
+      "step": 10,
+      "name": "Confirm invalidation",
+      "passed": true
+    },
+    {
+      "step": 11,
+      "name": "Inspect AI Bottleneck Index",
+      "passed": true
+    },
+    {
+      "step": 12,
+      "name": "Inspect trend change",
+      "passed": true
+    },
+    {
+      "step": 13,
+      "name": "Inspect Capital Relay",
+      "passed": true
+    },
+    {
+      "step": 14,
+      "name": "Confirm observed vs inferred distinction",
+      "passed": true
+    },
+    {
+      "step": 15,
+      "name": "Inspect current holdings",
+      "passed": true
+    },
+    {
+      "step": 16,
+      "name": "Confirm actual configured holdings only",
+      "passed": true
+    },
+    {
+      "step": 17,
+      "name": "Confirm no private exact amounts",
+      "passed": true
+    },
+    {
+      "step": 18,
+      "name": "Inspect Capital Allocation Board",
+      "passed": true
+    },
+    {
+      "step": 19,
+      "name": "Identify potential funding source",
+      "passed": true
+    },
+    {
+      "step": 20,
+      "name": "Identify potential destination",
+      "passed": true
+    },
+    {
+      "step": 21,
+      "name": "Inspect Waiting Triggers",
+      "passed": true
+    },
+    {
+      "step": 22,
+      "name": "Confirm trigger statuses",
+      "passed": true
+    },
+    {
+      "step": 23,
+      "name": "Inspect trigger progress",
+      "passed": true
+    },
+    {
+      "step": 24,
+      "name": "Inspect Top 3 Research Tasks",
+      "passed": true
+    },
+    {
+      "step": 25,
+      "name": "Confirm max 3",
+      "passed": true
+    },
+    {
+      "step": 26,
+      "name": "Open full candidate pool",
+      "passed": true
+    },
+    {
+      "step": 27,
+      "name": "Return Home",
+      "passed": true
+    },
+    {
+      "step": 28,
+      "name": "Inspect Intelligence & Alerts",
+      "passed": true
+    },
+    {
+      "step": 29,
+      "name": "Inspect Counter Argument",
+      "passed": true
+    },
+    {
+      "step": 30,
+      "name": "Inspect Review Plan",
+      "passed": true
+    },
+    {
+      "step": 31,
+      "name": "Inspect compact Forecast Accountability",
+      "passed": true
+    },
+    {
+      "step": 32,
+      "name": "Expand Expert Analysis",
+      "passed": true
+    },
+    {
+      "step": 33,
+      "name": "Confirm expert layer is secondary",
+      "passed": true
+    },
+    {
+      "step": 34,
+      "name": "Switch zh/en",
+      "passed": true
+    },
+    {
+      "step": 35,
+      "name": "Test 1024 responsive layout",
+      "passed": true
+    },
+    {
+      "step": 36,
+      "name": "Reload and confirm persistence",
+      "passed": true
+    }
+  ],
+  "homeChecks": {
+    "actionText": "01\n今日是否行动\n第一答案\nCONDITIONAL\n观察\n\n组合相关价量数据已更新，但市场广度、新闻、宏观等通道仍不完整；需要复核，不支持执行。\n\nYES / NO / CONDITIONAL 表示今天是否值得进入决策复核，不是交易指令。",
+    "alertCount": 5,
+    "allocationText": "07\n资金调度\n资金调度\n今天是否调仓\nNO\n潜在资金来源\n未部署缓冲（20.0% 配置）\n只有触发证据出现时，才复核高位持仓是否可成为资金来源。\n潜在资金去向\nEquipment / Materials 观察池\n触发进度\n2 / 6\n建议执行方式\n等待，不提前抢跑。\n未部署缓冲 / 经复核的高位暴露\n→\nEquipment / Materials 观察池\n\n只有资本接力证据与风险收益重置同时确认时，才改善组合选择权。",
+    "bottleneckText": "04\nAI 瓶颈指数\nAI 瓶颈指数\n\n手动维护的当前状态快照，不是运行态自动评分。\n\nDOMAIN\tSTRENGTH\t趋势\t关键变化\nMemory\tS+\t↑\tDRAM / HBM pressure remains central\nEquipment\tS+\t↑\tBenefits from capacity expansion and domestic substitution\nMaterials\tS\t↑\tEarly-stage capital attention\nBandwidth\tS\t→\tUpgraded into first-level bottleneck\nPower\tA\t→\tImportant but not current top-ranked",
+    "candidateRows": 0,
+    "coreText": "02\n今日总判断\n只保留一个总判断\nAI 基建主线未被证伪，但 Atlas 需要等待确认后再扩大风险暴露。\n\n运行态为 ATTENTION_EXPANSION，3 个组合相关价量观测可用，资本接力仍指向 Equipment / Materials；未部署缓冲为 20.0%。",
+    "expertInitiallyOpen": false,
+    "forbidden": [],
+    "hasCandidateLink": true,
+    "holdingsText": "06\n当前持仓\n仅显示实际配置持仓\n\n只显示比例，不显示私人账户金额。\n\n00148.HK\n\nPCB / Materials / AI Infrastructure · 26.0%\n\nAtlas 姿态\n观察\n原因\n建滔集团 / Kingboard exposure to PCB laminate and board-level materials chain; evidence should be refreshed through Atlas market and thesis checks.\n关键触发\n5d -21.6%, 20d -15.0%; refresh thesis evidence before changing posture\n复核优先级\nHigh\n002384.SZ\n\nPCB / AI Hardware Manufacturing · 20.0%\n\nAtlas 姿态\n观察\n原因\n东山精密 exposure to PCB / board-level manufacturing complexity in AI hardware supply chains; order evidence and margin transmission require monitoring.\n关键触发\n5d 0.1%, 20d 0.2%; refresh thesis evidence before changing posture\n复核优先级\nMedium\n688019.SH\n\nSemiconductor Materials · 34.0%\n\nAtlas 姿态\n观察\n原因\n安集",
+    "idsPresent": {
+      "home-action-today": true,
+      "home-ai-bottleneck-index": true,
+      "home-capital-allocation": true,
+      "home-capital-relay": true,
+      "home-core-judgment": true,
+      "home-counter-argument": true,
+      "home-current-holdings": true,
+      "home-expert-analysis": true,
+      "home-forecast-accountability": true,
+      "home-intelligence-alerts": true,
+      "home-research-tasks": true,
+      "home-review-plan": true,
+      "home-strongest-predictions": true,
+      "home-waiting-triggers": true
+    },
+    "lang": "zh",
+    "layout": true,
+    "positions": {
+      "home-action-today": 94.5,
+      "home-ai-bottleneck-index": 1195.2265625,
+      "home-capital-allocation": 2010.1015625,
+      "home-capital-relay": 1195.2265625,
+      "home-core-judgment": 94.5,
+      "home-counter-argument": 7413.78125,
+      "home-current-holdings": 2010.1015625,
+      "home-expert-analysis": 8516,
+      "home-forecast-accountability": 8220.328125,
+      "home-intelligence-alerts": 6958.734375,
+      "home-research-tasks": 3745.4140625,
+      "home-review-plan": 7413.78125,
+      "home-strongest-predictions": 428.203125,
+      "home-waiting-triggers": 3745.4140625
+    },
+    "predictionText": "03\n最强预测\n最多 3 条，必须标注证据\n1\n当前因果结构仍可作为工作假设，但必须等待后续观测验证。\n\n当前最强可追踪运行态预测；低置信，不是高强度判断。\n\n置信度\n30%\n观察周期\n下一运行周期\n核心证据\nMixed / Low Signal / attention not dominant / fresh portfolio price volume observations\n失效条件\nlater runtime state conflicts with expected structure / forecast outcome marked invalidated through supported lifecycle",
+    "relayText": "05\n资本迁移\nMemory 强化 → Equipment 接力 → Materials 启动。\n\n资本迁移来自 Atlas 框架快照推断；组合价量观测另行标记为已观测。\n\nMemory\n强化\nINFERRED\n→\nPCB / CCL\n主导\nINFERRED\n→\nEquipment\n接力\nINFERRED\n→\nMaterials\n启动\nINFERRED\n→\nBandwidth\n升级\nHYPOTHESIZED",
+    "researchTaskCount": 3,
+    "triggerText": "08\n等待触发条件\n等待触发条件\n\n触发进度: 2 / 6\n\n问题\t状态\t来源\nEquipment / Materials 仍在瓶颈图中被确认。\t已满足\t04_Current_State/Bottleneck_Map_v1.md\n组合相关价量观测保持新鲜。\t已满足\tmarket_intelligence.observations\n市场广度通道确认参与度。\t未满足\tmarket_intelligence.channels.market_breadth\n新闻、公告或 KOL 情报源可验证。\t未知\tmarket_intelligence.channels.news_announcement\n预测生命周期已有到期或评估证据。\t未知\tforecast_ledger\n调度前已复核 Risk Radar 高严重度阻碍。\t部分满足\t02_Databases/Risk_Radar.md",
+    "url": "http://127.0.0.1:8766/"
+  },
+  "candidateCheck": {
+    "candidateRows": 27,
+    "hasPoolTitle": true,
+    "url": "http://127.0.0.1:8766/candidates"
+  },
+  "returnedHome": {
+    "hasActionToday": true,
+    "url": "http://127.0.0.1:8766/"
+  },
+  "expertExpanded": true,
+  "enCheck": {
+    "forbidden": [],
+    "lang": "en",
+    "terms": {
+      "AI Bottleneck Index": true,
+      "Action Today": true,
+      "Capital Allocation Board": true,
+      "Capital Relay": true,
+      "Counter Argument": true,
+      "Current Holdings": true,
+      "Highest-Conviction Predictions": true,
+      "Intelligence & Alerts": true,
+      "Review Plan": true,
+      "Today's Core Judgment": true,
+      "Today's Research Tasks": true,
+      "Waiting Triggers": true
+    }
+  },
+  "responsiveCheck": {
+    "clientWidth": 1024,
+    "layout": true,
+    "overflowX": false,
+    "scrollWidth": 1024,
+    "width": 1024
+  },
+  "routeChecks": [
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/workflow",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/workflow"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/predictions",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/predictions"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/portfolio",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/portfolio"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/markets",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/markets"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/learning",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/learning"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/getting-started",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/getting-started"
+    },
+    {
+      "hasBody": true,
+      "hasErrorText": false,
+      "route": "/settings",
+      "title": "Cognitive Control Center - Atlas OS",
+      "url": "http://127.0.0.1:8766/settings"
+    }
+  ],
+  "reloadCheck": {
+    "hasActionToday": true,
+    "lang": "zh",
+    "layout": true,
+    "url": "http://127.0.0.1:8766/"
+  },
+  "passed": true
+}

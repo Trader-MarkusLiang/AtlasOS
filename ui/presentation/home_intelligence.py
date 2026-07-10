@@ -12,6 +12,12 @@ from typing import Any, Mapping
 
 
 CANDIDATE_SOURCE_PATH = Path("02_Databases/AI_Shovel_100.md")
+BOTTLENECK_MAP_PATH = Path("04_Current_State/Bottleneck_Map_v1.md")
+CAPITAL_RELAY_PATH = Path("01_Framework/Capital_Relay.md")
+AI_CAPITAL_MAP_PATH = Path("04_Current_State/AI_Capital_Map_v1.md")
+CAPITAL_ALLOCATION_PATH = Path("03_Trading_OS/Capital_Allocation_Board.md")
+CAPITAL_ROTATION_PATH = Path("03_Trading_OS/Capital_Rotation_Table.md")
+RISK_RADAR_PATH = Path("02_Databases/Risk_Radar.md")
 FORECAST_STATUSES = ("OPEN", "MATURED", "VERIFIED", "INVALIDATED", "INCONCLUSIVE")
 NO_TRADE_ACTIONS = {"buy", "sell"}
 
@@ -27,6 +33,12 @@ def build_home_intelligence(state: Mapping[str, Any]) -> dict[str, Any]:
     forecast_accountability = build_forecast_accountability(ledger)
     expert_analysis = build_expert_analysis(state, ledger)
     return {
+        "practical_brief": build_practical_decision_brief(
+            state,
+            forecast_accountability=forecast_accountability,
+            candidate_pool=candidate_pool,
+            expert_analysis=expert_analysis,
+        ),
         "decision_home": build_user_decision_home(
             state,
             market_outlook=market_outlook,
@@ -43,6 +55,75 @@ def build_home_intelligence(state: Mapping[str, Any]) -> dict[str, Any]:
             "no_new_cognition": True,
             "no_trading_execution": True,
             "candidate_ranking_not_buy_recommendation": True,
+        },
+    }
+
+
+def build_practical_decision_brief(
+    state: Mapping[str, Any],
+    *,
+    forecast_accountability: Mapping[str, Any],
+    candidate_pool: Mapping[str, Any],
+    expert_analysis: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Build the user-validated practical decision brief chain.
+
+    This is a presentation projection only. It reads current runtime state and
+    repository truth sources, but does not create forecasts, mutate portfolio
+    state, or change CDE/trading authority.
+    """
+
+    packet = _mapping(state.get("last_decision_packet"))
+    market = _mapping(state.get("market_intelligence"))
+    portfolio = _mapping(state.get("portfolio_context"))
+    ledger = _mapping(state.get("forecast_ledger"))
+    bottlenecks = _bottleneck_index()
+    capital_relay = _capital_relay()
+    triggers = _waiting_triggers(market, forecast_accountability, bottlenecks)
+    allocation = _capital_allocation_board(portfolio, bottlenecks, triggers)
+    predictions = _strongest_predictions(ledger, packet, market)
+    holdings = _current_holdings_board(portfolio, market)
+    return {
+        "chain_order": [
+            "action_today",
+            "core_judgment",
+            "strongest_predictions",
+            "ai_bottleneck_index",
+            "capital_relay",
+            "current_holdings",
+            "capital_allocation",
+            "waiting_triggers",
+            "research_tasks",
+            "intelligence_alerts",
+            "counter_argument",
+            "review_plan",
+        ],
+        "action_today": _action_today(packet, market, portfolio),
+        "core_judgment": _practical_core_judgment(packet, market, portfolio, capital_relay),
+        "strongest_predictions": predictions,
+        "ai_bottleneck_index": bottlenecks,
+        "capital_relay": capital_relay,
+        "current_holdings": holdings,
+        "capital_allocation": allocation,
+        "waiting_triggers": triggers,
+        "research_tasks": _top_research_tasks(portfolio, candidate_pool),
+        "candidate_source_truth": _candidate_source_truth(candidate_pool),
+        "intelligence_alerts": _intelligence_alerts(state, market, portfolio),
+        "counter_argument": _counter_argument(),
+        "review_plan": _review_plan(state, ledger, triggers),
+        "forecast_accountability": _decision_forecast_compact(forecast_accountability),
+        "expert_analysis": {
+            "collapsed_by_default": True,
+            "section_count": expert_analysis.get("section_count", 0),
+        },
+        "source_boundaries": {
+            "presentation_only": True,
+            "read_only": True,
+            "no_cognition_semantics_change": True,
+            "no_forecast_semantics_change": True,
+            "no_portfolio_mutation": True,
+            "no_trading_execution": True,
+            "no_private_amounts": True,
         },
     }
 
@@ -559,6 +640,507 @@ def _decision_forecast_compact(forecast: Mapping[str, Any]) -> dict[str, Any]:
         "sample_warning": forecast.get("sample_warning"),
         "links": {"predictions": "/predictions", "learning": "/learning"},
     }
+
+
+def _action_today(packet: Mapping[str, Any], market: Mapping[str, Any], portfolio: Mapping[str, Any]) -> dict[str, Any]:
+    confidence = _safe_confidence(packet.get("confidence", 0.0))
+    channels = _mapping(market.get("channels"))
+    live_count = sum(1 for value in channels.values() if _text(value, "").upper() == "LIVE")
+    missing_count = sum(1 for value in channels.values() if _text(value, "").upper() in {"NOT_CONFIGURED", "FAILED"})
+    observations = _list(market.get("observations"))
+    configured = _text(portfolio.get("status"), "").lower() == "configured"
+    if configured and observations and missing_count:
+        status = "CONDITIONAL"
+        reason = _bilingual(
+            "Portfolio-linked price data is live, but breadth/news/macro channels remain incomplete; review is justified, execution is not.",
+            "组合相关价量数据已更新，但市场广度、新闻、宏观等通道仍不完整；需要复核，不支持执行。",
+        )
+    elif confidence >= 0.65 and live_count >= 3:
+        status = "YES"
+        reason = _bilingual(
+            "Evidence quality is strong enough to justify a portfolio decision review.",
+            "证据质量足以支持进入组合决策复核。",
+        )
+    else:
+        status = "NO"
+        reason = _bilingual(
+            "Current evidence does not justify new portfolio action; keep the brief in observation mode.",
+            "当前证据不足以支持新增组合动作，简报保持观察模式。",
+        )
+    return {
+        "status": status,
+        "posture": "observe",
+        "posture_label": _action_label("observe"),
+        "reason": reason,
+        "helper": _bilingual(
+            "YES / NO / CONDITIONAL means whether evidence justifies decision review today, not an order.",
+            "YES / NO / CONDITIONAL 表示今天是否值得进入决策复核，不是交易指令。",
+        ),
+        "confidence": confidence,
+        "no_trading_execution": True,
+    }
+
+
+def _practical_core_judgment(
+    packet: Mapping[str, Any],
+    market: Mapping[str, Any],
+    portfolio: Mapping[str, Any],
+    capital_relay: Mapping[str, Any],
+) -> dict[str, Any]:
+    regime = _text(packet.get("regime_state"), "Unknown").split("/")[0].strip()
+    buffer_pct = _safe_number(portfolio.get("cash_or_unassigned_pct"), 0.0)
+    observations = _list(market.get("observations"))
+    headline = _bilingual(
+        "AI infrastructure thesis is not invalidated, but Atlas should wait for confirmation before expanding risk.",
+        "AI 基建主线未被证伪，但 Atlas 需要等待确认后再扩大风险暴露。",
+    )
+    support = _bilingual(
+        f"Runtime is {regime or 'Unknown'}, {len(observations)} portfolio-linked price observations are live, and the relay map still points toward Equipment / Materials; unassigned buffer is {buffer_pct:.1f}%.",
+        f"运行态为 {regime or 'Unknown'}，{len(observations)} 个组合相关价量观测可用，资本接力仍指向 Equipment / Materials；未部署缓冲为 {buffer_pct:.1f}%。",
+    )
+    if not observations:
+        support = _bilingual(
+            "Market observations are insufficient, so the core judgment is observation-first.",
+            "市场观测不足，因此今日总判断以观察为先。",
+        )
+    return {
+        "headline": headline,
+        "supporting_sentence": support,
+        "source": "DecisionPacket + market_intelligence + portfolio_context + Capital Relay snapshot",
+        "relay_stage": capital_relay.get("current_stage"),
+    }
+
+
+def _strongest_predictions(ledger: Mapping[str, Any], packet: Mapping[str, Any], market: Mapping[str, Any]) -> dict[str, Any]:
+    forecasts = [_mapping(item) for item in _list(ledger.get("forecasts")) if isinstance(item, Mapping)]
+    predictions: list[dict[str, Any]] = []
+    latest = forecasts[0] if forecasts else {}
+    confidence = _safe_confidence(latest.get("confidence", packet.get("confidence", 0.0)))
+    if latest:
+        evidence = _list(latest.get("causal_drivers"))
+        if _list(market.get("observations")):
+            evidence.append("fresh_portfolio_price_volume_observations")
+        predictions.append(
+            {
+                "judgment": _bilingual(
+                    _text(
+                        latest.get("forecast_statement"),
+                        "Current causal structure remains coherent until contradicted by later observed state.",
+                    ),
+                    "当前因果结构仍可作为工作假设，但必须等待后续观测验证。",
+                ),
+                "quality_label": _bilingual(
+                    "Strongest available runtime forecast; low conviction, not a high-conviction call.",
+                    "当前最强可追踪运行态预测；低置信，不是高强度判断。",
+                ),
+                "confidence": confidence,
+                "confidence_text": _confidence_text(confidence),
+                "horizon": _text(latest.get("horizon"), "next_runtime_cycle"),
+                "evidence": evidence[:4] or ["forecast_ledger_runtime_lineage"],
+                "invalidation": _list(latest.get("invalidation_conditions"))[:3]
+                or ["later_runtime_state_conflicts_with_expected_structure"],
+                "source": "forecast_ledger",
+                "forecast_id": latest.get("forecast_id"),
+            }
+        )
+    return {
+        "items": predictions[:3],
+        "empty_message": _bilingual(
+            "No high-conviction prediction has enough evidence yet.",
+            "当前没有足够证据形成高强度预测。",
+        ),
+        "max_items": 3,
+    }
+
+
+def _bottleneck_index(source_path: Path = BOTTLENECK_MAP_PATH) -> dict[str, Any]:
+    rows = _read_first_table(source_path)
+    domains = []
+    required = {"Memory", "Equipment", "Materials", "Bandwidth", "Power"}
+    for row in rows:
+        if len(row) < 3 or row[0] == "Bottleneck":
+            continue
+        domain = row[0]
+        domains.append(
+            {
+                "domain": domain,
+                "strength": row[1],
+                "trend": _bottleneck_trend(domain),
+                "key_change": row[2],
+                "required_domain": domain in required,
+            }
+        )
+    return {
+        "status": "available" if domains else "absent",
+        "source": str(source_path),
+        "source_type": "manual_current_ranking_snapshot",
+        "domains": domains,
+        "honest_label": _bilingual(
+            "Manual current-state snapshot, not runtime-derived scoring.",
+            "手动维护的当前状态快照，不是运行态自动评分。",
+        ),
+    }
+
+
+def _capital_relay(
+    relay_path: Path = CAPITAL_RELAY_PATH,
+    map_path: Path = AI_CAPITAL_MAP_PATH,
+) -> dict[str, Any]:
+    relay_text = relay_path.read_text(encoding="utf-8") if relay_path.exists() else ""
+    map_text = map_path.read_text(encoding="utf-8") if map_path.exists() else ""
+    path = [
+        {"name": "Memory", "state": "strengthening", "state_zh": "强化", "evidence_type": "INFERRED"},
+        {"name": "PCB / CCL", "state": "leading", "state_zh": "主导", "evidence_type": "INFERRED"},
+        {"name": "Equipment", "state": "relay", "state_zh": "接力", "evidence_type": "INFERRED"},
+        {"name": "Materials", "state": "emerging", "state_zh": "启动", "evidence_type": "INFERRED"},
+        {"name": "Bandwidth", "state": "upgraded", "state_zh": "升级", "evidence_type": "HYPOTHESIZED"},
+    ]
+    return {
+        "status": "available" if relay_text or map_text else "unconfirmed",
+        "source": [str(relay_path), str(map_path)],
+        "source_type": "framework_snapshot",
+        "current_stage": _bilingual(
+            "Memory strengthening -> Equipment relay -> Materials starting.",
+            "Memory 强化 → Equipment 接力 → Materials 启动。",
+        ),
+        "path": path,
+        "distinction": _bilingual(
+            "Capital relay is inferred from Atlas framework snapshots; portfolio price observations are observed separately.",
+            "资本迁移来自 Atlas 框架快照推断；组合价量观测另行标记为已观测。",
+        ),
+    }
+
+
+def _current_holdings_board(portfolio: Mapping[str, Any], market: Mapping[str, Any]) -> dict[str, Any]:
+    observations = {
+        _text(_mapping(item).get("asset"), ""): _mapping(item)
+        for item in _list(market.get("observations"))
+        if isinstance(item, Mapping)
+    }
+    holdings = []
+    for item in _list(portfolio.get("positions")):
+        if not isinstance(item, Mapping):
+            continue
+        asset = _text(item.get("asset"), "Unknown")
+        observation = observations.get(asset, {})
+        trigger = _text(item.get("risk_note"), "Refresh thesis, price/volume, and liquidity evidence.")
+        if observation:
+            trigger = f"5d {round(_safe_float(observation.get('change_5d_pct'), 0.0), 1)}%, 20d {round(_safe_float(observation.get('change_20d_pct'), 0.0), 1)}%; refresh thesis evidence before changing posture"
+        holdings.append(
+            {
+                "asset": asset,
+                "theme": _text(item.get("theme"), "Unknown"),
+                "exposure_pct": item.get("portfolio_percentage"),
+                "posture": "observe",
+                "posture_label": _action_label("observe"),
+                "why": _bilingual(
+                    _text(item.get("user_thesis"), "Configured holding requires evidence refresh."),
+                    _text(item.get("user_thesis"), "当前配置持仓需要刷新证据。"),
+                ),
+                "key_trigger": _bilingual(trigger, trigger),
+                "review_priority": _holding_priority(item, observation),
+                "source": portfolio.get("source"),
+            }
+        )
+    return {
+        "status": "configured" if holdings else "missing",
+        "source": portfolio.get("source"),
+        "privacy": portfolio.get("privacy", "percentage_only_no_account_amounts"),
+        "holdings": holdings,
+        "only_actual_configured_holdings": True,
+    }
+
+
+def _capital_allocation_board(
+    portfolio: Mapping[str, Any],
+    bottlenecks: Mapping[str, Any],
+    triggers: Mapping[str, Any],
+) -> dict[str, Any]:
+    buffer_pct = _safe_number(portfolio.get("cash_or_unassigned_pct"), 0.0)
+    progress = _mapping(triggers.get("progress"))
+    destination = "Equipment / Materials observation pool"
+    if not _bottleneck_has(bottlenecks, "Equipment") and not _bottleneck_has(bottlenecks, "Materials"):
+        destination = "Unconfirmed destination"
+    return {
+        "rebalance_today": "NO",
+        "source_of_funds": [
+            _bilingual(
+                f"Unassigned buffer ({buffer_pct:.1f}% allocation)",
+                f"未部署缓冲（{buffer_pct:.1f}% 配置）",
+            ),
+            _bilingual(
+                "Extended current holding review only if trigger evidence appears.",
+                "只有触发证据出现时，才复核高位持仓是否可成为资金来源。",
+            ),
+        ],
+        "destination": _bilingual(destination, "Equipment / Materials 观察池"),
+        "trigger_status": f"{progress.get('met', 0)} / {progress.get('total', 0)}",
+        "execution_style": _bilingual(
+            "Wait; do not front-run without trigger confirmation.",
+            "等待，不提前抢跑。",
+        ),
+        "funding_flow": {
+            "source": _bilingual("Unassigned buffer / reviewed extended exposure", "未部署缓冲 / 经复核的高位暴露"),
+            "destination": _bilingual(destination, "Equipment / Materials 观察池"),
+            "why": _bilingual(
+                "Improves optionality only if relay evidence and risk/reward reset confirm together.",
+                "只有资本接力证据与风险收益重置同时确认时，才改善组合选择权。",
+            ),
+        },
+        "source": str(CAPITAL_ALLOCATION_PATH),
+        "no_trading_execution": True,
+    }
+
+
+def _waiting_triggers(
+    market: Mapping[str, Any],
+    forecast: Mapping[str, Any],
+    bottlenecks: Mapping[str, Any],
+) -> dict[str, Any]:
+    channels = _mapping(market.get("channels"))
+    counts = _mapping(forecast.get("counts"))
+    observations = _list(market.get("observations"))
+    items = [
+        {
+            "condition": _bilingual(
+                "Equipment / Materials remain confirmed in Bottleneck Map.",
+                "Equipment / Materials 仍在瓶颈图中被确认。",
+            ),
+            "status": "MET" if _bottleneck_has(bottlenecks, "Equipment") and _bottleneck_has(bottlenecks, "Materials") else "UNKNOWN",
+            "source": str(BOTTLENECK_MAP_PATH),
+        },
+        {
+            "condition": _bilingual(
+                "Portfolio-linked price/volume observations are fresh.",
+                "组合相关价量观测保持新鲜。",
+            ),
+            "status": "MET" if observations else "UNKNOWN",
+            "source": "market_intelligence.observations",
+        },
+        {
+            "condition": _bilingual(
+                "Market breadth channel confirms participation.",
+                "市场广度通道确认参与度。",
+            ),
+            "status": "MET" if _text(channels.get("market_breadth"), "").upper() == "LIVE" else "NOT_MET",
+            "source": "market_intelligence.channels.market_breadth",
+        },
+        {
+            "condition": _bilingual(
+                "News / announcement / KOL source is verified.",
+                "新闻、公告或 KOL 情报源可验证。",
+            ),
+            "status": "MET" if _text(channels.get("news_announcement"), "").upper() == "LIVE" else "UNKNOWN",
+            "source": "market_intelligence.channels.news_announcement",
+        },
+        {
+            "condition": _bilingual(
+                "Forecast lifecycle has matured/evaluated evidence.",
+                "预测生命周期已有到期或评估证据。",
+            ),
+            "status": "MET" if (counts.get("verified") or counts.get("invalidated") or counts.get("inconclusive")) else "UNKNOWN",
+            "source": "forecast_ledger",
+        },
+        {
+            "condition": _bilingual(
+                "High-severity Risk Radar blockers are reviewed before allocation change.",
+                "调度前已复核 Risk Radar 高严重度阻碍。",
+            ),
+            "status": "PARTIAL",
+            "source": str(RISK_RADAR_PATH),
+        },
+    ]
+    met = sum(1 for item in items if item["status"] == "MET")
+    return {
+        "items": items,
+        "progress": {"met": met, "total": len(items), "label": f"{met} / {len(items)}"},
+        "status_vocabulary": ["MET", "PARTIAL", "NOT_MET", "UNKNOWN"],
+    }
+
+
+def _top_research_tasks(portfolio: Mapping[str, Any], candidate_pool: Mapping[str, Any]) -> dict[str, Any]:
+    positions = [_mapping(item) for item in _list(portfolio.get("positions")) if isinstance(item, Mapping)]
+    tasks = []
+    for item in sorted(positions, key=lambda value: _safe_number(value.get("portfolio_percentage"), 0.0), reverse=True):
+        asset = _text(item.get("asset"), "Unknown")
+        theme = _text(item.get("theme"), "Unknown")
+        question = _bilingual(
+            f"Verify whether {asset} still has fresh order, margin, or qualification evidence.",
+            f"核验 {asset} 是否仍有新的订单、利润率或认证证据。",
+        )
+        tasks.append(
+            {
+                "question": question,
+                "why_now": _bilingual(
+                    f"{asset} is an actual configured holding and affects portfolio-level interpretation.",
+                    f"{asset} 是当前真实配置持仓，会影响组合层面的解释。",
+                ),
+                "evidence_gap": _bilingual(
+                    _text(item.get("risk_note"), "Holding-specific evidence needs refresh."),
+                    _text(item.get("risk_note"), "持仓个别证据需要刷新。"),
+                ),
+                "related_asset_theme": f"{asset} / {theme}",
+            }
+        )
+        if len(tasks) >= 2:
+            break
+    tasks.append(
+        {
+            "question": _bilingual(
+                "Verify whether Equipment relay evidence is improving through order/backlog signals.",
+                "核验 Equipment 接力是否通过订单或 backlog 信号增强。",
+            ),
+            "why_now": _bilingual(
+                "Equipment is S+ in the current Bottleneck Map and is the next relay destination.",
+                "Equipment 在当前瓶颈图中为 S+，也是下一阶段接力方向。",
+            ),
+            "evidence_gap": _bilingual(
+                "Order, backlog, and customer evidence are still the main gap.",
+                "订单、backlog 与客户证据仍是主要缺口。",
+            ),
+            "related_asset_theme": "Equipment / Materials",
+        }
+    )
+    return {
+        "items": tasks[:3],
+        "full_pool_link": "/candidates",
+        "candidate_priority_truth": _candidate_source_truth(candidate_pool),
+        "max_items": 3,
+    }
+
+
+def _candidate_source_truth(candidate_pool: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "source": candidate_pool.get("source") or str(CANDIDATE_SOURCE_PATH),
+        "classification": "static_markdown_manual_priority_with_portfolio_overlay",
+        "label": _bilingual(
+            "Static research pool with manual S/A/B priority; Home only overlays current configured-holding relevance.",
+            "静态研究池 + 人工 S/A/B 优先级；首页只叠加当前配置持仓相关性。",
+        ),
+        "not_runtime_dynamic": True,
+        "candidate_ranking_not_trading_action": True,
+        "count": len(_list(candidate_pool.get("items"))),
+    }
+
+
+def _intelligence_alerts(state: Mapping[str, Any], market: Mapping[str, Any], portfolio: Mapping[str, Any]) -> dict[str, Any]:
+    channels = _mapping(market.get("channels"))
+    observations = _list(market.get("observations"))
+    alerts = [
+        {
+            "category": _bilingual("Market sentiment", "市场情绪"),
+            "message": _bilingual(
+                f"Runtime state is {_text(state.get('regime_state'), 'Unknown')}; attention is low-to-moderate and breadth is not configured.",
+                f"运行态为 {_text(state.get('regime_state'), 'Unknown')}；注意力偏低到中等，市场广度尚未配置。",
+            ),
+        },
+        {
+            "category": _bilingual("Important KOL view changes", "重要观点变化"),
+            "message": _bilingual(
+                "No verified KOL intelligence source is connected.",
+                "当前未接入可验证的 KOL 情报源。",
+            ),
+        },
+        {
+            "category": _bilingual("Holding-related signals", "持仓相关信号"),
+            "message": _bilingual(
+                f"{len(observations)} configured-holding price/volume observations are available.",
+                f"{len(observations)} 个配置持仓价量观测可用。",
+            ),
+        },
+        {
+            "category": _bilingual("High-priority alert", "高优先级预警"),
+            "message": _bilingual(
+                "Risk Radar warns that price may already reflect the thesis after vertical moves.",
+                "Risk Radar 提醒：快速上行后价格可能已反映论点。",
+            ),
+        },
+        {
+            "category": _bilingual("High-priority alert", "高优先级预警"),
+            "message": _bilingual(
+                "AI CapEx growth without ROI improvement would pressure AI infrastructure supplier valuation.",
+                "如果 AI CapEx 增长但 ROI 不改善，AI 基建供应链估值可能承压。",
+            ),
+        },
+    ]
+    if _text(channels.get("news_announcement"), "").upper() == "LIVE":
+        alerts[1]["message"] = _bilingual("News/announcement channel is live; verify source quality before treating it as evidence.", "新闻/公告通道可用；仍需验证来源质量后才能作为证据。")
+    return {"items": alerts[:5], "max_items": 5}
+
+
+def _counter_argument() -> dict[str, Any]:
+    return {
+        "thesis": _bilingual(
+            "If AI CapEx ROI deteriorates, AI infrastructure supplier logic can face valuation compression even if infrastructure demand remains visible.",
+            "如果 AI CapEx ROI 继续恶化，即使基础设施需求仍可见，AI 基建供应链逻辑也可能面临估值压缩。",
+        ),
+        "supporting_evidence": _bilingual(
+            "Risk Radar records high-severity risks: price already reflects thesis, ROI deterioration, and backlog decline weakening Equipment relay.",
+            "Risk Radar 记录了高严重度风险：价格已反映论点、ROI 恶化、backlog 下滑削弱 Equipment 接力。",
+        ),
+        "more_likely_if": _bilingual(
+            "CapEx guidance stays high while AI revenue, FCF, backlog, or utilization evidence weakens.",
+            "CapEx 指引维持高位，但 AI 收入、FCF、backlog 或利用率证据转弱。",
+        ),
+        "source": str(RISK_RADAR_PATH),
+    }
+
+
+def _review_plan(state: Mapping[str, Any], ledger: Mapping[str, Any], triggers: Mapping[str, Any]) -> dict[str, Any]:
+    forecasts = [_mapping(item) for item in _list(ledger.get("forecasts")) if isinstance(item, Mapping)]
+    latest = forecasts[0] if forecasts else {}
+    proactive = _mapping(state.get("proactive_update_state"))
+    cadence = proactive.get("cadence_seconds") or proactive.get("cadence")
+    next_review = "next scheduled proactive update"
+    if cadence:
+        next_review = f"next scheduled proactive update (~{cadence}s cadence)"
+    return {
+        "next_review_time": _bilingual(next_review, f"下一次计划主动更新（约 {cadence or '默认'} 秒周期）"),
+        "recheck": [
+            _bilingual("Capital relay confirmation", "资本迁移是否确认"),
+            _bilingual("Forecast deviation or maturity", "预测是否偏离或到期"),
+            _bilingual("Waiting trigger count and status", "等待触发条件数量与状态"),
+            _bilingual("Holding-specific evidence refresh", "持仓个别证据刷新"),
+        ],
+        "forecast_due": latest.get("forecast_id") or "No open forecast exposed",
+        "triggers_may_change": _list(triggers.get("items"))[:3],
+    }
+
+
+def _read_first_table(source_path: Path) -> list[list[str]]:
+    if not source_path.exists():
+        return []
+    text = source_path.read_text(encoding="utf-8")
+    return _table_rows(text)
+
+
+def _bottleneck_trend(domain: str) -> str:
+    return {
+        "Memory": "up",
+        "Equipment": "up",
+        "Materials": "up",
+        "Bandwidth": "flat",
+        "Power": "flat",
+        "Workflow": "watch",
+        "Industry AI": "watch",
+    }.get(domain, "unknown")
+
+
+def _bottleneck_has(bottlenecks: Mapping[str, Any], domain: str) -> bool:
+    for item in _list(bottlenecks.get("domains")):
+        if isinstance(item, Mapping) and _text(item.get("domain"), "").lower() == domain.lower():
+            return bool(item.get("strength"))
+    return False
+
+
+def _holding_priority(position: Mapping[str, Any], observation: Mapping[str, Any]) -> str:
+    exposure = _safe_number(position.get("portfolio_percentage"), 0.0)
+    five_day = abs(_safe_float(observation.get("change_5d_pct"), 0.0)) if observation else 0.0
+    if exposure >= 30 or five_day >= 10:
+        return "High"
+    if exposure >= 20:
+        return "Medium"
+    return "Normal"
 
 
 def build_forecast_accountability(ledger: Mapping[str, Any] | None = None) -> dict[str, Any]:

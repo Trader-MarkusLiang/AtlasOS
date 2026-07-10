@@ -180,98 +180,120 @@ HOME_INTELLIGENCE_TEXT = {
 def home_content(state: Mapping[str, Any]) -> str:
     lang = current_language()
     intelligence = build_home_intelligence(state)
-    decision_home = intelligence["decision_home"]
+    practical = intelligence["practical_brief"]
     expert = intelligence["expert_analysis"]
-    core = decision_home["core_judgment"]
-    forward = decision_home["strongest_forward_view"]
-    hierarchy = decision_home["conviction_hierarchy"]
-    portfolio = decision_home["portfolio_relevance"]
-    agenda = decision_home["decision_agenda"]
-    triggers = decision_home["decision_triggers"]
-    research = decision_home["research_priorities"]
-    forecast = decision_home["forecast_accountability"]
+    action = _mapping(practical.get("action_today"))
+    core = _mapping(practical.get("core_judgment"))
+    predictions = _mapping(practical.get("strongest_predictions"))
+    bottlenecks = _mapping(practical.get("ai_bottleneck_index"))
+    relay = _mapping(practical.get("capital_relay"))
+    holdings = _mapping(practical.get("current_holdings"))
+    allocation = _mapping(practical.get("capital_allocation"))
+    triggers = _mapping(practical.get("waiting_triggers"))
+    research = _mapping(practical.get("research_tasks"))
+    truth = _mapping(practical.get("candidate_source_truth"))
+    alerts = _mapping(practical.get("intelligence_alerts"))
+    counter = _mapping(practical.get("counter_argument"))
+    review = _mapping(practical.get("review_plan"))
+    forecast = _mapping(practical.get("forecast_accountability"))
     return f"""
     {_home_intelligence_style()}
-    <main class="decision-home-shell" data-home-layout="user-decision-journey">
-      <section class="decision-first-viewport" id="home-first-viewport" aria-label="{escape(_journey_copy("first_viewport", lang))}">
-        <article class="decision-card decision-card-primary" id="home-core-judgment" data-primary-block="core_judgment">
-          <div class="journey-step"><span>01</span>{escape(_journey_copy("what_changed", lang))}</div>
-          <span class="kicker">{escape(_journey_copy("today_core_judgment", lang))}</span>
-          <h1>{escape(_localized(core.get("title"), lang))}</h1>
-          <p class="decision-change">{escape(_localized(core.get("what_changed"), lang))}</p>
-          <p>{escape(_localized(core.get("explanation"), lang))}</p>
-          <div class="decision-meta-row">
-            <span class="tag">{escape(t("state.confidence", lang))}: {escape(str(core.get("confidence_text") or ""))}</span>
-            <span class="tag">{escape(_journey_copy("evidence_quality", lang))}: {escape(_localized(_mapping(core.get("evidence_quality")).get("label"), lang))}</span>
-            <span class="tag">{escape(_journey_copy("updated", lang))}: {escape(str(core.get("updated_at") or ""))}</span>
-          </div>
+    <main class="decision-home-shell practical-brief-shell" data-home-layout="practical-decision-brief">
+      <section class="practical-first-viewport" id="home-first-viewport" aria-label="{escape(_brief_copy("first_viewport", lang))}">
+        <article class="decision-card action-today-card" id="home-action-today" data-practical-section="action_today">
+          <div class="journey-step"><span>01</span>{escape(_brief_copy("action_today", lang))}</div>
+          <span class="kicker">{escape(_brief_copy("first_answer", lang))}</span>
+          <h1 class="action-answer">{escape(str(action.get("status") or "NO"))}</h1>
+          <div class="posture-pill">{escape(_localized(action.get("posture_label"), lang))}</div>
+          <p class="decision-change">{escape(_localized(action.get("reason"), lang))}</p>
+          <p class="home-safety-note">{escape(_localized(action.get("helper"), lang))}</p>
         </article>
 
-        <article class="decision-card" id="home-strongest-forward-view" data-primary-block="strongest_forward_view">
-          <div class="journey-step"><span>02</span>{escape(_journey_copy("strongest_judgment", lang))}</div>
-          <span class="kicker">{escape(_journey_copy("strongest_forward_view", lang))}</span>
-          <h2>{escape(_localized(forward.get("statement"), lang))}</h2>
-          <div class="forward-metrics">
-            <span><small>{escape(_home_label("horizon", lang))}</small><strong>{escape(_horizon_label(forward.get("horizon"), lang))}</strong></span>
-            <span><small>{escape(t("state.confidence", lang))}</small><strong>{escape(str(forward.get("confidence_text") or ""))}</strong></span>
-            <span><small>{escape(_journey_copy("evidence_quality", lang))}</small><strong>{escape(_localized(_mapping(forward.get("evidence_quality")).get("label"), lang))}</strong></span>
-          </div>
-          <p class="home-safety-note">{escape(_localized(forward.get("evidence_note"), lang))}</p>
-          <p class="falsification"><strong>{escape(_journey_copy("falsification", lang))}:</strong> {escape(_localized(forward.get("falsification_condition"), lang))}</p>
-          {_conviction_hierarchy_panel(hierarchy, lang)}
+        <article class="decision-card core-judgment-card" id="home-core-judgment" data-practical-section="core_judgment">
+          <div class="journey-step"><span>02</span>{escape(_brief_copy("core_judgment", lang))}</div>
+          <span class="kicker">{escape(_brief_copy("one_total_judgment", lang))}</span>
+          <h2>{escape(_localized(core.get("headline"), lang))}</h2>
+          <p>{escape(_localized(core.get("supporting_sentence"), lang))}</p>
         </article>
 
-        <article class="decision-card" id="home-portfolio-relevance" data-primary-block="portfolio_relevance">
-          <div class="journey-step"><span>03</span>{escape(_journey_copy("portfolio_question", lang))}</div>
-          <span class="kicker">{escape(_journey_copy("portfolio_relevance", lang))}</span>
-          <h2>{escape(_localized(portfolio.get("overall_impact"), lang))}</h2>
-          <p>{escape(_localized(portfolio.get("explanation"), lang))}</p>
-          <dl class="decision-dl">
-            <dt>{escape(_journey_copy("shared_risk", lang))}</dt><dd>{escape(_localized(portfolio.get("primary_shared_risk"), lang))}</dd>
-            <dt>{escape(_journey_copy("most_sensitive", lang))}</dt><dd>{escape(_holding_label(_mapping(portfolio.get("most_sensitive_holding")), lang))}</dd>
-            <dt>{escape(_journey_copy("strongest_buffer", lang))}</dt><dd>{escape(_localized(portfolio.get("strongest_buffer"), lang))}</dd>
-          </dl>
-        </article>
-
-        <article class="decision-card" id="home-decision-agenda" data-primary-block="decision_agenda">
-          <div class="journey-step"><span>04</span>{escape(_journey_copy("focus_question", lang))}</div>
-          <span class="kicker">{escape(_journey_copy("decision_agenda", lang))}</span>
-          <div class="posture-pill">{escape(_localized(agenda.get("posture_label"), lang))}</div>
-          <p>{escape(_localized(agenda.get("explanation"), lang))}</p>
-          <ol class="focus-list" id="home-focus-items">
-            {_localized_list_items(agenda.get("focus_items"), lang)}
-          </ol>
+        <article class="decision-card predictions-card" id="home-strongest-predictions" data-practical-section="strongest_predictions">
+          <div class="journey-step"><span>03</span>{escape(_brief_copy("strongest_predictions", lang))}</div>
+          <span class="kicker">{escape(_brief_copy("max_three", lang))}</span>
+          {_prediction_cards(predictions, lang)}
         </article>
       </section>
 
-      <section class="decision-support-grid" aria-label="{escape(_journey_copy("supporting", lang))}">
-        <article class="decision-support-card" id="home-decision-triggers" data-supporting-block="decision_triggers">
-          <div class="journey-step"><span>05</span>{escape(_journey_copy("view_change_question", lang))}</div>
-          <h2>{escape(_journey_copy("what_changes_view", lang))}</h2>
-          <div class="trigger-columns">
-            <div>
-              <h3>{escape(_journey_copy("positive_confirmation", lang))}</h3>
-              <ul class="plain-list positive-confirmation">{_localized_list_items(triggers.get("positive_confirmation"), lang)}</ul>
-            </div>
-            <div>
-              <h3>{escape(_journey_copy("negative_confirmation", lang))}</h3>
-              <ul class="plain-list negative-confirmation">{_localized_list_items(triggers.get("negative_confirmation"), lang)}</ul>
-            </div>
-          </div>
+      <section class="practical-secondary-grid" aria-label="{escape(_brief_copy("secondary", lang))}">
+        <article class="decision-support-card" id="home-ai-bottleneck-index" data-practical-section="ai_bottleneck_index">
+          <div class="journey-step"><span>04</span>{escape(_brief_copy("bottleneck_index", lang))}</div>
+          <h2>{escape(_brief_copy("bottleneck_index", lang))}</h2>
+          <p class="home-safety-note">{escape(_localized(bottlenecks.get("honest_label"), lang))}</p>
+          {_bottleneck_index_table(bottlenecks, lang)}
         </article>
 
-        <article class="decision-support-card" id="home-top-research-priorities" data-supporting-block="research_priorities">
-          <div class="journey-step"><span>06</span>{escape(_journey_copy("research_question", lang))}</div>
+        <article class="decision-support-card" id="home-capital-relay" data-practical-section="capital_relay">
+          <div class="journey-step"><span>05</span>{escape(_brief_copy("capital_relay", lang))}</div>
+          <h2>{escape(_localized(relay.get("current_stage"), lang))}</h2>
+          <p class="home-safety-note">{escape(_localized(relay.get("distinction"), lang))}</p>
+          {_capital_relay_view(relay, lang)}
+        </article>
+
+        <article class="decision-support-card" id="home-current-holdings" data-practical-section="current_holdings">
+          <div class="journey-step"><span>06</span>{escape(_brief_copy("current_holdings", lang))}</div>
+          <h2>{escape(_brief_copy("actual_configured_holdings", lang))}</h2>
+          <p class="home-safety-note">{escape(_brief_copy("privacy_percent_only", lang))}</p>
+          {_holding_action_board(holdings, lang)}
+        </article>
+
+        <article class="decision-support-card" id="home-capital-allocation" data-practical-section="capital_allocation">
+          <div class="journey-step"><span>07</span>{escape(_brief_copy("capital_allocation", lang))}</div>
+          <h2>{escape(_brief_copy("capital_allocation", lang))}</h2>
+          {_capital_allocation_panel(allocation, lang)}
+        </article>
+      </section>
+
+      <section class="practical-operational-grid" aria-label="{escape(_brief_copy("operational", lang))}">
+        <article class="decision-support-card" id="home-waiting-triggers" data-practical-section="waiting_triggers">
+          <div class="journey-step"><span>08</span>{escape(_brief_copy("waiting_triggers", lang))}</div>
           <div class="home-section-header">
             <div>
-              <h2>{escape(_journey_copy("top_three_research", lang))}</h2>
-              <p class="home-safety-note">{escape(_candidate_truth_text(research, lang))}</p>
+              <h2>{escape(_brief_copy("waiting_triggers", lang))}</h2>
+              <p class="trigger-progress">{escape(_brief_copy("trigger_progress", lang))}: {escape(str(_mapping(triggers.get("progress")).get("label") or ""))}</p>
+            </div>
+          </div>
+          {_waiting_trigger_table(triggers, lang)}
+        </article>
+
+        <article class="decision-support-card" id="home-research-tasks" data-practical-section="research_tasks">
+          <div class="journey-step"><span>09</span>{escape(_brief_copy("research_tasks", lang))}</div>
+          <div class="home-section-header">
+            <div>
+              <h2>{escape(_brief_copy("research_tasks", lang))}</h2>
+              <p class="home-safety-note">{escape(_localized(truth.get("label"), lang))}</p>
             </div>
             <a class="secondary-button" href="/candidates">{escape(_home_label("view_full_candidate_pool", lang))}</a>
           </div>
-          <div class="research-priority-list">
-            {_research_priority_cards(research.get("items"), lang)}
-          </div>
+          {_research_task_cards(research, lang)}
+        </article>
+
+        <article class="decision-support-card" id="home-intelligence-alerts" data-practical-section="intelligence_alerts">
+          <div class="journey-step"><span>10</span>{escape(_brief_copy("intelligence_alerts", lang))}</div>
+          <h2>{escape(_brief_copy("intelligence_alerts", lang))}</h2>
+          {_intelligence_alert_cards(alerts, lang)}
+        </article>
+      </section>
+
+      <section class="practical-control-grid" aria-label="{escape(_brief_copy("control", lang))}">
+        <article class="decision-support-card" id="home-counter-argument" data-practical-section="counter_argument">
+          <div class="journey-step"><span>11</span>{escape(_brief_copy("counter_argument", lang))}</div>
+          <h2>{escape(_brief_copy("counter_argument", lang))}</h2>
+          {_counter_argument_view(counter, lang)}
+        </article>
+
+        <article class="decision-support-card" id="home-review-plan" data-practical-section="review_plan">
+          <div class="journey-step"><span>12</span>{escape(_brief_copy("review_plan", lang))}</div>
+          <h2>{escape(_brief_copy("review_plan", lang))}</h2>
+          {_review_plan_view(review, lang)}
         </article>
       </section>
 
@@ -279,24 +301,24 @@ def home_content(state: Mapping[str, Any]) -> str:
         <div class="home-section-header">
           <div>
             <span class="kicker">{escape(_home_label("forecast_accountability", lang))}</span>
-            <h2>{escape(_journey_copy("forecast_compact", lang))}</h2>
+            <h2>{escape(_brief_copy("forecast_compact", lang))}</h2>
           </div>
           <div class="button-row">
             <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
-            <a class="secondary-button" href="/learning">{escape(_journey_copy("view_learning", lang))}</a>
+            <a class="secondary-button" href="/learning">{escape(_brief_copy("view_learning", lang))}</a>
           </div>
         </div>
         {_forecast_compact_strip(forecast, lang)}
         <div class="forecast-learning-row">
-          <p><strong>{escape(_journey_copy("recent_miss", lang))}:</strong> {escape(_localized(forecast.get("recent_miss"), lang))}</p>
-          <p><strong>{escape(_journey_copy("changed_afterward", lang))}:</strong> {escape(_localized(forecast.get("what_changed_afterward"), lang))}</p>
+          <p><strong>{escape(_brief_copy("recent_miss", lang))}:</strong> {escape(_localized(forecast.get("recent_miss"), lang))}</p>
+          <p><strong>{escape(_brief_copy("changed_afterward", lang))}:</strong> {escape(_localized(forecast.get("what_changed_afterward"), lang))}</p>
         </div>
       </section>
 
       <section class="home-expert-secondary" id="home-expert-analysis" data-expert-block="secondary_collapsed">
         <div class="home-section-header">
           <div>
-            <span class="kicker">{escape(_journey_copy("secondary_detail", lang))}</span>
+            <span class="kicker">{escape(_brief_copy("secondary_detail", lang))}</span>
             <h2>{escape(_home_label("expert_analysis", lang))}</h2>
           </div>
         </div>
@@ -399,6 +421,361 @@ def _journey_copy(key: str, lang: str) -> str:
         },
     }
     return text.get(lang, text["en"]).get(key, key.replace("_", " ").title())
+
+
+def _brief_copy(key: str, lang: str) -> str:
+    text = {
+        "en": {
+            "first_viewport": "Practical Decision Brief",
+            "first_answer": "First answer",
+            "action_today": "Action Today?",
+            "core_judgment": "Today's Core Judgment",
+            "one_total_judgment": "One total judgment",
+            "strongest_predictions": "Highest-Conviction Predictions",
+            "max_three": "Maximum 3; evidence-labeled",
+            "secondary": "Decision framework evidence",
+            "bottleneck_index": "AI Bottleneck Index",
+            "capital_relay": "Capital Relay",
+            "current_holdings": "Current Holdings",
+            "actual_configured_holdings": "Actual configured holdings only",
+            "privacy_percent_only": "Percentages only; no private account amounts.",
+            "capital_allocation": "Capital Allocation Board",
+            "operational": "Operational checks",
+            "waiting_triggers": "Waiting Triggers",
+            "trigger_progress": "Trigger Progress",
+            "research_tasks": "Today's Research Tasks",
+            "intelligence_alerts": "Intelligence & Alerts",
+            "control": "Control and accountability",
+            "counter_argument": "Counter Argument",
+            "review_plan": "Review Plan",
+            "forecast_compact": "Recent forecast accountability",
+            "view_learning": "View learning record",
+            "recent_miss": "Recent miss",
+            "changed_afterward": "What Atlas changed afterward",
+            "secondary_detail": "Secondary evidence depth",
+            "judgment": "Judgment",
+            "confidence": "Confidence",
+            "evidence": "Evidence",
+            "invalidation": "Invalidation",
+            "source": "Source",
+            "trend": "Trend",
+            "key_change": "Key change",
+            "evidence_type": "Evidence type",
+            "posture": "Atlas posture",
+            "why": "Why",
+            "key_trigger": "Key trigger",
+            "review_priority": "Review priority",
+            "rebalance_today": "Rebalance today?",
+            "funding_source": "Funding source",
+            "destination": "Destination",
+            "execution_style": "Execution style",
+            "status": "Status",
+            "question": "Question",
+            "why_now": "Why now",
+            "evidence_gap": "Evidence gap",
+            "related": "Related asset / theme",
+            "supporting_evidence": "Supporting evidence",
+            "more_likely_if": "More likely if",
+            "next_review": "Next review",
+            "recheck": "Re-check",
+            "forecast_due": "Forecast due",
+            "empty_prediction": "No high-conviction prediction has enough evidence yet.",
+        },
+        "zh": {
+            "first_viewport": "实际决策简报",
+            "first_answer": "第一答案",
+            "action_today": "今日是否行动",
+            "core_judgment": "今日总判断",
+            "one_total_judgment": "只保留一个总判断",
+            "strongest_predictions": "最强预测",
+            "max_three": "最多 3 条，必须标注证据",
+            "secondary": "决策框架证据",
+            "bottleneck_index": "AI 瓶颈指数",
+            "capital_relay": "资本迁移",
+            "current_holdings": "当前持仓",
+            "actual_configured_holdings": "仅显示实际配置持仓",
+            "privacy_percent_only": "只显示比例，不显示私人账户金额。",
+            "capital_allocation": "资金调度",
+            "operational": "操作检查",
+            "waiting_triggers": "等待触发条件",
+            "trigger_progress": "触发进度",
+            "research_tasks": "今日研究任务",
+            "intelligence_alerts": "情报与预警",
+            "control": "控制与问责",
+            "counter_argument": "反方观点",
+            "review_plan": "复盘计划",
+            "forecast_compact": "近期预测责任检查",
+            "view_learning": "查看学习记录",
+            "recent_miss": "近期失误",
+            "changed_afterward": "Atlas 后续改变",
+            "secondary_detail": "二级证据深度",
+            "judgment": "判断",
+            "confidence": "置信度",
+            "evidence": "核心证据",
+            "invalidation": "失效条件",
+            "source": "来源",
+            "trend": "趋势",
+            "key_change": "关键变化",
+            "evidence_type": "证据类型",
+            "posture": "Atlas 姿态",
+            "why": "原因",
+            "key_trigger": "关键触发",
+            "review_priority": "复核优先级",
+            "rebalance_today": "今天是否调仓",
+            "funding_source": "潜在资金来源",
+            "destination": "潜在资金去向",
+            "execution_style": "建议执行方式",
+            "status": "状态",
+            "question": "问题",
+            "why_now": "为什么现在",
+            "evidence_gap": "证据缺口",
+            "related": "相关资产 / 主题",
+            "supporting_evidence": "支持证据",
+            "more_likely_if": "何时更可能成立",
+            "next_review": "下次复盘",
+            "recheck": "重点检查",
+            "forecast_due": "到期预测",
+            "empty_prediction": "当前没有足够证据形成高强度预测。",
+        },
+    }
+    return text.get(lang, text["en"]).get(key, key.replace("_", " ").title())
+
+
+def _prediction_cards(predictions: Mapping[str, Any], lang: str) -> str:
+    items = [item for item in _list(predictions.get("items")) if isinstance(item, Mapping)][:3]
+    if not items:
+        return f'<div class="empty-state practical-empty">{escape(_localized(predictions.get("empty_message"), lang) or _brief_copy("empty_prediction", lang))}</div>'
+    rows = []
+    for index, item in enumerate(items, start=1):
+        rows.append(
+            f"""
+            <article class="prediction-item" data-prediction="{index}">
+              <div class="prediction-topline">
+                <span class="priority-index">{index}</span>
+                <div>
+                  <h3>{escape(_localized(item.get("judgment"), lang))}</h3>
+                  <p class="home-safety-note">{escape(_localized(item.get("quality_label"), lang))}</p>
+                </div>
+              </div>
+              <div class="forward-metrics compact-metrics">
+                <span><small>{escape(_brief_copy("confidence", lang))}</small><strong>{escape(str(item.get("confidence_text") or ""))}</strong></span>
+                <span><small>{escape(_home_label("horizon", lang))}</small><strong>{escape(_horizon_label(item.get("horizon"), lang))}</strong></span>
+              </div>
+              <dl class="decision-dl">
+                <dt>{escape(_brief_copy("evidence", lang))}</dt><dd>{escape(_join_evidence(item.get("evidence"), lang))}</dd>
+                <dt>{escape(_brief_copy("invalidation", lang))}</dt><dd>{escape(_join_evidence(item.get("invalidation"), lang))}</dd>
+              </dl>
+            </article>
+            """
+        )
+    return '<div class="prediction-stack">' + "".join(rows) + "</div>"
+
+
+def _bottleneck_index_table(bottlenecks: Mapping[str, Any], lang: str) -> str:
+    domains = [item for item in _list(bottlenecks.get("domains")) if isinstance(item, Mapping)]
+    required = [item for item in domains if item.get("domain") in {"Memory", "Equipment", "Materials", "Bandwidth", "Power"}]
+    if not required:
+        return f'<div class="empty-state">{escape("AI Bottleneck Index unavailable" if lang == "en" else "AI 瓶颈指数不可用")}</div>'
+    rows = []
+    for item in required:
+        rows.append(
+            f"""
+            <tr>
+              <td><strong>{escape(str(item.get("domain") or ""))}</strong></td>
+              <td>{escape(str(item.get("strength") or ""))}</td>
+              <td>{escape(_trend_label(str(item.get("trend") or ""), lang))}</td>
+              <td>{escape(str(item.get("key_change") or ""))}</td>
+            </tr>
+            """
+        )
+    return f"""
+    <table class="practical-table bottleneck-table">
+      <thead><tr><th>Domain</th><th>Strength</th><th>{escape(_brief_copy("trend", lang))}</th><th>{escape(_brief_copy("key_change", lang))}</th></tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table>
+    """
+
+
+def _capital_relay_view(relay: Mapping[str, Any], lang: str) -> str:
+    path = [item for item in _list(relay.get("path")) if isinstance(item, Mapping)]
+    if not path:
+        return f'<div class="empty-state">{escape("Capital relay unconfirmed" if lang == "en" else "当前资本迁移尚未确认。")}</div>'
+    nodes = []
+    for item in path:
+        state = str(item.get("state_zh") if lang == "zh" else item.get("state") or "")
+        nodes.append(
+            f"""
+            <div class="relay-node">
+              <strong>{escape(str(item.get("name") or ""))}</strong>
+              <span>{escape(state)}</span>
+              <small>{escape(str(item.get("evidence_type") or ""))}</small>
+            </div>
+            """
+        )
+    return '<div class="capital-relay-path">' + '<span class="relay-arrow">→</span>'.join(nodes) + "</div>"
+
+
+def _holding_action_board(holdings: Mapping[str, Any], lang: str) -> str:
+    items = [item for item in _list(holdings.get("holdings")) if isinstance(item, Mapping)]
+    if not items:
+        return f'<div class="empty-state">{escape(t("portfolio.no_percentages", lang))}</div>'
+    rows = []
+    for item in items:
+        rows.append(
+            f"""
+            <article class="holding-brief-card">
+              <div>
+                <h3>{escape(str(item.get("asset") or ""))}</h3>
+                <p class="home-safety-note">{escape(str(item.get("theme") or ""))} · {escape(_pct_text(item.get("exposure_pct")))}</p>
+              </div>
+              <dl class="decision-dl">
+                <dt>{escape(_brief_copy("posture", lang))}</dt><dd>{escape(_localized(item.get("posture_label"), lang))}</dd>
+                <dt>{escape(_brief_copy("why", lang))}</dt><dd>{escape(_localized(item.get("why"), lang))}</dd>
+                <dt>{escape(_brief_copy("key_trigger", lang))}</dt><dd>{escape(_localized(item.get("key_trigger"), lang))}</dd>
+                <dt>{escape(_brief_copy("review_priority", lang))}</dt><dd>{escape(str(item.get("review_priority") or ""))}</dd>
+              </dl>
+            </article>
+            """
+        )
+    return '<div class="holding-brief-grid">' + "".join(rows) + "</div>"
+
+
+def _capital_allocation_panel(allocation: Mapping[str, Any], lang: str) -> str:
+    sources = "".join(f"<li>{escape(_localized(item, lang))}</li>" for item in _list(allocation.get("source_of_funds")))
+    flow = _mapping(allocation.get("funding_flow"))
+    return f"""
+    <dl class="decision-dl allocation-dl">
+      <dt>{escape(_brief_copy("rebalance_today", lang))}</dt><dd><strong>{escape(str(allocation.get("rebalance_today") or "NO"))}</strong></dd>
+      <dt>{escape(_brief_copy("funding_source", lang))}</dt><dd><ul class="plain-list">{sources}</ul></dd>
+      <dt>{escape(_brief_copy("destination", lang))}</dt><dd>{escape(_localized(allocation.get("destination"), lang))}</dd>
+      <dt>{escape(_brief_copy("trigger_progress", lang))}</dt><dd>{escape(str(allocation.get("trigger_status") or ""))}</dd>
+      <dt>{escape(_brief_copy("execution_style", lang))}</dt><dd>{escape(_localized(allocation.get("execution_style"), lang))}</dd>
+    </dl>
+    <div class="funding-flow" aria-label="Funding Source to Destination">
+      <span>{escape(_localized(flow.get("source"), lang))}</span>
+      <strong>→</strong>
+      <span>{escape(_localized(flow.get("destination"), lang))}</span>
+      <p>{escape(_localized(flow.get("why"), lang))}</p>
+    </div>
+    """
+
+
+def _waiting_trigger_table(triggers: Mapping[str, Any], lang: str) -> str:
+    items = [item for item in _list(triggers.get("items")) if isinstance(item, Mapping)]
+    rows = []
+    for item in items:
+        status = str(item.get("status") or "UNKNOWN")
+        rows.append(
+            f"""
+            <tr>
+              <td>{escape(_localized(item.get("condition"), lang))}</td>
+              <td><span class="trigger-status status-{escape(status.lower().replace('_', '-'))}">{escape(_trigger_status_label(status, lang))}</span></td>
+              <td>{escape(str(item.get("source") or ""))}</td>
+            </tr>
+            """
+        )
+    return f"""
+    <table class="practical-table waiting-trigger-table">
+      <thead><tr><th>{escape(_brief_copy("question", lang))}</th><th>{escape(_brief_copy("status", lang))}</th><th>{escape(_brief_copy("source", lang))}</th></tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table>
+    """
+
+
+def _research_task_cards(research: Mapping[str, Any], lang: str) -> str:
+    tasks = [item for item in _list(research.get("items")) if isinstance(item, Mapping)][:3]
+    if not tasks:
+        return f'<div class="empty-state">{escape("No research tasks" if lang == "en" else "暂无今日研究任务")}</div>'
+    cards = []
+    for index, item in enumerate(tasks, start=1):
+        cards.append(
+            f"""
+            <article class="research-priority-card" data-research-task="{index}">
+              <span class="priority-index">{index}</span>
+              <div>
+                <h3>{escape(_localized(item.get("question"), lang))}</h3>
+                <p class="home-safety-note">{escape(str(item.get("related_asset_theme") or ""))}</p>
+              </div>
+              <dl class="decision-dl">
+                <dt>{escape(_brief_copy("why_now", lang))}</dt><dd>{escape(_localized(item.get("why_now"), lang))}</dd>
+                <dt>{escape(_brief_copy("evidence_gap", lang))}</dt><dd>{escape(_localized(item.get("evidence_gap"), lang))}</dd>
+              </dl>
+            </article>
+            """
+        )
+    return '<div class="research-priority-list">' + "".join(cards) + "</div>"
+
+
+def _intelligence_alert_cards(alerts: Mapping[str, Any], lang: str) -> str:
+    items = [item for item in _list(alerts.get("items")) if isinstance(item, Mapping)][:5]
+    if not items:
+        return f'<div class="empty-state">{escape("No new alert" if lang == "en" else "暂无新增预警")}</div>'
+    rows = "".join(
+        f"""
+        <li>
+          <strong>{escape(_localized(item.get("category"), lang))}</strong>
+          <span>{escape(_localized(item.get("message"), lang))}</span>
+        </li>
+        """
+        for item in items
+    )
+    return f'<ul class="intelligence-alert-list">{rows}</ul>'
+
+
+def _counter_argument_view(counter: Mapping[str, Any], lang: str) -> str:
+    return f"""
+    <dl class="decision-dl">
+      <dt>{escape(_brief_copy("counter_argument", lang))}</dt><dd>{escape(_localized(counter.get("thesis"), lang))}</dd>
+      <dt>{escape(_brief_copy("supporting_evidence", lang))}</dt><dd>{escape(_localized(counter.get("supporting_evidence"), lang))}</dd>
+      <dt>{escape(_brief_copy("more_likely_if", lang))}</dt><dd>{escape(_localized(counter.get("more_likely_if"), lang))}</dd>
+    </dl>
+    """
+
+
+def _review_plan_view(review: Mapping[str, Any], lang: str) -> str:
+    recheck = "".join(f"<li>{escape(_localized(item, lang))}</li>" for item in _list(review.get("recheck")))
+    trigger_rows = "".join(
+        f"<li>{escape(_localized(_mapping(item).get('condition'), lang))} · {escape(_trigger_status_label(str(_mapping(item).get('status') or 'UNKNOWN'), lang))}</li>"
+        for item in _list(review.get("triggers_may_change"))
+        if isinstance(item, Mapping)
+    )
+    return f"""
+    <dl class="decision-dl">
+      <dt>{escape(_brief_copy("next_review", lang))}</dt><dd>{escape(_localized(review.get("next_review_time"), lang))}</dd>
+      <dt>{escape(_brief_copy("recheck", lang))}</dt><dd><ul class="plain-list">{recheck}</ul></dd>
+      <dt>{escape(_brief_copy("forecast_due", lang))}</dt><dd>{escape(str(review.get("forecast_due") or ""))}</dd>
+      <dt>{escape(_brief_copy("waiting_triggers", lang))}</dt><dd><ul class="plain-list">{trigger_rows}</ul></dd>
+    </dl>
+    """
+
+
+def _join_evidence(items: Any, lang: str) -> str:
+    values = [str(item).replace("_", " ") for item in _list(items) if str(item).strip()]
+    if not values:
+        return _home_label("insufficient_evidence", lang)
+    return " / ".join(values[:4])
+
+
+def _trend_label(value: str, lang: str) -> str:
+    labels = {
+        "up": "↑" if lang == "zh" else "up",
+        "flat": "→" if lang == "zh" else "flat",
+        "watch": "观察" if lang == "zh" else "watch",
+        "unknown": "未知" if lang == "zh" else "unknown",
+    }
+    return labels.get(value, value)
+
+
+def _trigger_status_label(value: str, lang: str) -> str:
+    normalized = value.upper()
+    if lang == "zh":
+        return {
+            "MET": "已满足",
+            "PARTIAL": "部分满足",
+            "NOT_MET": "未满足",
+            "UNKNOWN": "未知",
+        }.get(normalized, value)
+    return normalized.replace("_", " ")
 
 
 def _localized(value: Any, lang: str) -> str:
@@ -523,6 +900,10 @@ def _forecast_compact_strip(forecast: Mapping[str, Any], lang: str) -> str:
 
 def _mapping(value: Any) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
+
+
+def _list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
 
 
 def _home_outlook_title(outlook: Mapping[str, Any], lang: str) -> str:
@@ -946,6 +1327,49 @@ def _home_intelligence_style() -> str:
     <style>
     .decision-home-shell { display:grid; gap:18px; }
     .decision-first-viewport { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.92fr); gap:14px; align-items:stretch; }
+    .practical-brief-shell { gap:20px; }
+    .practical-first-viewport { display:grid; grid-template-columns:minmax(320px,.72fr) minmax(0,1fr); grid-template-areas:"action core" "action predictions"; gap:14px; align-items:stretch; }
+    .action-today-card { grid-area:action; min-height:430px; display:flex; flex-direction:column; justify-content:center; }
+    .core-judgment-card { grid-area:core; }
+    .predictions-card { grid-area:predictions; }
+    .action-answer { margin:12px 0 6px; font-size:clamp(4rem, 8vw, 7.5rem) !important; line-height:.86 !important; letter-spacing:0; }
+    .practical-secondary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .practical-secondary-grid #home-current-holdings, .practical-secondary-grid #home-capital-allocation { grid-column:span 1; }
+    .practical-operational-grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:14px; }
+    .practical-operational-grid #home-intelligence-alerts { grid-column:1 / -1; }
+    .practical-control-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .prediction-stack { display:grid; gap:10px; }
+    .prediction-item, .holding-brief-card { padding:13px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.035); }
+    .prediction-topline { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; align-items:start; }
+    .prediction-topline h3 { margin:0 0 5px; font-size:1.02rem; line-height:1.25; }
+    .compact-metrics { margin-top:10px; }
+    .compact-metrics span { min-height:58px; }
+    .practical-table { width:100%; border-collapse:separate; border-spacing:0 7px; margin-top:12px; }
+    .practical-table th { color:var(--muted); font-size:.75rem; text-transform:uppercase; text-align:left; padding:0 9px 3px; }
+    .practical-table td { padding:10px 9px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(255,255,255,.032); vertical-align:top; }
+    .practical-table td:first-child { border-left:1px solid var(--line); border-radius:12px 0 0 12px; }
+    .practical-table td:last-child { border-right:1px solid var(--line); border-radius:0 12px 12px 0; }
+    .capital-relay-path { display:flex; align-items:stretch; gap:8px; overflow-x:auto; padding:10px 0 2px; }
+    .relay-node { min-width:128px; display:grid; gap:5px; align-content:center; padding:12px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.04); }
+    .relay-node span { color:var(--accent); font-weight:760; }
+    .relay-node small { color:var(--muted); }
+    .relay-arrow { align-self:center; color:var(--muted); font-size:1.25rem; }
+    .holding-brief-grid { display:grid; gap:10px; }
+    .allocation-dl .plain-list { margin:0; }
+    .funding-flow { margin-top:14px; display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:10px; align-items:center; padding:13px; border:1px solid rgba(219,234,254,.18); border-radius:16px; background:rgba(219,234,254,.055); }
+    .funding-flow span { min-height:54px; display:grid; place-items:center; text-align:center; border-radius:12px; background:rgba(0,0,0,.12); padding:9px; }
+    .funding-flow strong { color:var(--accent); font-size:1.4rem; }
+    .funding-flow p { grid-column:1 / -1; margin:2px 0 0; }
+    .trigger-progress { color:var(--accent) !important; font-weight:780; }
+    .trigger-status { display:inline-flex; min-height:28px; align-items:center; padding:5px 9px; border-radius:999px; font-size:.78rem; font-weight:780; background:rgba(255,255,255,.07); }
+    .status-met { color:#9ee6b8; }
+    .status-partial { color:#ffe59a; }
+    .status-not-met { color:#f4a5b3; }
+    .status-unknown { color:var(--muted); }
+    .intelligence-alert-list { list-style:none; display:grid; gap:9px; padding:0; margin:12px 0 0; }
+    .intelligence-alert-list li { display:grid; grid-template-columns:minmax(150px,.28fr) minmax(0,1fr); gap:12px; padding:12px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.035); }
+    .intelligence-alert-list span { color:var(--subtle); }
+    .practical-empty { min-height:120px; display:grid; place-items:center; text-align:center; }
     .decision-card, .decision-support-card, .forecast-compact-card, .home-expert-secondary { border:1px solid rgba(219,234,254,.12); border-radius:22px; background:linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.032)); box-shadow:0 22px 60px rgba(0,0,0,.22); backdrop-filter:blur(20px); padding:18px; }
     .decision-card-primary { grid-row:span 2; padding:22px; }
     .decision-card h1 { margin:12px 0 10px; font-size:clamp(2rem, 2.6vw, 3.15rem); line-height:1.02; letter-spacing:0; max-width:16ch; }
@@ -1034,8 +1458,8 @@ def _home_intelligence_style() -> str:
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid { grid-template-columns:1fr; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
-    @media (max-width:900px) { .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid { grid-template-columns:1fr; } .decision-card h1 { max-width:none; } }
+    @media (max-width:1180px) { .decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid, .practical-operational-grid, .practical-control-grid { grid-template-columns:1fr; } .practical-operational-grid #home-intelligence-alerts { grid-column:auto; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li { grid-template-columns:1fr; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
     </style>
     """
 
