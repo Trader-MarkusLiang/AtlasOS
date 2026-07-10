@@ -1,0 +1,648 @@
+
+    
+    <style>
+    .decision-home-shell { display:grid; gap:18px; }
+    .decision-first-viewport { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.92fr); gap:14px; align-items:stretch; }
+    .decision-card, .decision-support-card, .forecast-compact-card, .home-expert-secondary { border:1px solid rgba(219,234,254,.12); border-radius:22px; background:linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.032)); box-shadow:0 22px 60px rgba(0,0,0,.22); backdrop-filter:blur(20px); padding:18px; }
+    .decision-card-primary { grid-row:span 2; padding:22px; }
+    .decision-card h1 { margin:12px 0 10px; font-size:clamp(2rem, 2.6vw, 3.15rem); line-height:1.02; letter-spacing:0; max-width:16ch; }
+    .decision-card h2, .decision-support-card h2, .forecast-compact-card h2, .home-expert-secondary h2 { margin:8px 0 10px; font-size:1.28rem; line-height:1.15; letter-spacing:0; }
+    .decision-card p, .decision-support-card p, .forecast-compact-card p { color:var(--subtle); line-height:1.52; }
+    .decision-change { color:var(--text) !important; font-size:1.03rem; }
+    .journey-step { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.84rem; font-weight:760; }
+    .journey-step span { width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.13); color:var(--accent); font-size:.76rem; }
+    .decision-meta-row, .forward-metrics { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .forward-metrics span { flex:1 1 120px; min-height:76px; display:grid; align-content:center; gap:5px; padding:11px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.035); }
+    .forward-metrics small { color:var(--muted); }
+    .forward-metrics strong { font-size:1rem; }
+    .falsification { border-left:3px solid rgba(244,165,179,.75); padding-left:10px; }
+    .posture-pill { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:9px 18px; border-radius:999px; background:var(--accent); color:var(--bg); font-size:1.15rem; font-weight:820; margin:8px 0 8px; }
+    .focus-list { display:grid; gap:8px; margin:12px 0 0; padding-left:20px; }
+    .focus-list li { color:var(--text); line-height:1.42; }
+    .decision-dl { display:grid; grid-template-columns:minmax(100px,.42fr) minmax(0,1fr); gap:9px; margin:14px 0 0; }
+    .decision-dl dt { color:var(--muted); }
+    .decision-dl dd { margin:0; color:var(--text); overflow-wrap:anywhere; }
+    .conviction-hierarchy { margin-top:14px; border:1px solid var(--line); border-radius:16px; background:rgba(0,0,0,.12); }
+    .conviction-hierarchy summary { cursor:pointer; padding:12px 14px; color:var(--accent); font-weight:780; }
+    .conviction-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:0 14px 14px; }
+    .conviction-grid > div { padding:11px; border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,.035); }
+    .conviction-grid small { display:block; color:var(--muted); margin-top:4px; }
+    .decision-support-grid { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:14px; }
+    .trigger-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .trigger-columns h3 { margin:8px 0; font-size:1rem; }
+    .positive-confirmation li::marker { color:#9ee6b8; }
+    .negative-confirmation li::marker { color:#f4a5b3; }
+    .research-priority-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px; }
+    .research-priority-card { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; padding:13px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.035); }
+    .research-priority-card .decision-dl { grid-column:1 / -1; grid-template-columns:96px minmax(0,1fr); font-size:.9rem; }
+    .priority-index { width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.16); color:var(--accent); font-weight:820; }
+    .forecast-compact-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:14px 0; }
+    .forecast-compact-strip span { min-height:68px; display:grid; place-items:center; gap:4px; padding:9px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.035); color:var(--muted); text-align:center; font-size:.75rem; }
+    .forecast-compact-strip strong { color:var(--text); font-size:1.35rem; }
+    .forecast-learning-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .home-view-switch { position: sticky; top: 82px; z-index: 7; display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px solid var(--line); border-radius:var(--r16); background:rgba(11,15,20,.72); backdrop-filter:blur(18px); }
+    .home-view-switch button { min-height:36px; display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); color:var(--subtle); cursor:pointer; }
+    .home-view-switch button.active { background:var(--accent); color:var(--bg); }
+    .home-view-switch span { min-width:22px; min-height:22px; display:grid; place-items:center; border-radius:999px; background:rgba(0,0,0,.14); font-size:.72rem; }
+    .home-zone { display:grid; gap:14px; scroll-margin-top:140px; }
+    .home-zone-label { display:inline-flex; align-items:center; gap:10px; color:var(--subtle); font-weight:740; }
+    .home-zone-label span { width:34px; height:34px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-size:.78rem; }
+    .home-primary-decision { margin-top:22px; }
+    .home-key-drivers { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+    .home-outlook-layout { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr); gap:14px; }
+    .home-outlook-main { min-height:230px; }
+    .home-scenario-grid { display:grid; gap:10px; }
+    .scenario-card { padding:13px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); }
+    .scenario-card strong { display:block; margin-bottom:7px; }
+    .scenario-base { border-color:rgba(219,234,254,.3); }
+    .scenario-upside { border-color:rgba(158,230,184,.28); }
+    .scenario-downside { border-color:rgba(244,165,179,.28); }
+    .home-safety-note { color:var(--muted); font-size:.86rem; line-height:1.45; }
+    .home-impact-stack { display:grid; gap:12px; }
+    .home-section-header { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+    .candidate-filter-row { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .candidate-filter.active { background:var(--accent); color:var(--bg); }
+    .candidate-table { display:grid; gap:7px; overflow-x:auto; }
+    .candidate-header, .candidate-row { min-width:840px; display:grid; grid-template-columns:1.5fr .48fr .7fr .8fr .7fr 1fr; gap:8px; align-items:start; padding:10px; border:1px solid var(--line); border-radius:var(--r12); }
+    .candidate-header { color:var(--muted); background:rgba(255,255,255,.025); font-size:.78rem; font-weight:760; text-transform:uppercase; }
+    .candidate-row { background:rgba(255,255,255,.04); }
+    .candidate-row strong, .candidate-row span { overflow-wrap:anywhere; }
+    .candidate-row > div > span { display:block; margin-top:4px; color:var(--muted); font-size:.78rem; }
+    .candidate-detail summary { cursor:pointer; color:var(--accent); }
+    .candidate-detail p { margin:8px 0 0; font-size:.86rem; }
+    .candidate-changes { margin-top:16px; }
+    .forecast-status-strip { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:12px 0; }
+    .forecast-status-strip span { min-height:70px; display:grid; place-items:center; gap:4px; padding:9px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); color:var(--muted); text-align:center; font-size:.72rem; }
+    .forecast-status-strip strong { color:var(--text); font-size:1.25rem; }
+    .home-expert-panel summary { justify-content:space-between; gap:12px; }
+    .home-expert-panel summary strong { min-width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:var(--accent); color:var(--bg); }
+    .expert-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:14px; border-top:1px solid var(--line); }
+    .expert-section { min-height:160px; padding:14px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); }
+    .expert-section > span { display:inline-grid; place-items:center; width:28px; height:28px; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-weight:780; }
+    .expert-section h3 { margin:9px 0; font-size:1rem; }
+    .causal-chain { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .causal-chain span { display:inline-flex; align-items:center; min-height:34px; padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); }
+    .causal-chain span:not(:last-child)::after { content:"↓"; margin-left:9px; color:var(--accent); }
+    .expert-dl { display:grid; grid-template-columns:minmax(100px,.45fr) minmax(0,1fr); gap:8px; margin:0; }
+    .expert-dl dt { color:var(--muted); }
+    .expert-dl dd { margin:0; overflow-wrap:anywhere; }
+    .confidence-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; align-items:center; margin:8px 0; }
+    .confidence-row i { grid-column:1 / -1; display:block; height:7px; border-radius:999px; background:var(--accent); }
+    .confidence-row small { grid-column:1 / -1; color:var(--muted); }
+    .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
+    @media (max-width:1180px) { .decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid { grid-template-columns:1fr; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid { grid-template-columns:1fr; } .decision-card h1 { max-width:none; } }
+    </style>
+    
+    <section class="hero-panel">
+      <span class="kicker">候选池</span>
+      <h1 class="hero-title">27 研究候选</h1>
+      <p class="hero-copy">候选排序不是交易动作，只代表研究优先级。</p>
+      <div class="pill-row" style="margin-top:18px;">
+        <span class="tag">来源: 02_Databases/AI_Shovel_100.md</span>
+        <span class="tag">状态: available</span>
+      </div>
+    </section>
+    <section class="focus-card">
+      <div class="candidate-filter-row"><button class="secondary-button candidate-filter active" type="button" data-candidate-filter="all">全部 <span>27</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="portfolio">组合相关 <span>7</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="high">高优先级 <span>20</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="new">新进入 <span>0</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="changed">近期变化 <span>6</span></button></div>
+      
+    <div class="candidate-table" role="table" aria-label="研究候选">
+      <div class="candidate-header" role="row">
+        <span>资产 / 主题</span>
+        <span>优先级</span>
+        <span>相关性</span>
+        <span>证据强度</span>
+        <span>状态</span>
+        <span>详情</span>
+      </div>
+      
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all portfolio high changed">
+              <div>
+                <strong>泰金新能（688813）</strong>
+                <span>Materials</span>
+              </div>
+              <span>S</span>
+              <span>直接相关</span>
+              <span>Medium</span>
+              <span>重点研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Domestic AI infrastructure supply chain exposure tied to Materials theme</p>
+                <p><strong>主要风险:</strong> Price already reflects thesis; company-specific evidence not yet recorded</p>
+                <p><strong>下一触发:</strong> New order, margin, or valuation reset evidence</p>
+                <p><strong>来源:</strong> Priority S · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all portfolio high changed">
+              <div>
+                <strong>罗博特科</strong>
+                <span>Equipment</span>
+              </div>
+              <span>S</span>
+              <span>直接相关</span>
+              <span>Medium</span>
+              <span>重点研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Domestic equipment/automation exposure within Equipment relay</p>
+                <p><strong>主要风险:</strong> Company-specific order evidence not yet recorded</p>
+                <p><strong>下一触发:</strong> Confirm order, backlog, or margin evidence</p>
+                <p><strong>来源:</strong> Priority S · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all portfolio high">
+              <div>
+                <strong>东山精密</strong>
+                <span>Bandwidth / PCB</span>
+              </div>
+              <span>S</span>
+              <span>直接相关</span>
+              <span>Medium</span>
+              <span>重点研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> AI capital relay includes PCB / CCL / Copper Foil before Equipment</p>
+                <p><strong>主要风险:</strong> Customer exposure and AI revenue linkage are Unverified</p>
+                <p><strong>下一触发:</strong> Confirm AI-related revenue, customer, or margin evidence</p>
+                <p><strong>来源:</strong> Priority S · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all portfolio high">
+              <div>
+                <strong>德福科技</strong>
+                <span>Materials / PCB</span>
+              </div>
+              <span>S</span>
+              <span>直接相关</span>
+              <span>Medium</span>
+              <span>重点研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Materials and PCB-related exposure may benefit from AI infrastructure relay</p>
+                <p><strong>主要风险:</strong> AI-specific order and pricing evidence are Unverified</p>
+                <p><strong>下一触发:</strong> Confirm copper foil demand, pricing, or margin transmission</p>
+                <p><strong>来源:</strong> Priority S · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all portfolio high">
+              <div>
+                <strong>DRAM ETF</strong>
+                <span>Memory</span>
+              </div>
+              <span>S</span>
+              <span>直接相关</span>
+              <span>Medium</span>
+              <span>重点研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Memory is ranked S+ and remains the strongest current bottleneck</p>
+                <p><strong>主要风险:</strong> DRAM ASP decline, inventory reversal, or AI demand slowdown</p>
+                <p><strong>下一触发:</strong> DRAM ASP trend, capex discipline, or Memory ranking change</p>
+                <p><strong>来源:</strong> Priority S · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all portfolio high">
+              <div>
+                <strong>Micron（MU）</strong>
+                <span>Memory</span>
+              </div>
+              <span>S</span>
+              <span>直接相关</span>
+              <span>Medium</span>
+              <span>重点研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Direct DRAM / HBM exposure aligns with Memory S+ bottleneck</p>
+                <p><strong>主要风险:</strong> DRAM pricing reversal, HBM execution, capex/FCF deterioration</p>
+                <p><strong>下一触发:</strong> Earnings, DRAM ASP, HBM demand, FCF update</p>
+                <p><strong>来源:</strong> Priority S · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>SK Hynix</strong>
+                <span>Memory</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Medium</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Memory S+ exposure through DRAM / HBM</p>
+                <p><strong>主要风险:</strong> Pricing reversal, supply expansion, execution risk</p>
+                <p><strong>下一触发:</strong> Earnings, HBM demand, DRAM ASP, capex discipline</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>LRCX</strong>
+                <span>Equipment</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Medium</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Equipment S+ relay exposure</p>
+                <p><strong>主要风险:</strong> Customer capex cuts, order slowdown</p>
+                <p><strong>下一触发:</strong> Orders, backlog, memory capex</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>AMAT</strong>
+                <span>Equipment</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Medium</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Broad equipment exposure to AI capacity expansion</p>
+                <p><strong>主要风险:</strong> Capex cycle slowdown, valuation</p>
+                <p><strong>下一触发:</strong> Orders, backlog, segment growth</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>拓荆科技</strong>
+                <span>Equipment</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Domestic equipment exposure to capacity expansion</p>
+                <p><strong>主要风险:</strong> Order certainty Unverified</p>
+                <p><strong>下一触发:</strong> Order/backlog/customer evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>北方华创</strong>
+                <span>Equipment</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Domestic equipment exposure to Equipment relay</p>
+                <p><strong>主要风险:</strong> Order certainty and margin transmission Unverified</p>
+                <p><strong>下一触发:</strong> Order/backlog/customer evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>中微公司</strong>
+                <span>Equipment</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Etch/equipment exposure within Equipment bottleneck</p>
+                <p><strong>主要风险:</strong> Order evidence Unverified</p>
+                <p><strong>下一触发:</strong> Order/backlog/customer evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>盛美上海</strong>
+                <span>Equipment</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Cleaning/equipment exposure within Equipment bottleneck</p>
+                <p><strong>主要风险:</strong> Order evidence Unverified</p>
+                <p><strong>下一触发:</strong> Order/backlog/customer evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all portfolio high">
+              <div>
+                <strong>安集科技</strong>
+                <span>Materials</span>
+              </div>
+              <span>A</span>
+              <span>直接相关</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Materials S exposure and process intensity beneficiary</p>
+                <p><strong>主要风险:</strong> Pass-through and qualification evidence Unverified</p>
+                <p><strong>下一触发:</strong> Pricing, qualification, margin evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>江丰电子</strong>
+                <span>Materials</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Materials exposure within AI infrastructure supply chain</p>
+                <p><strong>主要风险:</strong> Customer concentration and pricing evidence Unverified</p>
+                <p><strong>下一触发:</strong> Qualification, order, margin evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>鼎龙股份</strong>
+                <span>Materials</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Materials exposure and domestic substitution watch</p>
+                <p><strong>主要风险:</strong> AI-specific transmission Unverified</p>
+                <p><strong>下一触发:</strong> Qualification, pricing, margin evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>富创精密</strong>
+                <span>Materials / Equipment</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Component/materials exposure to equipment and capacity expansion</p>
+                <p><strong>主要风险:</strong> AI-specific transmission Unverified</p>
+                <p><strong>下一触发:</strong> Order, customer, margin evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>Corning</strong>
+                <span>Bandwidth</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Medium</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Bandwidth upgraded to first-level bottleneck in Corning case</p>
+                <p><strong>主要风险:</strong> Price already reflects thesis; customer adoption risk</p>
+                <p><strong>下一触发:</strong> Customer adoption, pricing, inventory evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>中际旭创</strong>
+                <span>Bandwidth</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Domestic Bandwidth beneficiary candidate</p>
+                <p><strong>主要风险:</strong> Valuation and customer evidence Unverified</p>
+                <p><strong>下一触发:</strong> Customer adoption, pricing, order evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+              <div>
+                <strong>新易盛</strong>
+                <span>Bandwidth</span>
+              </div>
+              <span>A</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>研究</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Domestic Bandwidth beneficiary candidate</p>
+                <p><strong>主要风险:</strong> Customer and pricing evidence Unverified</p>
+                <p><strong>下一触发:</strong> Customer adoption, pricing, order evidence</p>
+                <p><strong>来源:</strong> Priority A · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all">
+              <div>
+                <strong>长鑫产业链</strong>
+                <span>Memory</span>
+              </div>
+              <span>B</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>观察</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Domestic Memory substitution watch</p>
+                <p><strong>主要风险:</strong> Evidence not yet sufficient for promotion</p>
+                <p><strong>下一触发:</strong> Confirmed customer, order, capacity, pricing, or margin evidence</p>
+                <p><strong>来源:</strong> Priority B · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all">
+              <div>
+                <strong>长江存储产业链</strong>
+                <span>Memory</span>
+              </div>
+              <span>B</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>观察</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Domestic storage substitution watch</p>
+                <p><strong>主要风险:</strong> Evidence not yet sufficient for promotion</p>
+                <p><strong>下一触发:</strong> Confirmed customer, order, capacity, pricing, or margin evidence</p>
+                <p><strong>来源:</strong> Priority B · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all">
+              <div>
+                <strong>天孚通信</strong>
+                <span>Bandwidth</span>
+              </div>
+              <span>B</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>观察</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Bandwidth beneficiary candidate</p>
+                <p><strong>主要风险:</strong> Evidence not yet sufficient for promotion</p>
+                <p><strong>下一触发:</strong> Customer adoption, order, pricing, or margin evidence</p>
+                <p><strong>来源:</strong> Priority B · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all">
+              <div>
+                <strong>长飞光纤</strong>
+                <span>Bandwidth</span>
+              </div>
+              <span>B</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>观察</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Fiber exposure in Bandwidth bottleneck</p>
+                <p><strong>主要风险:</strong> Evidence not yet sufficient for promotion</p>
+                <p><strong>下一触发:</strong> Customer adoption, order, pricing, or margin evidence</p>
+                <p><strong>来源:</strong> Priority B · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all">
+              <div>
+                <strong>Coherent</strong>
+                <span>Bandwidth</span>
+              </div>
+              <span>B</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>观察</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Global optical beneficiary candidate</p>
+                <p><strong>主要风险:</strong> Evidence not yet sufficient for promotion</p>
+                <p><strong>下一触发:</strong> Customer adoption, order, pricing, or margin evidence</p>
+                <p><strong>来源:</strong> Priority B · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all">
+              <div>
+                <strong>Lumentum</strong>
+                <span>Bandwidth</span>
+              </div>
+              <span>B</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>观察</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Global optical beneficiary candidate</p>
+                <p><strong>主要风险:</strong> Evidence not yet sufficient for promotion</p>
+                <p><strong>下一触发:</strong> Customer adoption, order, pricing, or margin evidence</p>
+                <p><strong>来源:</strong> Priority B · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all">
+              <div>
+                <strong>Entegris</strong>
+                <span>Materials</span>
+              </div>
+              <span>B</span>
+              <span>无直接暴露</span>
+              <span>Low</span>
+              <span>观察</span>
+              <details class="candidate-detail">
+                <summary>详情</summary>
+                <p><strong>论点方向:</strong> Global materials beneficiary candidate</p>
+                <p><strong>主要风险:</strong> Evidence not yet sufficient for promotion</p>
+                <p><strong>下一触发:</strong> Order, pricing, margin, or qualification evidence</p>
+                <p><strong>来源:</strong> Priority B · 02_Databases/AI_Shovel_100.md</p>
+              </details>
+            </article>
+            
+    </div>
+    
+      <section class="candidate-changes"><h3>候选变化</h3><ul class="plain-list"><li><strong>泰金新能（688813）</strong> · 研究优先级上调<br>Portfolio note says profit about 40% and partial profit-taking completed</li><li><strong>罗博特科</strong> · 研究优先级上调<br>Portfolio note lists current holding</li><li><strong>东山精密</strong> · 研究优先级上调<br>Portfolio note lists current holding</li><li><strong>德福科技</strong> · 研究优先级上调<br>Portfolio note lists current holding</li></ul></section>
+    </section>
+    
+    <script>
+    (function () {
+      const savedMode = localStorage.getItem("atlasHomeMode") || "brief";
+      function activateMode(mode, scroll) {
+        document.querySelectorAll("[data-home-mode]").forEach(function (button) {
+          const active = button.getAttribute("data-home-mode") === mode;
+          button.classList.toggle("active", active);
+          if (active && scroll) {
+            const target = document.getElementById(button.getAttribute("data-home-target"));
+            if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+        localStorage.setItem("atlasHomeMode", mode);
+      }
+      document.querySelectorAll("[data-home-mode]").forEach(function (button) {
+        button.addEventListener("click", function () { activateMode(button.getAttribute("data-home-mode"), true); });
+      });
+      activateMode(savedMode, false);
+      const expert = document.getElementById("expert-analysis-panel");
+      if (expert) {
+        expert.open = false;
+      }
+      
+      document.querySelectorAll("[data-candidate-filter]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const filter = button.getAttribute("data-candidate-filter") || "all";
+          document.querySelectorAll("[data-candidate-filter]").forEach(function (item) { item.classList.toggle("active", item === button); });
+          document.querySelectorAll("[data-candidate-row]").forEach(function (row) {
+            const filters = (row.getAttribute("data-candidate-filters") || "all").split(" ");
+            row.style.display = filters.indexOf(filter) >= 0 ? "" : "none";
+          });
+        });
+      });
+    
+    })();
+    </script>
+    
+    

@@ -1,0 +1,532 @@
+
+    
+    <style>
+    .decision-home-shell { display:grid; gap:18px; }
+    .decision-first-viewport { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.92fr); gap:14px; align-items:stretch; }
+    .decision-card, .decision-support-card, .forecast-compact-card, .home-expert-secondary { border:1px solid rgba(219,234,254,.12); border-radius:22px; background:linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.032)); box-shadow:0 22px 60px rgba(0,0,0,.22); backdrop-filter:blur(20px); padding:18px; }
+    .decision-card-primary { grid-row:span 2; padding:22px; }
+    .decision-card h1 { margin:12px 0 10px; font-size:clamp(2rem, 2.6vw, 3.15rem); line-height:1.02; letter-spacing:0; max-width:16ch; }
+    .decision-card h2, .decision-support-card h2, .forecast-compact-card h2, .home-expert-secondary h2 { margin:8px 0 10px; font-size:1.28rem; line-height:1.15; letter-spacing:0; }
+    .decision-card p, .decision-support-card p, .forecast-compact-card p { color:var(--subtle); line-height:1.52; }
+    .decision-change { color:var(--text) !important; font-size:1.03rem; }
+    .journey-step { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.84rem; font-weight:760; }
+    .journey-step span { width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.13); color:var(--accent); font-size:.76rem; }
+    .decision-meta-row, .forward-metrics { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .forward-metrics span { flex:1 1 120px; min-height:76px; display:grid; align-content:center; gap:5px; padding:11px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.035); }
+    .forward-metrics small { color:var(--muted); }
+    .forward-metrics strong { font-size:1rem; }
+    .falsification { border-left:3px solid rgba(244,165,179,.75); padding-left:10px; }
+    .posture-pill { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:9px 18px; border-radius:999px; background:var(--accent); color:var(--bg); font-size:1.15rem; font-weight:820; margin:8px 0 8px; }
+    .focus-list { display:grid; gap:8px; margin:12px 0 0; padding-left:20px; }
+    .focus-list li { color:var(--text); line-height:1.42; }
+    .decision-dl { display:grid; grid-template-columns:minmax(100px,.42fr) minmax(0,1fr); gap:9px; margin:14px 0 0; }
+    .decision-dl dt { color:var(--muted); }
+    .decision-dl dd { margin:0; color:var(--text); overflow-wrap:anywhere; }
+    .conviction-hierarchy { margin-top:14px; border:1px solid var(--line); border-radius:16px; background:rgba(0,0,0,.12); }
+    .conviction-hierarchy summary { cursor:pointer; padding:12px 14px; color:var(--accent); font-weight:780; }
+    .conviction-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:0 14px 14px; }
+    .conviction-grid > div { padding:11px; border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,.035); }
+    .conviction-grid small { display:block; color:var(--muted); margin-top:4px; }
+    .decision-support-grid { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:14px; }
+    .trigger-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .trigger-columns h3 { margin:8px 0; font-size:1rem; }
+    .positive-confirmation li::marker { color:#9ee6b8; }
+    .negative-confirmation li::marker { color:#f4a5b3; }
+    .research-priority-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px; }
+    .research-priority-card { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; padding:13px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.035); }
+    .research-priority-card .decision-dl { grid-column:1 / -1; grid-template-columns:96px minmax(0,1fr); font-size:.9rem; }
+    .priority-index { width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.16); color:var(--accent); font-weight:820; }
+    .forecast-compact-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:14px 0; }
+    .forecast-compact-strip span { min-height:68px; display:grid; place-items:center; gap:4px; padding:9px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.035); color:var(--muted); text-align:center; font-size:.75rem; }
+    .forecast-compact-strip strong { color:var(--text); font-size:1.35rem; }
+    .forecast-learning-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .home-view-switch { position: sticky; top: 82px; z-index: 7; display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px solid var(--line); border-radius:var(--r16); background:rgba(11,15,20,.72); backdrop-filter:blur(18px); }
+    .home-view-switch button { min-height:36px; display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); color:var(--subtle); cursor:pointer; }
+    .home-view-switch button.active { background:var(--accent); color:var(--bg); }
+    .home-view-switch span { min-width:22px; min-height:22px; display:grid; place-items:center; border-radius:999px; background:rgba(0,0,0,.14); font-size:.72rem; }
+    .home-zone { display:grid; gap:14px; scroll-margin-top:140px; }
+    .home-zone-label { display:inline-flex; align-items:center; gap:10px; color:var(--subtle); font-weight:740; }
+    .home-zone-label span { width:34px; height:34px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-size:.78rem; }
+    .home-primary-decision { margin-top:22px; }
+    .home-key-drivers { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+    .home-outlook-layout { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr); gap:14px; }
+    .home-outlook-main { min-height:230px; }
+    .home-scenario-grid { display:grid; gap:10px; }
+    .scenario-card { padding:13px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); }
+    .scenario-card strong { display:block; margin-bottom:7px; }
+    .scenario-base { border-color:rgba(219,234,254,.3); }
+    .scenario-upside { border-color:rgba(158,230,184,.28); }
+    .scenario-downside { border-color:rgba(244,165,179,.28); }
+    .home-safety-note { color:var(--muted); font-size:.86rem; line-height:1.45; }
+    .home-impact-stack { display:grid; gap:12px; }
+    .home-section-header { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+    .candidate-filter-row { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+    .candidate-filter.active { background:var(--accent); color:var(--bg); }
+    .candidate-table { display:grid; gap:7px; overflow-x:auto; }
+    .candidate-header, .candidate-row { min-width:840px; display:grid; grid-template-columns:1.5fr .48fr .7fr .8fr .7fr 1fr; gap:8px; align-items:start; padding:10px; border:1px solid var(--line); border-radius:var(--r12); }
+    .candidate-header { color:var(--muted); background:rgba(255,255,255,.025); font-size:.78rem; font-weight:760; text-transform:uppercase; }
+    .candidate-row { background:rgba(255,255,255,.04); }
+    .candidate-row strong, .candidate-row span { overflow-wrap:anywhere; }
+    .candidate-row > div > span { display:block; margin-top:4px; color:var(--muted); font-size:.78rem; }
+    .candidate-detail summary { cursor:pointer; color:var(--accent); }
+    .candidate-detail p { margin:8px 0 0; font-size:.86rem; }
+    .candidate-changes { margin-top:16px; }
+    .forecast-status-strip { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:12px 0; }
+    .forecast-status-strip span { min-height:70px; display:grid; place-items:center; gap:4px; padding:9px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); color:var(--muted); text-align:center; font-size:.72rem; }
+    .forecast-status-strip strong { color:var(--text); font-size:1.25rem; }
+    .home-expert-panel summary { justify-content:space-between; gap:12px; }
+    .home-expert-panel summary strong { min-width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:var(--accent); color:var(--bg); }
+    .expert-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:14px; border-top:1px solid var(--line); }
+    .expert-section { min-height:160px; padding:14px; border:1px solid var(--line); border-radius:var(--r12); background:rgba(255,255,255,.035); }
+    .expert-section > span { display:inline-grid; place-items:center; width:28px; height:28px; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-weight:780; }
+    .expert-section h3 { margin:9px 0; font-size:1rem; }
+    .causal-chain { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .causal-chain span { display:inline-flex; align-items:center; min-height:34px; padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); }
+    .causal-chain span:not(:last-child)::after { content:"↓"; margin-left:9px; color:var(--accent); }
+    .expert-dl { display:grid; grid-template-columns:minmax(100px,.45fr) minmax(0,1fr); gap:8px; margin:0; }
+    .expert-dl dt { color:var(--muted); }
+    .expert-dl dd { margin:0; overflow-wrap:anywhere; }
+    .confidence-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; align-items:center; margin:8px 0; }
+    .confidence-row i { grid-column:1 / -1; display:block; height:7px; border-radius:999px; background:var(--accent); }
+    .confidence-row small { grid-column:1 / -1; color:var(--muted); }
+    .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
+    @media (max-width:1180px) { .decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid { grid-template-columns:1fr; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid { grid-template-columns:1fr; } .decision-card h1 { max-width:none; } }
+    </style>
+    
+    <main class="decision-home-shell" data-home-layout="user-decision-journey">
+      <section class="decision-first-viewport" id="home-first-viewport" aria-label="Atlas user decision journey">
+        <article class="decision-card decision-card-primary" id="home-core-judgment" data-primary-block="core_judgment">
+          <div class="journey-step"><span>01</span>What changed?</div>
+          <span class="kicker">Today&#x27;s Core Judgment</span>
+          <h1>Portfolio-linked prices are moving, but Atlas still treats the setup as risk-constrained.</h1>
+          <p class="decision-change">3 portfolio-relevant price observations refreshed; several macro/news/breadth channels remain unconfigured.</p>
+          <p>Price strength needs breadth, liquidity, and valid reasoning confirmation before it becomes an expansion signal.</p>
+          <div class="decision-meta-row">
+            <span class="tag">Confidence: 45%</span>
+            <span class="tag">Evidence quality: Partial live evidence</span>
+            <span class="tag">Updated: 2026-07-10T01:24:40.883334+00:00</span>
+          </div>
+        </article>
+
+        <article class="decision-card" id="home-strongest-forward-view" data-primary-block="strongest_forward_view">
+          <div class="journey-step"><span>02</span>What is Atlas&#x27;s strongest judgment?</div>
+          <span class="kicker">Strongest Forward View</span>
+          <h2>Risk constraints likely remain the working structure over the next runtime cycle unless liquidity and breadth repair.</h2>
+          <div class="forward-metrics">
+            <span><small>Horizon</small><strong>next runtime cycle</strong></span>
+            <span><small>Confidence</small><strong>45%</strong></span>
+            <span><small>Evidence quality</small><strong>Partial live evidence</strong></span>
+          </div>
+          <p class="home-safety-note">Supported by current regime plus latest open forecast.</p>
+          <p class="falsification"><strong>Falsification condition:</strong> Risk-sensitive channels improve together and the forecast outcome does not invalidate the structure.</p>
+          
+    <details class="conviction-hierarchy" id="home-conviction-hierarchy">
+      <summary>Conviction Hierarchy</summary>
+      <div class="conviction-grid">
+        <div><strong>Level 1 · Core Judgment</strong><ul class="plain-list"><li>Portfolio-linked prices are moving, but Atlas still treats the setup as risk-constrained.</li></ul></div>
+        <div><strong>Level 2 · Key Predictions</strong><ul class="plain-list"><li>Risk constraints likely remain the working structure over the next runtime cycle unless liquidity and breadth repair.<small>next runtime cycle · 45.0%</small></li><li>Confirmation improves if breadth/liquidity repair.<small>next runtime cycle · 45.0%</small></li><li>Risk worsens if liquidity, data freshness, or forecast outcomes deteriorate.<small>next runtime cycle · 45.0%</small></li></ul></div>
+        <div><strong>Level 3 · Watch Hypotheses</strong><ul class="plain-list"><li>Market breadth channel becomes configured/live and confirms participation.</li><li>Liquidity proxy improves without relying only on simulated evidence.</li><li>Portfolio-linked strength is confirmed by fresh price/volume observations.</li></ul></div>
+        <div><strong>Level 4 · Research Candidates</strong><p>3 / 3 · <a href="/candidates">View Full Candidate Pool</a></p></div>
+      </div>
+    </details>
+    
+        </article>
+
+        <article class="decision-card" id="home-portfolio-relevance" data-primary-block="portfolio_relevance">
+          <div class="journey-step"><span>03</span>What does this mean for me?</div>
+          <span class="kicker">Portfolio Relevance</span>
+          <h2>Medium-high portfolio relevance</h2>
+          <p>The portfolio is concentrated in semiconductor materials and PCB / AI hardware themes, so liquidity and theme confirmation matter more than generic index direction.</p>
+          <dl class="decision-dl">
+            <dt>Primary shared risk</dt><dd>Semiconductor Materials</dd>
+            <dt>Most sensitive holding</dt><dd>688019.SH · 34.0%</dd>
+            <dt>Strongest buffer</dt><dd>20.0% unassigned buffer</dd>
+          </dl>
+        </article>
+
+        <article class="decision-card" id="home-decision-agenda" data-primary-block="decision_agenda">
+          <div class="journey-step"><span>04</span>What should I focus on now?</div>
+          <span class="kicker">Decision Agenda</span>
+          <div class="posture-pill">Reduce</div>
+          <p>This is a decision agenda, not trade execution. Current evidence supports observation before increasing risk.</p>
+          <ol class="focus-list" id="home-focus-items">
+            <li>Confirm whether market breadth improves beyond portfolio-linked price strength.</li><li>Check whether liquidity pressure falls or remains only simulated/partial.</li><li>Refresh holding-specific evidence for 688019.SH.</li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="decision-support-grid" aria-label="Supporting decision evidence">
+        <article class="decision-support-card" id="home-decision-triggers" data-supporting-block="decision_triggers">
+          <div class="journey-step"><span>05</span>What would change the view?</div>
+          <h2>What Would Change the View</h2>
+          <div class="trigger-columns">
+            <div>
+              <h3>Positive confirmation</h3>
+              <ul class="plain-list positive-confirmation"><li>Market breadth channel becomes configured/live and confirms participation.</li><li>Liquidity proxy improves without relying only on simulated evidence.</li><li>Portfolio-linked strength is confirmed by fresh price/volume observations.</li></ul>
+            </div>
+            <div>
+              <h3>Negative confirmation</h3>
+              <ul class="plain-list negative-confirmation"><li>Liquidity or volatility channels deteriorate together.</li><li>Price/volume freshness fails or portfolio-relevant observations become stale.</li><li>Any forecast miss appears after maturity and changes calibration pressure.</li></ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="decision-support-card" id="home-top-research-priorities" data-supporting-block="research_priorities">
+          <div class="journey-step"><span>06</span>What deserves deeper research?</div>
+          <div class="home-section-header">
+            <div>
+              <h2>Today&#x27;s Top 3 Research Priorities</h2>
+              <p class="home-safety-note">Source truth: static repository pool plus presentation-only current portfolio relevance; not a trading recommendation or dynamic runtime ranking.</p>
+            </div>
+            <a class="secondary-button" href="/candidates">View Full Candidate Pool</a>
+          </div>
+          <div class="research-priority-list">
+            
+            <article class="research-priority-card" data-research-priority="1">
+              <span class="priority-index">1</span>
+              <div>
+                <h3>安集科技</h3>
+                <p class="home-safety-note">Materials</p>
+              </div>
+              <dl class="decision-dl">
+                <dt>Why now</dt><dd>34.0% portfolio exposure makes this the first evidence-refresh priority.</dd>
+                <dt>Evidence change</dt><dd>Pricing, qualification, margin evidence</dd>
+                <dt>Portfolio relationship</dt><dd>Direct current portfolio exposure</dd>
+                <dt>Priority truth</dt><dd>Portfolio-Relevant</dd>
+              </dl>
+            </article>
+            
+            <article class="research-priority-card" data-research-priority="2">
+              <span class="priority-index">2</span>
+              <div>
+                <h3>00148.HK</h3>
+                <p class="home-safety-note">PCB / Materials / AI Infrastructure</p>
+              </div>
+              <dl class="decision-dl">
+                <dt>Why now</dt><dd>26.0% portfolio exposure makes this the first evidence-refresh priority.</dd>
+                <dt>Evidence change</dt><dd>HK equity and materials-cycle sensitivity; AI infrastructure linkage requires ongoing evidence validation.</dd>
+                <dt>Portfolio relationship</dt><dd>Direct current portfolio exposure</dd>
+                <dt>Priority truth</dt><dd>Portfolio-Relevant / Not in Static Research Pool</dd>
+              </dl>
+            </article>
+            
+            <article class="research-priority-card" data-research-priority="3">
+              <span class="priority-index">3</span>
+              <div>
+                <h3>东山精密</h3>
+                <p class="home-safety-note">Bandwidth / PCB</p>
+              </div>
+              <dl class="decision-dl">
+                <dt>Why now</dt><dd>20.0% portfolio exposure makes this the first evidence-refresh priority.</dd>
+                <dt>Evidence change</dt><dd>Confirm AI-related revenue, customer, or margin evidence</dd>
+                <dt>Portfolio relationship</dt><dd>Direct current portfolio exposure</dd>
+                <dt>Priority truth</dt><dd>Portfolio-Relevant</dd>
+              </dl>
+            </article>
+            
+          </div>
+        </article>
+      </section>
+
+      <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
+        <div class="home-section-header">
+          <div>
+            <span class="kicker">Forecast Accountability</span>
+            <h2>Forecast Accountability, compact</h2>
+          </div>
+          <div class="button-row">
+            <a class="secondary-button" href="/predictions">View all forecasts</a>
+            <a class="secondary-button" href="/learning">View learning record</a>
+          </div>
+        </div>
+        <div class="forecast-compact-strip"><span><strong>25</strong>OPEN</span><span><strong>0</strong>VERIFIED</span><span><strong>0</strong>INVALIDATED</span><span><strong>0</strong>INCONCLUSIVE</span></div>
+        <div class="forecast-learning-row">
+          <p><strong>Recent miss:</strong> No evaluated miss is available yet.</p>
+          <p><strong>What Atlas changed afterward:</strong> No behavior-change claim is made until a miss matures and is evaluated.</p>
+        </div>
+      </section>
+
+      <section class="home-expert-secondary" id="home-expert-analysis" data-expert-block="secondary_collapsed">
+        <div class="home-section-header">
+          <div>
+            <span class="kicker">Secondary detail</span>
+            <h2>Expert Analysis</h2>
+          </div>
+        </div>
+        
+    <details class="expert-details home-expert-panel" id="expert-analysis-panel">
+      <summary><span>Expert Analysis</span><strong>9</strong></summary>
+      <div class="expert-grid">
+        <article class="expert-section"><span>A</span><h3>Causal Chain</h3><div class="causal-chain"><span>Narrative Pressure -&gt; Attention</span><span>Liquidity -&gt; Volatility</span><span>Price Momentum -&gt; Attention</span><span>Attention -&gt; Retail Flow</span></div><p class="home-safety-note">Dominant edges</p><ul class="plain-list"><li>Narrative Pressure → Attention · Δ -0.0106</li><li>Liquidity → Volatility · Δ 0.0101</li><li>Price Momentum → Attention · Δ -0.01</li><li>Attention → Retail Flow · Δ -0.0061</li></ul></article>
+        <article class="expert-section"><span>B</span><h3>Hypothesis State</h3>
+    <dl class="expert-dl">
+      <dt>Active hypothesis</dt><dd>H_ATTENTION_FLOW</dd>
+      <dt>Confidence</dt><dd>45.0%</dd>
+      <dt>Recent change</dt><dd>Structural shift index 0.0757</dd>
+    </dl>
+    <p><strong>Competing hypotheses</strong></p>
+    <ul class="plain-list"><li>No competing hypothesis exposed by current state.</li></ul>
+    </article>
+        <article class="expert-section"><span>C</span><h3>Regime State</h3>
+    <dl class="expert-dl">
+      <dt>Current System State</dt><dd>RISK_OFF</dd>
+      <dt>Proposed</dt><dd>NORMAL</dd>
+      <dt>Volatility</dt><dd>Low</dd>
+    </dl>
+    </article>
+        <article class="expert-section"><span>D</span><h3>Confidence Composition</h3><div class="confidence-row"><span>evidence quality</span><strong>50%</strong><i style="width:50%"></i><small>market channel status</small></div><div class="confidence-row"><span>market data completeness</span><strong>50%</strong><i style="width:50%"></i><small>market_intelligence.channels</small></div><div class="confidence-row"><span>hypothesis stability</span><strong>26%</strong><i style="width:26%"></i><small>system_trust_state</small></div><div class="confidence-row"><span>portfolio relevance</span><strong>1%</strong><i style="width:1%"></i><small>portfolio_context</small></div><div class="confidence-row"><span>forecast history</span><strong>0%</strong><i style="width:0%"></i><small>forecast_ledger</small></div></article>
+        <article class="expert-section"><span>E</span><h3>Data Quality</h3>
+    <div class="forecast-status-strip expert-data-strip">
+      <span><strong>2</strong>Live channels</span>
+      <span><strong>2</strong>Simulated channels</span>
+      <span><strong>4</strong>Missing channels</span>
+      <span><strong>0</strong>Stale channels</span>
+    </div>
+    <p>Confidence is limited by missing, stale, or unconfigured market channels.</p>
+    </article>
+        <article class="expert-section"><span>F</span><h3>Portfolio Sensitivity</h3>
+    <ul class="plain-list"><li>688019.SH · 34.0%</li><li>00148.HK · 26.0%</li><li>002384.SZ · 20.0%</li></ul>
+    <p>Privacy: percentage-only; no account value is exposed.</p>
+    </article>
+        <article class="expert-section"><span>G</span><h3>Forecast Evidence</h3>
+    <dl class="expert-dl">
+      <dt>ID</dt><dd>runtime-bdde4f6f-ca80-461e-b062-86773d5df3de</dd>
+      <dt>Status</dt><dd>OPEN</dd>
+      <dt>Horizon</dt><dd>next_runtime_cycle</dd>
+    </dl>
+    <p>Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</p>
+    <ul class="plain-list"><li>Liquidity Stress</li><li>attention not dominant</li></ul>
+    </article>
+        <article class="expert-section"><span>H</span><h3>Invalidation Conditions</h3><ul class="plain-list"><li>later runtime state conflicts with expected structure</li><li>forecast outcome marked invalidated through supported lifecycle</li></ul></article>
+        <article class="expert-section"><span>I</span><h3>Raw Evidence</h3>
+    <details class="raw-evidence-details">
+      <summary>Raw Evidence</summary>
+      <pre>{
+  &quot;regime_state&quot;: &quot;RISK_OFF&quot;,
+  &quot;last_decision_packet&quot;: {
+    &quot;attention_state&quot;: &quot;attention not dominant; attention pressure low relative to liquidity stress&quot;,
+    &quot;causal_summary&quot;: &quot;Runtime remains in RISK_OFF. The dominant structure is constraint-dominated closed-loop stress, driven primarily by liquidity stress with secondary volatility shock. Data status is confidence-limited, and the probability vector is dominated by data_insufficient, distribution_risk, and crash_stress components.&quot;,
+    &quot;confidence&quot;: 0.45,
+    &quot;liquidity_state&quot;: &quot;Liquidity Shock with liquidity score at 0; primary pressure source is Liquidity -&gt; Volatility&quot;,
+    &quot;reasoning_trace&quot;: &quot;Inputs show high fusion stress score, liquidity shock, RISK_OFF controller alignment, low confidence, and theme-cluster/regional liquidity sensitivity in the configured portfolio context. Action is limited to defensive risk posture review only, with no execution, no portfolio modification, and no market prediction.&quot;,
+    &quot;recommended_action&quot;: &quot;reduce&quot;,
+    &quot;regime_state&quot;: &quot;RISK_OFF / Runtime State Context&quot;,
+    &quot;risk_level&quot;: &quot;high&quot;
+  },
+  &quot;market_intelligence&quot;: {
+    &quot;status&quot;: &quot;ok&quot;,
+    &quot;channels&quot;: {
+      &quot;liquidity_proxy&quot;: &quot;SIMULATED&quot;,
+      &quot;macro_policy&quot;: &quot;NOT_CONFIGURED&quot;,
+      &quot;market_breadth&quot;: &quot;NOT_CONFIGURED&quot;,
+      &quot;narrative_attention&quot;: &quot;NOT_CONFIGURED&quot;,
+      &quot;news_announcement&quot;: &quot;NOT_CONFIGURED&quot;,
+      &quot;portfolio_relevance&quot;: &quot;LIVE&quot;,
+      &quot;price_volume&quot;: &quot;LIVE&quot;,
+      &quot;volatility&quot;: &quot;SIMULATED&quot;
+    },
+    &quot;degraded&quot;: false,
+    &quot;observations&quot;: [
+      {
+        &quot;asset&quot;: &quot;00148.HK&quot;,
+        &quot;change_20d_pct&quot;: -13.186813186813184,
+        &quot;change_5d_pct&quot;: -19.918906459138885,
+        &quot;change_60d_pct&quot;: 98.39276897399971,
+        &quot;channel&quot;: &quot;price_volume&quot;,
+        &quot;confidence&quot;: 0.75,
+        &quot;daily_change_pct&quot;: 1.9354838709677358,
+        &quot;data_quality_status&quot;: &quot;Available&quot;,
+        &quot;freshness&quot;: &quot;Available&quot;,
+        &quot;latest_price_available&quot;: true,
+        &quot;market&quot;: &quot;HK&quot;,
+        &quot;normalized_event_type&quot;: &quot;price_breakout&quot;,
+        &quot;portfolio_relevant&quot;: true,
+        &quot;raw_reference&quot;: {
+          &quot;errors&quot;: [],
+          &quot;missing_fields&quot;: [
+            &quot;turnover&quot;,
+            &quot;market_cap (optional)&quot;,
+            &quot;pe (optional)&quot;,
+            &quot;pb (optional)&quot;
+          ],
+          &quot;provider&quot;: &quot;yahoo_chart&quot;,
+          &quot;ticker&quot;: &quot;00148.HK&quot;
+        },
+        &quot;source&quot;: &quot;yahoo_chart&quot;,
+        &quot;source_type&quot;: &quot;market_data_provider&quot;,
+        &quot;theme&quot;: &quot;PCB / Materials / AI Infrastructure&quot;,
+        &quot;timestamp&quot;: &quot;2026-07-10T01:20:18+00:00&quot;,
+        &quot;turnover&quot;: null,
+        &quot;volume&quot;: 43922414.0
+      },
+      {
+        &quot;asset&quot;: &quot;002384.SZ&quot;,
+        &quot;change_20d_pct&quot;: 23.107364236352158,
+        &quot;change_5d_pct&quot;: 17.88163837880179,
+        &quot;change_60d_pct&quot;: 82.04110189394997,
+        &quot;channel&quot;: &quot;price_volume&quot;,
+        &quot;confidence&quot;: 0.75,
+        &quot;daily_change_pct&quot;: 10.001687998740039,
+        &quot;data_quality_status&quot;: &quot;Available&quot;,
+        &quot;freshness&quot;: &quot;Available&quot;,
+        &quot;latest_price_available&quot;: true,
+        &quot;market&quot;: &quot;A-share&quot;,
+        &quot;normalized_event_type&quot;: &quot;price_breakout&quot;,
+        &quot;portfolio_relevant&quot;: true,
+        &quot;raw_reference&quot;: {
+          &quot;errors&quot;: [],
+          &quot;missing_fields&quot;: [
+            &quot;turnover&quot;,
+            &quot;market_cap (optional)&quot;,
+            &quot;pe (optional)&quot;,
+            &quot;pb (optional)&quot;
+          ],
+          &quot;provider&quot;: &quot;yahoo_chart&quot;,
+          &quot;ticker&quot;: &quot;002384.SZ&quot;
+        },
+        &quot;source&quot;: &quot;yahoo_chart&quot;,
+        &quot;source_type&quot;: &quot;market_data_provider&quot;,
+        &quot;theme&quot;: &quot;PCB / AI Hardware Manufacturing&quot;,
+        &quot;timestamp&quot;: &quot;2026-07-09T01:30:00+00:00&quot;,
+        &quot;turnover&quot;: null,
+        &quot;volume&quot;: 112345743.0
+      },
+      {
+        &quot;asset&quot;: &quot;688019.SH&quot;,
+        &quot;change_20d_pct&quot;: 58.918670793026926,
+        &quot;change_5d_pct&quot;: 14.100862926558854,
+        &quot;change_60d_pct&quot;: 68.53394180891421,
+        &quot;channel&quot;: &quot;price_volume&quot;,
+        &quot;confidence&quot;: 0.75,
+        &quot;daily_change_pct&quot;: 8.79812644525002,
+        &quot;data_quality_status&quot;: &quot;Available&quot;,
+        &quot;freshness&quot;: &quot;Available&quot;,
+        &quot;latest_price_available&quot;: true,
+        &quot;market&quot;: &quot;A-share&quot;,
+        &quot;normalized_event_type&quot;: &quot;price_breakout&quot;,
+        &quot;portfolio_relevant&quot;: true,
+        &quot;raw_reference&quot;: {
+          &quot;errors&quot;: [],
+          &quot;missing_fields&quot;: [
+            &quot;turnover&quot;,
+            &quot;market_cap (optional)&quot;,
+            &quot;pe (optional)&quot;,
+            &quot;pb (optional)&quot;
+          ],
+          &quot;provider&quot;: &quot;yahoo_chart&quot;,
+          &quot;ticker&quot;: &quot;688019.SH&quot;
+        },
+        &quot;source&quot;: &quot;yahoo_chart&quot;,
+        &quot;source_type&quot;: &quot;market_data_provider&quot;,
+        &quot;theme&quot;: &quot;Semiconductor Materials&quot;,
+        &quot;timestamp&quot;: &quot;2026-07-09T01:30:00+00:00&quot;,
+        &quot;turnover&quot;: null,
+        &quot;volume&quot;: 13514402.0
+      }
+    ]
+  },
+  &quot;portfolio_context&quot;: {
+    &quot;status&quot;: &quot;configured&quot;,
+    &quot;privacy&quot;: &quot;percentage_only_no_account_amounts&quot;,
+    &quot;exposure_sum_pct&quot;: 80.0,
+    &quot;cash_or_unassigned_pct&quot;: 20.0,
+    &quot;exposure_map&quot;: {
+      &quot;asset_concentration&quot;: [
+        {
+          &quot;asset&quot;: &quot;688019.SH&quot;,
+          &quot;exposure_pct&quot;: 34.0
+        },
+        {
+          &quot;asset&quot;: &quot;00148.HK&quot;,
+          &quot;exposure_pct&quot;: 26.0
+        },
+        {
+          &quot;asset&quot;: &quot;002384.SZ&quot;,
+          &quot;exposure_pct&quot;: 20.0
+        }
+      ],
+      &quot;theme_concentration&quot;: {
+        &quot;Semiconductor Materials&quot;: 34.0,
+        &quot;PCB / Materials / AI Infrastructure&quot;: 26.0,
+        &quot;PCB / AI Hardware Manufacturing&quot;: 20.0
+      },
+      &quot;market_concentration&quot;: {
+        &quot;A-share&quot;: 54.0,
+        &quot;HK&quot;: 26.0
+      },
+      &quot;role_concentration&quot;: {
+        &quot;Core semiconductor-materials exposure&quot;: 34.0,
+        &quot;HK materials exposure&quot;: 26.0,
+        &quot;A-share AI hardware supply-chain exposure&quot;: 20.0
+      },
+      &quot;liquidity_sensitivity&quot;: &quot;regional_liquidity_sensitive&quot;,
+      &quot;regime_sensitivity&quot;: &quot;theme_cluster_sensitive&quot;,
+      &quot;portfolio_relevance_score&quot;: 62.3,
+      &quot;correlated_risk_clusters&quot;: [
+        {
+          &quot;cluster&quot;: &quot;Semiconductor Materials&quot;,
+          &quot;exposure_pct&quot;: 34.0,
+          &quot;risk&quot;: &quot;moderate_concentration&quot;
+        },
+        {
+          &quot;cluster&quot;: &quot;PCB / Materials / AI Infrastructure&quot;,
+          &quot;exposure_pct&quot;: 26.0,
+          &quot;risk&quot;: &quot;moderate_concentration&quot;
+        },
+        {
+          &quot;cluster&quot;: &quot;PCB / AI Hardware Manufacturing&quot;,
+          &quot;exposure_pct&quot;: 20.0,
+          &quot;risk&quot;: &quot;low&quot;
+        }
+      ]
+    }
+  },
+  &quot;forecast_ledger_summary&quot;: {
+    &quot;metrics&quot;: {
+      &quot;total&quot;: 25,
+      &quot;open&quot;: 25,
+      &quot;matured&quot;: 0,
+      &quot;evaluated&quot;: 0,
+      &quot;verified&quot;: 0,
+      &quot;accuracy&quot;: null,
+      &quot;mean_forecast_error&quot;: null,
+      &quot;mean_calibration_error&quot;: null,
+      &quot;minimum_sample_size_met&quot;: false
+    },
+    &quot;sample_warning&quot;: &quot;Low sample size: calibration is directional only, not statistically reliable.&quot;,
+    &quot;latest_forecast_id&quot;: &quot;runtime-bdde4f6f-ca80-461e-b062-86773d5df3de&quot;
+  },
+  &quot;structural_coevolution_state&quot;: {
+    &quot;status&quot;: &quot;applied&quot;,
+    &quot;bounded&quot;: true,
+    &quot;trust_gate&quot;: &quot;open&quot;,
+    &quot;graph_edge_count&quot;: 6,
+    &quot;graph_node_count&quot;: 7,
+    &quot;no_node_creation&quot;: true,
+    &quot;no_topology_rewrite&quot;: true
+  },
+  &quot;self_organization_state&quot;: {
+    &quot;status&quot;: &quot;applied&quot;,
+    &quot;bounded&quot;: true,
+    &quot;trust_gate&quot;: &quot;open&quot;,
+    &quot;structural_shift_index&quot;: 0.0757
+  }
+}</pre>
+    </details>
+    </article>
+      </div>
+    </details>
+    
+      </section>
+    </main>
+    
+    <script>
+    (function () {
+      const expert = document.getElementById("expert-analysis-panel");
+      if (expert) expert.open = false;
+    })();
+    </script>
+    
+    

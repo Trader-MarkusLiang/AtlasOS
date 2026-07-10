@@ -4,11 +4,11 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Active Sessions
 
-- `docs/codex-sessions/active/2026-07-10_0744_user-decision-home.md`
 - `docs/codex-sessions/active/2026-07-08_0020_overnight-productization-sprint.md`
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-10_0744_user-decision-home.md`
 - `docs/codex-sessions/completed/2026-07-10_0018_home-intelligence-surface.md`
 - `docs/codex-sessions/completed/2026-07-10_0015_git-submit-current-branch.md`
 - `docs/codex-sessions/completed/2026-07-10_0007_commit-ui-market-fixes.md`

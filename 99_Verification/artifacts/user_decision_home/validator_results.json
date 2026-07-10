@@ -1,0 +1,353 @@
+{
+  "checks": [
+    {
+      "name": "journey order is mandatory six-question sequence",
+      "passed": true
+    },
+    {
+      "name": "first viewport exposes exactly four primary blocks",
+      "passed": true
+    },
+    {
+      "name": "one core judgment exists",
+      "passed": true
+    },
+    {
+      "name": "one strongest forward view exists",
+      "passed": true
+    },
+    {
+      "name": "forward view includes confidence",
+      "passed": true
+    },
+    {
+      "name": "forward view includes falsification condition",
+      "passed": true
+    },
+    {
+      "name": "conviction hierarchy level 1 has exactly one item",
+      "passed": true
+    },
+    {
+      "name": "conviction hierarchy level 2 has max three key predictions",
+      "passed": true
+    },
+    {
+      "name": "agenda posture maps to Atlas allowed action",
+      "passed": true
+    },
+    {
+      "name": "decision agenda has max three focus items",
+      "passed": true
+    },
+    {
+      "name": "positive triggers visible in model",
+      "passed": true
+    },
+    {
+      "name": "negative triggers visible in model",
+      "passed": true
+    },
+    {
+      "name": "research priorities max three",
+      "passed": true
+    },
+    {
+      "name": "candidate priority truth is explicit",
+      "passed": true
+    },
+    {
+      "name": "forecast compact exposes only required count keys",
+      "passed": true
+    },
+    {
+      "name": "expert analysis marked collapsed by default",
+      "passed": true
+    },
+    {
+      "name": "presentation boundaries preserved",
+      "passed": true
+    },
+    {
+      "name": "zh home uses user decision journey layout",
+      "passed": true
+    },
+    {
+      "name": "zh home has four primary blocks",
+      "passed": true
+    },
+    {
+      "name": "zh home has one core judgment card",
+      "passed": true
+    },
+    {
+      "name": "zh home has one strongest forward view card",
+      "passed": true
+    },
+    {
+      "name": "zh home shows horizon",
+      "passed": true
+    },
+    {
+      "name": "zh home shows confidence",
+      "passed": true
+    },
+    {
+      "name": "zh home has max three focus items",
+      "passed": true
+    },
+    {
+      "name": "zh home has exactly three research priorities",
+      "passed": true
+    },
+    {
+      "name": "zh home links full candidate pool",
+      "passed": true
+    },
+    {
+      "name": "zh home links all forecasts",
+      "passed": true
+    },
+    {
+      "name": "zh home links learning record",
+      "passed": true
+    },
+    {
+      "name": "zh home does not render candidate table",
+      "passed": true
+    },
+    {
+      "name": "zh home does not render candidate filters",
+      "passed": true
+    },
+    {
+      "name": "zh home does not render old equal-weight IDs",
+      "passed": true
+    },
+    {
+      "name": "zh home does not render old scenario grid",
+      "passed": true
+    },
+    {
+      "name": "zh expert analysis is collapsed in markup",
+      "passed": true
+    },
+    {
+      "name": "zh home has no forbidden buy/sell wording",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 发生了什么？",
+      "passed": true
+    },
+    {
+      "name": "zh required term: Atlas 最强判断是什么？",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 这和我有什么关系？",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 我现在该关注什么？",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 什么会改变判断？",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 哪里值得深入研究？",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 今日核心判断",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 最强前瞻判断",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 组合相关性",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 决策议程",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 支持增强",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 风险恶化",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 今天最值得深入研究",
+      "passed": true
+    },
+    {
+      "name": "zh required term: 预测责任检查",
+      "passed": true
+    },
+    {
+      "name": "zh full candidate pool route remains available",
+      "passed": true
+    },
+    {
+      "name": "zh candidate page still has filters",
+      "passed": true
+    },
+    {
+      "name": "zh candidate page still has candidate table",
+      "passed": true
+    },
+    {
+      "name": "zh candidate page has no forbidden buy/sell wording",
+      "passed": true
+    },
+    {
+      "name": "en home uses user decision journey layout",
+      "passed": true
+    },
+    {
+      "name": "en home has four primary blocks",
+      "passed": true
+    },
+    {
+      "name": "en home has one core judgment card",
+      "passed": true
+    },
+    {
+      "name": "en home has one strongest forward view card",
+      "passed": true
+    },
+    {
+      "name": "en home shows horizon",
+      "passed": true
+    },
+    {
+      "name": "en home shows confidence",
+      "passed": true
+    },
+    {
+      "name": "en home has max three focus items",
+      "passed": true
+    },
+    {
+      "name": "en home has exactly three research priorities",
+      "passed": true
+    },
+    {
+      "name": "en home links full candidate pool",
+      "passed": true
+    },
+    {
+      "name": "en home links all forecasts",
+      "passed": true
+    },
+    {
+      "name": "en home links learning record",
+      "passed": true
+    },
+    {
+      "name": "en home does not render candidate table",
+      "passed": true
+    },
+    {
+      "name": "en home does not render candidate filters",
+      "passed": true
+    },
+    {
+      "name": "en home does not render old equal-weight IDs",
+      "passed": true
+    },
+    {
+      "name": "en home does not render old scenario grid",
+      "passed": true
+    },
+    {
+      "name": "en expert analysis is collapsed in markup",
+      "passed": true
+    },
+    {
+      "name": "en home has no forbidden buy/sell wording",
+      "passed": true
+    },
+    {
+      "name": "en required term: What changed?",
+      "passed": true
+    },
+    {
+      "name": "en required term: What is Atlas&#x27;s strongest judgment?",
+      "passed": true
+    },
+    {
+      "name": "en required term: What does this mean for me?",
+      "passed": true
+    },
+    {
+      "name": "en required term: What should I focus on now?",
+      "passed": true
+    },
+    {
+      "name": "en required term: What would change the view?",
+      "passed": true
+    },
+    {
+      "name": "en required term: What deserves deeper research?",
+      "passed": true
+    },
+    {
+      "name": "en required term: Today&#x27;s Core Judgment",
+      "passed": true
+    },
+    {
+      "name": "en required term: Strongest Forward View",
+      "passed": true
+    },
+    {
+      "name": "en required term: Portfolio Relevance",
+      "passed": true
+    },
+    {
+      "name": "en required term: Decision Agenda",
+      "passed": true
+    },
+    {
+      "name": "en required term: Positive confirmation",
+      "passed": true
+    },
+    {
+      "name": "en required term: Negative confirmation",
+      "passed": true
+    },
+    {
+      "name": "en required term: Today&#x27;s Top 3 Research Priorities",
+      "passed": true
+    },
+    {
+      "name": "en required term: Forecast Accountability",
+      "passed": true
+    },
+    {
+      "name": "en full candidate pool route remains available",
+      "passed": true
+    },
+    {
+      "name": "en candidate page still has filters",
+      "passed": true
+    },
+    {
+      "name": "en candidate page still has candidate table",
+      "passed": true
+    },
+    {
+      "name": "en candidate page has no forbidden buy/sell wording",
+      "passed": true
+    }
+  ],
+  "status": "PASS"
+}

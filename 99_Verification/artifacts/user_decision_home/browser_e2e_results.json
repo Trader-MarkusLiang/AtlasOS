@@ -1,0 +1,262 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "1. Open Home",
+      "passed": true,
+      "details": {
+        "url": "http://127.0.0.1:8765/"
+      }
+    },
+    {
+      "name": "2. Identify today's core judgment within 5 seconds",
+      "passed": true,
+      "details": {
+        "core": "Attention is expanding, but Atlas still requires confirmation before risk expansion."
+      }
+    },
+    {
+      "name": "3. Identify strongest forward view",
+      "passed": true,
+      "details": {
+        "forward": "BREAKOUT remains the working forward structure until contradicted by later observed state."
+      }
+    },
+    {
+      "name": "4. Identify horizon",
+      "passed": true,
+      "details": {
+        "excerpt": "02What is Atlas's strongest judgment?\n          Strongest Forward View\n          BREAKOUT remains the working forward structure until contradicted by later observed state.\n          \n            Horizonnext runtime cycle\n            Confide"
+      }
+    },
+    {
+      "name": "5. Identify confidence",
+      "passed": true,
+      "details": {
+        "excerpt": "02What is Atlas's strongest judgment?\n          Strongest Forward View\n          BREAKOUT remains the working forward structure until contradicted by later observed state.\n          \n            Horizonnext runtime cycle\n            Confide"
+      }
+    },
+    {
+      "name": "6. Identify portfolio impact",
+      "passed": true,
+      "details": {
+        "excerpt": "03What does this mean for me?\n          Portfolio Relevance\n          Medium-high portfolio relevance\n          The portfolio is concentrated in semiconductor materials and PCB / AI hardware themes, so liquidity and theme confirmation matter more than generic "
+      }
+    },
+    {
+      "name": "7. Identify most sensitive holding",
+      "passed": true,
+      "details": {
+        "excerpt": "03What does this mean for me?\n          Portfolio Relevance\n          Medium-high portfolio relevance\n          The portfolio is concentrated in semiconductor materials and PCB / AI hardware themes, so liquidity and theme confirmation matter more than generic index direction.\n          \n            Primary shared riskS"
+      }
+    },
+    {
+      "name": "8. Identify current Atlas posture",
+      "passed": true,
+      "details": {
+        "excerpt": "04What should I focus on now?\n          Decision Agenda\n          Observe\n          This is a decision agenda, not trade execution. Current evidence supports observation before increasing risk.\n          \n            Confirm whether market breadth improves bey"
+      }
+    },
+    {
+      "name": "9. Identify first focus item",
+      "passed": true,
+      "details": {
+        "first": "Confirm whether market breadth improves beyond portfolio-linked price strength."
+      }
+    },
+    {
+      "name": "10. Identify all 3 focus items",
+      "passed": true,
+      "details": {
+        "focusItems": [
+          "Confirm whether market breadth improves beyond portfolio-linked price strength.",
+          "Check whether liquidity pressure falls or remains only simulated/partial.",
+          "Refresh holding-specific evidence for 688019.SH."
+        ]
+      }
+    },
+    {
+      "name": "11. Inspect positive confirmation",
+      "passed": true,
+      "details": {
+        "positive": [
+          "Market breadth channel becomes configured/live and confirms participation.",
+          "Liquidity proxy improves without relying only on simulated evidence.",
+          "Portfolio-linked strength is confirmed by fresh price/volume observations."
+        ]
+      }
+    },
+    {
+      "name": "12. Inspect negative confirmation",
+      "passed": true,
+      "details": {
+        "negative": [
+          "Liquidity or volatility channels deteriorate together.",
+          "Price/volume freshness fails or portfolio-relevant observations become stale.",
+          "Any forecast miss appears after maturity and changes calibration pressure."
+        ]
+      }
+    },
+    {
+      "name": "13. Inspect top research priority",
+      "passed": true,
+      "details": {
+        "first": "1\n              \n                安集科技\n                Materials\n              \n              \n                Why now34.0% portfolio exposure makes this the first evidence-refresh priority.\n                Evidence changePricing, qualification, margin evidence\n                Portfolio relationshipDirect current portfolio exposure\n                Priority truthPortfolio-Relevant"
+      }
+    },
+    {
+      "name": "14. Inspect why-now explanation",
+      "passed": true,
+      "details": {
+        "first": "1\n              \n                安集科技\n                Materials\n              \n              \n                Why now34.0% portfolio exposure makes this the first evidence-refresh priority.\n                Evidence changePricing, qualification, margin evidence\n                Portfolio relationshipDirect current portfolio exposure\n                Priority truthPortfolio-Relevant"
+      }
+    },
+    {
+      "name": "15a. Full candidate pool link is unique",
+      "passed": true,
+      "details": {
+        "count": 1
+      }
+    },
+    {
+      "name": "15. Open full candidate pool",
+      "passed": true,
+      "details": {
+        "hasFilters": true,
+        "hasTable": true,
+        "title": "27 Research Candidates",
+        "url": "http://127.0.0.1:8765/candidates"
+      }
+    },
+    {
+      "name": "16. Return Home",
+      "passed": true,
+      "details": {
+        "url": "http://127.0.0.1:8765/",
+        "layout": "user-decision-journey"
+      }
+    },
+    {
+      "name": "17. Inspect forecast accountability",
+      "passed": true,
+      "details": {
+        "excerpt": "Forecast Accountability\n            Forecast Accountability, compact\n          \n          \n            View all forecasts\n            View learning record\n          \n        \n        25OPEN0VERIFIED0INVALIDATED0INCONCLUSIVE\n        \n          Recent miss: No e"
+      }
+    },
+    {
+      "name": "18. Inspect recent miss",
+      "passed": true,
+      "details": {
+        "excerpt": "Forecast Accountability\n            Forecast Accountability, compact\n          \n          \n            View all forecasts\n            View learning record\n          \n        \n        25OPEN0VERIFIED0INVALIDATED0INCONCLUSIVE\n        \n          Recent miss: No evaluated miss is available yet.\n          What Atlas changed afterward: No behavior-change claim is "
+      }
+    },
+    {
+      "name": "19. Inspect what changed afterward",
+      "passed": true,
+      "details": {
+        "excerpt": "Forecast Accountability\n            Forecast Accountability, compact\n          \n          \n            View all forecasts\n            View learning record\n          \n        \n        25OPEN0VERIFIED0INVALIDATED0INCONCLUSIVE\n        \n          Recent miss: No evaluated miss is available yet.\n          What Atlas changed afterward: No behavior-change claim is made until a miss matures and is evaluated."
+      }
+    },
+    {
+      "name": "20a. Expert summary is unique",
+      "passed": true,
+      "details": {
+        "count": 1
+      }
+    },
+    {
+      "name": "20. Expand Expert Analysis",
+      "passed": true,
+      "details": {
+        "expertOpen": true
+      }
+    },
+    {
+      "name": "21. Confirm expert details are secondary",
+      "passed": true,
+      "details": {
+        "expertSecondary": true,
+        "primaryBlocks": 4
+      }
+    },
+    {
+      "name": "22a. Language selector exists",
+      "passed": true,
+      "details": {
+        "selects": [
+          {
+            "id": "global-language-select",
+            "text": "\n        EN\n        中文\n      ",
+            "value": "en"
+          }
+        ]
+      }
+    },
+    {
+      "name": "22. Switch zh/en",
+      "passed": true,
+      "details": {
+        "lang": "en",
+        "coreCard": "01What changed?\n          Today's Core Judgment\n          Attention is expanding, but Atlas still requires confirmation before risk expansion.\n          Runtime state refreshed int"
+      }
+    },
+    {
+      "name": "23. Test 1024 width",
+      "passed": true,
+      "details": {
+        "primaryBlocks": 4,
+        "scrollWidth": 1024,
+        "innerWidth": 1024
+      }
+    },
+    {
+      "name": "24. Reload and confirm state persistence",
+      "passed": true,
+      "details": {
+        "lang": "en",
+        "layout": "user-decision-journey",
+        "primaryBlocks": 4
+      }
+    }
+  ],
+  "finalFacts": {
+    "agenda": "04What should I focus on now?\n          Decision Agenda\n          Observe\n          This is a decision agenda, not trade execution. Current evidence supports observation before increasing risk.\n          \n            Confirm whether market breadth improves beyond portfolio-linked price strength.Check whether liquidity pressure falls or remains only simulated/partial.Refresh holding-specific evidence for 688019.SH.",
+    "candidateFiltersOnHome": false,
+    "candidateTableOnHome": false,
+    "core": "Attention is expanding, but Atlas still requires confirmation before risk expansion.",
+    "coreCard": "01What changed?\n          Today's Core Judgment\n          Attention is expanding, but Atlas still requires confirmation before risk expansion.\n          Runtime state refreshed into BREAKOUT.\n          The useful signal is participation quality, not the regime label alone.\n          \n            Confidence: 34%\n            Evidence quality: Partial live evidence\n            Updated: 2026-07-10T01:23:22.385110+00:00",
+    "expertOpen": false,
+    "expertSecondary": true,
+    "focusItems": [
+      "Confirm whether market breadth improves beyond portfolio-linked price strength.",
+      "Check whether liquidity pressure falls or remains only simulated/partial.",
+      "Refresh holding-specific evidence for 688019.SH."
+    ],
+    "forecast": "Forecast Accountability\n            Forecast Accountability, compact\n          \n          \n            View all forecasts\n            View learning record\n          \n        \n        25OPEN0VERIFIED0INVALIDATED0INCONCLUSIVE\n        \n          Recent miss: No evaluated miss is available yet.\n          What Atlas changed afterward: No behavior-change claim is made until a miss matures and is evaluated.",
+    "forward": "BREAKOUT remains the working forward structure until contradicted by later observed state.",
+    "forwardCard": "02What is Atlas's strongest judgment?\n          Strongest Forward View\n          BREAKOUT remains the working forward structure until contradicted by later observed state.\n          \n            Horizonnext runtime cycle\n            Confidence34%\n            Evidence qualityPartial live evidence\n          \n          Evidence is directional, not trading authority.\n          Falsification condition: Later runtime state conflicts with the expected structure or a supported forecast lifecycle invalidates it.\n          \n    \n      Conviction Hierarchy\n      \n        Level 1 · Core JudgmentAttention is expanding, but Atlas still requires confirmation before risk expansion.\n        Level 2 · Key PredictionsBREAKOUT remains the working forward structure until contradicted by later observed state.next runtime cycle · 34.0%Confirmation improves if breadth/liquidity repair.next runtime cycle · 34.0%Risk worsens if liquidity, data freshness, or forecast outcomes deteriorate.next runtime cycle · 34.0%\n        Level 3 · Watch HypothesesMarket breadth channel becomes configured/live and confirms participation.Liquidity proxy improves without relying only on simulated evidence.Portfolio-linked strength is confirmed by fresh price/volume observations.\n        Level 4 · Research Candidates3 / 3 · View Full Candidate Pool",
+    "innerWidth": 1024,
+    "lang": "en",
+    "layout": "user-decision-journey",
+    "negative": [
+      "Liquidity or volatility channels deteriorate together.",
+      "Price/volume freshness fails or portfolio-relevant observations become stale.",
+      "Any forecast miss appears after maturity and changes calibration pressure."
+    ],
+    "oldIds": [],
+    "portfolio": "03What does this mean for me?\n          Portfolio Relevance\n          Medium-high portfolio relevance\n          The portfolio is concentrated in semiconductor materials and PCB / AI hardware themes, so liquidity and theme confirmation matter more than generic index direction.\n          \n            Primary shared riskSemiconductor Materials\n            Most sensitive holding688019.SH · 34.0%\n            Strongest buffer20.0% unassigned buffer",
+    "positive": [
+      "Market breadth channel becomes configured/live and confirms participation.",
+      "Liquidity proxy improves without relying only on simulated evidence.",
+      "Portfolio-linked strength is confirmed by fresh price/volume observations."
+    ],
+    "primaryBlocks": 4,
+    "priorities": [
+      "1\n              \n                安集科技\n                Materials\n              \n              \n                Why now34.0% portfolio exposure makes this the first evidence-refresh priority.\n                Evidence changePricing, qualification, margin evidence\n                Portfolio relationshipDirect current portfolio exposure\n                Priority truthPortfolio-Relevant",
+      "2\n              \n                00148.HK\n                PCB / Materials / AI Infrastructure\n              \n              \n                Why now26.0% portfolio exposure makes this the first evidence-refresh priority.\n                Evidence changeHK equity and materials-cycle sensitivity; AI infrastructure linkage requires ongoing evidence validation.\n                Portfolio relationshipDirect current portfolio exposure\n                Priority truthPortfolio-Relevant / Not in Static Research Pool",
+      "3\n              \n                东山精密\n                Bandwidth / PCB\n              \n              \n                Why now20.0% portfolio exposure makes this the first evidence-refresh priority.\n                Evidence changeConfirm AI-related revenue, customer, or margin evidence\n                Portfolio relationshipDirect current portfolio exposure\n                Priority truthPortfolio-Relevant"
+    ],
+    "scrollWidth": 1024,
+    "url": "http://127.0.0.1:8765/"
+  }
+}
