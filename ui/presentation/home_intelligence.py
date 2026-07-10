@@ -23,16 +23,86 @@ def build_home_intelligence(state: Mapping[str, Any]) -> dict[str, Any]:
     candidate_pool = _mapping(state.get("candidate_pool")) or build_candidate_pool(
         portfolio_context=_mapping(state.get("portfolio_context"))
     )
+    market_outlook = build_market_outlook(state, ledger)
+    forecast_accountability = build_forecast_accountability(ledger)
+    expert_analysis = build_expert_analysis(state, ledger)
     return {
-        "market_outlook": build_market_outlook(state, ledger),
-        "forecast_accountability": build_forecast_accountability(ledger),
+        "decision_home": build_user_decision_home(
+            state,
+            market_outlook=market_outlook,
+            forecast_accountability=forecast_accountability,
+            candidate_pool=candidate_pool,
+            expert_analysis=expert_analysis,
+        ),
+        "market_outlook": market_outlook,
+        "forecast_accountability": forecast_accountability,
         "candidate_pool": candidate_pool,
-        "expert_analysis": build_expert_analysis(state, ledger),
+        "expert_analysis": expert_analysis,
         "source_boundaries": {
             "read_only": True,
             "no_new_cognition": True,
             "no_trading_execution": True,
             "candidate_ranking_not_buy_recommendation": True,
+        },
+    }
+
+
+def build_user_decision_home(
+    state: Mapping[str, Any],
+    *,
+    market_outlook: Mapping[str, Any],
+    forecast_accountability: Mapping[str, Any],
+    candidate_pool: Mapping[str, Any],
+    expert_analysis: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Project existing evidence into the reduced user-decision Home journey."""
+
+    packet = _mapping(state.get("last_decision_packet"))
+    market = _mapping(state.get("market_intelligence"))
+    portfolio = _mapping(state.get("portfolio_context"))
+    evidence_quality = _home_evidence_quality(market, forecast_accountability)
+    core = _decision_core_judgment(state, packet, market, market_outlook, evidence_quality)
+    forward = _decision_forward_view(state, packet, market_outlook, evidence_quality)
+    portfolio_relevance = _decision_portfolio_relevance(portfolio)
+    agenda = _decision_agenda(packet, market, portfolio, evidence_quality)
+    triggers = _decision_triggers(market, forecast_accountability)
+    research = _decision_research_priorities(candidate_pool, portfolio)
+    forecast = _decision_forecast_compact(forecast_accountability)
+    hierarchy = _decision_conviction_hierarchy(core, forward, triggers, research)
+    return {
+        "journey_order": [
+            "what_changed",
+            "strongest_judgment",
+            "portfolio_relevance",
+            "decision_agenda",
+            "view_change_triggers",
+            "research_priorities",
+        ],
+        "first_viewport_blocks": [
+            "core_judgment",
+            "strongest_forward_view",
+            "portfolio_relevance",
+            "decision_agenda",
+        ],
+        "core_judgment": core,
+        "strongest_forward_view": forward,
+        "conviction_hierarchy": hierarchy,
+        "portfolio_relevance": portfolio_relevance,
+        "decision_agenda": agenda,
+        "decision_triggers": triggers,
+        "research_priorities": research,
+        "forecast_accountability": forecast,
+        "expert_analysis": {
+            "collapsed_by_default": True,
+            "section_count": expert_analysis.get("section_count", 0),
+        },
+        "source_boundaries": {
+            "presentation_only": True,
+            "read_only": True,
+            "no_cognition_semantics_change": True,
+            "no_forecast_semantics_change": True,
+            "no_candidate_semantics_change": True,
+            "no_trading_execution": True,
         },
     }
 
@@ -113,6 +183,381 @@ def build_market_outlook(state: Mapping[str, Any], ledger: Mapping[str, Any] | N
         "invalidation_conditions": invalidations[:5],
         "distinct_from_forecast_ledger": True,
         "latest_forecast_id": latest.get("forecast_id"),
+    }
+
+
+def _decision_core_judgment(
+    state: Mapping[str, Any],
+    packet: Mapping[str, Any],
+    market: Mapping[str, Any],
+    outlook: Mapping[str, Any],
+    evidence_quality: Mapping[str, Any],
+) -> dict[str, Any]:
+    regime = _text(state.get("regime_state") or packet.get("regime_state"), "Unknown")
+    confidence = _safe_confidence(packet.get("confidence", outlook.get("confidence", 0.0)))
+    observations = [_mapping(item) for item in _list(market.get("observations")) if isinstance(item, Mapping)]
+    available = [item for item in observations if _text(item.get("data_quality_status"), "").lower() in {"available", "partial"}]
+    breakouts = [item for item in available if _text(item.get("normalized_event_type"), "") == "price_breakout"]
+    decision_fallback = _decision_packet_is_fallback(packet)
+    if regime.upper() == "RISK_OFF" and breakouts:
+        title = _bilingual(
+            "Portfolio-linked prices are moving, but Atlas still treats the setup as risk-constrained.",
+            "组合相关价格在移动，但 Atlas 仍将当前环境视为风险约束状态。",
+        )
+        explanation = _bilingual(
+            "Price strength needs breadth, liquidity, and valid reasoning confirmation before it becomes an expansion signal.",
+            "价格强势需要市场广度、流动性和有效推理共同确认，才会升级为扩张信号。",
+        )
+        changed = _bilingual(
+            f"{len(breakouts)} portfolio-relevant price observations refreshed; several macro/news/breadth channels remain unconfigured.",
+            f"{len(breakouts)} 个组合相关价格观测已刷新，但宏观、新闻、市场广度等通道仍未配置。",
+        )
+    elif regime.upper() == "RISK_OFF":
+        title = _bilingual(
+            "Risk constraint is active; Atlas has not confirmed a directional expansion signal.",
+            "风险约束仍在，Atlas 尚未确认方向性扩张信号。",
+        )
+        explanation = _bilingual(
+            "The current state favors observation until liquidity and breadth improve.",
+            "当前更适合观察，等待流动性和市场广度改善。",
+        )
+        changed = _bilingual(
+            "Runtime state refreshed into RISK_OFF while evidence quality remains partial.",
+            "运行状态刷新为 RISK_OFF，但证据质量仍然只是部分充分。",
+        )
+    elif regime.upper() in {"ATTENTION_EXPANSION", "BREAKOUT"}:
+        title = _bilingual(
+            "Attention is expanding, but Atlas still requires confirmation before risk expansion.",
+            "注意力正在扩张，但 Atlas 仍需要确认后才会提升风险暴露判断。",
+        )
+        explanation = _bilingual(
+            "The useful signal is participation quality, not the regime label alone.",
+            "真正有用的信号是参与质量，而不是单独的状态标签。",
+        )
+        changed = _bilingual(
+            f"Runtime state refreshed into {regime.replace('_', ' ')}.",
+            f"运行状态刷新为 {regime.replace('_', ' ')}。",
+        )
+    else:
+        title = _bilingual(
+            "Atlas does not yet have enough signal for a high-confidence market judgment.",
+            "Atlas 目前还没有足够信号形成高置信市场判断。",
+        )
+        explanation = _bilingual(
+            "Use portfolio relevance and freshness checks first; avoid treating unknown state as a trade signal.",
+            "先看组合相关性和数据新鲜度，不要把未知状态当成交易信号。",
+        )
+        changed = _bilingual(
+            "Runtime refreshed, but the latest cognitive packet is still low-confidence.",
+            "运行状态已刷新，但最新认知包仍是低置信。",
+        )
+    if decision_fallback:
+        explanation = _bilingual(
+            "The DecisionPacket fell back to neutral/observe because LLM reasoning was unavailable or invalid; Atlas should rely on evidence checks before changing posture.",
+            "由于 LLM 推理不可用或无效，DecisionPacket 回退到中性/观察；Atlas 需要先依赖证据校验，再考虑改变姿态。",
+        )
+    return {
+        "question": "what_changed",
+        "title": title,
+        "what_changed": changed,
+        "explanation": explanation,
+        "confidence": confidence,
+        "confidence_text": _confidence_text(confidence),
+        "evidence_quality": evidence_quality,
+        "updated_at": _text(state.get("timestamp") or market.get("timestamp"), "Unknown"),
+    }
+
+
+def _decision_forward_view(
+    state: Mapping[str, Any],
+    packet: Mapping[str, Any],
+    outlook: Mapping[str, Any],
+    evidence_quality: Mapping[str, Any],
+) -> dict[str, Any]:
+    regime = _text(outlook.get("base_state") or state.get("regime_state"), "Unknown")
+    confidence = _safe_confidence(outlook.get("confidence", packet.get("confidence", 0.0)))
+    horizon = _text(outlook.get("horizon"), "next_runtime_cycle")
+    low_evidence = confidence < 0.2 or evidence_quality.get("status") in {"limited", "insufficient"}
+    if low_evidence:
+        statement = _bilingual(
+            "Current evidence is not enough for a high-conviction forecast; the strongest structural view is to observe risk constraints until breadth and liquidity confirm.",
+            "当前没有足够证据形成高强度预测；最强结构判断是继续观察风险约束，直到市场广度和流动性确认。",
+        )
+        falsification = _bilingual(
+            "Breadth and liquidity turn live/positive while the next runtime cycle no longer conflicts with the expected structure.",
+            "市场广度和流动性转为实时/正向，且下一运行周期不再与预期结构冲突。",
+        )
+        evidence_note = _bilingual(
+            "Partial evidence: latest forecast confidence is low and several channels are not configured.",
+            "证据部分充分：最新预测置信度较低，且多个通道尚未配置。",
+        )
+    elif regime.upper() == "RISK_OFF":
+        statement = _bilingual(
+            "Risk constraints likely remain the working structure over the next runtime cycle unless liquidity and breadth repair.",
+            "除非流动性和市场广度修复，否则风险约束大概率仍是下一运行周期的工作结构。",
+        )
+        falsification = _bilingual(
+            "Risk-sensitive channels improve together and the forecast outcome does not invalidate the structure.",
+            "风险敏感通道同步改善，且预测结果没有使该结构失效。",
+        )
+        evidence_note = _bilingual("Supported by current regime plus latest open forecast.", "由当前状态和最新未完成预测支持。")
+    else:
+        statement = _bilingual(
+            f"{regime.replace('_', ' ')} remains the working forward structure until contradicted by later observed state.",
+            f"{regime.replace('_', ' ')} 仍是当前前瞻工作结构，除非后续观测状态与之冲突。",
+        )
+        falsification = _bilingual(
+            "Later runtime state conflicts with the expected structure or a supported forecast lifecycle invalidates it.",
+            "后续运行状态与预期结构冲突，或受支持的预测生命周期将其标记为失效。",
+        )
+        evidence_note = _bilingual("Evidence is directional, not trading authority.", "证据只代表方向性判断，不构成交易权限。")
+    return {
+        "question": "strongest_judgment",
+        "statement": statement,
+        "horizon": horizon,
+        "confidence": confidence,
+        "confidence_text": _confidence_text(confidence),
+        "evidence_quality": evidence_quality,
+        "evidence_note": evidence_note,
+        "falsification_condition": falsification,
+        "source": outlook.get("source"),
+        "latest_forecast_id": outlook.get("latest_forecast_id"),
+    }
+
+
+def _decision_conviction_hierarchy(
+    core: Mapping[str, Any],
+    forward: Mapping[str, Any],
+    triggers: Mapping[str, Any],
+    research: Mapping[str, Any],
+) -> dict[str, Any]:
+    level2 = [
+        {
+            "statement": forward.get("statement"),
+            "confidence": forward.get("confidence"),
+            "horizon": forward.get("horizon"),
+        }
+    ]
+    negative = _list(triggers.get("negative_confirmation"))
+    positive = _list(triggers.get("positive_confirmation"))
+    if positive:
+        level2.append({"statement": _bilingual("Confirmation improves if breadth/liquidity repair.", "若市场广度/流动性修复，确认度会提升。"), "confidence": forward.get("confidence"), "horizon": "next_runtime_cycle"})
+    if negative:
+        level2.append({"statement": _bilingual("Risk worsens if liquidity, data freshness, or forecast outcomes deteriorate.", "若流动性、数据新鲜度或预测结果恶化，风险会升高。"), "confidence": forward.get("confidence"), "horizon": "next_runtime_cycle"})
+    return {
+        "level_1": [{"label": "Core Judgment", "item": core.get("title")}],
+        "level_2": level2[:3],
+        "level_3": positive[:3] + negative[:3],
+        "level_4": {
+            "surface": "research_candidates",
+            "count_on_home": len(_list(research.get("items"))),
+            "full_pool_link": research.get("full_pool_link"),
+        },
+        "presentation_only": True,
+    }
+
+
+def _decision_portfolio_relevance(portfolio: Mapping[str, Any]) -> dict[str, Any]:
+    exposure_map = _mapping(portfolio.get("exposure_map"))
+    holdings = [_mapping(item) for item in _list(exposure_map.get("asset_concentration")) if isinstance(item, Mapping)]
+    clusters = [_mapping(item) for item in _list(exposure_map.get("correlated_risk_clusters")) if isinstance(item, Mapping)]
+    relevance = _safe_number(exposure_map.get("portfolio_relevance_score"), 0.0)
+    buffer_pct = _safe_number(portfolio.get("cash_or_unassigned_pct"), 0.0)
+    sensitive = holdings[0] if holdings else {}
+    shared = clusters[0] if clusters else {}
+    if relevance >= 60:
+        impact = _bilingual("Medium-high portfolio relevance", "组合相关性中高")
+    elif relevance >= 35:
+        impact = _bilingual("Medium portfolio relevance", "组合相关性中等")
+    elif relevance > 0:
+        impact = _bilingual("Low portfolio relevance", "组合相关性较低")
+    else:
+        impact = _bilingual("Portfolio relevance unavailable", "组合相关性不可用")
+    return {
+        "question": "portfolio_relevance",
+        "overall_impact": impact,
+        "primary_shared_risk": _bilingual(
+            str(shared.get("cluster") or exposure_map.get("regime_sensitivity") or "theme concentration"),
+            str(shared.get("cluster") or "主题集中风险"),
+        ),
+        "most_sensitive_holding": {
+            "asset": _text(sensitive.get("asset"), "Unknown"),
+            "exposure_pct": sensitive.get("exposure_pct"),
+        },
+        "strongest_buffer": _bilingual(
+            f"{buffer_pct:.1f}% unassigned buffer" if buffer_pct else "No explicit buffer available",
+            f"{buffer_pct:.1f}% 未部署缓冲" if buffer_pct else "没有明确缓冲",
+        ),
+        "explanation": _bilingual(
+            "The portfolio is concentrated in semiconductor materials and PCB / AI hardware themes, so liquidity and theme confirmation matter more than generic index direction.",
+            "组合集中在半导体材料与 PCB / AI 硬件主题，因此流动性和主题确认比单纯指数方向更重要。",
+        ),
+        "privacy": portfolio.get("privacy", "percentage_only_no_account_amounts"),
+    }
+
+
+def _decision_agenda(
+    packet: Mapping[str, Any],
+    market: Mapping[str, Any],
+    portfolio: Mapping[str, Any],
+    evidence_quality: Mapping[str, Any],
+) -> dict[str, Any]:
+    raw_action = _text(packet.get("recommended_action"), "observe").lower()
+    posture = raw_action if raw_action in {"observe", "hold", "reduce", "build", "accumulate"} else "observe"
+    focus_items = [
+        _bilingual("Confirm whether market breadth improves beyond portfolio-linked price strength.", "确认市场广度是否跟上组合相关价格强势。"),
+        _bilingual("Check whether liquidity pressure falls or remains only simulated/partial.", "检查流动性压力是否下降，还是仍停留在模拟/部分证据。"),
+        _bilingual("Refresh holding-specific evidence for the most sensitive position.", "刷新最敏感持仓的个股证据。"),
+    ]
+    if evidence_quality.get("status") == "insufficient":
+        focus_items[0] = _bilingual("Restore live data channels before upgrading conviction.", "先恢复实时数据通道，再提升判断强度。")
+    sensitive = _mapping(_mapping(portfolio.get("exposure_map")).get("asset_concentration")[0]) if _list(_mapping(portfolio.get("exposure_map")).get("asset_concentration")) else {}
+    if sensitive.get("asset"):
+        focus_items[2] = _bilingual(
+            f"Refresh holding-specific evidence for {sensitive.get('asset')}.",
+            f"刷新 {sensitive.get('asset')} 的持仓相关证据。",
+        )
+    return {
+        "question": "decision_agenda",
+        "posture": posture,
+        "posture_label": _action_label(posture),
+        "explanation": _bilingual(
+            "This is a decision agenda, not trade execution. Current evidence supports observation before increasing risk.",
+            "这是决策议程，不是交易执行。当前证据支持先观察，再考虑是否提高风险暴露。",
+        ),
+        "focus_items": focus_items[:3],
+        "raw_decision_packet_action": raw_action,
+        "no_trading_execution": True,
+    }
+
+
+def _decision_triggers(market: Mapping[str, Any], forecast: Mapping[str, Any]) -> dict[str, Any]:
+    channels = _mapping(market.get("channels"))
+    counts = _mapping(forecast.get("counts"))
+    positive = [
+        _bilingual("Market breadth channel becomes configured/live and confirms participation.", "市场广度通道完成配置/转为实时，并确认参与度改善。"),
+        _bilingual("Liquidity proxy improves without relying only on simulated evidence.", "流动性代理改善，且不只依赖模拟证据。"),
+        _bilingual("Portfolio-linked strength is confirmed by fresh price/volume observations.", "组合相关强势得到新鲜价量观测确认。"),
+    ]
+    negative = [
+        _bilingual("Liquidity or volatility channels deteriorate together.", "流动性或波动率通道同步恶化。"),
+        _bilingual("Price/volume freshness fails or portfolio-relevant observations become stale.", "价量新鲜度失效，或组合相关观测变为过期。"),
+        _bilingual("A high-confidence forecast is invalidated through the supported lifecycle.", "高置信预测在受支持生命周期中被验证为失效。"),
+    ]
+    if not channels:
+        positive[0] = _bilingual("At least one live market data channel becomes available.", "至少一个实时市场数据通道可用。")
+    if not counts.get("invalidated"):
+        negative[2] = _bilingual("Any forecast miss appears after maturity and changes calibration pressure.", "预测到期后出现失误，并改变校准压力。")
+    return {
+        "question": "view_change_triggers",
+        "positive_confirmation": positive[:3],
+        "negative_confirmation": negative[:3],
+    }
+
+
+def _decision_research_priorities(candidate_pool: Mapping[str, Any], portfolio: Mapping[str, Any]) -> dict[str, Any]:
+    positions = [_mapping(item) for item in _list(portfolio.get("positions")) if isinstance(item, Mapping)]
+    candidates = [_mapping(item) for item in _list(candidate_pool.get("items")) if isinstance(item, Mapping)]
+    used_assets: set[str] = set()
+    priorities: list[dict[str, Any]] = []
+    for position in sorted(positions, key=lambda item: _safe_number(item.get("portfolio_percentage"), 0.0), reverse=True):
+        match = _match_position_candidate(position, candidates)
+        item = match or {}
+        asset = _text(item.get("asset") or position.get("asset"), "Unknown")
+        if asset in used_assets:
+            continue
+        used_assets.add(asset)
+        priorities.append(
+            {
+                "asset": asset,
+                "theme": _text(item.get("theme") or position.get("theme"), "Unknown"),
+                "why_now": _bilingual(
+                    f"{position.get('portfolio_percentage', 'Unknown')}% portfolio exposure makes this the first evidence-refresh priority.",
+                    f"{position.get('portfolio_percentage', '未知')}% 组合暴露使其成为第一批证据刷新重点。",
+                ),
+                "evidence_change": _bilingual(
+                    _text(item.get("next_trigger") or position.get("risk_note"), "Refresh order, margin, valuation, and liquidity evidence."),
+                    _text(item.get("next_trigger") or position.get("risk_note"), "刷新订单、利润率、估值和流动性证据。"),
+                ),
+                "portfolio_relationship": "Direct current portfolio exposure",
+                "truth_label": "Portfolio-Relevant" if match else "Portfolio-Relevant / Not in Static Research Pool",
+                "source": item.get("source") or portfolio.get("source"),
+            }
+        )
+        if len(priorities) >= 3:
+            break
+    if len(priorities) < 3:
+        for item in candidates:
+            asset = _text(item.get("asset"), "")
+            if not asset or asset in used_assets:
+                continue
+            priorities.append(
+                {
+                    "asset": asset,
+                    "theme": _text(item.get("theme"), "Unknown"),
+                    "why_now": _bilingual(
+                        _text(item.get("reason"), "Repository priority requires evidence refresh."),
+                        _text(item.get("reason"), "仓库优先级需要证据刷新。"),
+                    ),
+                    "evidence_change": _bilingual(
+                        _text(item.get("next_trigger"), "No new runtime evidence; review trigger is repository-defined."),
+                        _text(item.get("next_trigger"), "没有新的运行态证据；复核触发来自仓库。"),
+                    ),
+                    "portfolio_relationship": _text(item.get("portfolio_relationship"), "None"),
+                    "truth_label": "Static Research Pool",
+                    "source": item.get("source"),
+                }
+            )
+            if len(priorities) >= 3:
+                break
+    return {
+        "question": "research_priorities",
+        "items": priorities[:3],
+        "full_pool_link": "/candidates",
+        "candidate_priority_truth": {
+            "source": candidate_pool.get("source"),
+            "classification": "Static Research Pool + presentation-only current portfolio relevance overlay",
+            "not_claimed": [
+                "dynamic runtime ranking",
+                "trading recommendation",
+                "evidence-aware ranking unless evidence change is explicitly shown",
+            ],
+        },
+    }
+
+
+def _decision_forecast_compact(forecast: Mapping[str, Any]) -> dict[str, Any]:
+    counts = _mapping(forecast.get("counts"))
+    recent_miss = _mapping(forecast.get("recent_miss"))
+    if recent_miss:
+        miss_summary = _bilingual(
+            _text(recent_miss.get("forecast_statement") or recent_miss.get("expected_direction_state"), "Recent miss recorded."),
+            _text(recent_miss.get("forecast_statement") or recent_miss.get("expected_direction_state"), "已记录近期预测失误。"),
+        )
+        changed = _bilingual(
+            "Atlas exposes the miss through Forecast Ledger; later calibration effects must be verified through runtime behavior.",
+            "Atlas 已通过预测账本暴露该失误；后续校准影响必须通过运行态行为验证。",
+        )
+    else:
+        miss_summary = _bilingual(
+            "No evaluated miss is available yet.",
+            "当前还没有已评估的预测失误。",
+        )
+        changed = _bilingual(
+            "No behavior-change claim is made until a miss matures and is evaluated.",
+            "在预测到期并完成评估前，不宣称 Atlas 已因此改变行为。",
+        )
+    return {
+        "counts": {
+            "open": counts.get("open", 0),
+            "verified": counts.get("verified", 0),
+            "invalidated": counts.get("invalidated", 0),
+            "inconclusive": counts.get("inconclusive", 0),
+        },
+        "recent_miss": miss_summary,
+        "what_changed_afterward": changed,
+        "sample_warning": forecast.get("sample_warning"),
+        "links": {"predictions": "/predictions", "learning": "/learning"},
     }
 
 
@@ -536,6 +981,84 @@ def _compact_mapping(value: Mapping[str, Any]) -> dict[str, Any]:
     return {key: value.get(key) for key in keys if key in value}
 
 
+def _home_evidence_quality(market: Mapping[str, Any], forecast: Mapping[str, Any]) -> dict[str, Any]:
+    channels = _mapping(market.get("channels"))
+    total = max(1, len(channels))
+    live = sum(1 for value in channels.values() if _text(value, "").upper() == "LIVE")
+    usable = sum(1 for value in channels.values() if _text(value, "").upper() in {"LIVE", "DELAYED", "CACHED", "SIMULATED"})
+    configured = sum(1 for value in channels.values() if _text(value, "").upper() != "NOT_CONFIGURED")
+    score = round(min(1.0, usable / total), 4)
+    if live >= 2 and configured >= total / 2:
+        status = "partial"
+        label = _bilingual("Partial live evidence", "部分实时证据")
+    elif usable:
+        status = "limited"
+        label = _bilingual("Limited evidence", "证据有限")
+    else:
+        status = "insufficient"
+        label = _bilingual("Insufficient evidence", "证据不足")
+    metrics = _mapping(forecast.get("metrics"))
+    evaluated = _safe_float(metrics.get("evaluated"), 0.0)
+    if evaluated <= 0:
+        sample = _bilingual("No evaluated forecast sample yet", "尚无已评估预测样本")
+    else:
+        sample = _bilingual(f"{evaluated:.0f} evaluated forecasts", f"{evaluated:.0f} 个已评估预测")
+    return {
+        "status": status,
+        "label": label,
+        "score": score,
+        "live_channels": live,
+        "usable_channels": usable,
+        "total_channels": len(channels),
+        "forecast_sample": sample,
+    }
+
+
+def _decision_packet_is_fallback(packet: Mapping[str, Any]) -> bool:
+    trace = _text(packet.get("reasoning_trace"), "").lower()
+    summary = _text(packet.get("causal_summary"), "").lower()
+    action = _text(packet.get("recommended_action"), "").lower()
+    return "invalid_llm_output" in trace or "unavailable" in summary or action == "neutral"
+
+
+def _confidence_text(value: Any) -> str:
+    return f"{_safe_confidence(value) * 100:.0f}%"
+
+
+def _action_label(action: str) -> dict[str, str]:
+    labels = {
+        "observe": _bilingual("Observe", "观察"),
+        "hold": _bilingual("Hold", "持有"),
+        "reduce": _bilingual("Reduce", "降低暴露"),
+        "build": _bilingual("Build", "建立观察仓位"),
+        "accumulate": _bilingual("Accumulate", "逐步增加"),
+    }
+    return labels.get(action, labels["observe"])
+
+
+def _match_position_candidate(position: Mapping[str, Any], candidates: list[Mapping[str, Any]]) -> Mapping[str, Any] | None:
+    raw_position_text = " ".join(
+        _text(position.get(key), "")
+        for key in ("asset", "theme", "role", "user_thesis")
+    )
+    tokens = {token.lower() for token in _portfolio_tokens(raw_position_text)}
+    asset = _text(position.get("asset"), "")
+    if asset:
+        tokens.add(asset.lower())
+    for item in candidates:
+        item_text = " ".join(
+            _text(item.get(key), "")
+            for key in ("asset", "theme", "thesis_direction", "reason")
+        ).lower()
+        if any(token and token.lower() in item_text for token in tokens):
+            return item
+    return None
+
+
+def _bilingual(en: str, zh: str) -> dict[str, str]:
+    return {"en": en, "zh": zh}
+
+
 def _safe_confidence(value: Any) -> float:
     return round(max(0.0, min(1.0, _safe_float(value, 0.0))), 4)
 
@@ -548,6 +1071,13 @@ def _safe_float(value: Any, fallback: float) -> float:
     if number > 1:
         number /= 100
     return number
+
+
+def _safe_number(value: Any, fallback: float) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return fallback
 
 
 def _mapping(value: Any) -> dict[str, Any]:

@@ -179,136 +179,350 @@ HOME_INTELLIGENCE_TEXT = {
 
 def home_content(state: Mapping[str, Any]) -> str:
     lang = current_language()
-    presentation = build_cognitive_presentation(state, lang)
-    hero = presentation["hero"]
-    decision = presentation["decision"]
-    packet = _packet(state)
-    market = _market(state)
-    portfolio = _portfolio(state)
     intelligence = build_home_intelligence(state)
-    outlook = intelligence["market_outlook"]
-    forecast = intelligence["forecast_accountability"]
-    candidates = intelligence["candidate_pool"]
+    decision_home = intelligence["decision_home"]
     expert = intelligence["expert_analysis"]
-    action = decision["action"]
-    risk = decision["risk"]
-    summary = str(hero.get("summary") or t("home.default_meaning", lang))
+    core = decision_home["core_judgment"]
+    forward = decision_home["strongest_forward_view"]
+    hierarchy = decision_home["conviction_hierarchy"]
+    portfolio = decision_home["portfolio_relevance"]
+    agenda = decision_home["decision_agenda"]
+    triggers = decision_home["decision_triggers"]
+    research = decision_home["research_priorities"]
+    forecast = decision_home["forecast_accountability"]
     return f"""
     {_home_intelligence_style()}
-    <nav class="home-view-switch" aria-label="{escape(_home_label("view_modes", lang))}">
-      <button class="active" type="button" data-home-mode="brief" data-home-target="home-current-state">{escape(_home_label("brief", lang))}</button>
-      <button type="button" data-home-mode="outlook" data-home-target="home-forward-outlook">{escape(_home_label("outlook", lang))}</button>
-      <button type="button" data-home-mode="candidates" data-home-target="home-research-candidates">{escape(_home_label("candidates", lang))}</button>
-      <button type="button" data-home-mode="expert" data-home-target="home-expert-analysis">{escape(_home_label("expert", lang))}<span>{escape(str(expert.get("section_count") or 0))}</span></button>
-    </nav>
-
-    <section class="hero-panel home-current-state" id="home-current-state" data-home-zone="current">
-      <div class="home-zone-label"><span>01</span><strong>{escape(_home_label("current_state", lang))}</strong></div>
-      <span class="kicker">{escape(str(hero.get("kicker") or t("home.today_change", lang)))}</span>
-      <h1 class="hero-title localized-hero-title">{_dual_block(hero.get("title"), hero.get("secondary"))}</h1>
-      <p class="hero-copy">{escape(summary)}</p>
-      <div class="primary-decision home-primary-decision">
-        <div>
-          <span class="kicker">{escape(t("home.current_view", lang))}</span>
-          <div class="decision-action localized-action">{_dual_block(action.get("primary"), action.get("secondary"))}</div>
-          <p class="hero-copy">{escape(t("state.risk", lang))}: {_inline_dual(risk)} · {escape(t("state.confidence", lang))}: {escape(str(decision.get("confidence") or _confidence(packet)))}</p>
-        </div>
-        {_gauge(_confidence_value(packet))}
-      </div>
-      <div class="home-key-drivers" aria-label="{escape(_home_label("key_drivers", lang))}">
-        {_driver_chips(packet, state, lang)}
-      </div>
-    </section>
-
-    {_proactive_update_card(state, lang)}
-
-    <section class="home-zone home-forward-outlook" id="home-forward-outlook" data-home-zone="outlook">
-      <div class="home-zone-label"><span>02</span><strong>{escape(_home_label("forward_outlook", lang))}</strong></div>
-      <div class="home-outlook-layout">
-        <article class="focus-card home-outlook-main">
-          <span class="kicker">{escape(_home_label("market_outlook", lang))}</span>
-          <h2>{escape(_home_outlook_title(outlook, lang))}</h2>
-          <p>{escape(_localized_outlook_text(outlook.get("base_case"), lang) or _home_label("insufficient_outlook", lang))}</p>
-          <div class="pill-row">
-            <span class="tag">{escape(_home_label("horizon", lang))}: {escape(str(outlook.get("horizon") or _home_label("insufficient_evidence", lang)))}</span>
-            <span class="tag">{escape(t("state.confidence", lang))}: {escape(_pct_text(float(outlook.get("confidence") or 0) * 100))}</span>
-            <span class="tag">{escape(_home_label("source", lang))}: {escape(str(outlook.get("source") or ""))}</span>
+    <main class="decision-home-shell" data-home-layout="user-decision-journey">
+      <section class="decision-first-viewport" id="home-first-viewport" aria-label="{escape(_journey_copy("first_viewport", lang))}">
+        <article class="decision-card decision-card-primary" id="home-core-judgment" data-primary-block="core_judgment">
+          <div class="journey-step"><span>01</span>{escape(_journey_copy("what_changed", lang))}</div>
+          <span class="kicker">{escape(_journey_copy("today_core_judgment", lang))}</span>
+          <h1>{escape(_localized(core.get("title"), lang))}</h1>
+          <p class="decision-change">{escape(_localized(core.get("what_changed"), lang))}</p>
+          <p>{escape(_localized(core.get("explanation"), lang))}</p>
+          <div class="decision-meta-row">
+            <span class="tag">{escape(t("state.confidence", lang))}: {escape(str(core.get("confidence_text") or ""))}</span>
+            <span class="tag">{escape(_journey_copy("evidence_quality", lang))}: {escape(_localized(_mapping(core.get("evidence_quality")).get("label"), lang))}</span>
+            <span class="tag">{escape(_journey_copy("updated", lang))}: {escape(str(core.get("updated_at") or ""))}</span>
           </div>
         </article>
-        <article class="visual-card">
-          <span class="kicker">{escape(_home_label("scenario_map", lang))}</span>
-          {_scenario_map(outlook, lang)}
-        </article>
-      </div>
-      <article class="focus-card home-invalidation-card">
-        <span class="kicker">{escape(_home_label("invalidation_conditions", lang))}</span>
-        <ul class="plain-list">{_list_items(_localized_invalidations(outlook.get("invalidation_conditions"), lang))}</ul>
-      </article>
-    </section>
 
-    <section class="home-zone home-portfolio-impact" id="home-portfolio-impact" data-home-zone="portfolio">
-      <div class="home-zone-label"><span>03</span><strong>{escape(_home_label("portfolio_impact", lang))}</strong></div>
-      <div class="two-grid">
-        <article class="visual-card">
-          <span class="kicker">{escape(t("home.portfolio_meaning", lang))}</span>
-          <h2>{escape(_portfolio_headline(portfolio, lang))}</h2>
-          {_portfolio_minimap(portfolio)}
+        <article class="decision-card" id="home-strongest-forward-view" data-primary-block="strongest_forward_view">
+          <div class="journey-step"><span>02</span>{escape(_journey_copy("strongest_judgment", lang))}</div>
+          <span class="kicker">{escape(_journey_copy("strongest_forward_view", lang))}</span>
+          <h2>{escape(_localized(forward.get("statement"), lang))}</h2>
+          <div class="forward-metrics">
+            <span><small>{escape(_home_label("horizon", lang))}</small><strong>{escape(_horizon_label(forward.get("horizon"), lang))}</strong></span>
+            <span><small>{escape(t("state.confidence", lang))}</small><strong>{escape(str(forward.get("confidence_text") or ""))}</strong></span>
+            <span><small>{escape(_journey_copy("evidence_quality", lang))}</small><strong>{escape(_localized(_mapping(forward.get("evidence_quality")).get("label"), lang))}</strong></span>
+          </div>
+          <p class="home-safety-note">{escape(_localized(forward.get("evidence_note"), lang))}</p>
+          <p class="falsification"><strong>{escape(_journey_copy("falsification", lang))}:</strong> {escape(_localized(forward.get("falsification_condition"), lang))}</p>
+          {_conviction_hierarchy_panel(hierarchy, lang)}
         </article>
-        <article class="focus-card">
-          <span class="kicker">{escape(_home_label("why_holdings_matter", lang))}</span>
-          {_portfolio_impact_summary(portfolio, market, lang)}
-        </article>
-      </div>
-    </section>
 
-    <section class="home-zone home-research-candidates" id="home-research-candidates" data-home-zone="candidates">
-      <div class="home-zone-label"><span>04</span><strong>{escape(_home_label("research_candidates", lang))}</strong></div>
-      <article class="focus-card">
+        <article class="decision-card" id="home-portfolio-relevance" data-primary-block="portfolio_relevance">
+          <div class="journey-step"><span>03</span>{escape(_journey_copy("portfolio_question", lang))}</div>
+          <span class="kicker">{escape(_journey_copy("portfolio_relevance", lang))}</span>
+          <h2>{escape(_localized(portfolio.get("overall_impact"), lang))}</h2>
+          <p>{escape(_localized(portfolio.get("explanation"), lang))}</p>
+          <dl class="decision-dl">
+            <dt>{escape(_journey_copy("shared_risk", lang))}</dt><dd>{escape(_localized(portfolio.get("primary_shared_risk"), lang))}</dd>
+            <dt>{escape(_journey_copy("most_sensitive", lang))}</dt><dd>{escape(_holding_label(_mapping(portfolio.get("most_sensitive_holding")), lang))}</dd>
+            <dt>{escape(_journey_copy("strongest_buffer", lang))}</dt><dd>{escape(_localized(portfolio.get("strongest_buffer"), lang))}</dd>
+          </dl>
+        </article>
+
+        <article class="decision-card" id="home-decision-agenda" data-primary-block="decision_agenda">
+          <div class="journey-step"><span>04</span>{escape(_journey_copy("focus_question", lang))}</div>
+          <span class="kicker">{escape(_journey_copy("decision_agenda", lang))}</span>
+          <div class="posture-pill">{escape(_localized(agenda.get("posture_label"), lang))}</div>
+          <p>{escape(_localized(agenda.get("explanation"), lang))}</p>
+          <ol class="focus-list" id="home-focus-items">
+            {_localized_list_items(agenda.get("focus_items"), lang)}
+          </ol>
+        </article>
+      </section>
+
+      <section class="decision-support-grid" aria-label="{escape(_journey_copy("supporting", lang))}">
+        <article class="decision-support-card" id="home-decision-triggers" data-supporting-block="decision_triggers">
+          <div class="journey-step"><span>05</span>{escape(_journey_copy("view_change_question", lang))}</div>
+          <h2>{escape(_journey_copy("what_changes_view", lang))}</h2>
+          <div class="trigger-columns">
+            <div>
+              <h3>{escape(_journey_copy("positive_confirmation", lang))}</h3>
+              <ul class="plain-list positive-confirmation">{_localized_list_items(triggers.get("positive_confirmation"), lang)}</ul>
+            </div>
+            <div>
+              <h3>{escape(_journey_copy("negative_confirmation", lang))}</h3>
+              <ul class="plain-list negative-confirmation">{_localized_list_items(triggers.get("negative_confirmation"), lang)}</ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="decision-support-card" id="home-top-research-priorities" data-supporting-block="research_priorities">
+          <div class="journey-step"><span>06</span>{escape(_journey_copy("research_question", lang))}</div>
+          <div class="home-section-header">
+            <div>
+              <h2>{escape(_journey_copy("top_three_research", lang))}</h2>
+              <p class="home-safety-note">{escape(_candidate_truth_text(research, lang))}</p>
+            </div>
+            <a class="secondary-button" href="/candidates">{escape(_home_label("view_full_candidate_pool", lang))}</a>
+          </div>
+          <div class="research-priority-list">
+            {_research_priority_cards(research.get("items"), lang)}
+          </div>
+        </article>
+      </section>
+
+      <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
         <div class="home-section-header">
           <div>
-            <span class="kicker">{escape(_home_label("candidate_pool", lang))}</span>
-            <h2>{escape(_candidate_title(candidates, lang))}</h2>
+            <span class="kicker">{escape(_home_label("forecast_accountability", lang))}</span>
+            <h2>{escape(_journey_copy("forecast_compact", lang))}</h2>
           </div>
-          <a class="secondary-button" href="/candidates">{escape(_home_label("view_full_candidate_pool", lang))}</a>
-        </div>
-        <p class="home-safety-note">{escape(_home_label("candidate_safety", lang))}</p>
-        {_candidate_filters(candidates, lang)}
-        {_candidate_table(candidates.get("top_items") or candidates.get("items") or [], lang, limit=5)}
-        {_candidate_changes(candidates.get("changes"), lang)}
-      </article>
-    </section>
-
-    <section class="home-zone home-forecast-accountability" id="home-forecast-accountability" data-home-zone="forecast">
-      <div class="home-zone-label"><span>05</span><strong>{escape(_home_label("forecast_accountability", lang))}</strong></div>
-      <div class="two-grid">
-        <article class="visual-card">
-          <span class="kicker">{escape(_home_label("forecast_ledger", lang))}</span>
-          <h2>{escape(_home_label("forecast_accountability_title", lang))}</h2>
-          {_forecast_status_strip(forecast, lang)}
-          {_forecast_timeline(forecast.get("latest") if isinstance(forecast.get("latest"), list) else [])}
-          <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
-        </article>
-        <article class="focus-card">
-          <span class="kicker">{escape(_home_label("does_atlas_deserve_trust", lang))}</span>
-          {_forecast_accountability_copy(forecast, lang)}
           <div class="button-row">
-            <a class="secondary-button" href="/predictions">{escape(t("nav.predictions", lang))}</a>
-            <a class="secondary-button" href="/learning">{escape(t("nav.learning", lang))}</a>
+            <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
+            <a class="secondary-button" href="/learning">{escape(_journey_copy("view_learning", lang))}</a>
           </div>
-        </article>
-      </div>
-    </section>
+        </div>
+        {_forecast_compact_strip(forecast, lang)}
+        <div class="forecast-learning-row">
+          <p><strong>{escape(_journey_copy("recent_miss", lang))}:</strong> {escape(_localized(forecast.get("recent_miss"), lang))}</p>
+          <p><strong>{escape(_journey_copy("changed_afterward", lang))}:</strong> {escape(_localized(forecast.get("what_changed_afterward"), lang))}</p>
+        </div>
+      </section>
 
-    <section class="home-zone home-expert-analysis" id="home-expert-analysis" data-home-zone="expert">
-      <div class="home-zone-label"><span>06</span><strong>{escape(_home_label("expert_analysis", lang))}</strong></div>
-      {_expert_analysis_panel(expert, lang)}
-    </section>
-    {_home_intelligence_script()}
+      <section class="home-expert-secondary" id="home-expert-analysis" data-expert-block="secondary_collapsed">
+        <div class="home-section-header">
+          <div>
+            <span class="kicker">{escape(_journey_copy("secondary_detail", lang))}</span>
+            <h2>{escape(_home_label("expert_analysis", lang))}</h2>
+          </div>
+        </div>
+        {_expert_analysis_panel(expert, lang)}
+      </section>
+    </main>
+    {_home_intelligence_script(include_candidate_filters=False)}
     """
 
 
 def _home_label(key: str, lang: str) -> str:
     return HOME_INTELLIGENCE_TEXT.get(lang, HOME_INTELLIGENCE_TEXT["en"]).get(key, key.replace("_", " ").title())
+
+
+def _journey_copy(key: str, lang: str) -> str:
+    text = {
+        "en": {
+            "first_viewport": "Atlas user decision journey",
+            "what_changed": "What changed?",
+            "strongest_judgment": "What is Atlas's strongest judgment?",
+            "portfolio_question": "What does this mean for me?",
+            "focus_question": "What should I focus on now?",
+            "view_change_question": "What would change the view?",
+            "research_question": "What deserves deeper research?",
+            "today_core_judgment": "Today's Core Judgment",
+            "strongest_forward_view": "Strongest Forward View",
+            "portfolio_relevance": "Portfolio Relevance",
+            "decision_agenda": "Decision Agenda",
+            "evidence_quality": "Evidence quality",
+            "updated": "Updated",
+            "falsification": "Falsification condition",
+            "conviction_hierarchy": "Conviction Hierarchy",
+            "level_1": "Level 1 · Core Judgment",
+            "level_2": "Level 2 · Key Predictions",
+            "level_3": "Level 3 · Watch Hypotheses",
+            "level_4": "Level 4 · Research Candidates",
+            "supporting": "Supporting decision evidence",
+            "what_changes_view": "What Would Change the View",
+            "positive_confirmation": "Positive confirmation",
+            "negative_confirmation": "Negative confirmation",
+            "top_three_research": "Today's Top 3 Research Priorities",
+            "forecast_compact": "Forecast Accountability, compact",
+            "view_learning": "View learning record",
+            "recent_miss": "Recent miss",
+            "changed_afterward": "What Atlas changed afterward",
+            "secondary_detail": "Secondary detail",
+            "shared_risk": "Primary shared risk",
+            "most_sensitive": "Most sensitive holding",
+            "strongest_buffer": "Strongest buffer",
+            "why_now": "Why now",
+            "evidence_change": "Evidence change",
+            "relationship": "Portfolio relationship",
+            "truth_label": "Priority truth",
+            "open": "OPEN",
+            "verified": "VERIFIED",
+            "invalidated": "INVALIDATED",
+            "inconclusive": "INCONCLUSIVE",
+        },
+        "zh": {
+            "first_viewport": "Atlas 用户决策旅程",
+            "what_changed": "发生了什么？",
+            "strongest_judgment": "Atlas 最强判断是什么？",
+            "portfolio_question": "这和我有什么关系？",
+            "focus_question": "我现在该关注什么？",
+            "view_change_question": "什么会改变判断？",
+            "research_question": "哪里值得深入研究？",
+            "today_core_judgment": "今日核心判断",
+            "strongest_forward_view": "最强前瞻判断",
+            "portfolio_relevance": "组合相关性",
+            "decision_agenda": "决策议程",
+            "evidence_quality": "证据质量",
+            "updated": "更新时间",
+            "falsification": "失效条件",
+            "conviction_hierarchy": "判断强度层级",
+            "level_1": "Level 1 · 核心判断",
+            "level_2": "Level 2 · 关键预测",
+            "level_3": "Level 3 · 观察假设",
+            "level_4": "Level 4 · 研究候选",
+            "supporting": "决策支撑证据",
+            "what_changes_view": "什么会改变判断",
+            "positive_confirmation": "支持增强",
+            "negative_confirmation": "风险恶化",
+            "top_three_research": "今天最值得深入研究 Top 3",
+            "forecast_compact": "预测责任检查（精简）",
+            "view_learning": "查看学习记录",
+            "recent_miss": "近期失误",
+            "changed_afterward": "Atlas 后续改变",
+            "secondary_detail": "二级细节",
+            "shared_risk": "主要共享风险",
+            "most_sensitive": "最敏感持仓",
+            "strongest_buffer": "主要缓冲",
+            "why_now": "为什么现在看",
+            "evidence_change": "证据变化",
+            "relationship": "组合关系",
+            "truth_label": "优先级真实性",
+            "open": "进行中",
+            "verified": "已验证",
+            "invalidated": "已失效",
+            "inconclusive": "无法判断",
+        },
+    }
+    return text.get(lang, text["en"]).get(key, key.replace("_", " ").title())
+
+
+def _localized(value: Any, lang: str) -> str:
+    if isinstance(value, Mapping):
+        text = value.get(lang) or value.get("en") or value.get("zh")
+        return str(text or "")
+    return str(value or "")
+
+
+def _localized_list_items(items: Any, lang: str) -> str:
+    values = items if isinstance(items, list) else []
+    return "".join(f"<li>{escape(_localized(item, lang))}</li>" for item in values)
+
+
+def _horizon_label(value: Any, lang: str) -> str:
+    text = str(value or "").strip()
+    if lang == "zh":
+        return {
+            "next_runtime_cycle": "下一运行周期",
+            "insufficient evidence": "证据不足",
+        }.get(text, text.replace("_", " "))
+    return text.replace("_", " ") if text else "next runtime cycle"
+
+
+def _holding_label(holding: Mapping[str, Any], lang: str) -> str:
+    asset = str(holding.get("asset") or ("未知" if lang == "zh" else "Unknown"))
+    pct = _pct_text(holding.get("exposure_pct"))
+    return f"{asset} · {pct}"
+
+
+def _conviction_hierarchy_panel(hierarchy: Mapping[str, Any], lang: str) -> str:
+    level_1 = hierarchy.get("level_1") if isinstance(hierarchy.get("level_1"), list) else []
+    level_2 = hierarchy.get("level_2") if isinstance(hierarchy.get("level_2"), list) else []
+    level_3 = hierarchy.get("level_3") if isinstance(hierarchy.get("level_3"), list) else []
+    level_4 = hierarchy.get("level_4") if isinstance(hierarchy.get("level_4"), Mapping) else {}
+    level1_html = "".join(
+        f"<li>{escape(_localized(item.get('item'), lang))}</li>"
+        for item in level_1
+        if isinstance(item, Mapping)
+    )
+    level2_html = "".join(
+        f"<li>{escape(_localized(item.get('statement'), lang))}<small>{escape(_horizon_label(item.get('horizon'), lang))} · {escape(_pct_text(float(item.get('confidence') or 0) * 100))}</small></li>"
+        for item in level_2[:3]
+        if isinstance(item, Mapping)
+    )
+    return f"""
+    <details class="conviction-hierarchy" id="home-conviction-hierarchy">
+      <summary>{escape(_journey_copy("conviction_hierarchy", lang))}</summary>
+      <div class="conviction-grid">
+        <div><strong>{escape(_journey_copy("level_1", lang))}</strong><ul class="plain-list">{level1_html}</ul></div>
+        <div><strong>{escape(_journey_copy("level_2", lang))}</strong><ul class="plain-list">{level2_html}</ul></div>
+        <div><strong>{escape(_journey_copy("level_3", lang))}</strong><ul class="plain-list">{_localized_list_items(level_3[:3], lang)}</ul></div>
+        <div><strong>{escape(_journey_copy("level_4", lang))}</strong><p>{escape(str(level_4.get("count_on_home") or 0))} / 3 · <a href="{escape(str(level_4.get("full_pool_link") or "/candidates"))}">{escape(_home_label("view_full_candidate_pool", lang))}</a></p></div>
+      </div>
+    </details>
+    """
+
+
+def _research_priority_cards(items: Any, lang: str) -> str:
+    priorities = [item for item in (items if isinstance(items, list) else []) if isinstance(item, Mapping)][:3]
+    if not priorities:
+        return f'<div class="empty-state">{escape(_home_label("no_candidates", lang))}</div>'
+    rows = []
+    for index, item in enumerate(priorities, start=1):
+        rows.append(
+            f"""
+            <article class="research-priority-card" data-research-priority="{index}">
+              <span class="priority-index">{index}</span>
+              <div>
+                <h3>{escape(str(item.get("asset") or ""))}</h3>
+                <p class="home-safety-note">{escape(str(item.get("theme") or ""))}</p>
+              </div>
+              <dl class="decision-dl">
+                <dt>{escape(_journey_copy("why_now", lang))}</dt><dd>{escape(_localized(item.get("why_now"), lang))}</dd>
+                <dt>{escape(_journey_copy("evidence_change", lang))}</dt><dd>{escape(_localized(item.get("evidence_change"), lang))}</dd>
+                <dt>{escape(_journey_copy("relationship", lang))}</dt><dd>{escape(_relationship_phrase(str(item.get("portfolio_relationship") or ""), lang))}</dd>
+                <dt>{escape(_journey_copy("truth_label", lang))}</dt><dd>{escape(_truth_label(str(item.get("truth_label") or ""), lang))}</dd>
+              </dl>
+            </article>
+            """
+        )
+    return "".join(rows)
+
+
+def _relationship_phrase(value: str, lang: str) -> str:
+    if lang == "zh":
+        mapping = {
+            "Direct current portfolio exposure": "当前组合直接暴露",
+            "Direct": "直接相关",
+            "None": "无直接暴露",
+        }
+        return mapping.get(value, value)
+    return value
+
+
+def _truth_label(value: str, lang: str) -> str:
+    if lang == "zh":
+        mapping = {
+            "Portfolio-Relevant": "组合相关",
+            "Portfolio-Relevant / Not in Static Research Pool": "组合相关 / 不在静态候选池",
+            "Static Research Pool": "静态研究池",
+        }
+        return mapping.get(value, value)
+    return value
+
+
+def _candidate_truth_text(research: Mapping[str, Any], lang: str) -> str:
+    truth = research.get("candidate_priority_truth") if isinstance(research.get("candidate_priority_truth"), Mapping) else {}
+    if lang == "zh":
+        return "来源是真实仓库候选池 + 当前组合相关性展示排序；不是交易建议，也不伪装成动态运行态排名。"
+    return "Source truth: static repository pool plus presentation-only current portfolio relevance; not a trading recommendation or dynamic runtime ranking."
+
+
+def _forecast_compact_strip(forecast: Mapping[str, Any], lang: str) -> str:
+    counts = forecast.get("counts") if isinstance(forecast.get("counts"), Mapping) else {}
+    keys = ("open", "verified", "invalidated", "inconclusive")
+    return '<div class="forecast-compact-strip">' + "".join(
+        f'<span><strong>{escape(str(counts.get(key, 0)))}</strong>{escape(_journey_copy(key, lang))}</span>'
+        for key in keys
+    ) + "</div>"
+
+
+def _mapping(value: Any) -> Mapping[str, Any]:
+    return value if isinstance(value, Mapping) else {}
 
 
 def _home_outlook_title(outlook: Mapping[str, Any], lang: str) -> str:
@@ -730,6 +944,45 @@ def _expert_raw(expert: Mapping[str, Any], lang: str) -> str:
 def _home_intelligence_style() -> str:
     return """
     <style>
+    .decision-home-shell { display:grid; gap:18px; }
+    .decision-first-viewport { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.92fr); gap:14px; align-items:stretch; }
+    .decision-card, .decision-support-card, .forecast-compact-card, .home-expert-secondary { border:1px solid rgba(219,234,254,.12); border-radius:22px; background:linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.032)); box-shadow:0 22px 60px rgba(0,0,0,.22); backdrop-filter:blur(20px); padding:18px; }
+    .decision-card-primary { grid-row:span 2; padding:22px; }
+    .decision-card h1 { margin:12px 0 10px; font-size:clamp(2rem, 2.6vw, 3.15rem); line-height:1.02; letter-spacing:0; max-width:16ch; }
+    .decision-card h2, .decision-support-card h2, .forecast-compact-card h2, .home-expert-secondary h2 { margin:8px 0 10px; font-size:1.28rem; line-height:1.15; letter-spacing:0; }
+    .decision-card p, .decision-support-card p, .forecast-compact-card p { color:var(--subtle); line-height:1.52; }
+    .decision-change { color:var(--text) !important; font-size:1.03rem; }
+    .journey-step { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.84rem; font-weight:760; }
+    .journey-step span { width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.13); color:var(--accent); font-size:.76rem; }
+    .decision-meta-row, .forward-metrics { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .forward-metrics span { flex:1 1 120px; min-height:76px; display:grid; align-content:center; gap:5px; padding:11px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.035); }
+    .forward-metrics small { color:var(--muted); }
+    .forward-metrics strong { font-size:1rem; }
+    .falsification { border-left:3px solid rgba(244,165,179,.75); padding-left:10px; }
+    .posture-pill { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:9px 18px; border-radius:999px; background:var(--accent); color:var(--bg); font-size:1.15rem; font-weight:820; margin:8px 0 8px; }
+    .focus-list { display:grid; gap:8px; margin:12px 0 0; padding-left:20px; }
+    .focus-list li { color:var(--text); line-height:1.42; }
+    .decision-dl { display:grid; grid-template-columns:minmax(100px,.42fr) minmax(0,1fr); gap:9px; margin:14px 0 0; }
+    .decision-dl dt { color:var(--muted); }
+    .decision-dl dd { margin:0; color:var(--text); overflow-wrap:anywhere; }
+    .conviction-hierarchy { margin-top:14px; border:1px solid var(--line); border-radius:16px; background:rgba(0,0,0,.12); }
+    .conviction-hierarchy summary { cursor:pointer; padding:12px 14px; color:var(--accent); font-weight:780; }
+    .conviction-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:0 14px 14px; }
+    .conviction-grid > div { padding:11px; border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,.035); }
+    .conviction-grid small { display:block; color:var(--muted); margin-top:4px; }
+    .decision-support-grid { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:14px; }
+    .trigger-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .trigger-columns h3 { margin:8px 0; font-size:1rem; }
+    .positive-confirmation li::marker { color:#9ee6b8; }
+    .negative-confirmation li::marker { color:#f4a5b3; }
+    .research-priority-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px; }
+    .research-priority-card { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; padding:13px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.035); }
+    .research-priority-card .decision-dl { grid-column:1 / -1; grid-template-columns:96px minmax(0,1fr); font-size:.9rem; }
+    .priority-index { width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.16); color:var(--accent); font-weight:820; }
+    .forecast-compact-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:14px 0; }
+    .forecast-compact-strip span { min-height:68px; display:grid; place-items:center; gap:4px; padding:9px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.035); color:var(--muted); text-align:center; font-size:.75rem; }
+    .forecast-compact-strip strong { color:var(--text); font-size:1.35rem; }
+    .forecast-learning-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
     .home-view-switch { position: sticky; top: 82px; z-index: 7; display:flex; flex-wrap:wrap; gap:8px; padding:10px; border:1px solid var(--line); border-radius:var(--r16); background:rgba(11,15,20,.72); backdrop-filter:blur(18px); }
     .home-view-switch button { min-height:36px; display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); color:var(--subtle); cursor:pointer; }
     .home-view-switch button.active { background:var(--accent); color:var(--bg); }
@@ -781,13 +1034,34 @@ def _home_intelligence_style() -> str:
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .home-outlook-layout, .expert-grid { grid-template-columns:1fr; } }
-    @media (max-width:900px) { .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:1180px) { .decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid { grid-template-columns:1fr; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid { grid-template-columns:1fr; } .decision-card h1 { max-width:none; } }
     </style>
     """
 
 
-def _home_intelligence_script() -> str:
+def _home_intelligence_script(*, include_candidate_filters: bool = True) -> str:
+    if not include_candidate_filters:
+        return """
+    <script>
+    (function () {
+      const expert = document.getElementById("expert-analysis-panel");
+      if (expert) expert.open = false;
+    })();
+    </script>
+    """
+    candidate_script = """
+      document.querySelectorAll("[data-candidate-filter]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const filter = button.getAttribute("data-candidate-filter") || "all";
+          document.querySelectorAll("[data-candidate-filter]").forEach(function (item) { item.classList.toggle("active", item === button); });
+          document.querySelectorAll("[data-candidate-row]").forEach(function (row) {
+            const filters = (row.getAttribute("data-candidate-filters") || "all").split(" ");
+            row.style.display = filters.indexOf(filter) >= 0 ? "" : "none";
+          });
+        });
+      });
+    """ if include_candidate_filters else ""
     return """
     <script>
     (function () {
@@ -809,22 +1083,12 @@ def _home_intelligence_script() -> str:
       activateMode(savedMode, false);
       const expert = document.getElementById("expert-analysis-panel");
       if (expert) {
-        expert.open = localStorage.getItem("atlasExpertOpen") === "yes";
-        expert.addEventListener("toggle", function () { localStorage.setItem("atlasExpertOpen", expert.open ? "yes" : "no"); });
+        expert.open = false;
       }
-      document.querySelectorAll("[data-candidate-filter]").forEach(function (button) {
-        button.addEventListener("click", function () {
-          const filter = button.getAttribute("data-candidate-filter") || "all";
-          document.querySelectorAll("[data-candidate-filter]").forEach(function (item) { item.classList.toggle("active", item === button); });
-          document.querySelectorAll("[data-candidate-row]").forEach(function (row) {
-            const filters = (row.getAttribute("data-candidate-filters") || "all").split(" ");
-            row.style.display = filters.indexOf(filter) >= 0 ? "" : "none";
-          });
-        });
-      });
+      %s
     })();
     </script>
-    """
+    """ % candidate_script
 
 
 def candidate_pool_content(state: Mapping[str, Any]) -> str:
