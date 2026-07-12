@@ -41,11 +41,11 @@ def render_global_sidebar(active: str, state: Mapping[str, Any], lang: str) -> s
         <span><strong>Atlas OS</strong><span>{escape(t("app.subtitle", lang))}</span></span>
       </a>
       <div class="sidebar-section">{escape(t("nav.primary", lang))}</div>
-      <nav class="sidebar-nav">
+      <nav class="sidebar-nav sidebar-nav-primary">
         {_nav_links(PRIMARY_NAV, active, lang)}
       </nav>
       <div class="sidebar-section">{escape(t("nav.secondary", lang))}</div>
-      <nav class="sidebar-nav">
+      <nav class="sidebar-nav sidebar-nav-secondary">
         {_nav_links(SECONDARY_NAV, active, lang)}
       </nav>
       <div class="sidebar-status-card">

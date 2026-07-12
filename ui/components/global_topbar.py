@@ -32,6 +32,8 @@ def render_global_topbar(active: str, state: Mapping[str, Any], lang: str) -> st
     market = state.get("market_intelligence") if isinstance(state.get("market_intelligence"), Mapping) else {}
     provider_registry = state.get("llm_provider_registry") if isinstance(state.get("llm_provider_registry"), Mapping) else {}
     provider = str(provider_registry.get("active_provider") or t("empty.context", lang))
+    llm_summary = state.get("llm_trace_summary") if isinstance(state.get("llm_trace_summary"), Mapping) else {}
+    inference = _inference_label(str(llm_summary.get("latest_inference_status") or "not_run"), lang)
     freshness = _freshness_label(market, lang)
     last_tick = _compact_value(state.get("tick_counter"), t("empty.signal", lang))
     return f"""
@@ -42,7 +44,7 @@ def render_global_topbar(active: str, state: Mapping[str, Any], lang: str) -> st
       </div>
       <div class="topbar-controls">
         {render_runtime_status_indicator(state, lang)}
-        <span class="mini-pill">{escape(t("model.active_provider", lang))}: <strong data-provider-name>{escape(provider)}</strong></span>
+        <span class="mini-pill">{escape(t("model.active_provider", lang))}: <strong data-provider-name>{escape(provider)}</strong> · <em data-inference-status>{escape(inference)}</em></span>
         <span class="mini-pill">{escape(t("status.freshness", lang))}: <strong data-freshness>{escape(freshness)}</strong></span>
         <span class="mini-pill">{escape(t("state.tick", lang))}: <strong data-tick-counter>{escape(last_tick)}</strong></span>
         <a class="mini-pill topbar-link" href="/settings">{escape(t("nav.settings", lang))}</a>
@@ -91,3 +93,12 @@ def _compact_value(value: Any, fallback: str) -> str:
     if value is None or value == "":
         return fallback
     return str(value)
+
+
+def _inference_label(status: str, lang: str) -> str:
+    labels = {
+        "succeeded": {"zh": "最近推理成功", "en": "latest inference succeeded"},
+        "failed": {"zh": "最近推理失败", "en": "latest inference failed"},
+        "not_run": {"zh": "尚未推理", "en": "inference not run"},
+    }
+    return labels.get(status, labels["not_run"])[lang]

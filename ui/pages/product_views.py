@@ -196,111 +196,111 @@ def home_content(state: Mapping[str, Any]) -> str:
     counter = _mapping(practical.get("counter_argument"))
     review = _mapping(practical.get("review_plan"))
     forecast = _mapping(practical.get("forecast_accountability"))
+    portfolio_command = _mapping(practical.get("portfolio_command"))
+    material_changes = _mapping(practical.get("material_changes"))
+    reasoning_chain = _mapping(practical.get("reasoning_chain"))
+    scenarios = _mapping(practical.get("scenario_outlook"))
+    playbook = _mapping(practical.get("action_playbook"))
+    candidate_board = _mapping(practical.get("candidate_board"))
     return f"""
     {_home_intelligence_style()}
-    <main class="decision-home-shell practical-brief-shell" data-home-layout="practical-decision-brief">
-      <section class="practical-first-viewport" id="home-first-viewport" aria-label="{escape(_brief_copy("first_viewport", lang))}">
+    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief">
+      <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="{escape(_brief_copy("portfolio_command", lang))}">
+        <article class="decision-card portfolio-command-card" id="home-portfolio-command" data-practical-section="portfolio_command">
+          <div class="journey-step"><span>01</span>{escape(_brief_copy("portfolio_command", lang))}</div>
+          <div class="home-section-header">
+            <div>
+              <span class="kicker">{escape(_brief_copy("portfolio_state_first", lang))}</span>
+              <h1>{escape(_brief_copy("portfolio_overview", lang))}</h1>
+            </div>
+            <div class="portfolio-header-status">
+              <div class="posture-pill">{escape(_localized(portfolio_command.get("posture"), lang))}</div>
+              <small>{escape(_brief_copy("action_review_today", lang))}</small>
+              <strong>{escape(_runtime_label(portfolio_command.get("action_status") or "NO", lang))}</strong>
+            </div>
+          </div>
+          {_portfolio_command_view(portfolio_command, lang)}
+        </article>
+
+        <article class="decision-card holdings-primary-card" id="home-current-holdings" data-practical-section="current_holdings">
+          <div class="journey-step"><span>02</span>{escape(_brief_copy("current_holdings", lang))}</div>
+          <div class="home-section-header">
+            <div>
+              <h2>{escape(_brief_copy("actual_configured_holdings", lang))}</h2>
+              <p class="home-safety-note">{escape(_brief_copy("privacy_percent_only", lang))}</p>
+            </div>
+          </div>
+          {_holding_action_board(holdings, lang)}
+        </article>
+
         <article class="decision-card action-today-card" id="home-action-today" data-practical-section="action_today">
-          <div class="journey-step"><span>01</span>{escape(_brief_copy("action_today", lang))}</div>
+          <div class="journey-step"><span>03</span>{escape(_brief_copy("action_today", lang))}</div>
           <span class="kicker">{escape(_brief_copy("first_answer", lang))}</span>
-          <h1 class="action-answer">{escape(str(action.get("status") or "NO"))}</h1>
+          <h1 class="action-answer">{escape(_runtime_label(action.get("status") or "NO", lang))}</h1>
           <div class="posture-pill">{escape(_localized(action.get("posture_label"), lang))}</div>
           <p class="decision-change">{escape(_localized(action.get("reason"), lang))}</p>
           <p class="home-safety-note">{escape(_localized(action.get("helper"), lang))}</p>
         </article>
 
         <article class="decision-card core-judgment-card" id="home-core-judgment" data-practical-section="core_judgment">
-          <div class="journey-step"><span>02</span>{escape(_brief_copy("core_judgment", lang))}</div>
+          <div class="journey-step"><span>04</span>{escape(_brief_copy("core_judgment", lang))}</div>
           <span class="kicker">{escape(_brief_copy("one_total_judgment", lang))}</span>
           <h2>{escape(_localized(core.get("headline"), lang))}</h2>
           <p>{escape(_localized(core.get("supporting_sentence"), lang))}</p>
         </article>
-
-        <article class="decision-card predictions-card" id="home-strongest-predictions" data-practical-section="strongest_predictions">
-          <div class="journey-step"><span>03</span>{escape(_brief_copy("strongest_predictions", lang))}</div>
-          <span class="kicker">{escape(_brief_copy("max_three", lang))}</span>
-          {_prediction_cards(predictions, lang)}
-        </article>
       </section>
 
-      <section class="practical-secondary-grid" aria-label="{escape(_brief_copy("secondary", lang))}">
-        <article class="decision-support-card" id="home-ai-bottleneck-index" data-practical-section="ai_bottleneck_index">
-          <div class="journey-step"><span>04</span>{escape(_brief_copy("bottleneck_index", lang))}</div>
-          <h2>{escape(_brief_copy("bottleneck_index", lang))}</h2>
-          <p class="home-safety-note">{escape(_localized(bottlenecks.get("honest_label"), lang))}</p>
-          {_bottleneck_index_table(bottlenecks, lang)}
-        </article>
-
-        <article class="decision-support-card" id="home-capital-relay" data-practical-section="capital_relay">
-          <div class="journey-step"><span>05</span>{escape(_brief_copy("capital_relay", lang))}</div>
-          <h2>{escape(_localized(relay.get("current_stage"), lang))}</h2>
-          <p class="home-safety-note">{escape(_localized(relay.get("distinction"), lang))}</p>
-          {_capital_relay_view(relay, lang)}
-        </article>
-
-        <article class="decision-support-card" id="home-current-holdings" data-practical-section="current_holdings">
-          <div class="journey-step"><span>06</span>{escape(_brief_copy("current_holdings", lang))}</div>
-          <h2>{escape(_brief_copy("actual_configured_holdings", lang))}</h2>
-          <p class="home-safety-note">{escape(_brief_copy("privacy_percent_only", lang))}</p>
-          {_holding_action_board(holdings, lang)}
-        </article>
-
-        <article class="decision-support-card" id="home-capital-allocation" data-practical-section="capital_allocation">
-          <div class="journey-step"><span>07</span>{escape(_brief_copy("capital_allocation", lang))}</div>
-          <h2>{escape(_brief_copy("capital_allocation", lang))}</h2>
-          {_capital_allocation_panel(allocation, lang)}
-        </article>
-      </section>
-
-      <section class="practical-operational-grid" aria-label="{escape(_brief_copy("operational", lang))}">
-        <article class="decision-support-card" id="home-waiting-triggers" data-practical-section="waiting_triggers">
-          <div class="journey-step"><span>08</span>{escape(_brief_copy("waiting_triggers", lang))}</div>
+      <section class="investor-evidence-grid" aria-label="{escape(_brief_copy("what_changed", lang))}">
+        <article class="decision-support-card material-change-card" id="home-material-changes" data-practical-section="material_changes">
+          <div class="journey-step"><span>05</span>{escape(_brief_copy("what_changed", lang))}</div>
           <div class="home-section-header">
             <div>
-              <h2>{escape(_brief_copy("waiting_triggers", lang))}</h2>
-              <p class="trigger-progress">{escape(_brief_copy("trigger_progress", lang))}: {escape(str(_mapping(triggers.get("progress")).get("label") or ""))}</p>
+              <h2>{escape(_brief_copy("material_evidence", lang))}</h2>
+              <p class="home-safety-note">{escape(_brief_copy("news_not_action", lang))}</p>
             </div>
+            <a class="secondary-button" href="/markets">{escape(_brief_copy("view_market_evidence", lang))}</a>
           </div>
-          {_waiting_trigger_table(triggers, lang)}
+          {_material_changes_view(material_changes, lang)}
         </article>
 
-        <article class="decision-support-card" id="home-research-tasks" data-practical-section="research_tasks">
-          <div class="journey-step"><span>09</span>{escape(_brief_copy("research_tasks", lang))}</div>
+        <article class="decision-support-card reasoning-chain-card" id="home-reasoning-chain" data-practical-section="reasoning_chain">
+          <div class="journey-step"><span>06</span>{escape(_brief_copy("reasoning_chain", lang))}</div>
+          <h2>{escape(_brief_copy("from_signal_to_decision", lang))}</h2>
+          {_reasoning_chain_view(reasoning_chain, lang)}
+        </article>
+      </section>
+
+      <section class="scenario-section" aria-label="{escape(_brief_copy("scenario_outlook", lang))}">
+        <article class="decision-support-card scenario-outlook-card" id="home-scenario-outlook" data-practical-section="scenario_outlook">
+          <div class="journey-step"><span>07</span>{escape(_brief_copy("scenario_outlook", lang))}</div>
           <div class="home-section-header">
-            <div>
-              <h2>{escape(_brief_copy("research_tasks", lang))}</h2>
-              <p class="home-safety-note">{escape(_localized(truth.get("label"), lang))}</p>
-            </div>
+            <div><h2>{escape(_brief_copy("four_scenarios", lang))}</h2><p class="home-safety-note">{escape(_brief_copy("no_uncalibrated_probability", lang))}</p></div>
+          </div>
+          {_scenario_outlook_view(scenarios, lang)}
+        </article>
+
+        <article class="decision-support-card action-playbook-card" id="home-action-playbook" data-practical-section="action_playbook">
+          <div class="journey-step"><span>08</span>{escape(_brief_copy("conditional_actions", lang))}</div>
+          <h2>{escape(_brief_copy("scenario_action_playbook", lang))}</h2>
+          {_action_playbook_view(playbook, lang)}
+        </article>
+      </section>
+
+      <section class="candidate-score-section">
+        <article class="decision-support-card" id="home-candidate-board" data-practical-section="candidate_board">
+          <div class="journey-step"><span>09</span>{escape(_brief_copy("candidate_board", lang))}</div>
+          <div class="home-section-header">
+            <div><h2>{escape(_brief_copy("candidate_score_basis", lang))}</h2><p class="home-safety-note">{escape(_brief_copy("candidate_not_authority", lang))}</p></div>
             <a class="secondary-button" href="/candidates">{escape(_home_label("view_full_candidate_pool", lang))}</a>
           </div>
-          {_research_task_cards(research, lang)}
-        </article>
-
-        <article class="decision-support-card" id="home-intelligence-alerts" data-practical-section="intelligence_alerts">
-          <div class="journey-step"><span>10</span>{escape(_brief_copy("intelligence_alerts", lang))}</div>
-          <h2>{escape(_brief_copy("intelligence_alerts", lang))}</h2>
-          {_intelligence_alert_cards(alerts, lang)}
-        </article>
-      </section>
-
-      <section class="practical-control-grid" aria-label="{escape(_brief_copy("control", lang))}">
-        <article class="decision-support-card" id="home-counter-argument" data-practical-section="counter_argument">
-          <div class="journey-step"><span>11</span>{escape(_brief_copy("counter_argument", lang))}</div>
-          <h2>{escape(_brief_copy("counter_argument", lang))}</h2>
-          {_counter_argument_view(counter, lang)}
-        </article>
-
-        <article class="decision-support-card" id="home-review-plan" data-practical-section="review_plan">
-          <div class="journey-step"><span>12</span>{escape(_brief_copy("review_plan", lang))}</div>
-          <h2>{escape(_brief_copy("review_plan", lang))}</h2>
-          {_review_plan_view(review, lang)}
+          {_candidate_score_board_view(candidate_board, lang)}
         </article>
       </section>
 
       <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
         <div class="home-section-header">
           <div>
-            <span class="kicker">{escape(_home_label("forecast_accountability", lang))}</span>
+            <span class="journey-step"><span>10</span>{escape(_home_label("forecast_accountability", lang))}</span>
             <h2>{escape(_brief_copy("forecast_compact", lang))}</h2>
           </div>
           <div class="button-row">
@@ -315,6 +315,20 @@ def home_content(state: Mapping[str, Any]) -> str:
         </div>
       </section>
 
+      <details class="supporting-context" id="home-supporting-context">
+        <summary>{escape(_brief_copy("supporting_context", lang))}</summary>
+        <div class="supporting-context-grid">
+          <article class="decision-support-card" id="home-ai-bottleneck-index"><h2>{escape(_brief_copy("bottleneck_index", lang))}</h2><p class="home-safety-note">{escape(_localized(bottlenecks.get("honest_label"), lang))}</p>{_bottleneck_index_table(bottlenecks, lang)}</article>
+          <article class="decision-support-card" id="home-capital-relay"><h2>{escape(_localized(relay.get("current_stage"), lang))}</h2><p class="home-safety-note">{escape(_localized(relay.get("distinction"), lang))}</p>{_capital_relay_view(relay, lang)}</article>
+          <article class="decision-support-card" id="home-capital-allocation"><h2>{escape(_brief_copy("capital_allocation", lang))}</h2>{_capital_allocation_panel(allocation, lang)}</article>
+          <article class="decision-support-card" id="home-waiting-triggers"><h2>{escape(_brief_copy("waiting_triggers", lang))}</h2>{_waiting_trigger_table(triggers, lang)}</article>
+          <article class="decision-support-card" id="home-research-tasks"><h2>{escape(_brief_copy("research_tasks", lang))}</h2><p class="home-safety-note">{escape(_localized(truth.get("label"), lang))}</p>{_research_task_cards(research, lang)}</article>
+          <article class="decision-support-card" id="home-intelligence-alerts"><h2>{escape(_brief_copy("intelligence_alerts", lang))}</h2>{_intelligence_alert_cards(alerts, lang)}</article>
+          <article class="decision-support-card" id="home-counter-argument"><h2>{escape(_brief_copy("counter_argument", lang))}</h2>{_counter_argument_view(counter, lang)}</article>
+          <article class="decision-support-card" id="home-review-plan"><h2>{escape(_brief_copy("review_plan", lang))}</h2>{_review_plan_view(review, lang)}</article>
+        </div>
+      </details>
+
       <section class="home-expert-secondary" id="home-expert-analysis" data-expert-block="secondary_collapsed">
         <div class="home-section-header">
           <div>
@@ -326,6 +340,153 @@ def home_content(state: Mapping[str, Any]) -> str:
       </section>
     </main>
     {_home_intelligence_script(include_candidate_filters=False)}
+    """
+
+
+def _portfolio_command_view(command: Mapping[str, Any], lang: str) -> str:
+    metrics = [
+        (_brief_copy("configured_exposure", lang), _pct_text(command.get("exposure_pct"))),
+        (_brief_copy("unassigned_capital", lang), _pct_text(command.get("unassigned_pct"))),
+        (_brief_copy("portfolio_consistency", lang), _runtime_label(command.get("portfolio_consistency") or "Unknown", lang)),
+        (_brief_copy("usable_market_evidence", lang), f"{_mapping(command.get('market_evidence')).get('usable', 0)}/{_mapping(command.get('market_evidence')).get('total', 0)}"),
+    ]
+    metric_html = "".join(f'<div><span>{escape(label)}</span><strong>{escape(value)}</strong></div>' for label, value in metrics)
+    largest = _mapping(command.get("largest_theme"))
+    market_rows = "".join(
+        f'<li><span>{escape(str(name))}</span><strong>{escape(_pct_text(value))}</strong></li>'
+        for name, value in _mapping(command.get("market_concentration")).items()
+    )
+    return f"""
+    <div class="portfolio-command-metrics">{metric_html}</div>
+    <div class="portfolio-command-analysis">
+      <div><span>{escape(_brief_copy("largest_theme", lang))}</span><strong>{escape(str(largest.get("theme") or "Unknown"))} · {escape(_pct_text(largest.get("exposure_pct")))}</strong></div>
+      <div><span>{escape(_brief_copy("liquidity_sensitivity", lang))}</span><strong>{escape(_runtime_label(command.get("liquidity_sensitivity") or "Unknown", lang))}</strong></div>
+      <div><span>{escape(_brief_copy("regime_sensitivity", lang))}</span><strong>{escape(_runtime_label(command.get("regime_sensitivity") or "Unknown", lang))}</strong></div>
+      <ul>{market_rows}</ul>
+    </div>
+    <div class="portfolio-risk-callout"><span>{escape(_brief_copy("primary_portfolio_risk", lang))}</span><p>{escape(_localized(command.get("primary_risk"), lang))}</p></div>
+    <p class="decision-change">{escape(_localized(command.get("action_reason"), lang))}</p>
+    """
+
+
+def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
+    items = [_mapping(item) for item in _list(changes.get("items")) if isinstance(item, Mapping)]
+    if not items:
+        return f'<div class="empty-state">{escape(_localized(changes.get("empty_message"), lang))}</div>'
+    cards = []
+    for item in items[:8]:
+        url = str(item.get("source_url") or "")
+        source = escape(str(item.get("source") or "Data Missing"))
+        source_html = f'<a href="{escape(url)}" target="_blank" rel="noopener noreferrer">{source}</a>' if url.startswith("http") else source
+        affected = ", ".join(str(value) for value in _list(item.get("affected_assets")) + _list(item.get("affected_themes")) if value)
+        cards.append(
+            f"""
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>{escape(_runtime_label(item.get("classification") or "UNVERIFIED", lang))}</span><em>{escape(_runtime_label(item.get("freshness") or "Unknown", lang))}</em></div>
+              <h3>{escape(str(item.get("headline") or "Data Missing"))}</h3>
+              <dl>
+                <div><dt>{escape(_brief_copy("source", lang))}</dt><dd>{source_html}</dd></div>
+                <div><dt>{escape(_brief_copy("published_at", lang))}</dt><dd>{escape(str(item.get("timestamp") or "Unknown"))}</dd></div>
+                <div><dt>{escape(_brief_copy("affected_scope", lang))}</dt><dd>{escape(affected or str(item.get("world_model_node") or "Unknown"))}</dd></div>
+                <div><dt>{escape(_brief_copy("thesis_change", lang))}</dt><dd>{escape(_runtime_label(item.get("thesis_changed") or "UNASSESSED", lang))}</dd></div>
+              </dl>
+            </article>
+            """
+        )
+    return '<div class="material-evidence-list">' + "".join(cards) + "</div>"
+
+
+def _reasoning_chain_view(reasoning: Mapping[str, Any], lang: str) -> str:
+    labels = {
+        "en": {"signal": "Signal", "evidence": "Evidence", "structure": "Structural interpretation", "causal": "Causal drivers", "thesis": "Thesis impact", "portfolio": "Portfolio impact", "counter": "Counter-evidence", "missing": "Missing evidence", "conclusion": "Conclusion"},
+        "zh": {"signal": "信号", "evidence": "证据", "structure": "结构解释", "causal": "因果驱动", "thesis": "论点影响", "portfolio": "组合影响", "counter": "反方证据", "missing": "缺失证据", "conclusion": "结论"},
+    }[lang]
+    rows = []
+    for index, step in enumerate(_list(reasoning.get("steps")), start=1):
+        if not isinstance(step, Mapping):
+            continue
+        key = str(step.get("key") or "")
+        rows.append(f'<li><span>{index:02d}</span><div><small>{escape(labels.get(key, key))} · {escape(_runtime_label(step.get("truth") or "UNVERIFIED", lang))}</small><p>{escape(_runtime_label(step.get("value") or "Data Missing", lang))}</p></div></li>')
+    return '<ol class="investor-reasoning-chain">' + "".join(rows) + "</ol>"
+
+
+def _scenario_outlook_view(scenarios: Mapping[str, Any], lang: str) -> str:
+    names = {
+        "en": {"base": "Base", "upside": "Upside continuation", "downside": "Downside acceleration", "range": "Range / volatility"},
+        "zh": {"base": "基准情景", "upside": "上行延续", "downside": "下行加速", "range": "震荡 / 波动"},
+    }[lang]
+    cards = []
+    for item in _list(scenarios.get("items")):
+        if not isinstance(item, Mapping):
+            continue
+        key = str(item.get("key") or "base")
+        drivers = "".join(f"<li>{escape(_localized(value, lang))}</li>" for value in _list(item.get("drivers")))
+        invalidation = "".join(f"<li>{escape(_localized(value, lang))}</li>" for value in _list(item.get("invalidation")))
+        cards.append(f"""
+        <article class="scenario-card scenario-{escape(key)}">
+          <span>{escape(names.get(key, key))}</span>
+          <h3>{escape(_localized(item.get("statement"), lang))}</h3>
+          <div><small>{escape(_brief_copy("supporting_drivers", lang))}</small><ul>{drivers}</ul></div>
+          <div><small>{escape(_brief_copy("invalidation", lang))}</small><ul>{invalidation}</ul></div>
+          <dl><dt>{escape(_brief_copy("horizon", lang))}</dt><dd>{escape(_localized(item.get("horizon") or "Unknown", lang))}</dd><dt>{escape(_brief_copy("evidence_confidence", lang))}</dt><dd>{escape(_localized(item.get("evidence_confidence") or "Limited", lang))}</dd></dl>
+        </article>
+        """)
+    return '<div class="scenario-grid">' + "".join(cards) + "</div>"
+
+
+def _action_playbook_view(playbook: Mapping[str, Any], lang: str) -> str:
+    scenario_names = {"base": "基准" if lang == "zh" else "Base", "upside": "上行" if lang == "zh" else "Upside", "downside": "下行" if lang == "zh" else "Downside", "range": "震荡" if lang == "zh" else "Range"}
+    rows = []
+    for item in _list(playbook.get("items")):
+        if not isinstance(item, Mapping):
+            continue
+        scenario = str(item.get("scenario") or "base")
+        rows.append(f"""
+        <tr>
+          <td><strong>{escape(scenario_names.get(scenario, scenario))}</strong></td>
+          <td>{escape(_localized(item.get("trigger") or "Unknown", lang))}</td>
+          <td><span class="trigger-status">{escape(_runtime_label(item.get("posture") or "Observe", lang))}</span></td>
+          <td>{escape(str(item.get("affected_holdings") or "Configured portfolio"))}</td>
+          <td>{escape(_localized(item.get("cde_authority") or "Not created by runtime", lang))}</td>
+          <td>{escape(_localized(item.get("limiting_factor") or "Unknown", lang))}</td>
+        </tr>
+        """)
+    return f"""
+    <div class="playbook-warning">{escape(_brief_copy("authority_warning", lang))}</div>
+    <div class="table-scroll"><table class="practical-table action-playbook-table"><thead><tr><th>{escape(_brief_copy("scenario", lang))}</th><th>{escape(_brief_copy("trigger", lang))}</th><th>{escape(_brief_copy("posture", lang))}</th><th>{escape(_brief_copy("affected_holdings", lang))}</th><th>CDE</th><th>{escape(_brief_copy("limiting_factor", lang))}</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+    """
+
+
+def _candidate_score_board_view(board: Mapping[str, Any], lang: str) -> str:
+    validated = [item for item in _list(board.get("validated_items")) if isinstance(item, Mapping)]
+    pending = [item for item in _list(board.get("pending_items")) if isinstance(item, Mapping)]
+    rows = []
+    for item in validated:
+        if not isinstance(item, Mapping):
+            continue
+        rows.append(f"""
+        <tr>
+          <td><strong>{escape(str(item.get("candidate") or "Unknown"))}</strong><small>{escape(str(item.get("code") or ""))}</small></td>
+          <td>{escape(_runtime_label(item.get("identity_status") or "Needs Validation", lang))}</td>
+          <td>{escape(str(item.get("tier") or "N/A"))}</td>
+          <td>{escape(_runtime_label(item.get("portfolio_overlap") or "Unknown", lang))}</td>
+          <td>{escape(_runtime_label(item.get("evidence_quality") or "Unverified", lang))}</td>
+          <td>{escape(_localized(item.get("market_confirmation"), lang))}</td>
+        </tr>
+        """)
+    pending_rows = "".join(
+        f'<li><strong>{escape(str(item.get("candidate") or "Unknown"))}</strong><span>{escape(_runtime_label(item.get("identity_status") or "Needs Validation", lang))} · {escape(str(item.get("tier") or "N/A"))}</span></li>'
+        for item in pending
+    )
+    dimensions = " · ".join(str(item) for item in _list(board.get("score_dimensions")))
+    return f"""
+    <p class="candidate-coverage-note">{escape(_localized(board.get("coverage_note"), lang))}</p>
+    <div class="table-scroll"><table class="practical-table candidate-score-table"><thead><tr><th>{escape(_brief_copy("candidate", lang))}</th><th>{escape(_brief_copy("identity", lang))}</th><th>{escape(_brief_copy("tier", lang))}</th><th>{escape(_brief_copy("portfolio_overlap", lang))}</th><th>{escape(_brief_copy("evidence", lang))}</th><th>{escape(_brief_copy("market_confirmation", lang))}</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+    <details class="pending-candidates" {'open' if not validated else ''}>
+      <summary>{escape((_brief_copy("pending_candidates", lang)).format(count=len(pending)))}</summary>
+      <ul>{pending_rows}</ul>
+    </details>
+    <details class="score-methodology"><summary>{escape(_brief_copy("score_methodology", lang))}</summary><p>{escape(dimensions)}</p><p>{escape(_localized((board.get("items") or [{}])[0].get("score_explanation") if board.get("items") else "", lang))}</p></details>
     """
 
 
@@ -376,6 +537,9 @@ def _journey_copy(key: str, lang: str) -> str:
             "verified": "VERIFIED",
             "invalidated": "INVALIDATED",
             "inconclusive": "INCONCLUSIVE",
+            "current_open": "Current open",
+            "legacy_open": "Legacy unclassified",
+            "matured": "Matured",
         },
         "zh": {
             "first_viewport": "Atlas 用户决策旅程",
@@ -418,6 +582,9 @@ def _journey_copy(key: str, lang: str) -> str:
             "verified": "已验证",
             "invalidated": "已失效",
             "inconclusive": "无法判断",
+            "current_open": "当前未完成",
+            "legacy_open": "历史未分类",
+            "matured": "已到期",
         },
     }
     return text.get(lang, text["en"]).get(key, key.replace("_", " ").title())
@@ -426,6 +593,51 @@ def _journey_copy(key: str, lang: str) -> str:
 def _brief_copy(key: str, lang: str) -> str:
     text = {
         "en": {
+            "portfolio_command": "Portfolio Command View",
+            "portfolio_state_first": "Your capital and positions come first",
+            "portfolio_overview": "Current Portfolio State",
+            "action_review_today": "Decision review today",
+            "configured_exposure": "Configured exposure",
+            "unassigned_capital": "Unassigned capital",
+            "portfolio_consistency": "Portfolio consistency",
+            "usable_market_evidence": "Usable market evidence",
+            "largest_theme": "Largest theme exposure",
+            "liquidity_sensitivity": "Liquidity sensitivity",
+            "regime_sensitivity": "Regime sensitivity",
+            "primary_portfolio_risk": "Primary portfolio risk",
+            "what_changed": "What materially changed",
+            "material_evidence": "Latest Evidence That Matters",
+            "news_not_action": "News is Signal, not Action. Only thesis-relevant changes appear here.",
+            "view_market_evidence": "View market evidence",
+            "published_at": "Published / observed",
+            "affected_scope": "Affected scope",
+            "thesis_change": "Thesis change",
+            "reasoning_chain": "Atlas Reasoning Chain",
+            "from_signal_to_decision": "From Signal to Conditional Conclusion",
+            "scenario_outlook": "Scenario Outlook",
+            "four_scenarios": "Four Accountable Scenarios",
+            "no_uncalibrated_probability": "No precise probability is shown before forecast calibration is supported.",
+            "supporting_drivers": "Supporting drivers",
+            "evidence_confidence": "Evidence confidence",
+            "conditional_actions": "Conditional Actions",
+            "scenario_action_playbook": "Portfolio Action Playbook",
+            "authority_warning": "CDE authority is permission, not action. Runtime has not created deployment authority.",
+            "scenario": "Scenario",
+            "trigger": "Trigger",
+            "affected_holdings": "Affected holdings",
+            "limiting_factor": "Limiting factor",
+            "candidate_board": "Strategic Candidate Pool",
+            "candidate_score_basis": "Candidate Priority and Score Basis",
+            "candidate_not_authority": "Strategic Candidate Score ranks research priority; it is not CDE authority.",
+            "candidate": "Candidate",
+            "identity": "Identity",
+            "tier": "Tier",
+            "market_confirmation": "Market confirmation",
+            "portfolio_overlap": "Portfolio overlap",
+            "strategic_score": "Strategic score",
+            "pending_candidates": "{count} candidates need identity or market-data validation",
+            "score_methodology": "Scoring methodology and current limitation",
+            "supporting_context": "Open supporting framework context",
             "first_viewport": "Practical Decision Brief",
             "first_answer": "First answer",
             "action_today": "Action Today?",
@@ -482,6 +694,51 @@ def _brief_copy(key: str, lang: str) -> str:
             "empty_prediction": "No high-conviction prediction has enough evidence yet.",
         },
         "zh": {
+            "portfolio_command": "组合指挥视图",
+            "portfolio_state_first": "先看你的资本与持仓",
+            "portfolio_overview": "当前组合状态",
+            "action_review_today": "今日决策复核",
+            "configured_exposure": "已配置暴露",
+            "unassigned_capital": "未部署资金",
+            "portfolio_consistency": "组合一致性",
+            "usable_market_evidence": "可用市场证据",
+            "largest_theme": "最大主题暴露",
+            "liquidity_sensitivity": "流动性敏感度",
+            "regime_sensitivity": "市场状态敏感度",
+            "primary_portfolio_risk": "当前组合首要风险",
+            "what_changed": "发生了什么重要变化",
+            "material_evidence": "真正影响判断的最新证据",
+            "news_not_action": "新闻只是信号，不是行动；这里只展示与论点相关的变化。",
+            "view_market_evidence": "查看市场证据",
+            "published_at": "发布 / 观测时间",
+            "affected_scope": "影响范围",
+            "thesis_change": "论点变化",
+            "reasoning_chain": "Atlas 推理链",
+            "from_signal_to_decision": "从信号到条件结论",
+            "scenario_outlook": "情景推演",
+            "four_scenarios": "四种可问责情景",
+            "no_uncalibrated_probability": "预测校准未成立前，不展示看似精确的概率。",
+            "supporting_drivers": "支持驱动",
+            "evidence_confidence": "证据置信度",
+            "conditional_actions": "条件行动",
+            "scenario_action_playbook": "组合条件行动方案",
+            "authority_warning": "CDE 权限只是许可，不是行动；当前运行时尚未创建资本部署权限。",
+            "scenario": "情景",
+            "trigger": "触发条件",
+            "affected_holdings": "影响持仓",
+            "limiting_factor": "限制因素",
+            "candidate_board": "重点候选池",
+            "candidate_score_basis": "候选优先级与评分依据",
+            "candidate_not_authority": "Strategic Candidate Score 只代表研究优先级，不代表 CDE 资本权限。",
+            "candidate": "候选",
+            "identity": "身份校验",
+            "tier": "等级",
+            "market_confirmation": "市场确认",
+            "portfolio_overlap": "组合重合度",
+            "strategic_score": "战略候选评分",
+            "pending_candidates": "{count} 个候选仍需身份或行情核验",
+            "score_methodology": "评分方法与当前限制",
+            "supporting_context": "展开底层框架与复核上下文",
             "first_viewport": "实际决策简报",
             "first_answer": "第一答案",
             "action_today": "今日是否行动",
@@ -626,13 +883,13 @@ def _holding_action_board(holdings: Mapping[str, Any], lang: str) -> str:
             <article class="holding-brief-card">
               <div>
                 <h3>{escape(str(item.get("asset") or ""))}</h3>
-                <p class="home-safety-note">{escape(str(item.get("theme") or ""))} · {escape(_pct_text(item.get("exposure_pct")))}</p>
+                <p class="home-safety-note">{escape(_theme_label(item.get("theme"), lang))} · {escape(_pct_text(item.get("exposure_pct")))}</p>
               </div>
               <dl class="decision-dl">
                 <dt>{escape(_brief_copy("posture", lang))}</dt><dd>{escape(_localized(item.get("posture_label"), lang))}</dd>
                 <dt>{escape(_brief_copy("why", lang))}</dt><dd>{escape(_localized(item.get("why"), lang))}</dd>
                 <dt>{escape(_brief_copy("key_trigger", lang))}</dt><dd>{escape(_localized(item.get("key_trigger"), lang))}</dd>
-                <dt>{escape(_brief_copy("review_priority", lang))}</dt><dd>{escape(str(item.get("review_priority") or ""))}</dd>
+                <dt>{escape(_brief_copy("review_priority", lang))}</dt><dd>{escape(_runtime_label(item.get("review_priority") or "", lang))}</dd>
               </dl>
             </article>
             """
@@ -691,14 +948,16 @@ def _research_task_cards(research: Mapping[str, Any], lang: str) -> str:
         cards.append(
             f"""
             <article class="research-priority-card" data-research-task="{index}">
-              <span class="priority-index">{index}</span>
-              <div>
-                <h3>{escape(_localized(item.get("question"), lang))}</h3>
-                <p class="home-safety-note">{escape(str(item.get("related_asset_theme") or ""))}</p>
+              <div class="research-item-main">
+                <span class="priority-index">{index}</span>
+                <div>
+                  <h3>{escape(_localized(item.get("question"), lang))}</h3>
+                  <p class="home-safety-note">{escape(str(item.get("related_asset_theme") or ""))}</p>
+                </div>
               </div>
-              <dl class="decision-dl">
-                <dt>{escape(_brief_copy("why_now", lang))}</dt><dd>{escape(_localized(item.get("why_now"), lang))}</dd>
-                <dt>{escape(_brief_copy("evidence_gap", lang))}</dt><dd>{escape(_localized(item.get("evidence_gap"), lang))}</dd>
+              <dl class="research-item-detail">
+                <div><dt>{escape(_brief_copy("why_now", lang))}</dt><dd>{escape(_localized(item.get("why_now"), lang))}</dd></div>
+                <div><dt>{escape(_brief_copy("evidence_gap", lang))}</dt><dd>{escape(_localized(item.get("evidence_gap"), lang))}</dd></div>
               </dl>
             </article>
             """
@@ -783,6 +1042,68 @@ def _localized(value: Any, lang: str) -> str:
         text = value.get(lang) or value.get("en") or value.get("zh")
         return str(text or "")
     return str(value or "")
+
+
+def _runtime_label(value: Any, lang: str) -> str:
+    text = _localized(value, lang).strip()
+    if lang != "zh":
+        return text.replace("_", " ")
+    labels = {
+        "CONDITIONAL": "需要条件确认",
+        "YES": "需要复核",
+        "NO": "暂不需要",
+        "PASS": "通过",
+        "UNKNOWN": "尚不明确",
+        "UNASSESSED": "尚未评估",
+        "UNVERIFIED": "尚未验证",
+        "VERIFIED": "已验证",
+        "VALIDATED": "已核验",
+        "NEEDS VALIDATION": "待核验",
+        "DATA MISSING": "证据待补充",
+        "LIVE": "实时",
+        "DELAYED": "延迟",
+        "CACHED": "缓存",
+        "FAILED": "失败",
+        "NOT CONFIGURED": "未配置",
+        "LIVE OBSERVATION": "实时观测",
+        "PROVIDER OBSERVATION": "数据源观测",
+        "VERIFIED PROVIDER RESPONSE": "数据源响应已验证",
+        "STRUCTURAL INTERPRETATION": "结构解释",
+        "FRAMEWORK SNAPSHOT": "框架快照",
+        "INFERENCE": "推断",
+        "SIGNAL": "信号",
+        "PORTFOLIO MAPPING": "组合映射",
+        "CONDITIONAL CONCLUSION": "条件结论",
+        "OBSERVE": "观察",
+        "HOLD": "持有",
+        "REDUCE": "降低",
+        "BUILD": "建立",
+        "ACCUMULATE": "积累",
+        "LIMITED": "有限",
+        "MEDIUM": "中",
+        "HIGH": "高",
+        "LOW": "低",
+        "CURRENT HOLDING": "当前持仓",
+        "RESEARCH POOL": "研究池",
+        "NONE": "无直接重合",
+    }
+    normalized = text.replace("_", " ").upper()
+    return labels.get(normalized, text.replace("_", " "))
+
+
+def _theme_label(value: Any, lang: str) -> str:
+    text = str(value or "")
+    if lang != "zh":
+        return text
+    replacements = {
+        "Semiconductor Materials": "半导体材料",
+        "AI Hardware Manufacturing": "AI 硬件制造",
+        "AI Infrastructure": "AI 基础设施",
+        "Materials": "材料",
+    }
+    for source, target in replacements.items():
+        text = text.replace(source, target)
+    return text
 
 
 def _localized_list_items(items: Any, lang: str) -> str:
@@ -891,11 +1212,12 @@ def _candidate_truth_text(research: Mapping[str, Any], lang: str) -> str:
 
 def _forecast_compact_strip(forecast: Mapping[str, Any], lang: str) -> str:
     counts = forecast.get("counts") if isinstance(forecast.get("counts"), Mapping) else {}
-    keys = ("open", "verified", "invalidated", "inconclusive")
-    return '<div class="forecast-compact-strip">' + "".join(
+    keys = ("current_open", "legacy_open", "matured", "verified", "invalidated", "inconclusive")
+    strip = '<div class="forecast-compact-strip">' + "".join(
         f'<span><strong>{escape(str(counts.get(key, 0)))}</strong>{escape(_journey_copy(key, lang))}</span>'
         for key in keys
     ) + "</div>"
+    return strip + f'<p class="home-safety-note">{escape(_localized(forecast.get("legacy_policy"), lang))}</p>'
 
 
 def _mapping(value: Any) -> Mapping[str, Any]:
@@ -1325,36 +1647,127 @@ def _expert_raw(expert: Mapping[str, Any], lang: str) -> str:
 def _home_intelligence_style() -> str:
     return """
     <style>
+    .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:22px clamp(18px, 3vw, 44px) 0; }
+    .atlas-shell[data-active-page="home"] .workspace.no-inspector > .page-content { width:100%; }
     .decision-home-shell { display:grid; gap:18px; }
+    .investor-home { gap:24px; }
+    .portfolio-first-viewport { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
+    .portfolio-command-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
+    .holdings-primary-card { grid-column:span 8; grid-row:2; min-height:100%; }
+    .portfolio-first-viewport .action-today-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; grid-template-columns:1fr; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; align-content:start; }
+    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:2; min-height:100%; }
+    .portfolio-command-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
+    .portfolio-header-status { display:grid; justify-items:end; gap:5px; text-align:right; }
+    .portfolio-header-status small { color:var(--muted); font-size:.72rem; }
+    .portfolio-header-status strong { max-width:12ch; font-size:.92rem; line-height:1.25; }
+    .portfolio-command-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0 14px; }
+    .portfolio-command-metrics > div { min-height:84px; display:grid; align-content:center; gap:6px; padding:12px; border-top:1px solid rgba(219,234,254,.14); border-bottom:1px solid rgba(219,234,254,.08); }
+    .portfolio-command-metrics span,.portfolio-command-analysis span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
+    .portfolio-command-metrics strong { font-size:1.34rem; }
+    .portfolio-command-analysis { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .portfolio-command-analysis > div,.portfolio-command-analysis ul { min-height:74px; margin:0; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
+    .portfolio-command-analysis > div { display:grid; gap:6px; align-content:center; }
+    .portfolio-command-analysis ul { list-style:none; display:grid; gap:4px; }
+    .portfolio-command-analysis li { display:flex; justify-content:space-between; gap:10px; color:var(--subtle); font-size:.78rem; }
+    .portfolio-risk-callout { margin-top:12px; padding:13px 14px; border-left:3px solid rgba(244,165,179,.72); background:rgba(244,165,179,.045); }
+    .portfolio-risk-callout p { margin:6px 0 0; color:var(--text); }
+    .investor-evidence-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(380px,.92fr); gap:16px; align-items:start; }
+    .material-evidence-list { display:grid; gap:0; margin-top:12px; }
+    .material-evidence-item { padding:15px 2px; border-top:1px solid rgba(219,234,254,.1); }
+    .material-evidence-item:first-child { border-top:0; }
+    .material-evidence-item h3 { margin:8px 0 10px; font-size:1rem; line-height:1.4; }
+    .material-evidence-item dl { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 14px; margin:0; }
+    .material-evidence-item dl div { min-width:0; }
+    .material-evidence-item dt { color:var(--muted); font-size:.74rem; }
+    .material-evidence-item dd { margin:3px 0 0; color:var(--subtle); overflow-wrap:anywhere; }
+    .material-evidence-item a { color:var(--accent); }
+    .evidence-truth-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .evidence-truth-row span { color:var(--accent); font-size:.72rem; font-weight:780; }
+    .evidence-truth-row em { color:var(--muted); font-size:.72rem; font-style:normal; }
+    .investor-reasoning-chain { list-style:none; display:grid; gap:0; margin:14px 0 0; padding:0; }
+    .investor-reasoning-chain li { display:grid; grid-template-columns:34px minmax(0,1fr); gap:11px; position:relative; padding:0 0 14px; }
+    .investor-reasoning-chain li:not(:last-child)::after { content:""; position:absolute; left:16px; top:31px; bottom:2px; width:1px; background:rgba(219,234,254,.16); }
+    .investor-reasoning-chain li > span { width:32px; height:32px; display:grid; place-items:center; border-radius:50%; background:rgba(219,234,254,.11); color:var(--accent); font-size:.7rem; }
+    .investor-reasoning-chain small { color:var(--muted); }
+    .investor-reasoning-chain p { margin:4px 0 0; color:var(--text); line-height:1.42; }
+    .scenario-section { display:grid; gap:16px; }
+    .scenario-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:14px; border-top:1px solid rgba(219,234,254,.12); border-bottom:1px solid rgba(219,234,254,.12); }
+    .scenario-card { min-width:0; padding:16px; border-left:1px solid rgba(219,234,254,.1); }
+    .scenario-card:first-child { border-left:0; }
+    .scenario-card > span { color:var(--accent); font-size:.75rem; font-weight:780; }
+    .scenario-card h3 { margin:9px 0 14px; font-size:1rem; line-height:1.4; }
+    .scenario-card small { color:var(--muted); }
+    .scenario-card ul { margin:7px 0 13px; padding-left:17px; color:var(--subtle); font-size:.85rem; }
+    .scenario-card dl { display:grid; grid-template-columns:auto 1fr; gap:5px 8px; margin:0; font-size:.78rem; }
+    .scenario-card dt { color:var(--muted); }
+    .scenario-card dd { margin:0; }
+    .playbook-warning { margin:12px 0; padding:11px 13px; background:rgba(246,215,122,.06); border-left:3px solid rgba(246,215,122,.68); color:var(--subtle); }
+    .table-scroll { width:100%; max-width:100%; min-width:0; overflow-x:auto; }
+    .action-playbook-table { min-width:980px; }
+    .candidate-score-table { min-width:1000px; }
+    .candidate-score-table td:first-child { min-width:180px; }
+    .candidate-score-table td small { display:block; margin-top:5px; color:var(--muted); max-width:38ch; }
+    .score-dimensions { color:var(--muted); font-size:.78rem; line-height:1.6; }
+    .candidate-coverage-note { margin:12px 0; color:var(--subtle); line-height:1.5; }
+    .pending-candidates,.score-methodology { margin-top:12px; padding-top:10px; border-top:1px solid rgba(219,234,254,.1); }
+    .pending-candidates summary,.score-methodology summary { cursor:pointer; color:var(--subtle); font-weight:720; }
+    .pending-candidates ul { list-style:none; display:grid; gap:8px; margin:10px 0 0; padding:0; }
+    .pending-candidates li { display:flex; justify-content:space-between; gap:14px; padding:9px 0; border-bottom:1px solid rgba(219,234,254,.07); }
+    .pending-candidates li span,.score-methodology p { color:var(--muted); font-size:.82rem; }
+    .supporting-context { border-top:1px solid rgba(219,234,254,.12); padding-top:10px; }
+    .supporting-context > summary { cursor:pointer; color:var(--subtle); padding:12px 2px; font-weight:740; }
+    .supporting-context-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:8px; }
     .decision-first-viewport { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.92fr); gap:14px; align-items:stretch; }
-    .practical-brief-shell { gap:20px; }
-    .practical-first-viewport { display:grid; grid-template-columns:minmax(320px,.72fr) minmax(0,1fr); grid-template-areas:"action core" "action predictions"; gap:14px; align-items:stretch; }
-    .action-today-card { grid-area:action; min-height:430px; display:flex; flex-direction:column; justify-content:center; }
+    .practical-brief-shell { min-width:0; gap:24px; width:100%; max-width:1440px; margin:0 auto; }
+    .practical-brief-shell > section,
+    .practical-brief-shell > details,
+    .portfolio-first-viewport > *,
+    .investor-evidence-grid > *,
+    .scenario-section > *,
+    .candidate-score-section > *,
+    .supporting-context-grid > * { min-width:0; max-width:100%; }
+    .practical-first-viewport { display:grid; grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr); grid-template-areas:"action action" "core predictions"; gap:16px; align-items:stretch; }
+    .action-today-card { container-type:inline-size; grid-area:action; min-height:230px; display:grid; grid-template-columns:minmax(420px,.52fr) minmax(0,1fr); grid-template-areas:"step reason" "kicker reason" "answer reason" "posture helper"; column-gap:28px; row-gap:8px; align-items:center; overflow:hidden; }
+    .action-today-card .journey-step { grid-area:step; align-self:start; }
+    .action-today-card .kicker { grid-area:kicker; align-self:end; }
+    .action-today-card .action-answer { grid-area:answer; }
+    .action-today-card .posture-pill { grid-area:posture; justify-self:start; }
+    .action-today-card .decision-change { grid-area:reason; align-self:end; max-width:62ch; }
+    .action-today-card .home-safety-note { grid-area:helper; align-self:start; max-width:68ch; }
     .core-judgment-card { grid-area:core; }
     .predictions-card { grid-area:predictions; }
-    .action-answer { margin:12px 0 6px; font-size:clamp(4rem, 8vw, 7.5rem) !important; line-height:.86 !important; letter-spacing:0; }
-    .practical-secondary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
-    .practical-secondary-grid #home-current-holdings, .practical-secondary-grid #home-capital-allocation { grid-column:span 1; }
-    .practical-operational-grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:14px; }
+    .action-answer { margin:0; max-width:100%; font-size:clamp(2rem, 7cqw, 3.4rem) !important; line-height:1 !important; letter-spacing:0; white-space:normal; overflow-wrap:anywhere; }
+    .practical-secondary-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
+    .practical-secondary-grid #home-ai-bottleneck-index { grid-column:span 8; }
+    .practical-secondary-grid #home-capital-relay { grid-column:span 4; }
+    .practical-secondary-grid #home-current-holdings { grid-column:1 / -1; }
+    .practical-secondary-grid #home-capital-allocation { grid-column:1 / -1; }
+    .practical-operational-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
+    .practical-operational-grid #home-waiting-triggers { grid-column:1 / -1; }
+    .practical-operational-grid #home-research-tasks { grid-column:1 / -1; }
     .practical-operational-grid #home-intelligence-alerts { grid-column:1 / -1; }
-    .practical-control-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .practical-control-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; align-items:start; }
     .prediction-stack { display:grid; gap:10px; }
-    .prediction-item, .holding-brief-card { padding:13px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.035); }
+    .prediction-item, .holding-brief-card { padding:15px; border:1px solid rgba(219,234,254,.11); border-radius:18px; background:rgba(255,255,255,.035); }
     .prediction-topline { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; align-items:start; }
     .prediction-topline h3 { margin:0 0 5px; font-size:1.02rem; line-height:1.25; }
     .compact-metrics { margin-top:10px; }
     .compact-metrics span { min-height:58px; }
-    .practical-table { width:100%; border-collapse:separate; border-spacing:0 7px; margin-top:12px; }
+    .practical-table { width:100%; border-collapse:separate; border-spacing:0 8px; margin-top:12px; table-layout:auto; }
     .practical-table th { color:var(--muted); font-size:.75rem; text-transform:uppercase; text-align:left; padding:0 9px 3px; }
-    .practical-table td { padding:10px 9px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(255,255,255,.032); vertical-align:top; }
+    .practical-table td { padding:11px 10px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(255,255,255,.032); vertical-align:top; line-height:1.35; }
     .practical-table td:first-child { border-left:1px solid var(--line); border-radius:12px 0 0 12px; }
     .practical-table td:last-child { border-right:1px solid var(--line); border-radius:0 12px 12px 0; }
     .capital-relay-path { display:flex; align-items:stretch; gap:8px; overflow-x:auto; padding:10px 0 2px; }
-    .relay-node { min-width:128px; display:grid; gap:5px; align-content:center; padding:12px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.04); }
+    .relay-node { min-width:128px; flex:1 0 128px; display:grid; gap:5px; align-content:center; padding:12px; border:1px solid rgba(219,234,254,.11); border-radius:16px; background:rgba(255,255,255,.04); }
     .relay-node span { color:var(--accent); font-weight:760; }
     .relay-node small { color:var(--muted); }
     .relay-arrow { align-self:center; color:var(--muted); font-size:1.25rem; }
-    .holding-brief-grid { display:grid; gap:10px; }
+    .holding-brief-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .holding-brief-card { padding:13px; border-radius:14px; }
+    .holding-brief-card .decision-dl { grid-template-columns:1fr; gap:3px; font-size:.82rem; }
+    .holding-brief-card .decision-dl dt { margin-top:6px; }
+    .waiting-trigger-table { display:block; max-width:100%; overflow-x:auto; }
     .allocation-dl .plain-list { margin:0; }
     .funding-flow { margin-top:14px; display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:10px; align-items:center; padding:13px; border:1px solid rgba(219,234,254,.18); border-radius:16px; background:rgba(219,234,254,.055); }
     .funding-flow span { min-height:54px; display:grid; place-items:center; text-align:center; border-radius:12px; background:rgba(0,0,0,.12); padding:9px; }
@@ -1367,15 +1780,16 @@ def _home_intelligence_style() -> str:
     .status-not-met { color:#f4a5b3; }
     .status-unknown { color:var(--muted); }
     .intelligence-alert-list { list-style:none; display:grid; gap:9px; padding:0; margin:12px 0 0; }
-    .intelligence-alert-list li { display:grid; grid-template-columns:minmax(150px,.28fr) minmax(0,1fr); gap:12px; padding:12px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.035); }
+    .intelligence-alert-list li { display:grid; grid-template-columns:minmax(150px,.24fr) minmax(0,1fr); gap:14px; padding:13px; border:1px solid rgba(219,234,254,.11); border-radius:15px; background:rgba(255,255,255,.035); }
     .intelligence-alert-list span { color:var(--subtle); }
     .practical-empty { min-height:120px; display:grid; place-items:center; text-align:center; }
-    .decision-card, .decision-support-card, .forecast-compact-card, .home-expert-secondary { border:1px solid rgba(219,234,254,.12); border-radius:22px; background:linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.032)); box-shadow:0 22px 60px rgba(0,0,0,.22); backdrop-filter:blur(20px); padding:18px; }
+    .decision-card, .decision-support-card, .forecast-compact-card, .home-expert-secondary { border:1px solid rgba(219,234,254,.105); border-radius:24px; background:linear-gradient(145deg, rgba(255,255,255,.066), rgba(255,255,255,.028)); box-shadow:0 18px 52px rgba(0,0,0,.18); backdrop-filter:blur(20px); padding:20px; }
+    .action-today-card { background:radial-gradient(circle at 14% 44%, rgba(219,234,254,.18), transparent 38%), radial-gradient(circle at 88% 12%, rgba(158,230,184,.08), transparent 34%), linear-gradient(145deg, rgba(255,255,255,.088), rgba(255,255,255,.032)); }
     .decision-card-primary { grid-row:span 2; padding:22px; }
     .decision-card h1 { margin:12px 0 10px; font-size:clamp(2rem, 2.6vw, 3.15rem); line-height:1.02; letter-spacing:0; max-width:16ch; }
-    .decision-card h2, .decision-support-card h2, .forecast-compact-card h2, .home-expert-secondary h2 { margin:8px 0 10px; font-size:1.28rem; line-height:1.15; letter-spacing:0; }
+    .decision-card h2, .decision-support-card h2, .forecast-compact-card h2, .home-expert-secondary h2 { margin:8px 0 10px; font-size:1.24rem; line-height:1.18; letter-spacing:0; }
     .decision-card p, .decision-support-card p, .forecast-compact-card p { color:var(--subtle); line-height:1.52; }
-    .decision-change { color:var(--text) !important; font-size:1.03rem; }
+    .decision-change { color:var(--text) !important; font-size:1.06rem; line-height:1.52 !important; }
     .journey-step { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.84rem; font-weight:760; }
     .journey-step span { width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.13); color:var(--accent); font-size:.76rem; }
     .decision-meta-row, .forward-metrics { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
@@ -1383,7 +1797,7 @@ def _home_intelligence_style() -> str:
     .forward-metrics small { color:var(--muted); }
     .forward-metrics strong { font-size:1rem; }
     .falsification { border-left:3px solid rgba(244,165,179,.75); padding-left:10px; }
-    .posture-pill { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:9px 18px; border-radius:999px; background:var(--accent); color:var(--bg); font-size:1.15rem; font-weight:820; margin:8px 0 8px; }
+    .posture-pill { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:9px 18px; border-radius:999px; background:var(--accent); color:var(--bg); font-size:1.08rem; font-weight:820; margin:8px 0 8px; }
     .focus-list { display:grid; gap:8px; margin:12px 0 0; padding-left:20px; }
     .focus-list li { color:var(--text); line-height:1.42; }
     .decision-dl { display:grid; grid-template-columns:minmax(100px,.42fr) minmax(0,1fr); gap:9px; margin:14px 0 0; }
@@ -1399,11 +1813,16 @@ def _home_intelligence_style() -> str:
     .trigger-columns h3 { margin:8px 0; font-size:1rem; }
     .positive-confirmation li::marker { color:#9ee6b8; }
     .negative-confirmation li::marker { color:#f4a5b3; }
-    .research-priority-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px; }
-    .research-priority-card { display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; padding:13px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.035); }
-    .research-priority-card .decision-dl { grid-column:1 / -1; grid-template-columns:96px minmax(0,1fr); font-size:.9rem; }
+    .research-priority-list { display:grid; grid-template-columns:1fr; gap:12px; margin-top:14px; }
+    .research-priority-card { display:grid; grid-template-columns:1fr; gap:13px; align-items:start; padding:16px; border:1px solid rgba(219,234,254,.11); border-radius:18px; background:rgba(255,255,255,.035); }
+    .research-item-main { display:grid; grid-template-columns:auto minmax(0,1fr); gap:12px; align-items:start; }
+    .research-item-main h3 { margin:0 0 8px; font-size:1.1rem; line-height:1.28; max-width:none; overflow-wrap:break-word; word-break:normal; }
+    .research-item-detail { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:0; }
+    .research-item-detail > div { min-height:100px; display:grid; align-content:start; gap:7px; padding:12px; border:1px solid rgba(219,234,254,.1); border-radius:14px; background:rgba(0,0,0,.11); }
+    .research-item-detail dt { color:var(--muted); font-size:.82rem; font-weight:760; }
+    .research-item-detail dd { margin:0; color:var(--text); line-height:1.45; overflow-wrap:break-word; word-break:normal; }
     .priority-index { width:30px; height:30px; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.16); color:var(--accent); font-weight:820; }
-    .forecast-compact-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:14px 0; }
+    .forecast-compact-strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px; margin:14px 0; }
     .forecast-compact-strip span { min-height:68px; display:grid; place-items:center; gap:4px; padding:9px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.035); color:var(--muted); text-align:center; font-size:.75rem; }
     .forecast-compact-strip strong { color:var(--text); font-size:1.35rem; }
     .forecast-learning-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
@@ -1458,8 +1877,9 @@ def _home_intelligence_style() -> str:
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid, .practical-operational-grid, .practical-control-grid { grid-template-columns:1fr; } .practical-operational-grid #home-intelligence-alerts { grid-column:auto; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
-    @media (max-width:900px) { .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li { grid-template-columns:1fr; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
+    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid, .practical-operational-grid, .practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } .holding-brief-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-command-analysis,.scenario-grid,.material-evidence-item dl,.holding-brief-grid { grid-template-columns:1fr; } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
+    @media (max-width:640px) { .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:14px; } .portfolio-header-status { justify-items:start; text-align:left; } }
     </style>
     """
 

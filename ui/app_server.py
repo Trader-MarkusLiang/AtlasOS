@@ -107,12 +107,12 @@ def create_app() -> Any:
     @app.get("/", response_class=HTMLResponse)
     async def landing() -> Any:
         state = state_api()
-        return _product_shell("home", _home_content_with_setup_banner(state), state)
+        return _product_shell("home", _home_content_with_setup_banner(state), state, include_inspector=False)
 
     @app.get("/home", response_class=HTMLResponse)
     async def home() -> Any:
         state = state_api()
-        return _product_shell("home", _home_content_with_setup_banner(state), state)
+        return _product_shell("home", _home_content_with_setup_banner(state), state, include_inspector=False)
 
     @app.get("/setup", response_class=HTMLResponse)
     async def setup() -> Any:
@@ -400,6 +400,12 @@ def state_api() -> Dict[str, Any]:
     forecast_ledger = list_forecasts(db_path=_db_path(), limit=25)
     candidate_pool = build_candidate_pool(portfolio_context=portfolio_context)
     market_intelligence = _market_intelligence_state()
+    latest_packet = metadata.get("decision_packet", {})
+    llm_summary["latest_inference_status"] = _llm_inference_status(latest_packet)
+    runtime = runtime_status(pid_file=_pid_file(), db_path=_db_path())
+    user_config = load_user_config(_user_config_path())
+    system_config = user_config.get("system", {}) if isinstance(user_config.get("system"), dict) else {}
+    runtime["mode"] = str(system_config.get("runtime_mode") or "simulation")
     payload = {
         "timestamp": utc_now_iso(),
         "regime_state": system_state.get("current_state", "Unknown"),
@@ -410,7 +416,7 @@ def state_api() -> Dict[str, Any]:
         "trust_index": store.get_state("system_trust_state").get("rolling_trust_index"),
         "structural_coevolution_state": store.get_state("structural_coevolution_state"),
         "self_organization_state": store.get_state("self_organization_state"),
-        "last_decision_packet": metadata.get("decision_packet", {}),
+        "last_decision_packet": latest_packet,
         "last_decision_brief_id": latest_brief.get("id"),
         "portfolio_context": portfolio_context,
         "forecast_ledger": forecast_ledger,
@@ -418,7 +424,7 @@ def state_api() -> Dict[str, Any]:
         "market_intelligence": market_intelligence,
         "proactive_update_state": store.get_state("proactive_update_state"),
         "daily_cycle": store.get_state("daily_cycle_state"),
-        "runtime": runtime_status(pid_file=_pid_file(), db_path=_db_path()),
+        "runtime": runtime,
         "llm_trace_summary": llm_summary,
         "llm_provider_registry": _safe_provider_registry(),
         "last_event_summary": event_history[0] if event_history else {},
@@ -465,6 +471,18 @@ def _llm_trace_summary(records: list[Dict[str, Any]]) -> Dict[str, Any]:
         "latest_latency_ms": latest.get("latency_ms"),
         "latest_hallucination_risk_proxy": latest.get("hallucination_risk_proxy"),
     }
+
+
+def _llm_inference_status(packet: Any) -> str:
+    if not isinstance(packet, dict) or not packet:
+        return "not_run"
+    trace = str(packet.get("reasoning_trace") or "").lower()
+    summary = str(packet.get("causal_summary") or "").lower()
+    if any(marker in trace for marker in ("all_providers_failed", "invalid_llm_output", "provider_error")):
+        return "failed"
+    if "unavailable" in summary or "invalid" in summary:
+        return "failed"
+    return "succeeded"
 
 
 def _safe_provider_registry() -> Dict[str, Any]:
@@ -2804,10 +2822,10 @@ class _StdlibHandler(BaseHTTPRequestHandler):
         query = {key: values[-1] for key, values in parse_qs(parsed.query).items() if values}
         if parsed.path == "/":
             state = state_api()
-            self._send_html(_product_shell("home", _home_content_with_setup_banner(state), state))
+            self._send_html(_product_shell("home", _home_content_with_setup_banner(state), state, include_inspector=False))
         elif parsed.path == "/home":
             state = state_api()
-            self._send_html(_product_shell("home", _home_content_with_setup_banner(state), state))
+            self._send_html(_product_shell("home", _home_content_with_setup_banner(state), state, include_inspector=False))
         elif parsed.path == "/setup":
             state = state_api()
             content, script = setup_content(load_user_config(_user_config_path()))

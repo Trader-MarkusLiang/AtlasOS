@@ -88,6 +88,14 @@ SHELL_JS = """
   function providerName(state) {
     return state && state.llm_provider_registry ? (state.llm_provider_registry.active_provider || "Waiting for signal") : "Waiting for signal";
   }
+  function inferenceStatus(state) {
+    const status = state && state.llm_trace_summary ? String(state.llm_trace_summary.latest_inference_status || "not_run") : "not_run";
+    const zh = document.documentElement.lang === "zh";
+    const labels = zh
+      ? { succeeded: "最近推理成功", failed: "最近推理失败", not_run: "尚未推理" }
+      : { succeeded: "latest inference succeeded", failed: "latest inference failed", not_run: "inference not run" };
+    return labels[status] || labels.not_run;
+  }
   function freshness(state) {
     const market = state && state.market_intelligence ? state.market_intelligence : {};
     const channels = market.channels || {};
@@ -114,6 +122,7 @@ SHELL_JS = """
       if (!response.ok) return;
       const state = await response.json();
       text("[data-provider-name]", providerName(state));
+      text("[data-inference-status]", inferenceStatus(state));
       text("[data-freshness]", freshness(state));
       text("[data-tick-counter]", state.tick_counter === undefined || state.tick_counter === null ? "Waiting for signal" : String(state.tick_counter));
       text("[data-trust-index]", typeof state.trust_index === "number" ? state.trust_index.toFixed(2) : "Waiting for signal");

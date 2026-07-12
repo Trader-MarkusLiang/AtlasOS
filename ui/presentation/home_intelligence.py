@@ -7,11 +7,14 @@ state, or change trading authority.
 
 from __future__ import annotations
 
+import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Mapping
 
 
 CANDIDATE_SOURCE_PATH = Path("02_Databases/AI_Shovel_100.md")
+TICKER_REGISTRY_PATH = Path("tools/market_data/ticker_registry.yaml")
 BOTTLENECK_MAP_PATH = Path("04_Current_State/Bottleneck_Map_v1.md")
 CAPITAL_RELAY_PATH = Path("01_Framework/Capital_Relay.md")
 AI_CAPITAL_MAP_PATH = Path("04_Current_State/AI_Capital_Map_v1.md")
@@ -20,6 +23,9 @@ CAPITAL_ROTATION_PATH = Path("03_Trading_OS/Capital_Rotation_Table.md")
 RISK_RADAR_PATH = Path("02_Databases/Risk_Radar.md")
 FORECAST_STATUSES = ("OPEN", "MATURED", "VERIFIED", "INVALIDATED", "INCONCLUSIVE")
 NO_TRADE_ACTIONS = {"buy", "sell"}
+USABLE_OBSERVATION_QUALITY = {"available", "partial"}
+UNUSABLE_SOURCES = {"", "none", "unknown", "unavailable", "data missing"}
+FRESH_FRESHNESS = {"live", "fresh", "available"}
 
 
 def build_home_intelligence(state: Mapping[str, Any]) -> dict[str, Any]:
@@ -83,24 +89,35 @@ def build_practical_decision_brief(
     allocation = _capital_allocation_board(portfolio, bottlenecks, triggers)
     predictions = _strongest_predictions(ledger, packet, market)
     holdings = _current_holdings_board(portfolio, market)
+    action = _action_today(packet, market, portfolio)
+    portfolio_command = _portfolio_command(portfolio, market, action)
+    material_changes = _material_changes(market)
+    reasoning_chain = _investor_reasoning_chain(material_changes, portfolio, packet)
+    scenarios = _scenario_outlook(state, market, portfolio, forecast_accountability)
+    playbook = _conditional_action_playbook(scenarios, portfolio)
+    candidate_board = _candidate_score_board(candidate_pool, market)
     return {
         "chain_order": [
-            "action_today",
-            "core_judgment",
-            "strongest_predictions",
-            "ai_bottleneck_index",
-            "capital_relay",
+            "portfolio_command",
             "current_holdings",
-            "capital_allocation",
-            "waiting_triggers",
-            "research_tasks",
-            "intelligence_alerts",
-            "counter_argument",
-            "review_plan",
+            "action_today",
+            "material_changes",
+            "reasoning_chain",
+            "scenario_outlook",
+            "action_playbook",
+            "candidate_board",
+            "forecast_accountability",
+            "supporting_context",
         ],
-        "action_today": _action_today(packet, market, portfolio),
+        "portfolio_command": portfolio_command,
+        "action_today": action,
         "core_judgment": _practical_core_judgment(packet, market, portfolio, capital_relay),
         "strongest_predictions": predictions,
+        "material_changes": material_changes,
+        "reasoning_chain": reasoning_chain,
+        "scenario_outlook": scenarios,
+        "action_playbook": playbook,
+        "candidate_board": candidate_board,
         "ai_bottleneck_index": bottlenecks,
         "capital_relay": capital_relay,
         "current_holdings": holdings,
@@ -126,6 +143,339 @@ def build_practical_decision_brief(
             "no_private_amounts": True,
         },
     }
+
+
+def _portfolio_command(
+    portfolio: Mapping[str, Any],
+    market: Mapping[str, Any],
+    action: Mapping[str, Any],
+) -> dict[str, Any]:
+    exposure = _mapping(portfolio.get("exposure_map"))
+    asset_concentration = [_mapping(item) for item in _list(exposure.get("asset_concentration")) if isinstance(item, Mapping)]
+    theme_concentration = _mapping(exposure.get("theme_concentration"))
+    largest_asset = asset_concentration[0] if asset_concentration else {}
+    largest_theme = max(theme_concentration.items(), key=lambda item: _safe_number(item[1], 0.0)) if theme_concentration else ("Unknown", 0.0)
+    exposure_pct = _safe_number(portfolio.get("exposure_sum_pct"), 0.0)
+    buffer_pct = _safe_number(portfolio.get("cash_or_unassigned_pct"), 0.0)
+    consistency = _text(portfolio.get("portfolio_consistency"), "Unknown")
+    usable = _usable_market_observations(market)
+    return {
+        "status": portfolio.get("status", "missing"),
+        "source": portfolio.get("source"),
+        "portfolio_consistency": consistency,
+        "exposure_pct": exposure_pct,
+        "unassigned_pct": buffer_pct,
+        "position_count": len(_list(portfolio.get("positions"))),
+        "largest_asset": largest_asset,
+        "largest_theme": {"theme": largest_theme[0], "exposure_pct": largest_theme[1]},
+        "market_concentration": _mapping(exposure.get("market_concentration")),
+        "theme_concentration": theme_concentration,
+        "liquidity_sensitivity": exposure.get("liquidity_sensitivity", "Unknown"),
+        "regime_sensitivity": exposure.get("regime_sensitivity", "Unknown"),
+        "primary_risk": _bilingual(
+            f"Largest theme exposure is {largest_theme[0]} at {_safe_number(largest_theme[1], 0.0):.1f}%; correlated evidence or liquidity shocks can affect several positions together.",
+            f"最大主题暴露为 {largest_theme[0]}，占 {_safe_number(largest_theme[1], 0.0):.1f}%；相关证据或流动性冲击可能同时影响多个持仓。",
+        ),
+        "market_evidence": {
+            "usable": len(usable),
+            "total": len(_list(market.get("observations"))),
+            "timestamp": market.get("timestamp"),
+        },
+        "action_status": action.get("status"),
+        "posture": action.get("posture_label"),
+        "action_reason": action.get("reason"),
+        "privacy": portfolio.get("privacy", "percentage_only_no_account_amounts"),
+    }
+
+
+def _material_changes(market: Mapping[str, Any]) -> dict[str, Any]:
+    items: list[dict[str, Any]] = []
+    for observation in _usable_market_observations(market):
+        asset = _text(observation.get("asset"), "Unknown")
+        price = observation.get("latest_price")
+        change = observation.get("daily_change_pct")
+        headline = f"{asset}: provider price observation available"
+        if price is not None:
+            headline = f"{asset}: {price}"
+            if change is not None:
+                headline += f" ({_safe_float(change, 0.0):+.2f}%)"
+        items.append(
+            {
+                "headline": headline,
+                "source": observation.get("source"),
+                "source_url": observation.get("source_url"),
+                "timestamp": observation.get("timestamp"),
+                "freshness": observation.get("freshness"),
+                "source_type": observation.get("source_type"),
+                "classification": "LIVE_OBSERVATION" if _text(observation.get("freshness"), "").upper() == "LIVE" else "PROVIDER_OBSERVATION",
+                "verification_status": "VERIFIED_PROVIDER_RESPONSE",
+                "affected_assets": [asset],
+                "affected_themes": [observation.get("theme")],
+                "world_model_node": "Price / Volume",
+                "thesis_changed": "UNASSESSED",
+            }
+        )
+    for evidence in _list(market.get("evidence_items")):
+        if isinstance(evidence, Mapping):
+            items.append(dict(evidence))
+    items.sort(key=lambda item: _text(item.get("timestamp"), ""), reverse=True)
+    return {
+        "items": items[:8],
+        "total": len(items),
+        "empty_message": _bilingual(
+            "No verified material evidence is currently available.",
+            "当前没有可用的已验证重要证据。",
+        ),
+        "news_is_signal_not_action": True,
+    }
+
+
+def _investor_reasoning_chain(
+    changes: Mapping[str, Any],
+    portfolio: Mapping[str, Any],
+    packet: Mapping[str, Any],
+) -> dict[str, Any]:
+    items = [_mapping(item) for item in _list(changes.get("items")) if isinstance(item, Mapping)]
+    primary = items[0] if items else {}
+    fallback = _decision_packet_is_fallback(packet)
+    affected = _list(primary.get("affected_assets"))
+    return {
+        "status": "evidence_available" if primary else "data_missing",
+        "steps": [
+            {"key": "signal", "value": primary.get("headline") or "Data Missing", "truth": "SIGNAL" if primary else "DATA MISSING"},
+            {"key": "evidence", "value": f"{primary.get('source', 'Data Missing')} · {primary.get('verification_status', 'UNVERIFIED')}", "truth": primary.get("classification", "DATA MISSING")},
+            {"key": "structure", "value": primary.get("world_model_node", "Unknown"), "truth": "STRUCTURAL INTERPRETATION" if primary else "DATA MISSING"},
+            {"key": "causal", "value": "Not evaluated: latest LLM reasoning failed" if fallback else _text(packet.get("causal_summary"), "Unknown"), "truth": "UNVERIFIED" if fallback else "INFERENCE"},
+            {"key": "thesis", "value": primary.get("thesis_changed", "UNASSESSED"), "truth": "UNASSESSED"},
+            {"key": "portfolio", "value": ", ".join(str(item) for item in affected) if affected else f"Broad portfolio exposure {_safe_number(portfolio.get('exposure_sum_pct'), 0.0):.1f}%", "truth": "PORTFOLIO MAPPING"},
+            {"key": "counter", "value": "No conclusion until counter-evidence and invalidation conditions are reviewed.", "truth": "FRAMEWORK SNAPSHOT"},
+            {"key": "missing", "value": "Narrative/attention and evaluated forecast evidence remain incomplete.", "truth": "DATA MISSING"},
+            {"key": "conclusion", "value": "Observe; no thesis or capital-authority change is claimed from an unassessed signal.", "truth": "CONDITIONAL CONCLUSION"},
+        ],
+    }
+
+
+def _scenario_outlook(
+    state: Mapping[str, Any],
+    market: Mapping[str, Any],
+    portfolio: Mapping[str, Any],
+    forecast: Mapping[str, Any],
+) -> dict[str, Any]:
+    channels = _mapping(market.get("channels"))
+    metrics = _mapping(forecast.get("metrics"))
+    calibrated = _safe_number(metrics.get("evaluated"), 0.0) >= 20
+    top_assets = [str(_mapping(item).get("asset")) for item in _list(_mapping(portfolio.get("exposure_map")).get("asset_concentration"))[:3]]
+    sensitivity = ", ".join(top_assets) or "Configured portfolio"
+    common = {
+        "horizon": _bilingual("Next review cycle", "下一复核周期"),
+        "portfolio_sensitivity": sensitivity,
+        "evidence_confidence": _bilingual("Limited", "有限") if not calibrated else _bilingual("Calibrated", "已校准"),
+        "probability": None,
+    }
+    scenarios = [
+        {
+            **common,
+            "key": "base",
+            "statement": _bilingual("Evidence remains mixed; preserve optionality while source freshness and thesis impact are verified.", "证据仍然混合；在数据新鲜度和论点影响完成验证前，保留组合选择权。"),
+            "drivers": [_bilingual("Portfolio context", "当前组合结构"), _bilingual("Available provider evidence", "可用数据源证据"), _bilingual("Framework snapshot", "框架快照")],
+            "counter_evidence": [_bilingual("Narrative and attention coverage is incomplete", "叙事与关注度覆盖尚不完整"), _bilingual("No sufficient evaluated forecast sample", "已评估预测样本不足")],
+            "invalidation": [_bilingual("Verified evidence materially strengthens or weakens the portfolio thesis", "已验证证据实质性强化或削弱组合论点")],
+            "next_trigger": _bilingual("Fresh multi-channel confirmation", "多个通道出现新的同向确认"),
+        },
+        {
+            **common,
+            "key": "upside",
+            "statement": _bilingual("Upside continuation requires price participation, breadth, liquidity, and company evidence to improve together.", "上行情景需要价格参与度、市场广度、流动性与公司证据同步改善。"),
+            "drivers": [_bilingual("Market breadth improves", "市场广度改善"), _bilingual("Holding prices confirm", "持仓价格形成确认"), _bilingual("Announcement evidence strengthens", "公司公告证据增强")],
+            "counter_evidence": [_bilingual("Valuation or expectation risk", "估值或预期风险"), _bilingual("Portfolio concentration risk", "组合集中度风险")],
+            "invalidation": [_bilingual("Breadth weakens or company evidence contradicts the thesis", "市场广度转弱或公司证据与论点矛盾")],
+            "next_trigger": _bilingual("Live breadth and fresh holding evidence", "实时市场广度与持仓新证据同步改善"),
+        },
+        {
+            **common,
+            "key": "downside",
+            "statement": _bilingual("Downside acceleration becomes relevant if liquidity weakens and portfolio-linked evidence invalidates existing theses.", "若流动性转弱且持仓相关证据使现有论点失效，下行加速情景将变得重要。"),
+            "drivers": [_bilingual("Liquidity deterioration", "流动性恶化"), _bilingual("Negative company evidence", "公司负面证据"), _bilingual("Correlated theme pressure", "同主题资产共同承压")],
+            "counter_evidence": [_bilingual("Unassigned capital buffer", "未部署资金缓冲"), _bilingual("Existing thesis remains intact", "现有论点仍未被破坏")],
+            "invalidation": [_bilingual("Liquidity stabilizes and negative evidence does not persist", "流动性企稳且负面证据未持续")],
+            "next_trigger": _bilingual("Verified thesis deterioration", "已验证证据显示论点恶化"),
+        },
+        {
+            **common,
+            "key": "range",
+            "statement": _bilingual("A range-bound regime remains plausible while directional evidence is incomplete or conflicting.", "当方向性证据不完整或相互冲突时，震荡情景仍然成立。"),
+            "drivers": [_bilingual("Mixed channel freshness", "各数据通道新鲜度不一"), _bilingual("Conflicting signals", "信号相互冲突"), _bilingual("Low forecast confidence", "预测置信度较低")],
+            "counter_evidence": [_bilingual("Broad multi-channel breakout or breakdown", "多个通道同步突破或转弱")],
+            "invalidation": [_bilingual("Participation and liquidity align directionally", "市场参与度与流动性形成同向变化")],
+            "next_trigger": _bilingual("Directional breadth and liquidity alignment", "市场广度与流动性形成方向共振"),
+        },
+    ]
+    return {
+        "items": scenarios,
+        "calibration_supported": calibrated,
+        "sample_warning": forecast.get("sample_warning"),
+        "channel_context": channels,
+    }
+
+
+def _conditional_action_playbook(
+    scenarios: Mapping[str, Any],
+    portfolio: Mapping[str, Any],
+) -> dict[str, Any]:
+    actions = {"base": "Observe", "upside": "Observe", "downside": "Hold", "range": "Hold"}
+    rows = []
+    for scenario in _list(scenarios.get("items")):
+        if not isinstance(scenario, Mapping):
+            continue
+        key = _text(scenario.get("key"), "base")
+        rows.append(
+            {
+                "scenario": key,
+                "trigger": scenario.get("next_trigger"),
+                "posture": actions.get(key, "Observe"),
+                "affected_holdings": scenario.get("portfolio_sensitivity"),
+                "exposure_direction": "unchanged_pending_confirmation",
+                "cde_authority": _bilingual("No available authority for this scenario", "本情景无可用资本权限"),
+                "limiting_factor": _bilingual("Evidence and CDE authority are incomplete", "证据与 CDE 权限均不完整"),
+                "review_time": scenario.get("horizon"),
+                "could_change": _list(scenario.get("invalidation")),
+            }
+        )
+    return {
+        "items": rows,
+        "unassigned_pct": portfolio.get("cash_or_unassigned_pct"),
+        "authority_is_permission_not_action": True,
+        "no_trading_execution": True,
+    }
+
+
+def _candidate_score_board(
+    candidate_pool: Mapping[str, Any],
+    market: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    observations = {
+        _text(item.get("asset"), "").upper(): item
+        for item in _list(_mapping(market).get("observations"))
+        if isinstance(item, Mapping) and item.get("latest_price") is not None
+    }
+    output = []
+    for item in _list(candidate_pool.get("items"))[:8]:
+        if not isinstance(item, Mapping):
+            continue
+        priority = _text(item.get("current_priority"), "B")
+        candidate = _text(item.get("asset"), "Data Missing")
+        explicit_ticker = _text(item.get("ticker"), "")
+        registry_ticker, registry_status = _candidate_registry_identity(candidate)
+        parsed_ticker = _ticker_from_candidate_name(candidate)
+        ticker = explicit_ticker or registry_ticker or parsed_ticker
+        observation = observations.get(ticker.upper(), {}) if ticker else {}
+        confirmation = _bilingual(
+            "Not included in this portfolio market refresh.",
+            "未纳入本次组合行情刷新。",
+        )
+        if observation:
+            confirmation = _candidate_market_confirmation(observation)
+        output.append(
+            {
+                "code": ticker or "",
+                "candidate": candidate,
+                "identity_status": "Validated" if explicit_ticker or registry_status == "Validated" else "Needs Validation",
+                "source_category": item.get("source_category"),
+                "portfolio_overlap": item.get("portfolio_relationship", "Unknown"),
+                "thesis_relevance": item.get("thesis_direction", "Unverified"),
+                "evidence_quality": item.get("evidence_strength", "Unverified"),
+                "market_confirmation": confirmation,
+                "valuation_risk": _bilingual("Not assessed", "尚未评估"),
+                "strategic_candidate_score": "N/A",
+                "tier": priority,
+                "score_explanation": _bilingual(
+                    "Repository priority is available, but an evidence-backed 0-100 score has not been assigned.",
+                    "仓库研究优先级可用，但尚未形成有证据支持的 0-100 分评分。",
+                ),
+                "cde_authority": _bilingual("Not created by runtime", "运行时尚未生成"),
+            }
+        )
+    return {
+        "items": output,
+        "validated_items": [item for item in output if item.get("identity_status") == "Validated"],
+        "pending_items": [item for item in output if item.get("identity_status") != "Validated"],
+        "score_dimensions": [
+            "Thesis Fit /20",
+            "Industry Cycle /15",
+            "Evidence Quality /15",
+            "Market Confirmation /15",
+            "Valuation Risk /10",
+            "Technical Structure /10",
+            "Portfolio Fit /10",
+            "Trigger Readiness /5",
+        ],
+        "research_priority_is_not_trading_authority": True,
+        "source": candidate_pool.get("source"),
+        "coverage_note": _bilingual(
+            "Market confirmation is shown only when a validated candidate is present in the current runtime market refresh. Numeric candidate scoring and CDE authority remain separate and are not fabricated.",
+            "只有已核验候选进入当前运行态行情刷新时才显示市场确认；数值候选评分与 CDE 权限保持分离，不会伪造。",
+        ),
+    }
+
+
+def _ticker_from_candidate_name(candidate: str) -> str:
+    match = re.search(r"[（(](\d{5,6})[）)]", candidate)
+    if not match:
+        return ""
+    code = match.group(1)
+    if len(code) == 5:
+        return f"{code}.HK"
+    return f"{code}.SH" if code.startswith(("5", "6", "9")) else f"{code}.SZ"
+
+
+def _candidate_registry_identity(candidate: str) -> tuple[str, str]:
+    normalized = re.sub(r"[（(].*?[）)]", "", candidate).strip().lower()
+    for item in _ticker_registry():
+        aliases = [item.get("name"), *_list(item.get("aliases"))]
+        if not any(normalized == _text(alias, "").strip().lower() for alias in aliases):
+            continue
+        code = _text(item.get("code"), "")
+        if not code:
+            return "", _text(item.get("identity_status"), "Needs Validation")
+        market = _text(item.get("market"), "")
+        exchange = _text(item.get("exchange"), "")
+        if market == "HK" or exchange == "HKEX":
+            ticker = f"{code.zfill(5)}.HK"
+        else:
+            ticker = f"{code.zfill(6)}.SH" if exchange == "SH" or code.startswith(("5", "6", "9")) else f"{code.zfill(6)}.SZ"
+        return ticker, _text(item.get("identity_status"), "Needs Validation")
+    return "", "Needs Validation"
+
+
+@lru_cache(maxsize=1)
+def _ticker_registry() -> list[dict[str, Any]]:
+    try:
+        import yaml
+
+        payload = yaml.safe_load(TICKER_REGISTRY_PATH.read_text(encoding="utf-8"))
+    except (ImportError, OSError, ValueError):
+        return []
+    items = payload.get("tickers", []) if isinstance(payload, Mapping) else []
+    return [dict(item) for item in items if isinstance(item, Mapping)]
+
+
+def _candidate_market_confirmation(observation: Mapping[str, Any]) -> dict[str, str]:
+    daily = observation.get("daily_change_pct")
+    change_20d = observation.get("change_20d_pct")
+    price = _safe_number(observation.get("latest_price"), 0.0)
+    parts = [f"{price:.2f}".rstrip("0").rstrip(".")]
+    if daily is not None:
+        parts.append(f"1d {float(daily):+.1f}%")
+    if change_20d is not None:
+        parts.append(f"20d {float(change_20d):+.1f}%")
+    summary = " · ".join(parts)
+    freshness = _text(observation.get("freshness"), "Unknown")
+    freshness_zh = {
+        "LIVE": "实时",
+        "DELAYED": "延迟",
+        "CACHED": "缓存",
+    }.get(freshness.upper(), "状态待确认")
+    return _bilingual(f"{summary} · {freshness}", f"{summary} · {freshness_zh}")
 
 
 def build_user_decision_home(
@@ -631,6 +981,9 @@ def _decision_forecast_compact(forecast: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "counts": {
             "open": counts.get("open", 0),
+            "current_open": counts.get("current_open", counts.get("open", 0)),
+            "legacy_open": counts.get("legacy_open", 0),
+            "matured": counts.get("matured", 0),
             "verified": counts.get("verified", 0),
             "invalidated": counts.get("invalidated", 0),
             "inconclusive": counts.get("inconclusive", 0),
@@ -638,6 +991,7 @@ def _decision_forecast_compact(forecast: Mapping[str, Any]) -> dict[str, Any]:
         "recent_miss": miss_summary,
         "what_changed_afterward": changed,
         "sample_warning": forecast.get("sample_warning"),
+        "legacy_policy": forecast.get("legacy_policy"),
         "links": {"predictions": "/predictions", "learning": "/learning"},
     }
 
@@ -647,7 +1001,7 @@ def _action_today(packet: Mapping[str, Any], market: Mapping[str, Any], portfoli
     channels = _mapping(market.get("channels"))
     live_count = sum(1 for value in channels.values() if _text(value, "").upper() == "LIVE")
     missing_count = sum(1 for value in channels.values() if _text(value, "").upper() in {"NOT_CONFIGURED", "FAILED"})
-    observations = _list(market.get("observations"))
+    observations = _usable_market_observations(market)
     configured = _text(portfolio.get("status"), "").lower() == "configured"
     if configured and observations and missing_count:
         status = "CONDITIONAL"
@@ -655,7 +1009,7 @@ def _action_today(packet: Mapping[str, Any], market: Mapping[str, Any], portfoli
             "Portfolio-linked price data is live, but breadth/news/macro channels remain incomplete; review is justified, execution is not.",
             "组合相关价量数据已更新，但市场广度、新闻、宏观等通道仍不完整；需要复核，不支持执行。",
         )
-    elif confidence >= 0.65 and live_count >= 3:
+    elif confidence >= 0.65 and live_count >= 3 and observations:
         status = "YES"
         reason = _bilingual(
             "Evidence quality is strong enough to justify a portfolio decision review.",
@@ -663,9 +1017,16 @@ def _action_today(packet: Mapping[str, Any], market: Mapping[str, Any], portfoli
         )
     else:
         status = "NO"
-        reason = _bilingual(
-            "Current evidence does not justify new portfolio action; keep the brief in observation mode.",
-            "当前证据不足以支持新增组合动作，简报保持观察模式。",
+        reason = (
+            _bilingual(
+                "Portfolio market observations are unavailable; keep the brief in observation mode until real evidence is restored.",
+                "组合相关市场观测当前不可用；在真实证据恢复前，简报保持观察模式。",
+            )
+            if configured and not observations
+            else _bilingual(
+                "Current evidence does not justify new portfolio action; keep the brief in observation mode.",
+                "当前证据不足以支持新增组合动作，简报保持观察模式。",
+            )
         )
     return {
         "status": status,
@@ -674,7 +1035,7 @@ def _action_today(packet: Mapping[str, Any], market: Mapping[str, Any], portfoli
         "reason": reason,
         "helper": _bilingual(
             "YES / NO / CONDITIONAL means whether evidence justifies decision review today, not an order.",
-            "YES / NO / CONDITIONAL 表示今天是否值得进入决策复核，不是交易指令。",
+            "这里判断的是今天是否值得进入决策复核，不代表交易指令。",
         ),
         "confidence": confidence,
         "no_trading_execution": True,
@@ -689,19 +1050,19 @@ def _practical_core_judgment(
 ) -> dict[str, Any]:
     regime = _text(packet.get("regime_state"), "Unknown").split("/")[0].strip()
     buffer_pct = _safe_number(portfolio.get("cash_or_unassigned_pct"), 0.0)
-    observations = _list(market.get("observations"))
+    observations = _usable_market_observations(market)
     headline = _bilingual(
         "AI infrastructure thesis is not invalidated, but Atlas should wait for confirmation before expanding risk.",
         "AI 基建主线未被证伪，但 Atlas 需要等待确认后再扩大风险暴露。",
     )
     support = _bilingual(
-        f"Runtime is {regime or 'Unknown'}, {len(observations)} portfolio-linked price observations are live, and the relay map still points toward Equipment / Materials; unassigned buffer is {buffer_pct:.1f}%.",
-        f"运行态为 {regime or 'Unknown'}，{len(observations)} 个组合相关价量观测可用，资本接力仍指向 Equipment / Materials；未部署缓冲为 {buffer_pct:.1f}%。",
+        f"Runtime is {regime or 'Unknown'}, {len(observations)} portfolio-linked market observations are usable, and the framework snapshot points toward Equipment / Materials; unassigned buffer is {buffer_pct:.1f}%.",
+        f"运行态为 {regime or 'Unknown'}，{len(observations)} 个组合相关市场观测可用，框架快照仍指向 Equipment / Materials；未部署缓冲为 {buffer_pct:.1f}%。",
     )
     if not observations:
         support = _bilingual(
-            "Market observations are insufficient, so the core judgment is observation-first.",
-            "市场观测不足，因此今日总判断以观察为先。",
+            f"Portfolio market observations are unavailable. The {regime or 'Unknown'} runtime state and Capital Relay are inference/framework context only, so today's judgment remains observation-first; unassigned buffer is {buffer_pct:.1f}%.",
+            f"组合相关市场观测当前不可用。{regime or 'Unknown'} 运行态与资本接力仅属于推断/框架上下文，因此今日判断保持观察优先；未部署缓冲为 {buffer_pct:.1f}%。",
         )
     return {
         "headline": headline,
@@ -718,8 +1079,8 @@ def _strongest_predictions(ledger: Mapping[str, Any], packet: Mapping[str, Any],
     confidence = _safe_confidence(latest.get("confidence", packet.get("confidence", 0.0)))
     if latest:
         evidence = _list(latest.get("causal_drivers"))
-        if _list(market.get("observations")):
-            evidence.append("fresh_portfolio_price_volume_observations")
+        if _usable_market_observations(market):
+            evidence.append("usable_portfolio_market_observations")
         predictions.append(
             {
                 "judgment": _bilingual(
@@ -814,7 +1175,7 @@ def _capital_relay(
 def _current_holdings_board(portfolio: Mapping[str, Any], market: Mapping[str, Any]) -> dict[str, Any]:
     observations = {
         _text(_mapping(item).get("asset"), ""): _mapping(item)
-        for item in _list(market.get("observations"))
+        for item in _usable_market_observations(market)
         if isinstance(item, Mapping)
     }
     holdings = []
@@ -825,7 +1186,12 @@ def _current_holdings_board(portfolio: Mapping[str, Any], market: Mapping[str, A
         observation = observations.get(asset, {})
         trigger = _text(item.get("risk_note"), "Refresh thesis, price/volume, and liquidity evidence.")
         if observation:
-            trigger = f"5d {round(_safe_float(observation.get('change_5d_pct'), 0.0), 1)}%, 20d {round(_safe_float(observation.get('change_20d_pct'), 0.0), 1)}%; refresh thesis evidence before changing posture"
+            changes = []
+            if observation.get("change_5d_pct") is not None:
+                changes.append(f"5d {float(observation['change_5d_pct']):.1f}%")
+            if observation.get("change_20d_pct") is not None:
+                changes.append(f"20d {float(observation['change_20d_pct']):.1f}%")
+            trigger = "; ".join(changes) if changes else "Multi-day change data missing"
         holdings.append(
             {
                 "asset": asset,
@@ -835,9 +1201,12 @@ def _current_holdings_board(portfolio: Mapping[str, Any], market: Mapping[str, A
                 "posture_label": _action_label("observe"),
                 "why": _bilingual(
                     _text(item.get("user_thesis"), "Configured holding requires evidence refresh."),
-                    _text(item.get("user_thesis"), "当前配置持仓需要刷新证据。"),
+                    f"该持仓属于 {_text(item.get('theme'), '未分类主题')}，需要结合公司、行业与市场证据持续复核。",
                 ),
-                "key_trigger": _bilingual(trigger, trigger),
+                "key_trigger": _bilingual(
+                    f"{trigger}; refresh thesis evidence before changing posture",
+                    "多周期涨跌数据缺失；改变姿态前需先刷新论点证据" if not changes else f"{trigger}；改变姿态前需先刷新论点证据",
+                ),
                 "review_priority": _holding_priority(item, observation),
                 "source": portfolio.get("source"),
             }
@@ -899,7 +1268,7 @@ def _waiting_triggers(
 ) -> dict[str, Any]:
     channels = _mapping(market.get("channels"))
     counts = _mapping(forecast.get("counts"))
-    observations = _list(market.get("observations"))
+    observations = _fresh_market_observations(market)
     items = [
         {
             "condition": _bilingual(
@@ -1025,7 +1394,7 @@ def _candidate_source_truth(candidate_pool: Mapping[str, Any]) -> dict[str, Any]
 
 def _intelligence_alerts(state: Mapping[str, Any], market: Mapping[str, Any], portfolio: Mapping[str, Any]) -> dict[str, Any]:
     channels = _mapping(market.get("channels"))
-    observations = _list(market.get("observations"))
+    observations = _usable_market_observations(market)
     alerts = [
         {
             "category": _bilingual("Market sentiment", "市场情绪"),
@@ -1043,9 +1412,16 @@ def _intelligence_alerts(state: Mapping[str, Any], market: Mapping[str, Any], po
         },
         {
             "category": _bilingual("Holding-related signals", "持仓相关信号"),
-            "message": _bilingual(
-                f"{len(observations)} configured-holding price/volume observations are available.",
-                f"{len(observations)} 个配置持仓价量观测可用。",
+            "message": (
+                _bilingual(
+                    f"{len(observations)} configured-holding market observations are usable.",
+                    f"{len(observations)} 个配置持仓市场观测可用。",
+                )
+                if observations
+                else _bilingual(
+                    "Configured-holding market observations are unavailable; no live holding signal is claimed.",
+                    "配置持仓的市场观测当前不可用；Atlas 不宣称存在实时持仓信号。",
+                )
             ),
         },
         {
@@ -1150,6 +1526,13 @@ def build_forecast_accountability(ledger: Mapping[str, Any] | None = None) -> di
     forecasts = [_mapping(item) for item in _list(ledger.get("forecasts")) if isinstance(item, Mapping)]
     metrics = _mapping(ledger.get("metrics"))
     counts = {status.lower(): sum(1 for item in forecasts if _text(item.get("status"), "").upper() == status) for status in FORECAST_STATUSES}
+    legacy_open = [
+        item
+        for item in forecasts
+        if _text(item.get("status"), "").upper() == "OPEN" and not _text(item.get("material_signature"), "")
+    ]
+    counts["legacy_open"] = len(legacy_open)
+    counts["current_open"] = max(0, counts.get("open", 0) - len(legacy_open))
     evaluated = [
         item
         for item in forecasts
@@ -1164,6 +1547,10 @@ def build_forecast_accountability(ledger: Mapping[str, Any] | None = None) -> di
         "latest": forecasts[:5],
         "recent_miss": misses[0] if misses else {},
         "evaluated_count": len(evaluated),
+        "legacy_policy": _bilingual(
+            "Legacy open forecasts without a material signature remain unclassified and are not bulk-evaluated from one observation.",
+            "缺少 material signature 的历史未完成预测保持未分类，不会依据单次观测批量结算。",
+        ),
         "ledger_link": "/predictions",
         "learning_link": "/learning",
     }
@@ -1569,7 +1956,10 @@ def _home_evidence_quality(market: Mapping[str, Any], forecast: Mapping[str, Any
     live = sum(1 for value in channels.values() if _text(value, "").upper() == "LIVE")
     usable = sum(1 for value in channels.values() if _text(value, "").upper() in {"LIVE", "DELAYED", "CACHED", "SIMULATED"})
     configured = sum(1 for value in channels.values() if _text(value, "").upper() != "NOT_CONFIGURED")
+    usable_observations = _usable_market_observations(market)
     score = round(min(1.0, usable / total), 4)
+    if _list(market.get("observations")) and not usable_observations:
+        score = 0.0
     if live >= 2 and configured >= total / 2:
         status = "partial"
         label = _bilingual("Partial live evidence", "部分实时证据")
@@ -1591,9 +1981,36 @@ def _home_evidence_quality(market: Mapping[str, Any], forecast: Mapping[str, Any
         "score": score,
         "live_channels": live,
         "usable_channels": usable,
+        "usable_observations": len(usable_observations),
         "total_channels": len(channels),
         "forecast_sample": sample,
     }
+
+
+def _usable_market_observations(market: Mapping[str, Any]) -> list[dict[str, Any]]:
+    return [
+        _mapping(item)
+        for item in _list(market.get("observations"))
+        if isinstance(item, Mapping) and _observation_is_usable(item)
+    ]
+
+
+def _fresh_market_observations(market: Mapping[str, Any]) -> list[dict[str, Any]]:
+    return [
+        item
+        for item in _usable_market_observations(market)
+        if _text(item.get("freshness"), "").strip().lower() in FRESH_FRESHNESS
+    ]
+
+
+def _observation_is_usable(observation: Mapping[str, Any]) -> bool:
+    quality = _text(observation.get("data_quality_status"), "").strip().lower()
+    source = _text(observation.get("source"), "").strip().lower()
+    if quality not in USABLE_OBSERVATION_QUALITY or source in UNUSABLE_SOURCES:
+        return False
+    if "latest_price_available" in observation and observation.get("latest_price_available") is False:
+        return False
+    return True
 
 
 def _decision_packet_is_fallback(packet: Mapping[str, Any]) -> bool:

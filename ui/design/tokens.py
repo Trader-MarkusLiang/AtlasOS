@@ -1247,7 +1247,8 @@ textarea { resize: vertical; min-height: 96px; }
   }
 }
 @media (max-width: 1180px) {
-  .atlas-shell { grid-template-columns: 1fr; }
+  .atlas-shell { grid-template-columns: minmax(0, 1fr); }
+  .atlas-sidebar, .atlas-main { min-width: 0; max-width: 100%; }
   .atlas-sidebar {
     position: static;
     height: auto;
@@ -1302,6 +1303,38 @@ textarea { resize: vertical; min-height: 96px; }
   .timeline-steps { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
+  .atlas-sidebar {
+    position: sticky;
+    z-index: 20;
+    top: 0;
+    padding: 9px 12px 10px;
+  }
+  .atlas-brand { padding: 0; }
+  .atlas-brand-mark { width: 32px; height: 32px; }
+  .atlas-brand span span { display: none; }
+  .atlas-sidebar .sidebar-section,
+  .atlas-sidebar .sidebar-status-card,
+  .sidebar-nav-secondary { display: none; }
+  .sidebar-nav-primary {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    gap: 5px;
+    margin-top: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .sidebar-nav-primary::-webkit-scrollbar { display: none; }
+  .sidebar-nav-primary .sidebar-link {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 6px 10px;
+  }
+  .sidebar-nav-primary .sidebar-dot { display: none; }
+  .global-topbar { padding: 11px 14px; }
+  .topbar-controls { gap: 6px; }
+  .status-pill, .mini-pill { min-height: 30px; padding: 5px 8px; }
   .workspace { padding: 14px; }
   .hero-panel { padding: 20px; }
   .hero-title { font-size: 2.45rem; }
