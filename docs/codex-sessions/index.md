@@ -8,6 +8,14 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-13_0755_publish-investor-home-repair.md`
+- `docs/codex-sessions/completed/2026-07-13_0724_home-data-availability-repair.md`
+- `docs/codex-sessions/completed/2026-07-12_1303_investor-home-goal.md`
+- `docs/codex-sessions/completed/2026-07-12_0954_frontend-product-intelligence-audit.md`
+- `docs/codex-sessions/completed/2026-07-10_1353_canonical-ui-port-8765.md`
+- `docs/codex-sessions/completed/2026-07-10_1345_cleanup-old-ui-ports.md`
+- `docs/codex-sessions/completed/2026-07-10_1330_research-task-layout-fix.md`
+- `docs/codex-sessions/completed/2026-07-10_1310_practical-brief-layout-polish.md`
 - `docs/codex-sessions/completed/2026-07-10_1231_practical-decision-brief.md`
 - `docs/codex-sessions/completed/2026-07-10_0744_user-decision-home.md`
 - `docs/codex-sessions/completed/2026-07-10_0018_home-intelligence-surface.md`
