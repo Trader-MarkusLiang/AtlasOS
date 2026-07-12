@@ -103,6 +103,16 @@ def _call_provider(provider: Mapping[str, Any], prompt: str, context: Mapping[st
             "latency_ms": int((time.time() - started) * 1000),
             "error": "",
         }
+    except json.JSONDecodeError as exc:
+        return {
+            "status": "error",
+            "provider": provider_id,
+            "provider_type": provider_type,
+            "model": str(provider.get("model") or ""),
+            "content": "",
+            "latency_ms": int((time.time() - started) * 1000),
+            "error": f"malformed_response: {exc}"[:240],
+        }
     except (urllib.error.URLError, TimeoutError, KeyError, ValueError, OSError) as exc:
         return {
             "status": "error",

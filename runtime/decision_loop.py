@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
@@ -35,7 +36,7 @@ try:
     from runtime.cognition.unified_market_intelligence_core import infer_unified_market_intelligence
     from runtime.cognition.world_model_engine import simulate_market_world_model
     from runtime.event_stream import EVENT_HEARTBEAT, EventStream
-    from runtime.forecast_ledger import create_forecast
+    from runtime.forecast_ledger import create_forecast, latest_forecast, process_due_runtime_forecast
     from runtime.logging import log_execution, utc_now_iso
     from runtime.orchestrator import run_state_runtime
     from runtime.state_machine import RuntimeStateMachine
@@ -73,7 +74,7 @@ except ModuleNotFoundError:  # pragma: no cover
     from runtime.cognition.unified_market_intelligence_core import infer_unified_market_intelligence
     from runtime.cognition.world_model_engine import simulate_market_world_model
     from runtime.event_stream import EVENT_HEARTBEAT, EventStream
-    from runtime.forecast_ledger import create_forecast
+    from runtime.forecast_ledger import create_forecast, latest_forecast, process_due_runtime_forecast
     from runtime.logging import log_execution, utc_now_iso
     from runtime.orchestrator import run_state_runtime
     from runtime.state_machine import RuntimeStateMachine
@@ -258,6 +259,17 @@ class DecisionLoop:
                 "causal": llm_feedback.get("modifiers", {}).get("causal_edge_strength_delta"),
                 "risk": llm_feedback.get("modifiers", {}).get("risk_confidence_delta"),
             }
+            material_runtime_events = [event for event in events if _is_material_forecast_event(event)]
+            runtime_forecast_outcome = (
+                process_due_runtime_forecast(
+                    current_state=str(transition.get("current_state") or "Unknown"),
+                    current_cycle_id=str(result.get("run_id") or ""),
+                    event_ids=[str(event.get("event_id")) for event in material_runtime_events],
+                    db_path=self.config.db_path,
+                )
+                if material_runtime_events
+                else {"status": "not_due", "reason": "no_real_material_observation"}
+            )
             trust_score = compute_trust_score(
                 cognitive_state=cognition_snapshot,
                 llm_output=decision_packet if isinstance(decision_packet, dict) else {},
@@ -467,6 +479,10 @@ class DecisionLoop:
                     "decision_brief_id": result["run_id"],
                     "forecast_id": runtime_forecast.get("forecast_id"),
                     "forecast_status": runtime_forecast.get("status"),
+                    "forecast_registration_reason": runtime_forecast.get("reason"),
+                    "forecast_outcome_id": runtime_forecast_outcome.get("forecast_id"),
+                    "forecast_outcome_status": runtime_forecast_outcome.get("status"),
+                    "forecast_outcome_error": runtime_forecast_outcome.get("prediction_error"),
                     "decision_packet_action": result.get("decision_packet", {}).get("recommended_action"),
                     "decision_packet_risk": result.get("decision_packet", {}).get("risk_level"),
                     "decision_packet_confidence": result.get("decision_packet", {}).get("confidence"),
@@ -642,6 +658,9 @@ def _register_runtime_forecast(
     run_id = str(result.get("run_id") or "")
     if not run_id:
         return {"status": "skipped", "error": "missing_run_id"}
+    material_events = [event for event in events if _is_material_forecast_event(event)]
+    if not material_events:
+        return {"status": "skipped", "reason": "no_material_event"}
     drivers = []
     primary = causal.get("primary_driver")
     if primary:
@@ -649,6 +668,22 @@ def _register_runtime_forecast(
     attention = causal.get("attention_meaning")
     if attention:
         drivers.append(str(attention))
+    expected_state = str(transition.get("proposed_state") or transition.get("current_state") or "Unknown")
+    active_hypothesis = str(active_causal_structure.get("active_hypothesis_id") or "Unknown")
+    signature = _material_forecast_signature(
+        expected_state=expected_state,
+        active_hypothesis=active_hypothesis,
+        drivers=drivers,
+        event_types=[str(event.get("event_type")) for event in material_events],
+    )
+    previous = latest_forecast(subject="runtime_market_structure", db_path=db_path)
+    if previous and str(previous.get("material_signature") or "") == signature:
+        return {
+            "status": "skipped",
+            "reason": "unchanged_material_signature",
+            "forecast_id": previous.get("forecast_id"),
+            "material_signature": signature,
+        }
     forecast = create_forecast(
         {
             "forecast_id": f"runtime-{run_id}",
@@ -658,11 +693,11 @@ def _register_runtime_forecast(
                 "Non-binding structural runtime forecast: current causal structure remains coherent "
                 "until contradicted by later observed state."
             ),
-            "expected_direction_state": str(transition.get("proposed_state") or transition.get("current_state") or "Unknown"),
+            "expected_direction_state": expected_state,
             "confidence": _safe_float(decision_packet.get("confidence"), 0.0)
             if isinstance(decision_packet, dict)
             else 0.0,
-            "active_hypothesis": str(active_causal_structure.get("active_hypothesis_id") or "Unknown"),
+            "active_hypothesis": active_hypothesis,
             "causal_drivers": drivers,
             "invalidation_conditions": [
                 "later_runtime_state_conflicts_with_expected_structure",
@@ -671,12 +706,14 @@ def _register_runtime_forecast(
             "expected_observation_window": "next_runtime_cycle_or_user_supported_evaluation",
             "runtime_lineage": {
                 "cycle_type": "decision_loop_cycle",
-                "event_ids": [str(event.get("event_id")) for event in events],
-                "event_types": [str(event.get("event_type")) for event in events],
+                "event_ids": [str(event.get("event_id")) for event in material_events],
+                "event_types": [str(event.get("event_type")) for event in material_events],
                 "decision_brief_id": result.get("run_id"),
                 "system_state": transition.get("current_state"),
                 "proposed_state": transition.get("proposed_state"),
             },
+            "material_signature": signature,
+            "material_reason": "material_event_or_structure_change",
         },
         db_path=db_path,
     )
@@ -684,4 +721,35 @@ def _register_runtime_forecast(
         "status": forecast.get("status"),
         "forecast_id": forecast.get("forecast_id"),
         "runtime_lineage": forecast.get("runtime_lineage", {}),
+        "reason": "created_material_forecast",
+        "material_signature": signature,
     }
+
+
+def _is_material_forecast_event(event: Dict[str, object]) -> bool:
+    event_type = str(event.get("event_type") or "")
+    source = str(event.get("source") or "")
+    payload = event.get("payload") if isinstance(event.get("payload"), dict) else {}
+    if event_type == EVENT_HEARTBEAT or source in {"proactive_update", "simulated", "controlled_fixture"}:
+        return False
+    if isinstance(payload, dict) and payload.get("update_kind") == "proactive_context_refresh":
+        return False
+    return bool(event_type)
+
+
+def _material_forecast_signature(
+    *,
+    expected_state: str,
+    active_hypothesis: str,
+    drivers: List[str],
+    event_types: List[str],
+) -> str:
+    identity = "|".join(
+        [
+            expected_state.strip().upper(),
+            active_hypothesis.strip().upper(),
+            *sorted({item.strip().lower() for item in drivers if item.strip()}),
+            *sorted({item.strip().lower() for item in event_types if item.strip()}),
+        ]
+    )
+    return hashlib.sha256(identity.encode("utf-8")).hexdigest()[:24]

@@ -8,12 +8,15 @@ adapter.
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
+from zoneinfo import ZoneInfo
 
 from runtime.adapter.input_router import route_to_runtime_event
 from runtime.event_stream import EventStream
 from runtime.logging import utc_now_iso
+from runtime.market_evidence_sources import fetch_public_market_evidence
 from runtime.portfolio_context import build_portfolio_context
 
 
@@ -50,6 +53,13 @@ def refresh_market_intelligence(
         observations.append(observation)
         if observation.get("normalized_event_type"):
             events.append(market_observation_to_event(observation))
+    evidence = fetch_public_market_evidence(
+        [item for item in positions[:max_assets] if isinstance(item, Mapping)]
+    )
+    evidence_items = evidence.get("items", []) if isinstance(evidence, Mapping) else []
+    for item in evidence_items:
+        if isinstance(item, Mapping):
+            events.append(market_evidence_to_event(item))
     enqueued = 0
     if enqueue and events:
         stream = EventStream(db_path=db_path)
@@ -65,9 +75,11 @@ def refresh_market_intelligence(
     return {
         "timestamp": utc_now_iso(),
         "status": "ok" if observations else "no_configured_assets",
-        "channels": channel_status(observations),
+        "channels": channel_status(observations, evidence.get("channel_statuses", {})),
         "portfolio_context_status": context.get("status"),
         "observations": observations,
+        "evidence_items": evidence_items,
+        "source_errors": evidence.get("errors", {}),
         "events_prepared": len(events),
         "events_enqueued": enqueued,
         "degraded": not observations or any(item.get("data_quality_status") not in USABLE_DATA_STATUSES for item in observations),
@@ -103,7 +115,37 @@ def market_observation_to_event(observation: Mapping[str, Any]) -> dict[str, Any
     return routed
 
 
-def channel_status(observations: list[Mapping[str, Any]]) -> dict[str, Any]:
+def market_evidence_to_event(evidence: Mapping[str, Any]) -> dict[str, Any]:
+    """Return a source-neutral Signal event from one external evidence item."""
+
+    return route_to_runtime_event(
+        {
+            "type": "market_event",
+            "source": evidence.get("source") or "market_evidence",
+            "timestamp": evidence.get("timestamp") or utc_now_iso(),
+            "confidence": 0.85 if evidence.get("verification_status") == "VERIFIED_OFFICIAL_SOURCE" else 0.6,
+            "payload": {
+                "channel": evidence.get("channel"),
+                "headline": evidence.get("headline"),
+                "freshness": evidence.get("freshness"),
+                "source_type": evidence.get("source_type"),
+                "classification": evidence.get("classification"),
+                "verification_status": evidence.get("verification_status"),
+                "affected_assets": evidence.get("affected_assets", []),
+                "affected_themes": evidence.get("affected_themes", []),
+                "world_model_node": evidence.get("world_model_node"),
+                "thesis_changed": evidence.get("thesis_changed", "UNASSESSED"),
+                "source_url": evidence.get("source_url"),
+                "details": evidence.get("details", {}),
+            },
+        }
+    )
+
+
+def channel_status(
+    observations: list[Mapping[str, Any]],
+    external_statuses: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     """Report which mandated channels are real vs missing."""
 
     price_observations = [item for item in observations if item.get("channel") == "price_volume"]
@@ -114,19 +156,22 @@ def channel_status(observations: list[Mapping[str, Any]]) -> dict[str, Any]:
     if price_available and price_fixture:
         price_status = "SIMULATED"
     elif price_available:
-        price_status = "LIVE"
+        freshness = {str(item.get("freshness") or "").upper() for item in price_observations if item.get("data_quality_status") in USABLE_DATA_STATUSES}
+        price_status = "LIVE" if freshness & {"LIVE", "FRESH", "AVAILABLE"} else "DELAYED" if "DELAYED" in freshness else "CACHED"
     elif price_failed:
         price_status = "FAILED"
     else:
         price_status = "NOT_CONFIGURED"
+    external = external_statuses if isinstance(external_statuses, Mapping) else {}
+    derived_status = "DELAYED" if price_available and not price_fixture else "SIMULATED" if price_fixture else "NOT_CONFIGURED"
     return {
         "price_volume": price_status,
-        "market_breadth": "NOT_CONFIGURED",
-        "volatility": "SIMULATED" if price_available else "NOT_CONFIGURED",
-        "liquidity_proxy": "SIMULATED" if price_available else "NOT_CONFIGURED",
-        "news_announcement": "NOT_CONFIGURED",
+        "market_breadth": str(external.get("market_breadth") or "NOT_CONFIGURED"),
+        "volatility": derived_status,
+        "liquidity_proxy": derived_status,
+        "news_announcement": str(external.get("news_announcement") or "NOT_CONFIGURED"),
         "narrative_attention": "NOT_CONFIGURED",
-        "macro_policy": "NOT_CONFIGURED",
+        "macro_policy": str(external.get("macro_policy") or "NOT_CONFIGURED"),
         "portfolio_relevance": "LIVE" if portfolio_available and not price_fixture else ("SIMULATED" if portfolio_available else "NOT_CONFIGURED"),
     }
 
@@ -193,6 +238,8 @@ def _observe_position(position: Mapping[str, Any], fixture: Mapping[str, Any] | 
         "channel": "price_volume",
         "portfolio_relevant": True,
         "latest_price_available": snapshot.get("latest_price") is not None,
+        "latest_price": snapshot.get("latest_price"),
+        "source_url": _market_source_url(source),
         "daily_change_pct": snapshot.get("daily_change_pct"),
         "change_5d_pct": snapshot.get("change_5d_pct"),
         "change_20d_pct": snapshot.get("change_20d_pct"),
@@ -206,8 +253,32 @@ def _freshness(snapshot: Mapping[str, Any]) -> str:
     if snapshot.get("data_freshness"):
         return str(snapshot.get("data_freshness"))
     if snapshot.get("timestamp"):
-        return "Available"
+        try:
+            observed = datetime.fromisoformat(str(snapshot.get("timestamp")).replace("Z", "+00:00"))
+            if observed.tzinfo is None:
+                observed = observed.replace(tzinfo=ZoneInfo("Asia/Shanghai"))
+            age_seconds = max(0.0, (datetime.now(timezone.utc) - observed.astimezone(timezone.utc)).total_seconds())
+            if age_seconds <= 900:
+                return "LIVE"
+            if age_seconds <= 86400:
+                return "DELAYED"
+            return "CACHED"
+        except ValueError:
+            return "Unknown"
     return "Unknown"
+
+
+def _market_source_url(source: str) -> str:
+    return {
+        "tencent_quote": "https://qt.gtimg.cn/",
+        "tencent_kline": "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get",
+        "sina_quote": "https://hq.sinajs.cn/",
+        "eastmoney_quote": "https://quote.eastmoney.com/",
+        "eastmoney_kline": "https://quote.eastmoney.com/",
+        "yahoo_chart": "https://finance.yahoo.com/",
+        "yfinance": "https://finance.yahoo.com/",
+        "akshare": "https://akshare.akfamily.xyz/",
+    }.get(source, "")
 
 
 def _load_market_fixtures(config_path: str | None) -> dict[str, Mapping[str, Any]]:

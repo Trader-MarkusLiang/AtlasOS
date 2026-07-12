@@ -58,6 +58,8 @@ def create_forecast(payload: Mapping[str, Any], *, db_path: str | None = None) -
         "hypothesis_evaluation": {},
         "trust_update": {},
         "runtime_lineage": _mapping(payload.get("runtime_lineage")),
+        "material_signature": _text(payload.get("material_signature"), ""),
+        "material_reason": _text(payload.get("material_reason"), ""),
         "lineage": [
             {"event": "created", "timestamp": now, "status": "OPEN"},
         ],
@@ -182,6 +184,92 @@ def get_forecast(forecast_id: str, *, db_path: str | None = None) -> dict[str, A
     with _connect(db_path) as conn:
         row = conn.execute("SELECT record_json FROM forecast_ledger WHERE forecast_id = ?", (forecast_id,)).fetchone()
     return json.loads(row["record_json"]) if row else {}
+
+
+def latest_forecast(
+    *,
+    subject: str | None = None,
+    status: str | None = None,
+    db_path: str | None = None,
+) -> dict[str, Any]:
+    """Return the latest matching forecast without changing it."""
+
+    _ensure_schema(db_path)
+    clauses = []
+    params: list[Any] = []
+    if status:
+        clauses.append("status = ?")
+        params.append(status.upper())
+    query = "SELECT record_json FROM forecast_ledger"
+    if clauses:
+        query += " WHERE " + " AND ".join(clauses)
+    query += " ORDER BY created_at DESC"
+    with _connect(db_path) as conn:
+        rows = conn.execute(query, params).fetchall()
+    for row in rows:
+        record = json.loads(row["record_json"])
+        if subject is None or str(record.get("subject")) == subject:
+            return record
+    return {}
+
+
+def process_due_runtime_forecast(
+    *,
+    current_state: str,
+    current_cycle_id: str,
+    event_ids: list[str],
+    db_path: str | None = None,
+) -> dict[str, Any]:
+    """Close the latest prior-cycle one-step runtime forecast from later observed state."""
+
+    forecast = latest_forecast(subject="runtime_market_structure", status="OPEN", db_path=db_path)
+    if not forecast:
+        return {"status": "not_available", "reason": "no_open_runtime_forecast"}
+    lineage = _mapping(forecast.get("runtime_lineage"))
+    if str(lineage.get("decision_brief_id") or "") == str(current_cycle_id or ""):
+        return {"status": "not_due", "forecast_id": forecast.get("forecast_id")}
+    matured = mark_forecast_matured(
+        str(forecast.get("forecast_id")),
+        {
+            "reason": "next_runtime_cycle_observed",
+            "current_cycle_id": current_cycle_id,
+            "event_ids": event_ids,
+            "observed_state": current_state,
+        },
+        db_path=db_path,
+    )
+    if matured.get("status") != "MATURED":
+        return matured
+    expected = str(matured.get("expected_direction_state") or "Unknown")
+    if not current_state or current_state.lower() == "unknown":
+        outcome_status = "INCONCLUSIVE"
+    elif expected.strip().lower() == current_state.strip().lower():
+        outcome_status = "VERIFIED"
+    else:
+        outcome_status = "INVALIDATED"
+    evaluated = evaluate_forecast(
+        str(matured.get("forecast_id")),
+        {
+            "actual_outcome": current_state or "Unknown",
+            "status": outcome_status,
+            "outcome_timestamp": utc_now_iso(),
+            "explanation_error": {
+                "source": "later_runtime_state",
+                "expected_state": expected,
+                "observed_state": current_state or "Unknown",
+            },
+        },
+        db_path=db_path,
+    )
+    return {
+        "status": evaluated.get("status"),
+        "forecast_id": evaluated.get("forecast_id"),
+        "expected_state": expected,
+        "observed_state": current_state or "Unknown",
+        "prediction_error": evaluated.get("prediction_error"),
+        "calibration_error": evaluated.get("calibration_error"),
+        "trust_update": evaluated.get("trust_update", {}),
+    }
 
 
 def ledger_metrics(forecasts: list[Mapping[str, Any]]) -> dict[str, Any]:

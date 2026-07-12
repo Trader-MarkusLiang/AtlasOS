@@ -78,6 +78,7 @@ class AtlasRuntimeDaemonConfig:
     proactive_update_enabled: bool = True
     proactive_update_every_seconds: int = DEFAULT_PROACTIVE_UPDATE_SECONDS
     proactive_update_run_on_start: bool = True
+    runtime_mode: str = "auto"
 
 
 class AtlasRuntimeDaemon:
@@ -90,7 +91,8 @@ class AtlasRuntimeDaemon:
     ) -> None:
         self.config = config or AtlasRuntimeDaemonConfig()
         self.schedule = RuntimeScheduleConfig(interval_seconds=self.config.interval_seconds)
-        self.event_source = event_source or SimulatedMarketEventSource()
+        self.runtime_mode = _resolve_runtime_mode(self.config.runtime_mode, self.config.market_config_path)
+        self.event_source = event_source if event_source is not None else (SimulatedMarketEventSource() if self.runtime_mode == "simulation" else None)
         self.output_logger = RuntimeOutputLogger(log_path=self.config.log_path)
         self.store = StateStore(db_path=self.config.db_path)
         self.ui_inbox_path = Path(self.config.ui_inbox_path or "runtime/inbox/user_event.jsonl")
@@ -125,15 +127,16 @@ class AtlasRuntimeDaemon:
             ui_events_ingested = self._ingest_ui_inbox_events()
             market_refresh = self._refresh_market_if_due(tick_index)
             proactive_update = self._proactive_update_if_due(tick_index, market_refresh)
-            raw_event = self.event_source.get_event()
-            runtime_event = event_to_runtime_event(raw_event)
-            self.loop.event_stream.enqueue_event(
-                runtime_event["event_type"],
-                payload=runtime_event["payload"],
-                priority=runtime_event["priority"],
-                source=runtime_event["source"],
-                created_at=runtime_event["created_at"],
-            )
+            if self.event_source is not None:
+                raw_event = self.event_source.get_event()
+                runtime_event = event_to_runtime_event(raw_event)
+                self.loop.event_stream.enqueue_event(
+                    runtime_event["event_type"],
+                    payload=runtime_event["payload"],
+                    priority=runtime_event["priority"],
+                    source=runtime_event["source"],
+                    created_at=runtime_event["created_at"],
+                )
             cycle = self.loop.run_once()
         except Exception as exc:  # Keep daemon alive across single-tick failures.
             status = "failure"
@@ -433,6 +436,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--disable-proactive-update", action="store_true")
     parser.add_argument("--proactive-update-every-seconds", type=int, default=DEFAULT_PROACTIVE_UPDATE_SECONDS)
     parser.add_argument("--no-proactive-update-on-start", action="store_true")
+    parser.add_argument("--runtime-mode", choices=["auto", "simulation", "live"], default="auto")
     return parser
 
 
@@ -456,6 +460,7 @@ def main() -> None:
             proactive_update_enabled=not args.disable_proactive_update,
             proactive_update_every_seconds=args.proactive_update_every_seconds,
             proactive_update_run_on_start=not args.no_proactive_update_on_start,
+            runtime_mode=args.runtime_mode,
         )
     )
     signal.signal(signal.SIGINT, daemon.stop)
@@ -467,6 +472,23 @@ def _select(value: Any, keys: list[str]) -> Dict[str, Any]:
     if not isinstance(value, dict):
         return {}
     return {key: value.get(key) for key in keys}
+
+
+def _resolve_runtime_mode(configured: str, config_path: Optional[str]) -> str:
+    mode = str(configured or "auto").strip().lower()
+    if mode in {"simulation", "live"}:
+        return mode
+    path = Path(config_path) if config_path else None
+    if path and path.exists():
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            system = data.get("system", {}) if isinstance(data, dict) else {}
+            selected = str(system.get("runtime_mode") or "simulation").strip().lower()
+            if selected in {"simulation", "live"}:
+                return selected
+        except (OSError, json.JSONDecodeError):
+            pass
+    return "simulation"
 
 
 def _parse_datetime(value: Optional[str]) -> Optional[datetime]:

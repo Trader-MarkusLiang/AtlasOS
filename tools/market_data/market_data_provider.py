@@ -158,6 +158,45 @@ def _eastmoney_kline_history(ticker: str, market: str, period: str) -> pd.DataFr
     return df
 
 
+def _tencent_kline_history(ticker: str, market: str, period: str) -> pd.DataFrame:
+    symbol = _market_to_tencent_symbol(ticker, market)
+    if not symbol or not symbol.startswith(("sh", "sz", "hk")):
+        raise ValueError(f"tencent kline does not support ticker={ticker!r} market={market!r}")
+    params = {"param": f"{symbol},day,,,80,qfq"}
+    url = "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?" + urllib.parse.urlencode(params)
+    payload = _read_json_url(url)
+    data = payload.get("data") if isinstance(payload, dict) else {}
+    symbol_data = data.get(symbol) if isinstance(data, dict) else {}
+    rows_data = None
+    if isinstance(symbol_data, dict):
+        rows_data = symbol_data.get("qfqday") or symbol_data.get("day")
+    if not isinstance(rows_data, list) or not rows_data:
+        return pd.DataFrame()
+
+    rows = []
+    for raw in rows_data:
+        if not isinstance(raw, list) or len(raw) < 6:
+            continue
+        rows.append(
+            {
+                "date": pd.to_datetime(raw[0], errors="coerce"),
+                "open": _safe_float(raw[1]),
+                "close": _safe_float(raw[2]),
+                "high": _safe_float(raw[3]),
+                "low": _safe_float(raw[4]),
+                "volume": _tencent_volume(_safe_float(raw[5]), symbol),
+            }
+        )
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return df
+    for col in ["open", "high", "low", "close", "volume"]:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+    df = df.dropna(subset=["close"])
+    df.attrs["source"] = "tencent_kline"
+    return df
+
+
 def _akshare_history(ticker: str, market: str, period: str) -> pd.DataFrame:
     import akshare as ak
 
@@ -281,6 +320,7 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
     attempts: list[str] = []
     if market in {"A-share", "HK"}:
         attempts.append("eastmoney_kline")
+        attempts.append("tencent_kline")
         attempts.append("akshare")
     if market in {"A-share", "HK", "US", "US / ETF", "ETF"}:
         attempts.append("yfinance")
@@ -305,6 +345,8 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
 def _run_history_loader(source: str, ticker: str, market: str, period: str) -> pd.DataFrame:
     if source == "eastmoney_kline":
         return _eastmoney_kline_history(ticker, market, period)
+    if source == "tencent_kline":
+        return _tencent_kline_history(ticker, market, period)
     if source == "akshare":
         return _akshare_history(ticker, market, period)
     if source == "yfinance":
