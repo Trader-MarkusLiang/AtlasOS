@@ -71,23 +71,23 @@ def validate_state_projection(state: dict[str, object], intelligence: dict[str, 
 
 def validate_home_html(html: str, language: str) -> list[dict[str, object]]:
     if language == "zh":
-        terms = ["当前状态", "市场前瞻", "组合影响", "研究候选", "预测与兑现", "专家分析", "原始证据"]
-        safety = "候选排序不是交易动作"
+        terms = ["当前组合状态", "今日是否行动", "真正影响判断的最新证据", "从信号到条件结论", "四种可问责情景", "候选优先级与评分依据", "近期预测责任检查"]
+        safety = "只代表研究优先级，不代表 CDE 资本权限"
         language_checks = [
-            check("zh home localizes Raw Evidence heading", "Raw Evidence" not in html),
-            check("zh home localizes data-quality limitation", "置信度受到" in html or "置信度受限" in html),
+            check("zh home localizes action status", "需要条件确认" in html or "暂不需要" in html or "需要复核" in html),
+            check("zh home explains missing calibration", "预测校准未成立前" in html),
         ]
     else:
         terms = [
-            "Current State",
-            "Market Outlook",
-            "Portfolio Impact",
-            "Research Candidates",
-            "Forecast Accountability",
-            "Expert Analysis",
-            "Raw Evidence",
+            "Current Portfolio State",
+            "Action Today?",
+            "Latest Evidence That Matters",
+            "From Signal to Conditional Conclusion",
+            "Four Accountable Scenarios",
+            "Candidate Priority and Score Basis",
+            "Recent forecast accountability",
         ]
-        safety = "Candidate Ranking is not a trading action"
+        safety = "it is not CDE authority"
         language_checks = []
     checks = [check(f"{language} home contains {term}", term in html) for term in terms]
     checks.extend(
@@ -96,8 +96,8 @@ def validate_home_html(html: str, language: str) -> list[dict[str, object]]:
             check(f"{language} home no Buy/Sell candidate action", "Buy" not in html and "Sell" not in html),
             check(f"{language} home has forecast link", 'href="/predictions"' in html),
             check(f"{language} home has candidate route link", 'href="/candidates"' in html),
-            check(f"{language} home has expert raw nested details", "raw-evidence-details" in html),
-            check(f"{language} home has candidate filters", "data-candidate-filter" in html),
+            check(f"{language} home has collapsed supporting context", "supporting-context" in html),
+            check(f"{language} home has portfolio-first contract", 'data-home-layout="portfolio-first-investor-brief"' in html),
         ]
     )
     checks.extend(language_checks)

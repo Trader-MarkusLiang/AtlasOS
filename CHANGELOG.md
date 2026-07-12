@@ -1,5 +1,21 @@
 # Changelog
 
+## Portfolio-First Investor Home and Accountable Market Evidence - 2026-07-12
+
+- Rebuilt Home around portfolio state, today's review need, material evidence, reasoning lineage,
+  four accountable scenarios, conditional posture, candidate research priority, and forecast
+  accountability.
+- Added bounded Tencent quote, Sina breadth, PBOC policy, and SSE announcement adapters with honest
+  freshness and failure states.
+- Separated configured LLM provider from latest inference outcome and normalized malformed-response
+  visibility in the provider adapter.
+- Added material forecast deduplication, next-cycle maturity/evaluation, legacy-open classification,
+  and verified bounded forecast-error feedback.
+- Repaired the shared mobile App Shell so the 390px Home surface has no horizontal overflow.
+- Preserved Event Fusion, CIL, LMSE, MPCE, MLE, UMIS, CDE, Decision Contract, broker, and trading
+  boundaries.
+
+
 ## Clean-Room CR08 Real-Duration Soak Closure - 2026-07-08
 
 - Repaired provider outage latency so failed LLM and market-provider paths degrade within bounded

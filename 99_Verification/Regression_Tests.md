@@ -1250,3 +1250,33 @@ Fail conditions:
 - ML / RL, trading logic, prediction behavior, broker integration, portfolio automation, or CDE
   bypass is introduced.
 - `portfolio.local.yaml` is modified.
+
+## Case 37: Investor Home Is Portfolio-First, Truthful, and Accountable
+
+Expected output:
+
+1. Home order is portfolio command -> configured holdings -> action review -> material evidence ->
+   reasoning chain -> scenarios -> conditional playbook -> candidate pool -> forecast accountability.
+2. Unavailable observations do not count as usable or fresh.
+3. Missing 5-day / 20-day values never render as `0.0%`.
+4. Configured provider identity and latest inference outcome are separate fields.
+5. Every material evidence item exposes source, timestamp, freshness, classification, affected
+   scope, verification status, and thesis impact state.
+6. Candidate score remains `N/A` until an evidence-backed score exists and remains separate from
+   CDE authority.
+7. Material runtime forecasts deduplicate, mature, and evaluate on the next eligible runtime cycle.
+8. Legacy open forecasts are classified, not bulk-settled.
+9. Forecast hit/miss feedback changes later trust, hypothesis distribution, and bounded structural
+   mutation through supported runtime paths.
+10. Chinese and English render the same product sections.
+11. Desktop 1440x1000 and mobile 390x844 have no document-level horizontal overflow.
+12. Private account values, provider secrets, Buy/Sell commands, broker execution, and CDE bypass
+    remain absent.
+
+Fail conditions:
+
+- Missing observations appear live, fresh, or numerically zero.
+- A simulated heartbeat creates or settles a real forecast.
+- Candidate priority is presented as capital authority.
+- A forecast miss changes a regime label directly or creates trading execution.
+- Mobile navigation or Home content expands beyond the viewport.

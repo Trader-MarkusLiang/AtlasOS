@@ -1,0 +1,41 @@
+{
+  "checks": {
+    "candidate_identity_registry_validated": true,
+    "candidate_score_separate_from_cde": true,
+    "candidate_ticker_extracted": true,
+    "candidate_unscored_remains_na": true,
+    "channels_report_honest_status": true,
+    "latest_inference_succeeded": true,
+    "live_runtime_reachable": true,
+    "no_fake_multiday_zero": true,
+    "no_private_amount_fields": true,
+    "portfolio_first_chain_order": true,
+    "portfolio_history_available": true,
+    "portfolio_scenario_differential": true,
+    "private_runtime_config_untracked": true,
+    "provider_config_separate_from_inference": true,
+    "real_observation_reaches_state": true,
+    "unavailable_observations_excluded": true
+  },
+  "evidence": {
+    "channel_status_counts": {
+      "CACHED": 1,
+      "DELAYED": 4,
+      "LIVE": 2,
+      "NOT_CONFIGURED": 1
+    },
+    "configured_provider_present": true,
+    "latest_inference_status": "succeeded",
+    "market_observation_count": 3,
+    "portfolio_scenario_signatures": [
+      "PORT_A",
+      "PORT_B",
+      "PORT_C",
+      "Configured portfolio"
+    ],
+    "tick_counter_present": true,
+    "usable_observation_count": 3
+  },
+  "failures": [],
+  "status": "PASS"
+}

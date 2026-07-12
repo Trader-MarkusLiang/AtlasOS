@@ -33,7 +33,18 @@ from runtime.state_store import StateStore  # noqa: E402
 class EquivalentEventSource:
     """Return equivalent attention/liquidity events for control and treatment."""
 
+    def __init__(self) -> None:
+        self.calls = 0
+
     def get_event(self) -> dict[str, Any]:
+        self.calls += 1
+        if self.calls > 1:
+            return {
+                "timestamp": utc_now_iso(),
+                "type": "heartbeat",
+                "source": "goal_06_equivalent_runtime_event",
+                "payload": {"reason": "next_cycle_outcome_observation"},
+            }
         return {
             "timestamp": utc_now_iso(),
             "type": "price",
@@ -74,10 +85,12 @@ def main() -> int:
             result["comparison"] = _compare(control, treatment)
 
             _check(
-                "control_no_feedback",
-                control["later_tick"]["forecast_calibration_feedback_status"] == "not_available",
+                "control_feedback_applied",
+                control["later_tick"]["forecast_calibration_feedback_status"] == "applied",
                 result,
             )
+            _check("control_feedback_delta_positive", control["later_tick"]["forecast_calibration_feedback_delta"] > 0, result)
+            _check("control_runtime_forecast_verified", control["evaluated_forecast_status"] == "VERIFIED", result)
             _check(
                 "treatment_feedback_applied",
                 treatment["later_tick"]["forecast_calibration_feedback_status"] == "applied",
@@ -147,36 +160,50 @@ def _run_path(root: Path, *, treatment: bool) -> dict[str, Any]:
     runtime_forecast = _latest_runtime_forecast(env["ATLAS_RUNTIME_DB"])
     evaluated_status = ""
     server: subprocess.Popen[str] | None = None
-    if treatment:
-        port = _free_port()
-        server = _start_ui_server(env, port)
-        base = f"http://127.0.0.1:{port}"
-        try:
-            _wait_http(base + "/predictions?format=json")
-            _post_json(
-                base + "/predictions/mature",
+    port = _free_port()
+    server = _start_ui_server(env, port)
+    base = f"http://127.0.0.1:{port}"
+    try:
+        _wait_http(base + "/predictions?format=json")
+        _post_json(
+            base + "/predictions/mature",
+            {
+                "forecast_id": runtime_forecast["forecast_id"],
+                "maturity_reason": "goal_06_outcome_window_closed",
+            },
+        )
+        outcome = {
+            "forecast_id": runtime_forecast["forecast_id"],
+            "actual_outcome": runtime_forecast.get("expected_direction_state") or "Unknown",
+            "status": "VERIFIED",
+        }
+        if treatment:
+            outcome.update(
                 {
-                    "forecast_id": runtime_forecast["forecast_id"],
-                    "maturity_reason": "goal_06_treatment_window_closed",
-                },
-            )
-            evaluated = _post_json(
-                base + "/predictions/evaluate",
-                {
-                    "forecast_id": runtime_forecast["forecast_id"],
                     "actual_outcome": "later_runtime_state_conflicts_with_expected_structure",
                     "status": "INVALIDATED",
-                },
+                }
             )
-            evaluated_status = str(evaluated.get("status") or "")
-        finally:
-            server.terminate()
-            try:
-                server.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                server.kill()
+        evaluated = _post_json(base + "/predictions/evaluate", outcome)
+        evaluated_status = str(evaluated.get("status") or "")
+    finally:
+        server.terminate()
+        try:
+            server.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            server.kill()
 
     later = daemon.run_tick(1)
+    final_forecast = next(
+        (
+            item
+            for item in list_forecasts(db_path=env["ATLAS_RUNTIME_DB"], limit=20).get("forecasts", [])
+            if item.get("forecast_id") == runtime_forecast.get("forecast_id")
+        ),
+        {},
+    )
+    if not evaluated_status:
+        evaluated_status = str(final_forecast.get("status") or "")
     store = StateStore(db_path=env["ATLAS_RUNTIME_DB"])
     return {
         "first_tick": _capture_tick(first, store),
@@ -187,7 +214,7 @@ def _run_path(root: Path, *, treatment: bool) -> dict[str, Any]:
             "decision_brief_id": runtime_forecast.get("runtime_lineage", {}).get("decision_brief_id"),
         },
         "evaluated_forecast_status": evaluated_status or "not_evaluated",
-        "mutation_method": "supported_prediction_api" if treatment else "none",
+        "mutation_method": "supported_prediction_api" if treatment else "supported_prediction_api_control",
         "no_trading_execution": bool(later.get("system_metrics", {}).get("no_trading_execution")),
     }
 

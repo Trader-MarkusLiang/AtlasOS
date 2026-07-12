@@ -1,0 +1,37 @@
+{
+  "check": {
+    "actionRect": {
+      "height": 243,
+      "width": 955
+    },
+    "answerFits": true,
+    "answerRect": {
+      "clientWidth": 420,
+      "fontSize": "47.4857px",
+      "height": 42,
+      "scrollWidth": 420,
+      "text": "CONDITIONAL",
+      "width": 420
+    },
+    "forbidden": [],
+    "hasAllSections": true,
+    "layout": true,
+    "noInspector": true,
+    "overflowX": false,
+    "url": "http://127.0.0.1:8799/"
+  },
+  "check1024": {
+    "clientWidth": 1024,
+    "noInspector": true,
+    "overflowX": false,
+    "answerClipped": false,
+    "firstGrid": "962.562px",
+    "width": 1024
+  },
+  "screenshots": {
+    "desktop_full": "99_Verification/artifacts/practical_brief/home_zh_layout_refined.png",
+    "desktop_viewport": "99_Verification/artifacts/practical_brief/home_zh_layout_refined_viewport.png",
+    "responsive_1024": "99_Verification/artifacts/practical_brief/home_1024_layout_refined.png"
+  },
+  "passed": true
+}

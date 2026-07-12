@@ -1,7 +1,8 @@
 # ISSUE-2026-056 — Market Intelligence Channel Gaps
 
 Date: 2026-07-08
-Status: Open
+Date Last Seen: 2026-07-13
+Status: Accepted
 Category: Engineering
 
 ## Source
@@ -46,13 +47,30 @@ multi-channel ingestion cycle.
 
 ## Priority
 
-P2
+P0
 
 ## Decision
 
-Watch / Discuss after backbone stabilizes.
+Implement incrementally under the Portfolio-First Investor Decision Brief Goal. Start with existing
+provider capabilities and explicit degradation; do not build a broad crawler or fabricate channel
+coverage.
 
 ## Linked IP
 
 None
 
+## 2026-07-12 Progress
+
+- Portfolio quotes now fall back to Tencent and retain provider timestamps.
+- A-share breadth uses a bounded Sina sample and is labeled partial/delayed rather than full-market.
+- PBOC policy releases and SSE portfolio-related announcements enter the normal EventStream path.
+- Narrative / public-attention coverage remains `NOT_CONFIGURED`; this Issue stays open.
+
+## 2026-07-13 Progress
+
+- A bounded Tencent daily K-line fallback now supplies 5/20/60-day history for configured A-share
+  and Hong Kong holdings when earlier providers fail.
+- Browser and runtime validation confirmed all three configured holdings expose usable current and
+  multi-period observations without replacing stale weekend data with false `LIVE` status.
+- Current channel state includes real, delayed, cached, and explicitly not-configured channels;
+  narrative / public-attention coverage remains the open gap.

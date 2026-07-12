@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "desktop": {
+    "action_visible_first_viewport": true,
+    "document_width": 1440,
+    "header_review": "需要条件确认",
+    "horizontal_overflow": false,
+    "lang": "zh",
+    "portfolio_first": true,
+    "viewport": {
+      "height": 1000,
+      "width": 1440
+    }
+  },
+  "mobile": {
+    "action_text": "需要条件确认",
+    "content_width": 362,
+    "document_width": 390,
+    "header_review": "需要条件确认",
+    "header_review_visible": true,
+    "horizontal_overflow": false,
+    "lang": "zh",
+    "sidebar_height": 98.5,
+    "viewport": {
+      "height": 844,
+      "width": 390
+    }
+  }
+}

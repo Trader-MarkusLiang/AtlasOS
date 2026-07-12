@@ -52,10 +52,12 @@ class ProviderFixtureHandler(BaseHTTPRequestHandler):
         elif self.path == "/empty":
             self._json(200, {"choices": [{"message": {"content": ""}}]})
         elif self.path == "/malformed":
+            body = b"{bad-json"
             self.send_response(200)
             self.send_header("content-type", "application/json")
+            self.send_header("content-length", str(len(body)))
             self.end_headers()
-            self.wfile.write(b"{bad-json")
+            self.wfile.write(body)
         elif self.path == "/model_not_found":
             self._json(404, {"error": "model_not_found"})
         else:
@@ -115,7 +117,7 @@ def main() -> int:
                 ("unauthorized", "401"),
                 ("rate_limited", "429"),
                 ("empty", "empty_response"),
-                ("malformed", "Expecting"),
+                ("malformed", "malformed_response"),
                 ("model_not_found", "404"),
             ]:
                 routed = route_llm_request(prompt="fixture", context={}, provider_id=provider_id, config_path=str(config_path))

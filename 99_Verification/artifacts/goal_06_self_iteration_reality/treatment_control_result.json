@@ -1,6 +1,8 @@
 {
   "checks": {
-    "control_no_feedback": true,
+    "control_feedback_applied": true,
+    "control_feedback_delta_positive": true,
+    "control_runtime_forecast_verified": true,
     "hypothesis_distribution_changed": true,
     "no_direct_state_mutation": true,
     "no_trading_execution": true,
@@ -18,30 +20,30 @@
     "active_hypothesis_treatment": "H_INSTITUTIONAL_ROTATION",
     "confidence_control": 0.0,
     "confidence_treatment": 0.0,
-    "control_feedback_status": "not_available",
+    "control_feedback_status": "applied",
     "hypothesis_distribution_changed": true,
-    "structural_shift_delta": -0.0803,
+    "structural_shift_delta": -0.1013,
     "treatment_feedback_delta": -0.12,
     "treatment_feedback_status": "applied",
-    "trust_delta_vs_control": -0.12
+    "trust_delta_vs_control": -0.1527
   },
   "control": {
-    "evaluated_forecast_status": "not_evaluated",
+    "evaluated_forecast_status": "VERIFIED",
     "first_tick": {
       "action_bias": "neutral",
       "active_causal_hypothesis_id": "H_INSTITUTIONAL_ROTATION",
       "causal_hypothesis_score_distribution": {
-        "H_ATTENTION_FLOW": 0.4616,
-        "H_INSTITUTIONAL_ROTATION": 0.4982,
-        "H_LIQUIDITY_STRESS": 0.4953,
-        "H_NARRATIVE_REFLEXIVITY": 0.4603
+        "H_ATTENTION_FLOW": 0.4614,
+        "H_INSTITUTIONAL_ROTATION": 0.498,
+        "H_LIQUIDITY_STRESS": 0.4951,
+        "H_NARRATIVE_REFLEXIVITY": 0.4602
       },
       "causal_snapshot": {
         "attention_meaning": "attention not dominant",
         "primary_driver": "Mixed / Low Signal",
-        "regime_transition_probability": 36
+        "regime_transition_probability": 49
       },
-      "decision_brief_id": "brief-0d588d75-cb05-42a6-8f64-a15e2feeedb9",
+      "decision_brief_id": "brief-ffbdc56f-6508-4e19-85fa-6a9d8357f087",
       "decision_packet": {
         "attention_state": "unknown",
         "causal_summary": "LLM reasoning unavailable or invalid.",
@@ -57,15 +59,15 @@
       "forecast_calibration_feedback_delta": 0.0,
       "forecast_calibration_feedback_source": "no_forecast_outcomes",
       "forecast_calibration_feedback_status": "not_available",
-      "global_trust_index": 0.5319,
+      "global_trust_index": 0.53,
       "status": "success",
-      "structural_mutation_intensity": 0.0132,
-      "structural_shift_index": 0.1224,
+      "structural_mutation_intensity": 0.0129,
+      "structural_shift_index": 0.1195,
       "trust_score": {
         "cognitive_trust": 0.3929,
-        "feedback_consistency_trust": 0.92,
+        "feedback_consistency_trust": 0.9108,
         "forecast_calibration_adjustment": 0.0,
-        "global_trust_index": 0.5319,
+        "global_trust_index": 0.53,
         "llm_trust": 0.35,
         "regime_stability_trust": 0.57
       }
@@ -74,17 +76,17 @@
       "action_bias": "neutral",
       "active_causal_hypothesis_id": "H_INSTITUTIONAL_ROTATION",
       "causal_hypothesis_score_distribution": {
-        "H_ATTENTION_FLOW": 0.531,
-        "H_INSTITUTIONAL_ROTATION": 0.6156,
-        "H_LIQUIDITY_STRESS": 0.5649,
-        "H_NARRATIVE_REFLEXIVITY": 0.5401
+        "H_ATTENTION_FLOW": 0.5289,
+        "H_INSTITUTIONAL_ROTATION": 0.6311,
+        "H_LIQUIDITY_STRESS": 0.5825,
+        "H_NARRATIVE_REFLEXIVITY": 0.54
       },
       "causal_snapshot": {
         "attention_meaning": "attention not dominant",
         "primary_driver": "Mixed / Low Signal",
-        "regime_transition_probability": 36
+        "regime_transition_probability": 49
       },
-      "decision_brief_id": "brief-4f05c16e-a75e-4075-9574-b282435ff1e1",
+      "decision_brief_id": "brief-b1a13db1-ae85-44e7-9624-29e7c7785851",
       "decision_packet": {
         "attention_state": "unknown",
         "causal_summary": "LLM reasoning unavailable or invalid.",
@@ -96,28 +98,28 @@
         "risk_level": "unknown"
       },
       "decision_packet_confidence": 0.0,
-      "event_type": "volume_price_breakout",
-      "forecast_calibration_feedback_delta": 0.0,
-      "forecast_calibration_feedback_source": "no_forecast_outcomes",
-      "forecast_calibration_feedback_status": "not_available",
-      "global_trust_index": 0.5259,
+      "event_type": "market_event",
+      "forecast_calibration_feedback_delta": 0.035,
+      "forecast_calibration_feedback_source": "forecast_calibration_state",
+      "forecast_calibration_feedback_status": "applied",
+      "global_trust_index": 0.5659,
       "status": "success",
-      "structural_mutation_intensity": 0.0127,
-      "structural_shift_index": 0.1171,
+      "structural_mutation_intensity": 0.0154,
+      "structural_shift_index": 0.1434,
       "trust_score": {
-        "cognitive_trust": 0.3729,
-        "feedback_consistency_trust": 0.92,
-        "forecast_calibration_adjustment": 0.0,
-        "global_trust_index": 0.5259,
-        "llm_trust": 0.35,
-        "regime_stability_trust": 0.57
+        "cognitive_trust": 0.3707,
+        "feedback_consistency_trust": 0.9358,
+        "forecast_calibration_adjustment": 0.035,
+        "global_trust_index": 0.5659,
+        "llm_trust": 0.385,
+        "regime_stability_trust": 0.685
       }
     },
-    "mutation_method": "none",
+    "mutation_method": "supported_prediction_api_control",
     "no_trading_execution": true,
     "runtime_forecast": {
-      "decision_brief_id": "0d588d75-cb05-42a6-8f64-a15e2feeedb9",
-      "forecast_id": "runtime-0d588d75-cb05-42a6-8f64-a15e2feeedb9",
+      "decision_brief_id": "ffbdc56f-6508-4e19-85fa-6a9d8357f087",
+      "forecast_id": "runtime-ffbdc56f-6508-4e19-85fa-6a9d8357f087",
       "status_before_treatment": "OPEN"
     }
   },
@@ -137,9 +139,9 @@
       "causal_snapshot": {
         "attention_meaning": "attention not dominant",
         "primary_driver": "Mixed / Low Signal",
-        "regime_transition_probability": 36
+        "regime_transition_probability": 50
       },
-      "decision_brief_id": "brief-c64e7a0f-09b2-4c28-8137-2f03b82312fe",
+      "decision_brief_id": "brief-36705f60-afb3-4c83-85f4-526571efe762",
       "decision_packet": {
         "attention_state": "unknown",
         "causal_summary": "LLM reasoning unavailable or invalid.",
@@ -172,17 +174,17 @@
       "action_bias": "neutral",
       "active_causal_hypothesis_id": "H_INSTITUTIONAL_ROTATION",
       "causal_hypothesis_score_distribution": {
-        "H_ATTENTION_FLOW": 0.5209,
-        "H_INSTITUTIONAL_ROTATION": 0.601,
-        "H_LIQUIDITY_STRESS": 0.5515,
-        "H_NARRATIVE_REFLEXIVITY": 0.5323
+        "H_ATTENTION_FLOW": 0.5175,
+        "H_INSTITUTIONAL_ROTATION": 0.6099,
+        "H_LIQUIDITY_STRESS": 0.5622,
+        "H_NARRATIVE_REFLEXIVITY": 0.5308
       },
       "causal_snapshot": {
         "attention_meaning": "attention not dominant",
         "primary_driver": "Mixed / Low Signal",
-        "regime_transition_probability": 36
+        "regime_transition_probability": 50
       },
-      "decision_brief_id": "brief-9300f886-71bf-42dd-b241-59563ce0027d",
+      "decision_brief_id": "brief-610181fa-f609-43f3-9f02-f122ba2bf632",
       "decision_packet": {
         "attention_state": "unknown",
         "causal_summary": "LLM reasoning unavailable or invalid.",
@@ -194,28 +196,28 @@
         "risk_level": "unknown"
       },
       "decision_packet_confidence": 0.0,
-      "event_type": "volume_price_breakout",
+      "event_type": "market_event",
       "forecast_calibration_feedback_delta": -0.12,
       "forecast_calibration_feedback_source": "forecast_calibration_state",
       "forecast_calibration_feedback_status": "applied",
-      "global_trust_index": 0.4059,
+      "global_trust_index": 0.4132,
       "status": "success",
-      "structural_mutation_intensity": 0.004,
-      "structural_shift_index": 0.0368,
+      "structural_mutation_intensity": 0.0045,
+      "structural_shift_index": 0.0421,
       "trust_score": {
-        "cognitive_trust": 0.2529,
-        "feedback_consistency_trust": 0.8,
+        "cognitive_trust": 0.2157,
+        "feedback_consistency_trust": 0.7924,
         "forecast_calibration_adjustment": -0.12,
-        "global_trust_index": 0.4059,
+        "global_trust_index": 0.4132,
         "llm_trust": 0.23,
-        "regime_stability_trust": 0.45
+        "regime_stability_trust": 0.53
       }
     },
     "mutation_method": "supported_prediction_api",
     "no_trading_execution": true,
     "runtime_forecast": {
-      "decision_brief_id": "c64e7a0f-09b2-4c28-8137-2f03b82312fe",
-      "forecast_id": "runtime-c64e7a0f-09b2-4c28-8137-2f03b82312fe",
+      "decision_brief_id": "36705f60-afb3-4c83-85f4-526571efe762",
+      "forecast_id": "runtime-36705f60-afb3-4c83-85f4-526571efe762",
       "status_before_treatment": "OPEN"
     }
   }

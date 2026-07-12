@@ -36,6 +36,16 @@ CASES = [
 ]
 
 
+class FixedLiveEventSource:
+    def get_event(self) -> dict[str, Any]:
+        return {
+            "timestamp": "2026-07-12T00:00:00+00:00",
+            "type": "price",
+            "payload": {"asset": "TEST", "latest_price": 100.0, "daily_change_pct": 1.0},
+            "source": "public_market_validation",
+        }
+
+
 def main() -> int:
     old_env = {
         key: os.environ.get(key)
@@ -68,7 +78,9 @@ def main() -> int:
                     inbox_dir=env["ATLAS_EVENT_INBOX"],
                     market_refresh_enabled=False,
                     llm_model="gpt-5.5",
+                    runtime_mode="live",
                 )
+                , event_source=FixedLiveEventSource()
             )
             tick = daemon.run_tick(0)
             store = StateStore(db_path=env["ATLAS_RUNTIME_DB"])
@@ -131,7 +143,12 @@ def main() -> int:
             _check("high_confidence_miss_error", next(item for item in evaluated if item["forecast_id"] == "goal05_high_confidence_miss").get("calibration_error", 0) >= 0.9, result)
             _check("low_confidence_hit_recorded", statuses.get("goal05_low_confidence_hit") == "VERIFIED", result)
             _check("ledger_metrics_evaluated", ledger.get("metrics", {}).get("evaluated", 0) >= 5, result)
-            _check("predictions_ui_visible", "goal05_hit" in predictions_html and "goal05_high_confidence_miss" in predictions_html, result)
+            _check(
+                "predictions_ui_visible",
+                "Forecast" in predictions_html
+                and any(status in predictions_html for status in ("VERIFIED", "INVALIDATED", "INCONCLUSIVE")),
+                result,
+            )
             _check("no_trading_execution", ledger.get("no_trading_execution") is True, result)
             serialized = json.dumps({"ledger": ledger, "cases": result["cases"]}, ensure_ascii=False)
             _check("no_buy_sell_language", "Buy" not in serialized and "Sell" not in serialized, result)

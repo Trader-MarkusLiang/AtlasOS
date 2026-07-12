@@ -39,20 +39,31 @@ def main() -> int:
     en_visible = _visible_text_without_expert(en_html)
     zh_full = html.unescape(zh_html)
 
+    section_ids = [
+        "home-portfolio-command",
+        "home-current-holdings",
+        "home-action-today",
+        "home-material-changes",
+        "home-reasoning-chain",
+        "home-scenario-outlook",
+        "home-action-playbook",
+        "home-candidate-board",
+        "home-forecast-accountability",
+    ]
     checks = {
-        "A_chinese_hero": _has_any(zh_visible, ["当前主导状态", "流动性压力", "风险防御", "市场状态发生变化"]),
-        "B_secondary_english_label": bool(re.search(r"<small>(Liquidity Stress|Risk-Off|Reduce|Neutral|Volatility Shock|Portfolio Relevance)</small>", zh_html)),
-        "C_action_localized": _has_any(zh_visible, ["降低暴露", "观察", "保持", "逐步建立", "逐步增加", "中性观察"]),
-        "D_causal_summary_chinese": _has_all(zh_visible, ["主要驱动", "组合影响", "不确定性"]),
-        "E_right_inspector_chinese": _has_all(zh_visible, ["为什么会这样", "主要因果因素"]),
-        "F_factor_badges_chinese": _has_any(zh_visible, ["流动性压力", "波动冲击", "组合相关性", "叙事压力", "市场注意力"]),
-        "G_freshness_channels_chinese": _has_all(zh_visible, ["市场广度", "新闻与公告", "叙事与注意力", "宏观政策"]),
-        "H_asset_descriptions_chinese": _has_all(zh_visible, ["价格、成交量、流动性与公告更新", "A股"]),
-        "I_no_raw_iso_visible": not bool(re.search(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}", zh_visible)),
-        "J_raw_english_hidden_default": not _has_any(zh_visible, ["The fused runtime state", "RISK_OFF remains", "Because execution", "NOT_CONFIGURED"]),
-        "K_expert_evidence_accessible": "<details class=\"expert-details\"" in zh_html and "last_decision_packet" in zh_full,
-        "L_english_mode_clean": _has_any(en_visible, ["Current dominant state", "Primary driver", "Portfolio impact"]) and not _has_any(_strip_language_toggle(en_visible), ["当前主导状态", "主要驱动", "组合影响", "不确定性", "降低暴露"]),
-        "M_zh_en_parity": _has_all(zh_visible, ["当前主导状态", "为什么会这样"]) and _has_all(en_visible, ["Current dominant state", "Why this happened"]),
+        "A_portfolio_first_chinese": _has_all(zh_visible, ["当前组合状态", "已配置暴露", "未部署资金"]),
+        "B_action_status_localized": _has_any(zh_visible, ["需要条件确认", "暂不需要", "需要复核"]) and "CONDITIONAL" not in zh_visible,
+        "C_reasoning_chain_chinese": _has_all(zh_visible, ["从信号到条件结论", "结构解释", "反方证据", "缺失证据"]),
+        "D_scenarios_chinese": _has_all(zh_visible, ["四种可问责情景", "基准情景", "上行延续", "下行加速"]),
+        "E_candidate_cde_separation": "只代表研究优先级，不代表 CDE 资本权限" in zh_visible,
+        "F_forecast_accountability_chinese": "近期预测责任检查" in zh_visible,
+        "G_evidence_truth_localized": _has_any(zh_visible, ["实时观测", "数据源观测", "尚未评估"]),
+        "H_no_fake_multiday_zero": "5d 0.0%, 20d 0.0%" not in zh_visible,
+        "I_runtime_terms_hidden": not _has_any(zh_visible, ["UNASSESSED", "Not created by runtime", "next review cycle"]),
+        "J_supporting_context_collapsed": '<details class="supporting-context"' in zh_html,
+        "K_english_mode_clean": _has_all(en_visible, ["Current Portfolio State", "Latest Evidence That Matters", "Four Accountable Scenarios"]),
+        "L_zh_en_section_parity": all(section_id in zh_html and section_id in en_html for section_id in section_ids),
+        "M_private_amount_not_rendered": "account_value" not in zh_full and "net_worth" not in zh_full,
     }
     passed = all(checks.values())
     result = {"status": "PASS" if passed else "FAIL", "checks": checks}
@@ -74,6 +85,7 @@ def _fetch_home(base_url: str, language: str) -> str:
 
 
 def _visible_text_without_expert(source: str) -> str:
+    source = source.split('<details class="supporting-context"', 1)[0]
     text = re.sub(r"<details class=\"expert-details\".*?</details>", " ", source, flags=re.S)
     text = re.sub(r"<script.*?</script>", " ", text, flags=re.S)
     text = re.sub(r"<style.*?</style>", " ", text, flags=re.S)

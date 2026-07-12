@@ -21,31 +21,31 @@
       "passed": true
     },
     {
-      "name": "zh home contains 当前状态",
+      "name": "zh home contains 当前组合状态",
       "passed": true
     },
     {
-      "name": "zh home contains 市场前瞻",
+      "name": "zh home contains 今日是否行动",
       "passed": true
     },
     {
-      "name": "zh home contains 组合影响",
+      "name": "zh home contains 真正影响判断的最新证据",
       "passed": true
     },
     {
-      "name": "zh home contains 研究候选",
+      "name": "zh home contains 从信号到条件结论",
       "passed": true
     },
     {
-      "name": "zh home contains 预测与兑现",
+      "name": "zh home contains 四种可问责情景",
       "passed": true
     },
     {
-      "name": "zh home contains 专家分析",
+      "name": "zh home contains 候选优先级与评分依据",
       "passed": true
     },
     {
-      "name": "zh home contains 原始证据",
+      "name": "zh home contains 近期预测责任检查",
       "passed": true
     },
     {
@@ -65,19 +65,19 @@
       "passed": true
     },
     {
-      "name": "zh home has expert raw nested details",
+      "name": "zh home has collapsed supporting context",
       "passed": true
     },
     {
-      "name": "zh home has candidate filters",
+      "name": "zh home has portfolio-first contract",
       "passed": true
     },
     {
-      "name": "zh home localizes Raw Evidence heading",
+      "name": "zh home localizes action status",
       "passed": true
     },
     {
-      "name": "zh home localizes data-quality limitation",
+      "name": "zh home explains missing calibration",
       "passed": true
     },
     {
@@ -93,31 +93,31 @@
       "passed": true
     },
     {
-      "name": "en home contains Current State",
+      "name": "en home contains Current Portfolio State",
       "passed": true
     },
     {
-      "name": "en home contains Market Outlook",
+      "name": "en home contains Action Today?",
       "passed": true
     },
     {
-      "name": "en home contains Portfolio Impact",
+      "name": "en home contains Latest Evidence That Matters",
       "passed": true
     },
     {
-      "name": "en home contains Research Candidates",
+      "name": "en home contains From Signal to Conditional Conclusion",
       "passed": true
     },
     {
-      "name": "en home contains Forecast Accountability",
+      "name": "en home contains Four Accountable Scenarios",
       "passed": true
     },
     {
-      "name": "en home contains Expert Analysis",
+      "name": "en home contains Candidate Priority and Score Basis",
       "passed": true
     },
     {
-      "name": "en home contains Raw Evidence",
+      "name": "en home contains Recent forecast accountability",
       "passed": true
     },
     {
@@ -137,11 +137,11 @@
       "passed": true
     },
     {
-      "name": "en home has expert raw nested details",
+      "name": "en home has collapsed supporting context",
       "passed": true
     },
     {
-      "name": "en home has candidate filters",
+      "name": "en home has portfolio-first contract",
       "passed": true
     },
     {
