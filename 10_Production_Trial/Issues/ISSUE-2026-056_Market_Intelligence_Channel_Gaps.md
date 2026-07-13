@@ -87,3 +87,16 @@ None
   local portfolio context. Screenshots remain suitable as manually supplied Signals with source
   and timestamp provenance.
 - HKEX structured announcement coverage and broader narrative-source diversity remain open.
+
+## 2026-07-13 Per-Asset Source Routing
+
+- Added a market-derived source registry so every configured asset receives a fixed source plan on
+  each scheduled refresh without copying private holdings into Git.
+- A-share plans include Eastmoney/Tencent history and quote fallbacks, AKShare/Yahoo fallbacks,
+  official SSE or CNInfo disclosures, and the Eastmoney attention proxy.
+- Hong Kong plans include the same bounded market-data fallbacks plus the official HKEXnews issuer
+  search as an explicit manual-review source until structured announcement retrieval is proven.
+- US plans include Yahoo market data and an explicit SEC EDGAR manual-review source.
+- Runtime now exposes per-source `USED`, `STANDBY`, `CHECKED_NO_RECENT_RECORD`, `FAILED`, and
+  `MANUAL_REVIEW` status under `market_intelligence.asset_source_map`.
+- The Markets page displays the per-asset price, disclosure, attention, and health status.

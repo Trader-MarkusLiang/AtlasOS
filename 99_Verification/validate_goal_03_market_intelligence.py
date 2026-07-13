@@ -96,6 +96,7 @@ def main() -> int:
 
             channels = market_state.get("channels", {}) if isinstance(market_state, dict) else {}
             observations = market_state.get("observations", []) if isinstance(market_state, dict) else []
+            asset_source_map = market_state.get("asset_source_map", []) if isinstance(market_state, dict) else []
             live_observations = [
                 item
                 for item in observations
@@ -116,6 +117,12 @@ def main() -> int:
             _check("freshness_present", any(item.get("freshness") not in {"", None, "Unknown"} and item.get("timestamp") for item in live_observations), result)
             _check("degraded_not_zero_signal", bool(degraded_observations) and any(item.get("raw_reference", {}).get("errors") for item in degraded_observations), result)
             _check("decision_brief_persisted", bool(latest_brief.get("id")), result)
+            _check(
+                "asset_source_plan_present",
+                bool(asset_source_map)
+                and all(item.get("sources") for item in asset_source_map if isinstance(item, dict)),
+                result,
+            )
 
             server = _start_ui_server(paths["env"], paths["port"])
             base = f"http://127.0.0.1:{paths['port']}"
@@ -126,6 +133,11 @@ def main() -> int:
             _check("state_api_market_observed", state_market.get("channels", {}).get("price_volume") in {"LIVE", "DELAYED", "CACHED"}, result)
             _check("state_api_freshness_visible", bool(state_market.get("timestamp")), result)
             _check("markets_page_freshness_visible", "LIVE" in markets_html and str(live.get("ticker")) in markets_html, result)
+            _check(
+                "markets_page_source_plan_visible",
+                "Data Sources by Asset" in markets_html or "按股票的数据来源" in markets_html,
+                result,
+            )
 
             result["runtime_summary"] = {
                 "tick_status": entry.get("system_metrics", {}).get("status"),
@@ -144,6 +156,7 @@ def main() -> int:
                     for item in live_observations
                 ],
                 "degraded_observation_count": len(degraded_observations),
+                "asset_source_plan_count": len(asset_source_map),
                 "event_rows": events[:8],
                 "brief_id": latest_brief.get("id"),
             }

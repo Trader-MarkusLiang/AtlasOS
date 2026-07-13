@@ -8,6 +8,15 @@
 - Rejected unavailable Bing/Google news paths and kept screenshot OCR outside the unattended daemon.
 - Did not change cognition, Decision Contract, CDE, prediction, broker, or trading semantics.
 
+## Per-Asset Fixed Source Routing - 2026-07-13
+
+- Added market-derived fixed source plans for Shanghai, Shenzhen, Hong Kong, and US assets.
+- Added per-asset source use, standby, failure, no-record, and manual-review status to runtime state.
+- Added source transparency to the Markets page without exposing account amounts.
+- Added one bounded retry for transient public-site transport failures while preserving HTTP errors.
+- Kept HKEX and SEC disclosure automation explicit as manual review until stable structured
+  retrieval is proven.
+
 ## Portfolio-First Investor Home and Accountable Market Evidence - 2026-07-12
 
 - Rebuilt Home around portfolio state, today's review need, material evidence, reasoning lineage,
