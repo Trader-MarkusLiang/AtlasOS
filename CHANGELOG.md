@@ -12,6 +12,8 @@
   from entering the existing LLM feedback path.
 - Added no-delta call suppression so heartbeat-only 60-second ticks make no LLM call, while the
   existing two-hour proactive cadence can invoke genuine Research work.
+- Limited task-result caching to successful, structurally valid packets so transient provider
+  failures remain retryable on the next equivalent runtime cycle.
 - Added role-aware telemetry, task-route APIs, Settings controls, API-backed model suggestions,
   complete task-routing zh/en labels, and browser-validated responsive layout.
 - Proved Decision and Research through a live MoreCode runtime call, Workhorse through a live

@@ -30,6 +30,7 @@ feedback.
 | Three configurable roles | `runtime/llm/task_routing.py`, Settings role cards, `/llm/task-routes` | REAL_RUNTIME_PROVEN |
 | Independent provider/model policy | Route resolution and provider-swap isolation tests | CONTROLLED_FIXTURE_PROVEN |
 | Role-specific fallback | Primary failure, role-local fallback, and all-fallback failure tests | CONTROLLED_FIXTURE_PROVEN |
+| Failure retry | Failed packets do not enter cache; identical input retries and then caches success | CONTROLLED_FIXTURE_PROVEN |
 | Workhorse responsibility | UI query and proactive events invoke strict Evidence Packet parsing | CONTROLLED_FIXTURE_PROVEN; adapter LIVE_PROVEN |
 | Research responsibility | UI query and proactive cycle invoke strict Research Synthesis parsing | LIVE_PROVEN |
 | Decision authority | Existing Decision Contract parser validates final packet | LIVE_PROVEN |
@@ -95,7 +96,9 @@ heartbeat-only cycle
 
 The isolated verifier covers `401`, `429`, timeout, empty response, malformed JSON, model not found,
 role-local fallback success, and all-fallback failure. A Decision chain with malformed output and no
-fallback produced a non-fresh neutral failsafe and did not enter cognitive feedback.
+fallback produced a non-fresh neutral failsafe and did not enter cognitive feedback. A failed
+Workhorse response was not cached; the same input retried successfully after provider recovery, and
+only that successful packet became a cache hit.
 
 ## Browser Evidence
 

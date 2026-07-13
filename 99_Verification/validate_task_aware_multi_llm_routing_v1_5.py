@@ -28,6 +28,7 @@ from runtime.llm.provider_registry import (
 )
 from runtime.llm.provider_router import route_llm_request
 from runtime.llm.task_routing import load_task_routes, route_task_request, safe_task_routes_view, save_task_routes
+from runtime.orchestrator import _parse_workhorse_packet, _run_task_with_cache, _workhorse_prompt
 from runtime.state_store import StateStore
 from runtime.telemetry.llm_trace_logger import read_llm_traces
 from ui.app_server import append_chat_event
@@ -156,6 +157,7 @@ def main() -> None:
             _assert_configuration(config_path)
             _assert_provider_swap_isolation(config_path)
             _assert_role_fallback_and_failures(config_path)
+            _assert_failed_task_retry(config_path, root)
             _write_fixture_config(config_path, base_url)
             _assert_ui_to_runtime_roles(config_path, trace_path, db_path, inbox_path, root)
             _assert_proactive_cycle(config_path, trace_path, root)
@@ -331,6 +333,48 @@ def _assert_role_fallback_and_failures(path: Path) -> None:
         "workhorse_fallback",
     ]
     path.write_text(original, encoding="utf-8")
+
+
+def _assert_failed_task_retry(config_path: Path, root: Path) -> None:
+    original = config_path.read_text(encoding="utf-8")
+    config = json.loads(original)
+    config["llm_task_routes"]["workhorse"]["model"] = "empty-model"
+    config["llm_task_routes"]["workhorse"]["fallback_chain"] = []
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    store = StateStore(db_path=str(root / "retryable-task.sqlite"))
+    context = {"test": True, "runtime_context": {"trigger_type": "retryable_task_fixture"}}
+    first = _run_task_with_cache(
+        role="workhorse",
+        prompt=_workhorse_prompt(),
+        context=context,
+        input_hash="stable-retry-input",
+        store=store,
+        parser=_parse_workhorse_packet,
+    )
+    assert first["status"] == "failsafe"
+    assert "workhorse" not in store.get_state("llm_task_runtime_state")
+
+    config_path.write_text(original, encoding="utf-8")
+    second = _run_task_with_cache(
+        role="workhorse",
+        prompt=_workhorse_prompt(),
+        context=context,
+        input_hash="stable-retry-input",
+        store=store,
+        parser=_parse_workhorse_packet,
+    )
+    assert second["status"] == "ok"
+    assert second["cache_status"] == "miss"
+    third = _run_task_with_cache(
+        role="workhorse",
+        prompt=_workhorse_prompt(),
+        context=context,
+        input_hash="stable-retry-input",
+        store=store,
+        parser=_parse_workhorse_packet,
+    )
+    assert third["status"] == "cached"
+    assert third["cache_status"] == "hit"
 
 
 def _assert_ui_to_runtime_roles(

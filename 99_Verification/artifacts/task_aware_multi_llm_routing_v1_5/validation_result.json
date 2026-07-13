@@ -34,6 +34,7 @@
     ],
     "role_specific_fallback": true,
     "all_fallback_failure": true,
+    "failed_task_retryable": true,
     "proactive_cycle_seconds": 7200,
     "heartbeat_llm_call_count": 0,
     "failed_decision_feedback_applied": false,

@@ -698,7 +698,12 @@ def _run_task_with_cache(
     parser: Any,
 ) -> Dict[str, Any]:
     previous = _task_state(store).get(role, {})
-    if previous.get("input_hash") == input_hash and isinstance(previous.get("output"), dict):
+    if (
+        previous.get("status") == "ok"
+        and previous.get("input_hash") == input_hash
+        and isinstance(previous.get("output"), dict)
+        and previous["output"].get("status") not in {"invalid", "unavailable"}
+    ):
         return {
             "task_role": role,
             "status": "cached",
@@ -716,7 +721,7 @@ def _run_task_with_cache(
     routed = call_llm_for_task(role, prompt, context, cache_status="miss")
     output = parser(str(routed.get("content") or ""), routed)
     result = _task_result_summary(routed, output=output)
-    if result["status"] not in {"not_called", "invalid_output"}:
+    if result["status"] == "ok" and output.get("status") not in {"invalid", "unavailable"}:
         _store_task_state(store, role, input_hash, output, routed)
     return result
 

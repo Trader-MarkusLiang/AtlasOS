@@ -25,6 +25,8 @@ tests, browser validation, and evidence-based completion classification.
   the existing Decision Contract authoritative.
 - Added stable-input caching and heartbeat no-call behavior; failed or cached Decision packets are
   non-fresh and cannot enter LLM feedback.
+- Restricted cache writes and hits to successful, structurally valid role packets so transient
+  provider failures remain retryable.
 - Added role configuration, model suggestions, health/status metrics, Test Route controls, APIs,
   and complete task-routing zh/en labels.
 - Fixed the Home holdings presentation variable lifecycle that blocked Goal 01 validation.
