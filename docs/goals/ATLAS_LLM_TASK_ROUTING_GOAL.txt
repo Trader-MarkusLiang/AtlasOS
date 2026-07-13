@@ -1,0 +1,450 @@
+请你完成下面的任务，需求如下
+# ATLAS OS GOAL - TASK-AWARE MULTI-LLM ROUTING SYSTEM
+
+## OBJECTIVE
+
+Upgrade Atlas OS from a single active-provider runtime into a task-aware multi-LLM orchestration system.
+
+Atlas must support separate provider and model assignments for:
+
+1. Workhorse processing
+2. Research synthesis
+3. Final decision synthesis
+
+Primary goals:
+
+- use lower-cost models for repetitive processing
+- reserve premium GPT or Claude models for high-value synthesis
+- preserve Atlas cognition and decision boundaries
+- provide per-task provider, model, fallback, latency, usage, and cost visibility
+
+This Goal is authorized for implementation only after the required Production Trial Issue is recorded and linked.
+
+## CURRENT REPOSITORY TRUTH
+
+The current repository already contains:
+
+- runtime/llm/provider_registry.py
+  - provider configuration
+  - Keychain-first secret storage
+  - health and latency tracking
+  - API-backed model discovery
+
+- runtime/llm/provider_router.py
+  - explicit provider_id and model
+  - provider fallback
+  - normalized raw-text response
+
+- runtime/llm_router.py
+  - compatibility adapter
+  - telemetry integration
+
+- runtime/decision_loop.py
+  - validated DecisionPacket path
+  - bounded LLM cognitive feedback
+
+- runtime/config/user_config.json
+  - local runtime and provider configuration
+
+- ui/pages/settings.py
+  - provider management
+  - provider health
+  - model selection
+
+Current limitation:
+
+Atlas has one global active provider and one global fallback chain. It does not route requests by task role.
+
+## PRODUCTION TRIAL GATE
+
+Before implementation:
+
+1. Search existing Issues and Improvement Proposals for duplicates.
+2. Create the next globally unique Issue under 10_Production_Trial/Issues/.
+3. Suggested title: Task-Aware Multi-Provider Routing Needed.
+4. Classify it as an Engineering / Runtime infrastructure change.
+5. Record that the user approved the three-role architecture.
+6. Link every implementation commit and verification artifact to this Issue.
+7. Do not create a new cognition Engine.
+
+## HARD CONSTRAINTS
+
+DO NOT modify the semantics of:
+
+- Event Fusion
+- Regime Memory
+- CIL
+- LMSE
+- MPCE
+- MLE
+- UMIS
+- CDE
+- Decision Contract
+- trust computation
+- forecast accountability
+- portfolio authority
+- trading vocabulary
+
+DO NOT:
+
+- create autonomous agent swarms
+- let one LLM directly invoke another LLM
+- call premium models on every 60-second tick
+- allow raw LLM output to mutate cognition
+- allow Workhorse or Research models to set regime labels
+- introduce trading execution or broker integration
+- commit API keys or private provider configuration
+- claim token cost when provider usage data is unavailable
+
+Only the validated final DecisionPacket may participate in the existing cognitive feedback path.
+
+## TARGET ARCHITECTURE
+
+Provider Registry
+    |
+    +-- provider connections, secrets, health, models
+    |
+Task Routing Policy
+    |
+    +-- workhorse
+    +-- research
+    +-- decision
+    |
+Provider Router
+    |
+    +-- task-specific primary provider
+    +-- task-specific model
+    +-- task-specific fallback chain
+    |
+Strict Output Boundary
+    |
+    +-- Workhorse Evidence Packet
+    +-- Research Synthesis Packet
+    +-- Validated DecisionPacket
+
+### ROLE 1 - WORKHORSE
+
+Responsibilities:
+
+- unstructured text extraction
+- classification
+- deduplication assistance
+- fact and source extraction
+- structured Signal / Evidence preparation
+
+Recommended providers:
+
+- GLM
+- Kimi
+- DeepSeek
+- other low-cost OpenAI-compatible providers
+
+Output must be structured, source-aware, and non-authoritative.
+
+It must not produce portfolio actions or modify cognition.
+
+### ROLE 2 - RESEARCH
+
+Responsibilities:
+
+- cross-source comparison
+- counter-evidence review
+- portfolio relevance analysis
+- causal-chain drafting
+- hypothesis comparison
+- uncertainty identification
+
+Output is a research input to the final decision stage.
+
+It must not bypass Seven Layer Reasoning, CDE, or Decision Contract.
+
+### ROLE 3 - DECISION
+
+Responsibilities:
+
+- final Decision Brief synthesis
+- final risk and scenario presentation
+- user-facing Ask Atlas response
+- validated DecisionPacket generation
+
+Recommended providers:
+
+- MoreCode / GPT
+- OpenAI
+- Claude
+
+All output must pass through the existing Decision Contract and validator.
+
+Only this role may feed the existing bounded LLM cognitive feedback path.
+
+## CONFIGURATION DESIGN
+
+Extend the local user configuration without duplicating provider secrets:
+
+{
+  "llm_task_routes": {
+    "workhorse": {
+      "enabled": true,
+      "provider_id": "deepseek",
+      "model": "",
+      "fallback_chain": ["glm", "kimi"],
+      "timeout_seconds": 20,
+      "max_output_tokens": 2000
+    },
+    "research": {
+      "enabled": true,
+      "provider_id": "kimi",
+      "model": "",
+      "fallback_chain": ["deepseek"],
+      "timeout_seconds": 30,
+      "max_output_tokens": 4000
+    },
+    "decision": {
+      "enabled": true,
+      "provider_id": "morecode",
+      "model": "gpt-5.5",
+      "reasoning_effort": "medium",
+      "fallback_chain": ["claude"],
+      "timeout_seconds": 45,
+      "max_output_tokens": 4000
+    }
+  }
+}
+
+Rules:
+
+- task routes reference Provider Registry IDs
+- API keys remain stored once in Provider Registry
+- legacy active_provider remains as compatibility fallback
+- model choices come from each provider's model-list endpoint
+- custom model names remain allowed
+- unavailable models produce an explicit warning
+- missing task configuration degrades to a documented safe default
+
+## RUNTIME CADENCE
+
+Preserve the current 60-second daemon tick.
+
+A tick must not automatically equal an LLM request.
+
+Required policy:
+
+Every 60 seconds:
+    check runtime state, inbox, schedules, and source freshness
+
+When new unstructured evidence exists:
+    optionally run Workhorse
+
+Every configured proactive cycle, default 2 hours:
+    run Research only when relevant evidence or context exists
+
+When a material brief is required or the user asks Atlas:
+    run Decision synthesis
+
+When there is no meaningful input delta:
+    do not call an LLM
+
+Use existing event hashes, timestamps, source freshness, and runtime state where possible. Do not introduce a new prediction algorithm to determine materiality.
+
+## REQUIRED IMPLEMENTATION
+
+Create:
+
+- runtime/llm/task_routing.py
+
+It must provide:
+
+    resolve_task_route(task_type, config=None)
+    route_task_request(task_type, prompt, context, config=None)
+    validate_task_route(route, provider_registry)
+
+Extend carefully:
+
+- runtime/llm/provider_registry.py
+- runtime/llm/provider_router.py
+- runtime/llm_router.py
+- runtime/orchestrator.py
+- relevant proactive-update orchestration only
+- runtime/telemetry/llm_trace_logger.py
+- ui/pages/settings.py
+- ui/app_server.py
+- ui/i18n/i18n.py
+
+Do not modify cognitive layer implementations.
+
+Do not fabricate calls merely to show that three routes exist. Connect each route only to a real runtime responsibility. If a route lacks a legitimate runtime call site, mark it CONFIGURED_NOT_ACTIVE and report the missing integration honestly.
+
+## PROVIDER SUPPORT
+
+Provider Registry must support configurable OpenAI-compatible entries for:
+
+- GLM
+- Kimi
+- DeepSeek
+- MoreCode
+- ARK
+- Volcano
+- OpenAI
+- Claude
+- Ollama
+- Custom proxy
+
+Do not hard-code credentials.
+
+Provider-specific model discovery must continue to populate model suggestions.
+
+## UI REQUIREMENTS
+
+Add a Task Routing section to Settings.
+
+Show three primary cards:
+
+- Workhorse
+- Research
+- Decision
+
+Each card must include:
+
+- role explanation
+- primary provider
+- provider health
+- model selector
+- custom model input support
+- fallback chain
+- timeout
+- output-token limit
+- last call status
+- last latency
+- usage and cost status
+- Test Route button
+
+The Decision role must be visually distinguished as the authoritative synthesis route.
+
+Support complete zh/en parity.
+
+Do not expose raw API keys, internal prompts, or unrestricted cognitive state.
+
+## TELEMETRY
+
+Every LLM call must record:
+
+- task role
+- provider
+- model
+- start and end timestamp
+- latency
+- success or failure
+- fallback attempts
+- trigger type
+- prompt hash
+- response status
+- input and output token usage when returned by provider
+- estimated cost only when pricing metadata is configured
+- cache or deduplication status
+- DecisionPacket ID when applicable
+
+If token usage or pricing is unavailable, record Unknown. Never invent cost.
+
+## REQUIRED TESTS
+
+1. Route Resolution
+   - each task resolves to its configured provider and model
+
+2. Provider Swap
+   - changing the Workhorse provider does not change the Decision provider
+
+3. Role-Specific Fallback
+   - failure in one role uses only that role's fallback chain
+
+4. Decision Integrity
+   - final output still passes the existing Decision Contract
+
+5. Cognitive Isolation
+   - Workhorse and Research outputs cannot directly mutate regime, trust, causal weights, CDE, or portfolio state
+
+6. Tick Cost Safety
+   - repeated 60-second ticks with no meaningful input delta make no premium-model call
+
+7. Proactive Cycle
+   - the configured two-hour cycle routes genuine research work through the Research role
+
+8. Ask Atlas
+   - user questions use the configured Decision route and preserve the normal UI/runtime flow
+
+9. Provider Failures
+   - test 401, 429, timeout, malformed response, empty response, model not found, and all-fallback failure
+
+10. Security
+    - no API key appears in logs, telemetry, UI responses, snapshots, or Git changes
+
+11. UI
+    - task routes can be configured and tested in both Chinese and English
+
+12. Regression
+    - existing Event Fusion, cognition, trust, forecast, CDE, and DecisionPacket fixtures remain unchanged
+
+## RUNTIME EVIDENCE
+
+Produce a real execution trace showing:
+
+Source or Event
+-> Workhorse route
+-> structured evidence
+-> Research route
+-> research synthesis
+-> Decision route
+-> raw final response
+-> Decision Contract validation
+-> DecisionPacket
+-> Decision Brief
+-> telemetry
+
+Also produce a no-change trace proving that normal 60-second ticks do not repeatedly call premium models.
+
+Fixture-only evidence must be labeled CONTROLLED_FIXTURE_PROVEN.
+
+At least one configured real-provider path is required before classifying the feature as LIVE_PROVEN.
+
+## DELIVERABLES
+
+1. Production Trial Issue
+2. task-routing architecture document
+3. task routing implementation
+4. Provider Registry integration
+5. Settings UI integration
+6. zh/en translations
+7. role-specific telemetry
+8. unit and integration tests
+9. browser-level Settings validation
+10. runtime execution trace
+11. cost and latency report
+12. cognitive-isolation report
+13. final verification report under 99_Verification/
+14. CHANGELOG update
+15. appropriate Runtime/UI minor version update without changing Atlas Core version
+
+## COMPLETION CLASSIFICATION
+
+Return exactly one:
+
+- PROVEN_COMPLETE
+- PROVEN_PARTIAL
+- BLOCKED_WITH_EVIDENCE
+- FAILED
+
+PROVEN_COMPLETE requires:
+
+- three task routes are configurable
+- at least the Decision route is live-provider proven
+- active Workhorse and Research integrations have genuine runtime responsibilities
+- task-specific fallback works
+- premium calls are not tied to every tick
+- Decision Contract remains authoritative
+- cognitive isolation tests pass
+- secrets remain protected
+- zh/en UI works
+- telemetry exposes role, latency, usage, and honest cost status
+
+Do not claim completion from configuration structure alone.
+
+Do not implement another cognitive Engine.

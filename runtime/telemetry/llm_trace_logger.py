@@ -11,7 +11,7 @@ import json
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Mapping, Optional
 
 try:
     from runtime.logging import utc_now_iso
@@ -40,6 +40,17 @@ def log_llm_trace(
     latency_ms: int,
     decision_packet_id: str = "",
     feedback_applied: bool = False,
+    task_role: str = "legacy",
+    started_at: str = "",
+    completed_at: str = "",
+    status: str = "unknown",
+    error: str = "",
+    fallback_attempts: Any = None,
+    trigger_type: str = "unknown",
+    usage: Mapping[str, Any] | None = None,
+    estimated_cost: float | str = "Unknown",
+    cost_status: str = "Unknown",
+    cache_status: str = "unknown",
     log_path: Optional[str] = None,
 ) -> Path:
     """Append one LLM trace record and never raise to callers."""
@@ -52,8 +63,12 @@ def log_llm_trace(
         previous_outputs = _previous_outputs(path, prompt_hash)
         output_text = _mask_secrets(str(output_raw or ""))
         output_stability_score = _output_stability_score(output_text, previous_outputs)
+        normalized_usage = _normalize_usage(usage)
         record = {
             "timestamp": utc_now_iso(),
+            "started_at": str(started_at or "Unknown"),
+            "completed_at": str(completed_at or "Unknown"),
+            "task_role": str(task_role or "legacy"),
             "provider": str(provider or "unknown"),
             "model": str(model or "unknown"),
             "prompt_hash": prompt_hash,
@@ -62,6 +77,16 @@ def log_llm_trace(
             "latency_ms": int(latency_ms),
             "decision_packet_id": str(decision_packet_id or ""),
             "feedback_applied": bool(feedback_applied),
+            "status": str(status or "unknown"),
+            "error": _mask_secrets(str(error or ""))[:240],
+            "fallback_attempts": _safe_fallback_attempts(fallback_attempts),
+            "trigger_type": str(trigger_type or "unknown")[:120],
+            "input_tokens": normalized_usage["input_tokens"],
+            "output_tokens": normalized_usage["output_tokens"],
+            "total_tokens": normalized_usage["total_tokens"],
+            "estimated_cost": estimated_cost if isinstance(estimated_cost, (int, float)) else "Unknown",
+            "cost_status": str(cost_status or "Unknown"),
+            "cache_status": str(cache_status or "unknown"),
             "output_stability_score": output_stability_score,
             "hallucination_risk_proxy": _hallucination_risk_proxy(output_text),
             "response_consistency_index": output_stability_score,
@@ -100,7 +125,17 @@ def _summarize_context(context: Dict[str, Any]) -> str:
 
 def _mask_secrets(value: str) -> str:
     masked = value
-    for env_name in ("OPENAI_API_KEY", "ANTHROPIC_API_KEY", "KIMI_API_KEY", "GLM_API_KEY", "ATLAS_LLM_PROXY_API_KEY"):
+    for env_name in (
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "KIMI_API_KEY",
+        "GLM_API_KEY",
+        "DEEPSEEK_API_KEY",
+        "MORECODE_API_KEY",
+        "ARK_API_KEY",
+        "VOLCANO_API_KEY",
+        "ATLAS_LLM_PROXY_API_KEY",
+    ):
         secret = os.environ.get(env_name)
         if secret:
             masked = masked.replace(secret, "***")
@@ -148,3 +183,35 @@ def _hallucination_risk_proxy(output: str) -> float:
     if not output.strip().startswith("{"):
         risk += 0.2
     return round(max(0.0, min(1.0, risk)), 4)
+
+
+def _normalize_usage(value: Mapping[str, Any] | None) -> dict[str, int | None]:
+    usage = value if isinstance(value, Mapping) else {}
+    return {
+        "input_tokens": _optional_int(usage.get("input_tokens")),
+        "output_tokens": _optional_int(usage.get("output_tokens")),
+        "total_tokens": _optional_int(usage.get("total_tokens")),
+    }
+
+
+def _safe_fallback_attempts(value: Any) -> list[dict[str, str]]:
+    if not isinstance(value, list):
+        return []
+    result: list[dict[str, str]] = []
+    for item in value[:8]:
+        if not isinstance(item, Mapping):
+            continue
+        result.append(
+            {
+                "provider": str(item.get("provider") or "unknown")[:80],
+                "error": _mask_secrets(str(item.get("error") or ""))[:240],
+            }
+        )
+    return result
+
+
+def _optional_int(value: Any) -> int | None:
+    try:
+        return int(value) if value is not None else None
+    except (TypeError, ValueError):
+        return None

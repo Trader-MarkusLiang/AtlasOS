@@ -8,6 +8,8 @@ portfolio modification.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -20,7 +22,7 @@ try:
         parse_decision_packet,
     )
     from runtime.decision_brief import choose_action_bias, generate_decision_brief
-    from runtime.llm_router import call_llm_raw, provider_metadata
+    from runtime.llm_router import call_llm_for_task
     from runtime.logging import log_execution, utc_now_iso
     from runtime.portfolio_context import build_portfolio_context
     from runtime.state_machine import route_for_state
@@ -35,7 +37,7 @@ except ModuleNotFoundError:  # pragma: no cover - supports direct script usage
         parse_decision_packet,
     )
     from runtime.decision_brief import choose_action_bias, generate_decision_brief
-    from runtime.llm_router import call_llm_raw, provider_metadata
+    from runtime.llm_router import call_llm_for_task
     from runtime.logging import log_execution, utc_now_iso
     from runtime.portfolio_context import build_portfolio_context
     from runtime.state_machine import route_for_state
@@ -73,6 +75,8 @@ class RuntimeResult:
     log_path: str
     event_type: Optional[str] = None
     decision_packet: Dict[str, Any] = field(default_factory=dict)
+    decision_packet_fresh: bool = True
+    llm_tasks: Dict[str, Any] = field(default_factory=dict)
     errors: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -86,6 +90,8 @@ class RuntimeResult:
             "status": self.status,
             "decision_brief": self.decision_brief,
             "decision_packet": self.decision_packet,
+            "decision_packet_fresh": self.decision_packet_fresh,
+            "llm_tasks": self.llm_tasks,
             "log_path": self.log_path,
             "errors": self.errors,
         }
@@ -122,6 +128,17 @@ def run_runtime(
         regime_state = _build_regime_state(trigger_type, event_type)
         risk_level = _derive_risk_level(trigger_type, event_type)
         action_bias = choose_action_bias(trigger_type, risk_level)
+        task_context = {
+            "trigger_kind": "scheduled_runtime",
+            "events": [{"event_type": event_type or trigger_type, "source": "runtime_scheduler", "payload": {}}],
+        }
+        supporting_tasks = _run_supporting_tasks(
+            task_context=task_context,
+            cognitive_output={},
+            portfolio_state=portfolio_state,
+            runtime_context={"trigger_type": trigger_type, "event_type": event_type, "pipeline": pipeline},
+            store=store,
+        )
         decision_packet, llm_result = _run_decision_contract(
             llm_model,
             cognitive_output={},
@@ -134,8 +151,12 @@ def run_runtime(
                 "event_type": event_type,
                 "pipeline": pipeline,
                 "portfolio_state": portfolio_state,
+                "research_synthesis": supporting_tasks["research"].get("output", {}),
+                "decision_packet_id": brief_id,
             },
         )
+        decision_packet_fresh = llm_result.get("status") == "validated_decision_packet"
+        supporting_tasks["decision"] = _task_result_summary(llm_result, output=decision_packet)
         risk_level = _packet_risk_to_runtime(decision_packet["risk_level"], fallback=risk_level)
         action_bias = _packet_action_to_bias(decision_packet["recommended_action"])
         decision_brief = generate_decision_brief(
@@ -167,6 +188,7 @@ def run_runtime(
                 "llm_model": llm_result.get("model"),
                 "llm_status": llm_result.get("status"),
                 "decision_packet": decision_packet,
+                "llm_tasks": supporting_tasks,
                 "raw_llm_output_stored": False,
             },
         )
@@ -193,6 +215,8 @@ def run_runtime(
             llm_result=llm_result,
         )
         decision_packet = _failure_decision_packet()
+        decision_packet_fresh = False
+        supporting_tasks = {}
         status = "failure"
         errors.append(str(exc))
 
@@ -206,6 +230,8 @@ def run_runtime(
         "llm_model_used": llm_result.get("model"),
         "llm_provider": llm_result.get("provider"),
         "decision_packet": decision_packet,
+        "decision_packet_fresh": decision_packet_fresh,
+        "llm_tasks": supporting_tasks,
         "decision_brief_id": brief_id,
         "status": status,
         "errors": errors,
@@ -223,6 +249,8 @@ def run_runtime(
         decision_brief=decision_brief,
         log_path=str(written_log),
         decision_packet=decision_packet,
+        decision_packet_fresh=decision_packet_fresh,
+        llm_tasks=supporting_tasks,
         errors=errors,
     ).to_dict()
 
@@ -256,21 +284,63 @@ def run_state_runtime(
         risk_level = _derive_state_risk_level(system_state, event)
         action_bias = choose_action_bias(trigger_type, risk_level)
         cognition = (event or {}).get("payload", {}).get("cognition", {})
-        decision_packet, llm_result = _run_decision_contract(
-            llm_model,
+        task_context = _task_context_from_event(event)
+        runtime_context = {
+            "trigger_type": trigger_type,
+            "system_state": system_state,
+            "event_type": event_type,
+            "pipeline": pipeline,
+            "portfolio_state": portfolio_state,
+        }
+        supporting_tasks = _run_supporting_tasks(
+            task_context=task_context,
             cognitive_output=cognition if isinstance(cognition, dict) else {},
-            market_state=market_state,
-            regime_state=regime_state,
-            risk_level=risk_level,
-            action_bias=action_bias,
-            runtime_context={
-                "trigger_type": trigger_type,
-                "system_state": system_state,
-                "event_type": event_type,
-                "pipeline": pipeline,
-                "portfolio_state": portfolio_state,
-            },
+            portfolio_state=portfolio_state,
+            runtime_context=runtime_context,
+            store=store,
         )
+        decision_hash = _stable_hash(
+            {
+                "task_context": task_context,
+                "system_state": system_state,
+                "market_state": market_state,
+                "regime_state": regime_state,
+                "research": supporting_tasks["research"].get("output", {}),
+            }
+        )
+        if _decision_call_required(task_context, decision_hash, store):
+            decision_packet, llm_result = _run_decision_contract(
+                llm_model,
+                cognitive_output=cognition if isinstance(cognition, dict) else {},
+                market_state=market_state,
+                regime_state=regime_state,
+                risk_level=risk_level,
+                action_bias=action_bias,
+                runtime_context={
+                    **runtime_context,
+                    "research_synthesis": supporting_tasks["research"].get("output", {}),
+                    "decision_packet_id": brief_id,
+                },
+            )
+            decision_packet_fresh = llm_result.get("status") == "validated_decision_packet"
+            if decision_packet_fresh:
+                _store_task_state(store, "decision", decision_hash, decision_packet, llm_result)
+        else:
+            decision_packet = _latest_valid_decision_packet(store)
+            llm_result = {
+                "provider": "not_called",
+                "model": "not_called",
+                "status": "skipped_no_meaningful_delta",
+                "task_role": "decision",
+                "latency_ms": 0,
+                "usage": {"input_tokens": None, "output_tokens": None, "total_tokens": None},
+                "estimated_cost": "Unknown",
+                "cost_status": "not_called",
+                "cache_status": "no_input_delta",
+                "fallback_attempts": [],
+            }
+            decision_packet_fresh = False
+        supporting_tasks["decision"] = _task_result_summary(llm_result, output=decision_packet)
         risk_level = _packet_risk_to_runtime(decision_packet["risk_level"], fallback=risk_level)
         action_bias = _packet_action_to_bias(decision_packet["recommended_action"])
         decision_brief = generate_decision_brief(
@@ -302,6 +372,8 @@ def run_state_runtime(
                 "llm_model": llm_result.get("model"),
                 "llm_status": llm_result.get("status"),
                 "decision_packet": decision_packet,
+                "decision_packet_fresh": decision_packet_fresh,
+                "llm_tasks": supporting_tasks,
                 "raw_llm_output_stored": False,
             },
         )
@@ -327,6 +399,8 @@ def run_state_runtime(
             llm_result=llm_result,
         )
         decision_packet = _failure_decision_packet()
+        decision_packet_fresh = False
+        supporting_tasks = {}
         status = "failure"
         errors.append(str(exc))
 
@@ -341,6 +415,8 @@ def run_state_runtime(
         "llm_model_used": llm_result.get("model"),
         "llm_provider": llm_result.get("provider"),
         "decision_packet": decision_packet,
+        "decision_packet_fresh": decision_packet_fresh,
+        "llm_tasks": supporting_tasks,
         "decision_brief_id": brief_id,
         "status": status,
         "errors": errors,
@@ -358,6 +434,8 @@ def run_state_runtime(
         decision_brief=decision_brief,
         log_path=str(written_log),
         decision_packet=decision_packet,
+        decision_packet_fresh=decision_packet_fresh,
+        llm_tasks=supporting_tasks,
         errors=errors,
     ).to_dict()
 
@@ -529,6 +607,382 @@ def _derive_risk_level(trigger_type: str, event_type: Optional[str]) -> str:
     return "Low"
 
 
+def _task_context_from_event(event: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    if not isinstance(event, dict):
+        return {"trigger_kind": "scheduled_runtime", "events": []}
+    payload = event.get("payload", {}) if isinstance(event.get("payload"), dict) else {}
+    supplied = payload.get("task_context")
+    if isinstance(supplied, dict):
+        context = dict(supplied)
+        context["trigger_kind"] = _task_trigger_kind(context)
+        return context
+    bounded_payload = {key: value for key, value in payload.items() if key != "cognition"}
+    context = {
+        "events": [
+            {
+                "event_type": str(event.get("event_type") or "unknown"),
+                "source": str(event.get("source") or "unknown"),
+                "payload": bounded_payload,
+            }
+        ]
+    }
+    context["trigger_kind"] = _task_trigger_kind(context)
+    return context
+
+
+def _run_supporting_tasks(
+    *,
+    task_context: Dict[str, Any],
+    cognitive_output: Dict[str, Any],
+    portfolio_state: Dict[str, Any],
+    runtime_context: Dict[str, Any],
+    store: StateStore,
+) -> Dict[str, Any]:
+    trigger_kind = _task_trigger_kind(task_context)
+    bounded_runtime_context = {
+        key: runtime_context.get(key)
+        for key in ("trigger_type", "system_state", "event_type", "pipeline")
+        if runtime_context.get(key) is not None
+    }
+    base_context = {
+        "task_context": task_context,
+        "runtime_context": {**bounded_runtime_context, "task_trigger_kind": trigger_kind},
+    }
+    workhorse_input_hash = _stable_hash({"role": "workhorse", "task_context": task_context})
+    if _has_workhorse_input(task_context):
+        workhorse = _run_task_with_cache(
+            role="workhorse",
+            prompt=_workhorse_prompt(),
+            context=base_context,
+            input_hash=workhorse_input_hash,
+            store=store,
+            parser=_parse_workhorse_packet,
+        )
+    else:
+        workhorse = _not_called_task("workhorse", "no_unstructured_or_research_input")
+
+    research_input = {
+        "role": "research",
+        "task_context": task_context,
+        "workhorse_evidence": workhorse.get("output", {}),
+        "cognitive_output": cognitive_output,
+        "portfolio_state": portfolio_state,
+    }
+    research_input_hash = _stable_hash(research_input)
+    if trigger_kind in {"user_query", "proactive_update", "material_event", "scheduled_runtime"}:
+        research = _run_task_with_cache(
+            role="research",
+            prompt=_research_prompt(),
+            context={
+                **base_context,
+                "workhorse_evidence": workhorse.get("output", {}),
+                "cognitive_output": cognitive_output,
+                "portfolio_state": portfolio_state,
+            },
+            input_hash=research_input_hash,
+            store=store,
+            parser=_parse_research_packet,
+        )
+    else:
+        research = _not_called_task("research", "no_research_trigger")
+    return {"trigger_kind": trigger_kind, "workhorse": workhorse, "research": research}
+
+
+def _run_task_with_cache(
+    *,
+    role: str,
+    prompt: str,
+    context: Dict[str, Any],
+    input_hash: str,
+    store: StateStore,
+    parser: Any,
+) -> Dict[str, Any]:
+    previous = _task_state(store).get(role, {})
+    if previous.get("input_hash") == input_hash and isinstance(previous.get("output"), dict):
+        return {
+            "task_role": role,
+            "status": "cached",
+            "route_status": previous.get("route_status", "ACTIVE"),
+            "provider": previous.get("provider", "unknown"),
+            "model": previous.get("model", "unknown"),
+            "latency_ms": 0,
+            "usage": {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0},
+            "estimated_cost": 0.0,
+            "cost_status": "cache_hit",
+            "cache_status": "hit",
+            "fallback_attempts": [],
+            "output": previous["output"],
+        }
+    routed = call_llm_for_task(role, prompt, context, cache_status="miss")
+    output = parser(str(routed.get("content") or ""), routed)
+    result = _task_result_summary(routed, output=output)
+    if result["status"] not in {"not_called", "invalid_output"}:
+        _store_task_state(store, role, input_hash, output, routed)
+    return result
+
+
+def _workhorse_prompt() -> str:
+    return (
+        "Return one JSON object only, with no markdown or reasoning before it. Use exactly this schema: "
+        '{"status":"ok","query_intent":"string","signals":['
+        '{"claim":"string","source":"string","timestamp":"string or Unknown",'
+        '"evidence_type":"string","confidence":0.0}],"unknowns":["string"]}. '
+        "Do not add top-level fields. Extract only supplied facts and source references. Never recommend an "
+        "investment action, set a regime, score a portfolio, or infer missing evidence. Use status ok or "
+        "insufficient_input and keep at most 12 signals."
+    )
+
+
+def _research_prompt() -> str:
+    return (
+        "Return one JSON object only, with no markdown or reasoning before it. Use exactly this schema: "
+        '{"status":"ok","summary":"string","portfolio_relevance":["string"],'
+        '"causal_factors":["string"],"counter_evidence":["string"],'
+        '"hypotheses":["string"],"uncertainties":["string"]}. '
+        "Every list may contain strings only, at most 8 items. Do not add fields, nested objects, scores, "
+        "percentages not present in context, regime labels, actions, or portfolio authority. Use only supplied "
+        "evidence and cognition, separate facts from hypotheses, preserve unknowns, and include counter-evidence."
+    )
+
+
+def _parse_workhorse_packet(raw_text: str, routed: Dict[str, Any]) -> Dict[str, Any]:
+    fallback = {
+        "status": "unavailable" if routed.get("status") != "ok" else "invalid",
+        "query_intent": "Unknown",
+        "signals": [],
+        "unknowns": [str(routed.get("error") or "invalid_workhorse_output")[:200]],
+    }
+    data = _parse_json_object(raw_text)
+    required = {"status", "query_intent", "signals", "unknowns"}
+    if not data or set(data) != required or not isinstance(data.get("signals"), list) or not isinstance(data.get("unknowns"), list):
+        return fallback
+    signals = []
+    for item in data["signals"][:24]:
+        if not isinstance(item, dict):
+            continue
+        signals.append(
+            {
+                "claim": str(item.get("claim") or "")[:600],
+                "source": str(item.get("source") or "Unknown")[:240],
+                "timestamp": str(item.get("timestamp") or "Unknown")[:80],
+                "evidence_type": str(item.get("evidence_type") or "Unverified")[:80],
+                "confidence": _bounded_float(item.get("confidence"), 0.0, 1.0),
+            }
+        )
+    return {
+        "status": str(data.get("status") or "invalid")[:40],
+        "query_intent": str(data.get("query_intent") or "Unknown")[:500],
+        "signals": signals,
+        "unknowns": [str(item)[:300] for item in data["unknowns"][:20]],
+    }
+
+
+def _parse_research_packet(raw_text: str, routed: Dict[str, Any]) -> Dict[str, Any]:
+    fields = {
+        "status",
+        "summary",
+        "portfolio_relevance",
+        "causal_factors",
+        "counter_evidence",
+        "hypotheses",
+        "uncertainties",
+    }
+    fallback = {
+        "status": "unavailable" if routed.get("status") != "ok" else "invalid",
+        "summary": "Research synthesis unavailable.",
+        "portfolio_relevance": [],
+        "causal_factors": [],
+        "counter_evidence": [],
+        "hypotheses": [],
+        "uncertainties": [str(routed.get("error") or "invalid_research_output")[:200]],
+    }
+    data = _parse_json_object(raw_text)
+    if not data or set(data) != fields:
+        return fallback
+    for key in fields - {"status", "summary"}:
+        if not isinstance(data.get(key), list):
+            return fallback
+    return {
+        "status": str(data.get("status") or "invalid")[:40],
+        "summary": str(data.get("summary") or "")[:1600],
+        "portfolio_relevance": [str(item)[:500] for item in data["portfolio_relevance"][:16]],
+        "causal_factors": [str(item)[:500] for item in data["causal_factors"][:16]],
+        "counter_evidence": [str(item)[:500] for item in data["counter_evidence"][:16]],
+        "hypotheses": [str(item)[:500] for item in data["hypotheses"][:16]],
+        "uncertainties": [str(item)[:500] for item in data["uncertainties"][:16]],
+    }
+
+
+def _parse_json_object(raw_text: str) -> Dict[str, Any]:
+    text = str(raw_text or "").strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if lines:
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        start = text.find("{")
+        if start < 0:
+            return {}
+        try:
+            data, _end = json.JSONDecoder().raw_decode(text[start:])
+        except json.JSONDecodeError:
+            return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _task_result_summary(routed: Dict[str, Any], *, output: Dict[str, Any]) -> Dict[str, Any]:
+    status = str(routed.get("status") or "unknown")
+    if output.get("status") in {"invalid", "unavailable"} and status == "ok":
+        status = "invalid_output"
+    return {
+        "task_role": str(routed.get("task_role") or "unknown"),
+        "status": status,
+        "route_status": routed.get("route_status", "unknown"),
+        "provider": routed.get("provider", "unknown"),
+        "model": routed.get("model", "unknown"),
+        "latency_ms": routed.get("latency_ms", 0),
+        "usage": routed.get("usage", {}),
+        "estimated_cost": routed.get("estimated_cost", "Unknown"),
+        "cost_status": routed.get("cost_status", "Unknown"),
+        "cache_status": routed.get("cache_status", "unknown"),
+        "fallback_attempts": routed.get("fallback_attempts", []),
+        "error": routed.get("error", ""),
+        "output": output,
+    }
+
+
+def _not_called_task(role: str, reason: str) -> Dict[str, Any]:
+    return {
+        "task_role": role,
+        "status": "not_called",
+        "route_status": "CONFIGURED_NOT_ACTIVE",
+        "provider": "not_called",
+        "model": "not_called",
+        "latency_ms": 0,
+        "usage": {"input_tokens": None, "output_tokens": None, "total_tokens": None},
+        "estimated_cost": "Unknown",
+        "cost_status": "not_called",
+        "cache_status": "not_applicable",
+        "fallback_attempts": [],
+        "error": reason,
+        "output": {},
+    }
+
+
+def _task_state(store: StateStore) -> Dict[str, Any]:
+    value = store.get_state("llm_task_runtime_state")
+    return value if isinstance(value, dict) else {}
+
+
+def _store_task_state(
+    store: StateStore,
+    role: str,
+    input_hash: str,
+    output: Dict[str, Any],
+    routed: Dict[str, Any],
+) -> None:
+    state = _task_state(store)
+    state[role] = {
+        "input_hash": input_hash,
+        "output": output,
+        "provider": routed.get("provider"),
+        "model": routed.get("model"),
+        "status": routed.get("status"),
+        "route_status": routed.get("route_status"),
+        "latency_ms": routed.get("latency_ms"),
+        "usage": routed.get("usage", {}),
+        "estimated_cost": routed.get("estimated_cost", "Unknown"),
+        "cost_status": routed.get("cost_status", "Unknown"),
+        "fallback_attempts": routed.get("fallback_attempts", []),
+        "updated_at": utc_now_iso(),
+    }
+    store.set_state("llm_task_runtime_state", state)
+
+
+def _decision_call_required(task_context: Dict[str, Any], input_hash: str, store: StateStore) -> bool:
+    if _task_trigger_kind(task_context) == "heartbeat":
+        return False
+    previous = _task_state(store).get("decision", {})
+    return previous.get("input_hash") != input_hash
+
+
+def _latest_valid_decision_packet(store: StateStore) -> Dict[str, Any]:
+    latest = store.get_latest_decision_brief()
+    metadata = latest.get("metadata", {}) if isinstance(latest, dict) else {}
+    packet = metadata.get("decision_packet", {}) if isinstance(metadata, dict) else {}
+    if isinstance(packet, dict):
+        parsed = parse_decision_packet(json.dumps(packet, ensure_ascii=False))
+        if parsed.get("reasoning_trace") != "invalid_llm_output":
+            return parsed
+    return _failure_decision_packet()
+
+
+def _task_trigger_kind(task_context: Dict[str, Any]) -> str:
+    events = task_context.get("events", []) if isinstance(task_context, dict) else []
+    if not isinstance(events, list) or not events:
+        return str(task_context.get("trigger_kind") or "scheduled_runtime")
+    event_types = {str(item.get("event_type") or "") for item in events if isinstance(item, dict)}
+    sources = {str(item.get("source") or "") for item in events if isinstance(item, dict)}
+    if "user_input_event" in event_types or "ui_chat" in sources:
+        return "user_query"
+    if "proactive_update" in sources or any(
+        isinstance(item, dict)
+        and isinstance(item.get("payload"), dict)
+        and item["payload"].get("update_kind") == "proactive_context_refresh"
+        for item in events
+    ):
+        return "proactive_update"
+    if event_types and event_types <= {"heartbeat"}:
+        return "heartbeat"
+    return "material_event"
+
+
+def _has_workhorse_input(task_context: Dict[str, Any]) -> bool:
+    if _task_trigger_kind(task_context) in {"user_query", "proactive_update"}:
+        return True
+    text = json.dumps(task_context, ensure_ascii=False, sort_keys=True).lower()
+    return any(key in text for key in ('"query"', '"content"', '"headline"', '"title"', '"summary"', '"text"'))
+
+
+def _stable_hash(value: Any) -> str:
+    normalized = _stable_value(value)
+    payload = json.dumps(normalized, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _stable_value(value: Any) -> Any:
+    volatile = {
+        "timestamp",
+        "created_at",
+        "updated_at",
+        "fused_at",
+        "last_checked_at",
+        "event_id",
+        "update_cycle_id",
+        "decision_packet_id",
+    }
+    if isinstance(value, dict):
+        return {key: _stable_value(item) for key, item in value.items() if key not in volatile}
+    if isinstance(value, list):
+        return [_stable_value(item) for item in value]
+    if isinstance(value, str):
+        return value[:4000]
+    return value
+
+
+def _bounded_float(value: Any, minimum: float, maximum: float) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        parsed = minimum
+    return round(max(minimum, min(maximum, parsed)), 4)
+
+
 def _run_decision_contract(
     llm_model: str,
     *,
@@ -548,9 +1002,9 @@ def _run_decision_contract(
         runtime_context=runtime_context,
     )
     prompt = build_decision_contract_prompt(contract_context)
-    raw_text = call_llm_raw(llm_model, prompt, contract_context)
+    routed = call_llm_for_task("decision", prompt, contract_context)
+    raw_text = str(routed.get("content") or "")
     packet = parse_decision_packet(raw_text)
-    metadata = provider_metadata(llm_model)
     status = "validated_decision_packet"
     if (
         packet.get("recommended_action") == "neutral"
@@ -559,9 +1013,18 @@ def _run_decision_contract(
     ):
         status = "failsafe_decision_packet"
     return packet, {
-        "provider": metadata["provider"],
-        "model": metadata["model"],
+        "provider": str(routed.get("provider") or "unknown"),
+        "model": str(routed.get("model") or llm_model),
         "status": status,
+        "task_role": "decision",
+        "route_status": routed.get("route_status"),
+        "latency_ms": routed.get("latency_ms"),
+        "usage": routed.get("usage", {}),
+        "estimated_cost": routed.get("estimated_cost", "Unknown"),
+        "cost_status": routed.get("cost_status", "Unknown"),
+        "cache_status": routed.get("cache_status", "miss"),
+        "fallback_attempts": routed.get("fallback_attempts", []),
+        "error": routed.get("error", ""),
         "raw_text_only": True,
         "raw_output_stored": False,
     }

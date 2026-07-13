@@ -21,6 +21,7 @@ try:
     from runtime.telemetry.llm_trace_logger import log_llm_trace
     from runtime.llm.provider_router import route_llm_request
     from runtime.llm.provider_registry import load_provider_registry
+    from runtime.llm.task_routing import route_task_request
 except ModuleNotFoundError:  # pragma: no cover
     import sys
     from pathlib import Path
@@ -29,6 +30,7 @@ except ModuleNotFoundError:  # pragma: no cover
     from runtime.telemetry.llm_trace_logger import log_llm_trace
     from runtime.llm.provider_router import route_llm_request
     from runtime.llm.provider_registry import load_provider_registry
+    from runtime.llm.task_routing import route_task_request
 
 
 SUPPORTED_PROVIDERS = {
@@ -130,6 +132,25 @@ def call_llm(model: str, prompt: str, context: Dict[str, Any]) -> Dict[str, Any]
         status="raw_text_returned",
         content=raw_text,
     ).to_dict()
+
+
+def call_llm_for_task(
+    task_role: str,
+    prompt: str,
+    context: Dict[str, Any],
+    *,
+    config_path: str | None = None,
+    cache_status: str = "miss",
+) -> Dict[str, Any]:
+    """Route a bounded Atlas task through its configured role policy."""
+
+    return route_task_request(
+        task_role,
+        prompt,
+        context,
+        config_path=config_path,
+        cache_status=cache_status,
+    )
 
 
 def call_llm_raw(model: str, prompt: str, context: Dict[str, Any]) -> str:

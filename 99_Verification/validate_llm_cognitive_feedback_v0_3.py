@@ -137,12 +137,25 @@ def main() -> None:
         records = read_runtime_log(log_path=daemon_log, limit=3)
         _assert(len(records) == 3, "daemon should write three feedback tick logs")
         deltas = []
+        statuses = []
         for record in records:
             tick = record["cognition_summary"]["tick_result"]
-            _assert(tick.get("llm_feedback_status") in {"applied", "frozen"}, "feedback status missing")
+            status = tick.get("llm_feedback_status")
+            _assert(
+                status in {"applied", "frozen", "not_applied_no_fresh_decision"},
+                "feedback status missing",
+            )
             _assert("llm_feedback_freeze" in tick, "feedback freeze flag missing")
-            deltas.append(tick.get("llm_feedback_attention_delta"))
-        _assert(any(delta is not None for delta in deltas), "runtime example should expose feedback delta")
+            statuses.append(status)
+            if status in {"applied", "frozen"}:
+                deltas.append(tick.get("llm_feedback_attention_delta"))
+        if deltas:
+            _assert(any(delta is not None for delta in deltas), "applied runtime feedback should expose a delta")
+        else:
+            _assert(
+                all(status == "not_applied_no_fresh_decision" for status in statuses),
+                "failed Decision packets must not enter feedback",
+            )
 
     print("LLM Cognitive Feedback v0.3 validation PASS")
 

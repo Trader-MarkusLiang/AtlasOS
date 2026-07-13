@@ -99,7 +99,12 @@ def main() -> int:
 
         home = _get(base + "/")
         home_lower = home.lower()
-        _check("home_decision_brief_first", "今日 atlas 简报" in home_lower or "today" in home_lower and "atlas brief" in home_lower, result)
+        _check(
+            "home_decision_brief_first",
+            "data-home-layout=\"portfolio-first-investor-brief\"" in home_lower
+            and "data-practical-section=\"action_today\"" in home_lower,
+            result,
+        )
         _check("home_portfolio_impact_visible", "组合影响" in home or "Portfolio Impact" in home, result)
         _check("home_no_raw_dict_default", "{&#x27;" not in home and "Exposure Map" not in home, result)
 
@@ -109,7 +114,7 @@ def main() -> int:
             _check(f"{path}_no_raw_json_default", "<pre>{" not in html.replace(" ", ""), result)
 
         stopped = _post_form(base + "/control/stop", {})
-        _check("runtime_stop_visible", stopped.get("status") in {"stop_requested", "not_running", "stale_pid_removed"}, result)
+        _check("runtime_stop_visible", stopped.get("status") in {"stopped", "stop_requested", "not_running", "stale_pid_removed"}, result)
         _wait_runtime_stopped(env)
 
         db_path = Path(env["ATLAS_RUNTIME_DB"])

@@ -1,5 +1,24 @@
 # Changelog
 
+## Task-Aware Multi-LLM Routing Runtime/UI v1.5 - 2026-07-13
+
+- Added `ISSUE-2026-060` and `IP-2026-060` for the approved Workhorse, Research, and Decision
+  provider-role architecture.
+- Added role-specific provider, model, fallback, timeout, token-limit, reasoning-effort, health,
+  usage, latency, cost-status, and cache configuration over the existing Provider Registry.
+- Connected Workhorse extraction and Research synthesis to bounded runtime responsibilities while
+  keeping their outputs outside Event Fusion, cognition, trust, CDE, and portfolio authority.
+- Kept Decision Contract validation authoritative and prevented cached or failed Decision packets
+  from entering the existing LLM feedback path.
+- Added no-delta call suppression so heartbeat-only 60-second ticks make no LLM call, while the
+  existing two-hour proactive cadence can invoke genuine Research work.
+- Added role-aware telemetry, task-route APIs, Settings controls, API-backed model suggestions,
+  complete task-routing zh/en labels, and browser-validated responsive layout.
+- Proved Decision and Research through a live MoreCode runtime call, Workhorse through a live
+  MoreCode route probe, and the complete three-role runtime chain through controlled fixtures.
+- Kept estimated cost `Unknown` when provider pricing is not configured and preserved Keychain-first
+  secret storage. Atlas Core remains v2.1 RC.
+
 ## Bounded Public Market Source Expansion - 2026-07-13
 
 - Added CNInfo official disclosure retrieval for configured Shenzhen-listed assets.

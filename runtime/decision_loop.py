@@ -231,7 +231,8 @@ class DecisionLoop:
                         "memory": memory_after,
                         "structural_coevolution": previous_structural_state,
                         "self_organization": previous_self_organization_state,
-                    }
+                    },
+                    "task_context": _build_llm_task_context(events),
                 },
                 "source": "event_fusion_engine",
                 "created_at": utc_now_iso(),
@@ -246,14 +247,25 @@ class DecisionLoop:
             for event in events:
                 self.event_stream.acknowledge(event["event_id"], "handled")
             decision_packet = result.get("decision_packet", {})
-            llm_feedback = run_cognitive_refinement_cycle(
-                decision_packet=decision_packet if isinstance(decision_packet, dict) else {},
-                cognitive_state_snapshot=cognition_snapshot,
-                llm_reasoning_output=str(
-                    decision_packet.get("reasoning_trace", "") if isinstance(decision_packet, dict) else ""
-                ),
-                previous_feedback=previous_llm_feedback if isinstance(previous_llm_feedback, dict) else {},
-            )
+            if result.get("decision_packet_fresh", True):
+                llm_feedback = run_cognitive_refinement_cycle(
+                    decision_packet=decision_packet if isinstance(decision_packet, dict) else {},
+                    cognitive_state_snapshot=cognition_snapshot,
+                    llm_reasoning_output=str(
+                        decision_packet.get("reasoning_trace", "") if isinstance(decision_packet, dict) else ""
+                    ),
+                    previous_feedback=previous_llm_feedback if isinstance(previous_llm_feedback, dict) else {},
+                )
+            else:
+                llm_feedback = {
+                    "status": "not_applied_no_fresh_decision",
+                    "llm_signals": {},
+                    "adjusted_cognition": cognition_snapshot,
+                    "modifiers": {},
+                    "stability": {"freeze_feedback": False, "reason": "no_fresh_decision_packet"},
+                    "freeze_remaining": 0,
+                    "refinement_count": 0,
+                }
             feedback_delta = {
                 "attention": llm_feedback.get("modifiers", {}).get("attention_weight_delta"),
                 "causal": llm_feedback.get("modifiers", {}).get("causal_edge_strength_delta"),
@@ -486,6 +498,8 @@ class DecisionLoop:
                     "decision_packet_action": result.get("decision_packet", {}).get("recommended_action"),
                     "decision_packet_risk": result.get("decision_packet", {}).get("risk_level"),
                     "decision_packet_confidence": result.get("decision_packet", {}).get("confidence"),
+                    "decision_packet_fresh": bool(result.get("decision_packet_fresh", True)),
+                    "llm_tasks": result.get("llm_tasks", {}),
                     "llm_feedback_status": llm_feedback.get("status"),
                     "llm_feedback_attention_delta": llm_feedback.get("modifiers", {}).get("attention_weight_delta"),
                     "llm_feedback_causal_delta": llm_feedback.get("modifiers", {}).get("causal_edge_strength_delta"),
@@ -735,6 +749,39 @@ def _is_material_forecast_event(event: Dict[str, object]) -> bool:
     if isinstance(payload, dict) and payload.get("update_kind") == "proactive_context_refresh":
         return False
     return bool(event_type)
+
+
+def _build_llm_task_context(events: List[Dict[str, object]]) -> Dict[str, object]:
+    bounded_events = []
+    for event in events[:10]:
+        payload = event.get("payload") if isinstance(event.get("payload"), dict) else {}
+        bounded_events.append(
+            {
+                "event_type": str(event.get("event_type") or "unknown")[:80],
+                "source": str(event.get("source") or "unknown")[:120],
+                "created_at": str(event.get("created_at") or "")[:80],
+                "payload": _bounded_task_value(payload, depth=0),
+            }
+        )
+    return {"events": bounded_events, "event_count": len(events)}
+
+
+def _bounded_task_value(value: object, *, depth: int) -> object:
+    if depth >= 4:
+        return "[bounded]"
+    if isinstance(value, dict):
+        return {
+            str(key)[:80]: _bounded_task_value(item, depth=depth + 1)
+            for key, item in list(value.items())[:40]
+            if str(key).lower() not in {"api_key", "token", "secret", "authorization"}
+        }
+    if isinstance(value, list):
+        return [_bounded_task_value(item, depth=depth + 1) for item in value[:40]]
+    if isinstance(value, str):
+        return value.replace("\x00", " ")[:2000]
+    if isinstance(value, (int, float, bool)) or value is None:
+        return value
+    return str(value)[:500]
 
 
 def _material_forecast_signature(

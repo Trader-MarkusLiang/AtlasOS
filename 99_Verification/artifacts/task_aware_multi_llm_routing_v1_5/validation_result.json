@@ -1,0 +1,56 @@
+{
+  "classification": "PROVEN_COMPLETE",
+  "date": "2026-07-13",
+  "issue": "ISSUE-2026-060",
+  "live_provider": "morecode",
+  "live_evidence": {
+    "decision": {
+      "model": "gpt-5.5",
+      "status": "validated_decision_packet",
+      "latency_ms": 6359,
+      "total_tokens": 8500,
+      "cost_status": "pricing_not_configured"
+    },
+    "research": {
+      "model": "kimi-k2.6",
+      "status": "ok",
+      "latency_ms": 23252,
+      "total_tokens": 12134,
+      "cost_status": "pricing_not_configured"
+    },
+    "workhorse_probe": {
+      "model": "deepseek-v4-flash",
+      "status": "ok",
+      "latency_ms": 6025,
+      "total_tokens": 696,
+      "cost_status": "pricing_not_configured"
+    }
+  },
+  "controlled_runtime_evidence": {
+    "ui_to_runtime_roles": [
+      "workhorse",
+      "research",
+      "decision"
+    ],
+    "role_specific_fallback": true,
+    "all_fallback_failure": true,
+    "proactive_cycle_seconds": 7200,
+    "heartbeat_llm_call_count": 0,
+    "failed_decision_feedback_applied": false,
+    "cognitive_isolation": true
+  },
+  "browser": {
+    "url": "http://127.0.0.1:8765/settings",
+    "desktop_no_horizontal_overflow": true,
+    "mobile_width": 390,
+    "mobile_no_horizontal_overflow": true,
+    "zh_en_role_parity": true,
+    "console_errors": 0
+  },
+  "security": {
+    "keychain_first": true,
+    "secret_in_config": false,
+    "secret_in_telemetry": false,
+    "private_config_committed": false
+  }
+}

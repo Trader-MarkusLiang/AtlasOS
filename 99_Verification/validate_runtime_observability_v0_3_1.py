@@ -36,10 +36,12 @@ def main() -> None:
             "ATLAS_LLM_TRACE_LOG": os.environ.get("ATLAS_LLM_TRACE_LOG"),
             "ATLAS_DECISION_TRACE_LOG": os.environ.get("ATLAS_DECISION_TRACE_LOG"),
             "ATLAS_COGNITIVE_SNAPSHOT_LOG": os.environ.get("ATLAS_COGNITIVE_SNAPSHOT_LOG"),
+            "ATLAS_USER_CONFIG": os.environ.get("ATLAS_USER_CONFIG"),
         }
         os.environ["ATLAS_LLM_TRACE_LOG"] = llm_trace_log
         os.environ["ATLAS_DECISION_TRACE_LOG"] = decision_trace_log
         os.environ["ATLAS_COGNITIVE_SNAPSHOT_LOG"] = snapshot_log
+        os.environ["ATLAS_USER_CONFIG"] = str(root / "isolated_user_config.json")
         try:
             started = time.time()
             daemon = AtlasRuntimeDaemon(

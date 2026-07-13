@@ -13,6 +13,11 @@ from runtime.llm.provider_registry import (
     safe_registry_view,
     update_provider_registry,
 )
+from runtime.llm.task_routing import (
+    default_task_routes,
+    normalize_task_routes,
+    safe_task_routes_view,
+)
 from ui.i18n.i18n import current_language, set_language, t, translation_payload
 
 
@@ -27,6 +32,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "model": "gpt-5.5",
     },
     "llm_registry": default_provider_registry(),
+    "llm_task_routes": default_task_routes(default_provider_registry()),
     "ui": {"language": "en"},
     "system": {
         "tick_interval": 60,
@@ -67,9 +73,11 @@ def save_user_config(payload: Mapping[str, Any], path: str | None = None) -> dic
     config = _config_from_payload(payload)
     target.parent.mkdir(parents=True, exist_ok=True)
     existing = load_user_config(str(target))
+    registry_payload = config.pop("llm_registry", None)
     existing.update(config)
     target.write_text(json.dumps(existing, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    update_provider_registry(existing.get("llm_registry", {}), str(target))
+    if isinstance(registry_payload, Mapping):
+        update_provider_registry(registry_payload, str(target))
     if config.get("ui", {}).get("language"):
         set_language(str(config["ui"]["language"]), str(target))
     return {"status": "saved", "config": _masked_config(load_user_config(str(target))), "path": str(target)}
@@ -78,6 +86,7 @@ def save_user_config(payload: Mapping[str, Any], path: str | None = None) -> dic
 def render_settings_page(config: Mapping[str, Any] | None = None) -> str:
     data = _merge_defaults(dict(config or load_user_config()))
     registry = safe_registry_view(data.get("llm_registry", default_provider_registry()))
+    task_routes = safe_task_routes_view(data.get("llm_task_routes"), registry)
     system = data["system"]
     assets = data["assets"]
     lang = current_language()
@@ -526,6 +535,13 @@ button.danger {{ color: #fecdd3; }}
         </div>
       </section>
 
+      <section id="task-routing-config" class="settings-card">
+        <div class="settings-card-header"><h3>{escape(t("task_routing.title", lang))}</h3></div>
+        <div class="settings-card-body provider-list">
+          {_task_route_cards(task_routes, registry["providers"], lang)}
+        </div>
+      </section>
+
       <div class="wide-row">
         <section id="system-config" class="settings-card">
           <div class="settings-card-header"><h3>{escape(t("settings.system", lang))}</h3></div>
@@ -645,6 +661,7 @@ function payload() {{
       fallback_chain: document.getElementById("fallback-chain").value.split(",").map(x => x.trim()).filter(Boolean),
       providers: collectProviders()
     }},
+    llm_task_routes: collectTaskRoutes(),
     system: {{
       tick_interval: Number(document.getElementById("tick-interval-setting").value || 60),
       proactive_update_enabled: true,
@@ -660,6 +677,22 @@ function payload() {{
     }},
     metadata: {{ ui_only: true, no_runtime_reload: true, no_trading_execution: true }}
   }};
+}}
+function collectTaskRoutes() {{
+  const routes = {{}};
+  document.querySelectorAll("[data-task-route]").forEach(card => {{
+    const role = card.getAttribute("data-task-route");
+    routes[role] = {{
+      enabled: card.querySelector('[data-task-field="enabled"]').checked,
+      provider_id: card.querySelector('[data-task-field="provider_id"]').value,
+      model: card.querySelector('[data-task-field="model"]').value,
+      fallback_chain: card.querySelector('[data-task-field="fallback_chain"]').value.split(",").map(x => x.trim()).filter(Boolean),
+      timeout_seconds: Number(card.querySelector('[data-task-field="timeout_seconds"]').value),
+      max_output_tokens: Number(card.querySelector('[data-task-field="max_output_tokens"]').value),
+      reasoning_effort: card.querySelector('[data-task-field="reasoning_effort"]').value
+    }};
+  }});
+  return routes;
 }}
 async function saveSettings() {{
   const result = document.getElementById("settings-result");
@@ -1007,14 +1040,16 @@ def _format_checked(value: Any, lang: str) -> str:
 
 
 def _config_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
-    if "system" in payload or "assets" in payload or "llm_registry" in payload:
+    if "system" in payload or "assets" in payload or "llm_registry" in payload or "llm_task_routes" in payload:
         system = payload.get("system", {}) if isinstance(payload.get("system"), Mapping) else {}
         assets = payload.get("assets", {}) if isinstance(payload.get("assets"), Mapping) else {}
         ui = payload.get("ui", {}) if isinstance(payload.get("ui"), Mapping) else {}
         registry = payload.get("llm_registry", default_provider_registry())
+        task_routes = normalize_task_routes(payload.get("llm_task_routes"), registry)
         return {
             "ui": {"language": str(ui.get("language") or current_language())},
             "llm_registry": registry,
+            "llm_task_routes": task_routes,
             "system": {
                 "tick_interval": _int(system.get("tick_interval"), 60),
                 "proactive_update_enabled": bool(system.get("proactive_update_enabled", True)),
@@ -1048,6 +1083,7 @@ def _config_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
             provider["model"] = str(payload.get("model") or provider.get("model") or "")
     return {
         "llm_registry": registry,
+        "llm_task_routes": default_task_routes(registry),
         "ui": {"language": str(payload.get("language") or current_language())},
         "system": {
             "tick_interval": _int(payload.get("tick_interval"), 60),
@@ -1080,6 +1116,7 @@ def _masked_config(config: Mapping[str, Any]) -> dict[str, Any]:
     masked = _merge_defaults(config)
     registry = safe_registry_view(masked.get("llm_registry", default_provider_registry()))
     masked["llm_registry"] = registry
+    masked["llm_task_routes"] = safe_task_routes_view(masked.get("llm_task_routes"), registry)
     return masked
 
 
@@ -1088,6 +1125,39 @@ def _provider_options(providers: list[Mapping[str, Any]], selected: str) -> str:
         f'<option value="{escape(str(provider.get("id")))}"{_selected(provider.get("id"), selected)}>{escape(str(provider.get("label") or provider.get("id")))}</option>'
         for provider in providers
     )
+
+
+def _task_route_cards(
+    routes: Mapping[str, Any],
+    providers: list[Mapping[str, Any]],
+    lang: str,
+) -> str:
+    cards = []
+    for role in ("workhorse", "research", "decision"):
+        route = routes.get(role, {}) if isinstance(routes.get(role), Mapping) else {}
+        model_options = "".join(
+            f'<option value="{escape(str(model))}"></option>'
+            for model in route.get("available_models", [])
+        )
+        cards.append(
+            f"""
+            <article class="provider-card{' task-decision-card' if role == 'decision' else ''}" data-task-route="{role}">
+              <div class="provider-card-head">
+                <div class="provider-title"><strong>{escape(t(f'task_routing.{role}', lang))}</strong></div>
+                <span class="provider-status-pill">{escape(str(route.get('route_status') or 'UNKNOWN'))}</span>
+              </div>
+              <p>{escape(t(f'task_routing.{role}_note', lang))}</p>
+              <label><input data-task-field="enabled" type="checkbox" style="width:18px;height:18px;min-height:0;padding:0;"{' checked' if route.get('enabled') else ''}> {escape(t('task_routing.enabled', lang))}</label>
+              <label>{escape(t('task_routing.provider', lang))}<select data-task-field="provider_id">{_provider_options(providers, str(route.get('provider_id') or ''))}</select></label>
+              <label>{escape(t('model.model', lang))}<input data-task-field="model" list="task-models-{role}" value="{escape(str(route.get('model') or ''))}"><datalist id="task-models-{role}">{model_options}</datalist></label>
+              <label>{escape(t('settings.fallback', lang))}<input data-task-field="fallback_chain" value="{escape(', '.join(str(item) for item in route.get('fallback_chain', [])))}"></label>
+              <label>{escape(t('task_routing.timeout', lang))}<input data-task-field="timeout_seconds" type="number" min="1" max="120" value="{escape(str(route.get('timeout_seconds') or 30))}"></label>
+              <label>{escape(t('task_routing.max_tokens', lang))}<input data-task-field="max_output_tokens" type="number" min="128" max="32000" value="{escape(str(route.get('max_output_tokens') or 2000))}"></label>
+              <label>{escape(t('task_routing.reasoning', lang))}<select data-task-field="reasoning_effort"><option value="">--</option><option value="low"{_selected(route.get('reasoning_effort'), 'low')}>low</option><option value="medium"{_selected(route.get('reasoning_effort'), 'medium')}>medium</option><option value="high"{_selected(route.get('reasoning_effort'), 'high')}>high</option></select></label>
+            </article>
+            """
+        )
+    return "\n".join(cards)
 
 
 def _provider_type_options(selected: str) -> str:

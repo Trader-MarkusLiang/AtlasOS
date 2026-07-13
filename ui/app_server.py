@@ -21,6 +21,7 @@ if __package__ in {None, ""}:  # Support `python3 ui/app_server.py`.
 from runtime.logging import utc_now_iso
 from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_forecasts, mark_forecast_matured
 from runtime.llm.provider_registry import health_check_provider, list_provider_models, load_provider_registry, safe_registry_view
+from runtime.llm.task_routing import load_task_routes, route_task_request, safe_task_routes_view
 from runtime.portfolio_context import build_portfolio_context
 from runtime.state_store import StateStore
 from runtime.telemetry.llm_trace_logger import read_llm_traces
@@ -226,6 +227,30 @@ def create_app() -> Any:
     async def llm_providers() -> Any:
         return JSONResponse(_safe_provider_registry())
 
+    @app.get("/llm/task-routes")
+    async def llm_task_routes() -> Any:
+        return JSONResponse(_safe_task_routes())
+
+    @app.post("/llm/task-route/test")
+    async def llm_task_route_test(request: Request) -> Any:
+        payload = await _request_payload(request)
+        role = str(payload.get("task_role") or "").strip().lower()
+        if role not in {"workhorse", "research", "decision"}:
+            return JSONResponse({"status": "error", "error": "unsupported_task_role"}, status_code=400)
+        result = route_task_request(
+            role,
+            _task_route_test_prompt(role),
+            {
+                "test": True,
+                "runtime_context": {
+                    "trigger_type": "settings_task_route_test",
+                    "feedback_applied": False,
+                },
+            },
+            config_path=_user_config_path(),
+        )
+        return JSONResponse(_safe_task_test_result(result))
+
     @app.post("/llm/provider/test")
     async def llm_provider_test(request: Request) -> Any:
         payload = await _request_payload(request)
@@ -427,6 +452,8 @@ def state_api() -> Dict[str, Any]:
         "runtime": runtime,
         "llm_trace_summary": llm_summary,
         "llm_provider_registry": _safe_provider_registry(),
+        "llm_task_routes": _safe_task_routes(),
+        "llm_task_runtime_state": store.get_state("llm_task_runtime_state"),
         "last_event_summary": event_history[0] if event_history else {},
         "tick_counter": len(transitions),
         "dashboard": build_dashboard_state(
@@ -463,10 +490,12 @@ async def _request_payload(request: Request) -> Dict[str, Any]:
 
 def _llm_trace_summary(records: list[Dict[str, Any]]) -> Dict[str, Any]:
     providers = Counter(str(item.get("provider", "unknown")) for item in records)
+    roles = Counter(str(item.get("task_role", "legacy")) for item in records)
     latest = records[-1] if records else {}
     return {
         "call_count": len(records),
         "providers": dict(providers),
+        "task_roles": dict(roles),
         "latest_model": latest.get("model"),
         "latest_latency_ms": latest.get("latency_ms"),
         "latest_hallucination_risk_proxy": latest.get("hallucination_risk_proxy"),
@@ -489,6 +518,41 @@ def _safe_provider_registry() -> Dict[str, Any]:
     """Return provider registry from the active UI config without exposing secrets."""
 
     return safe_registry_view(load_provider_registry(_user_config_path()))
+
+
+def _safe_task_routes() -> Dict[str, Any]:
+    registry = load_provider_registry(_user_config_path())
+    return safe_task_routes_view(load_task_routes(_user_config_path()), registry)
+
+
+def _task_route_test_prompt(role: str) -> str:
+    if role == "workhorse":
+        return 'Return JSON only: {"status":"ok","query_intent":"route test","signals":[],"unknowns":[]}.'
+    if role == "research":
+        return 'Return JSON only with status, summary, portfolio_relevance, causal_factors, counter_evidence, hypotheses, uncertainties.'
+    return (
+        'Return a valid Atlas DecisionPacket JSON with regime_state, confidence, risk_level, attention_state, '
+        'liquidity_state, causal_summary, recommended_action, and reasoning_trace. Use neutral and confidence 0.'
+    )
+
+
+def _safe_task_test_result(result: Dict[str, Any]) -> Dict[str, Any]:
+    usage = result.get("usage", {}) if isinstance(result.get("usage"), dict) else {}
+    return {
+        "status": result.get("status"),
+        "task_role": result.get("task_role"),
+        "route_status": result.get("route_status"),
+        "provider": result.get("provider"),
+        "model": result.get("model"),
+        "latency_ms": result.get("latency_ms"),
+        "usage": usage,
+        "estimated_cost": result.get("estimated_cost", "Unknown"),
+        "cost_status": result.get("cost_status", "Unknown"),
+        "cache_status": result.get("cache_status"),
+        "fallback_attempts": result.get("fallback_attempts", []),
+        "error": result.get("error", ""),
+        "output_received": bool(str(result.get("content") or "").strip()),
+    }
 
 
 def _provider_registry_summary(registry: Dict[str, Any]) -> Dict[str, Any]:
@@ -2875,6 +2939,8 @@ class _StdlibHandler(BaseHTTPRequestHandler):
             self._send_html(_product_shell("settings", content, state, page_script=script))
         elif parsed.path == "/llm/providers":
             self._send_json(_safe_provider_registry())
+        elif parsed.path == "/llm/task-routes":
+            self._send_json(_safe_task_routes())
         elif parsed.path.startswith("/assets/"):
             path = _asset_file_path(parsed.path.rsplit("/", 1)[-1])
             if path is None:
@@ -3011,6 +3077,18 @@ class _StdlibHandler(BaseHTTPRequestHandler):
                     "registry": refreshed,
                 }
             )
+        elif parsed.path == "/llm/task-route/test":
+            role = str(payload.get("task_role") or "").strip().lower()
+            if role not in {"workhorse", "research", "decision"}:
+                self._send_json({"status": "error", "error": "unsupported_task_role"}, status=400)
+                return
+            result = route_task_request(
+                role,
+                _task_route_test_prompt(role),
+                {"test": True, "runtime_context": {"trigger_type": "settings_task_route_test", "feedback_applied": False}},
+                config_path=_user_config_path(),
+            )
+            self._send_json(_safe_task_test_result(result))
         elif parsed.path == "/ui/language":
             self._send_json(set_language(str(payload.get("language") or "en"), _user_config_path()))
         else:

@@ -1185,8 +1185,8 @@ def _current_holdings_board(portfolio: Mapping[str, Any], market: Mapping[str, A
         asset = _text(item.get("asset"), "Unknown")
         observation = observations.get(asset, {})
         trigger = _text(item.get("risk_note"), "Refresh thesis, price/volume, and liquidity evidence.")
+        changes = []
         if observation:
-            changes = []
             if observation.get("change_5d_pct") is not None:
                 changes.append(f"5d {float(observation['change_5d_pct']):.1f}%")
             if observation.get("change_20d_pct") is not None:

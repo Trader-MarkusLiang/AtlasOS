@@ -61,6 +61,24 @@ SUPPORTED_PROVIDER_TYPES = {
         "model": "doubao-seed-1-6",
         "protocol": "openai_compatible",
     },
+    "glm": {
+        "label": "GLM / Zhipu AI",
+        "base_url": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+        "model": "glm-4-plus",
+        "protocol": "openai_compatible",
+    },
+    "kimi": {
+        "label": "Kimi / Moonshot AI",
+        "base_url": "https://api.moonshot.cn/v1/chat/completions",
+        "model": "moonshot-v1-32k",
+        "protocol": "openai_compatible",
+    },
+    "deepseek": {
+        "label": "DeepSeek",
+        "base_url": "https://api.deepseek.com/chat/completions",
+        "model": "deepseek-chat",
+        "protocol": "openai_compatible",
+    },
     "custom": {
         "label": "Custom Proxy",
         "base_url": "",
@@ -198,6 +216,9 @@ def provider_api_key(provider: Mapping[str, Any]) -> str:
         "claude": "ANTHROPIC_API_KEY",
         "ark": "ARK_API_KEY",
         "volcano": "VOLCANO_API_KEY",
+        "glm": "GLM_API_KEY",
+        "kimi": "KIMI_API_KEY",
+        "deepseek": "DEEPSEEK_API_KEY",
         "morecode": "MORECODE_API_KEY",
         "custom": "ATLAS_LLM_PROXY_API_KEY",
     }

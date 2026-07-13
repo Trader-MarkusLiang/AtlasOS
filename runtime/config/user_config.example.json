@@ -54,8 +54,79 @@
         "last_latency_ms": null,
         "model": "llama3.1",
         "type": "ollama"
+      },
+      {
+        "api_key_encrypted": "",
+        "base_url": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+        "enabled": false,
+        "health": "unknown",
+        "id": "glm",
+        "label": "GLM / Zhipu AI",
+        "last_error": "",
+        "last_latency_ms": null,
+        "model": "glm-4-plus",
+        "type": "glm"
+      },
+      {
+        "api_key_encrypted": "",
+        "base_url": "https://api.moonshot.cn/v1/chat/completions",
+        "enabled": false,
+        "health": "unknown",
+        "id": "kimi",
+        "label": "Kimi / Moonshot AI",
+        "last_error": "",
+        "last_latency_ms": null,
+        "model": "moonshot-v1-32k",
+        "type": "kimi"
+      },
+      {
+        "api_key_encrypted": "",
+        "base_url": "https://api.deepseek.com/chat/completions",
+        "enabled": false,
+        "health": "unknown",
+        "id": "deepseek",
+        "label": "DeepSeek",
+        "last_error": "",
+        "last_latency_ms": null,
+        "model": "deepseek-chat",
+        "type": "deepseek"
       }
     ]
+  },
+  "llm_task_routes": {
+    "decision": {
+      "enabled": true,
+      "fallback_chain": [
+        "claude"
+      ],
+      "max_output_tokens": 4000,
+      "model": "gpt-5.5",
+      "provider_id": "openai",
+      "reasoning_effort": "medium",
+      "timeout_seconds": 45
+    },
+    "research": {
+      "enabled": false,
+      "fallback_chain": [
+        "kimi"
+      ],
+      "max_output_tokens": 4000,
+      "model": "deepseek-chat",
+      "provider_id": "deepseek",
+      "reasoning_effort": "",
+      "timeout_seconds": 30
+    },
+    "workhorse": {
+      "enabled": false,
+      "fallback_chain": [
+        "kimi"
+      ],
+      "max_output_tokens": 2000,
+      "model": "glm-4-plus",
+      "provider_id": "glm",
+      "reasoning_effort": "",
+      "timeout_seconds": 20
+    }
   },
   "metadata": {
     "no_runtime_reload": true,

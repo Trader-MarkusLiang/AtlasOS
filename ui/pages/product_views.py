@@ -2543,11 +2543,19 @@ def settings_content(config: Mapping[str, Any], state: Mapping[str, Any]) -> tup
     registry = state.get("llm_provider_registry") if isinstance(state.get("llm_provider_registry"), Mapping) else {}
     providers = registry.get("providers") if isinstance(registry.get("providers"), list) else []
     active = str(registry.get("active_provider") or "")
+    task_routes = state.get("llm_task_routes") if isinstance(state.get("llm_task_routes"), Mapping) else config.get("llm_task_routes", {})
+    task_runtime = state.get("llm_task_runtime_state") if isinstance(state.get("llm_task_runtime_state"), Mapping) else {}
     system = config.get("system") if isinstance(config.get("system"), Mapping) else {}
     assets = config.get("assets") if isinstance(config.get("assets"), Mapping) else {}
     positions = _config_positions(assets)
     available = [p for p in providers if isinstance(p, Mapping) and str(p.get("health")) in {"healthy", "reachable"}]
     other = [p for p in providers if isinstance(p, Mapping) and p not in available]
+    provider_models = {
+        str(provider.get("id")): provider.get("available_models", [])
+        for provider in providers
+        if isinstance(provider, Mapping) and isinstance(provider.get("available_models"), list)
+    }
+    provider_models_json = json.dumps(provider_models, ensure_ascii=False).replace("<", "\\u003c")
     content = f"""
     <section class="hero-panel">
       <span class="kicker">{escape(t("page.settings", lang))}</span>
@@ -2569,6 +2577,13 @@ def settings_content(config: Mapping[str, Any], state: Mapping[str, Any]) -> tup
         <button class="primary-button" type="button" id="save-settings">{escape(t("settings.save", lang))}</button>
       </div>
       <div id="settings-result" class="hero-copy" role="status"></div>
+    </section>
+    <section id="task-routing-config" class="focus-card">
+      <span class="kicker">{escape(t("task_routing.title", lang))}</span>
+      <h2>{escape(t("task_routing.title", lang))}</h2>
+      <p>{escape(t("task_routing.subtitle", lang))}</p>
+      <div class="page-content">{_task_route_controls(task_routes, task_runtime, providers, lang)}</div>
+      <script type="application/json" id="task-provider-models">{provider_models_json}</script>
     </section>
     <section class="two-grid">
       <article class="focus-card">
@@ -2712,6 +2727,8 @@ SETTINGS_JS = """
       stopping: zh ? "正在停止 runtime..." : "Stopping runtime...",
       stopped: zh ? "runtime 已停止" : "Runtime stopped",
       runtime_failed: zh ? "Runtime 控制失败" : "Runtime control failed"
+      ,task_testing: zh ? "正在测试任务路由..." : "Testing task route..."
+      ,task_checked: zh ? "任务路由测试完成" : "Task route test complete"
     };
     return messages[key] || key;
   }
@@ -2735,6 +2752,22 @@ SETTINGS_JS = """
       return item;
     }).filter(function (item) { return item.asset; });
   }
+  function taskRoutes() {
+    const routes = {};
+    document.querySelectorAll("[data-task-route]").forEach(function (card) {
+      const role = card.dataset.taskRoute;
+      routes[role] = {
+        enabled: card.querySelector('[data-task-field="enabled"]').checked,
+        provider_id: card.querySelector('[data-task-field="provider_id"]').value,
+        model: card.querySelector('[data-task-field="model"]').value.trim(),
+        fallback_chain: card.querySelector('[data-task-field="fallback_chain"]').value.split(",").map(function (x) { return x.trim(); }).filter(Boolean),
+        timeout_seconds: Number(card.querySelector('[data-task-field="timeout_seconds"]').value || 30),
+        max_output_tokens: Number(card.querySelector('[data-task-field="max_output_tokens"]').value || 2000),
+        reasoning_effort: card.querySelector('[data-task-field="reasoning_effort"]').value
+      };
+    });
+    return routes;
+  }
   function assetTemplate() {
     return document.querySelector("[data-asset-row]").outerHTML.replace(/value="[^"]*"/g, 'value=""').replace(/>[^<]*<\\/textarea>/g, '></textarea>');
   }
@@ -2748,6 +2781,7 @@ SETTINGS_JS = """
         fallback_chain: providerCards().map(function (p) { return p.id; }),
         providers: providerCards()
       },
+      llm_task_routes: taskRoutes(),
       system: {
         tick_interval: Number(document.getElementById("tick-interval-setting").value || 60),
         proactive_update_enabled: true,
@@ -2792,6 +2826,30 @@ SETTINGS_JS = """
       } catch (error) {
         card.querySelector("[data-provider-health]").textContent = msg("test_failed");
       }
+    });
+  });
+  document.querySelectorAll("[data-test-task-route]").forEach(function (button) {
+    button.addEventListener("click", async function () {
+      await saveSettings();
+      const card = button.closest("[data-task-route]");
+      const role = card.dataset.taskRoute;
+      const status = card.querySelector("[data-task-call-status]");
+      status.textContent = msg("task_testing");
+      try {
+        const response = await fetch("/llm/task-route/test", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ task_role: role }) });
+        const data = await response.json();
+        status.textContent = (data.status || "unknown") + " · " + (data.provider || "--") + " · " + (data.latency_ms ?? "--") + "ms";
+      } catch (error) {
+        status.textContent = msg("test_failed");
+      }
+    });
+  });
+  const providerModels = JSON.parse(document.getElementById("task-provider-models")?.textContent || "{}");
+  document.querySelectorAll('[data-task-field="provider_id"]').forEach(function (select) {
+    select.addEventListener("change", function () {
+      const card = select.closest("[data-task-route]");
+      const datalist = card.querySelector("datalist");
+      datalist.innerHTML = (providerModels[select.value] || []).map(function (model) { return '<option value="' + String(model).replace(/"/g, "&quot;") + '"></option>'; }).join("");
     });
   });
   document.getElementById("settings-start-runtime").addEventListener("click", async function () {
@@ -3499,6 +3557,57 @@ def _provider_cards(providers: list[Any], active: str, lang: str) -> str:
     if not providers:
         return f'<div class="empty-state">{escape(t("provider.none_available", lang))}</div>'
     return "".join(_provider_card(provider, active, lang) for provider in providers if isinstance(provider, Mapping))
+
+
+def _task_route_controls(
+    routes: Mapping[str, Any],
+    runtime: Mapping[str, Any],
+    providers: list[Any],
+    lang: str,
+) -> str:
+    controls = []
+    for role in ("workhorse", "research", "decision"):
+        route = routes.get(role, {}) if isinstance(routes.get(role), Mapping) else {}
+        latest = runtime.get(role, {}) if isinstance(runtime.get(role), Mapping) else {}
+        provider_id = str(route.get("provider_id") or "")
+        provider = next(
+            (item for item in providers if isinstance(item, Mapping) and str(item.get("id")) == provider_id),
+            {},
+        )
+        models = provider.get("available_models", []) if isinstance(provider.get("available_models"), list) else []
+        usage = latest.get("usage", {}) if isinstance(latest.get("usage"), Mapping) else {}
+        total_tokens = usage.get("total_tokens")
+        usage_text = str(total_tokens) if total_tokens is not None else "Unknown"
+        latency = latest.get("latency_ms")
+        route_status = str(route.get("route_status") or ("ACTIVE" if route.get("enabled") else "DISABLED"))
+        decision_style = "background:rgba(255,255,255,.035);border-left:3px solid rgba(244,247,251,.72);padding-left:18px;" if role == "decision" else ""
+        controls.append(
+            f"""
+            <div data-task-route="{role}" style="padding:18px 0;border-top:1px solid rgba(255,255,255,.08);{decision_style}">
+              <div class="section-heading">
+                <div><span class="kicker">{escape(t(f'task_routing.{role}', lang))}</span><h3>{escape(t(f'task_routing.{role}', lang))}</h3></div>
+                <span class="status-pill">{escape(route_status)}{' · ' + escape(t('task_routing.authoritative', lang)) if role == 'decision' else ''}</span>
+              </div>
+              <p>{escape(t(f'task_routing.{role}_note', lang))}</p>
+              <div class="form-grid">
+                <label><span>{escape(t('task_routing.enabled', lang))}</span><input data-task-field="enabled" type="checkbox" style="width:18px;height:18px;min-height:0;padding:0;"{' checked' if route.get('enabled') else ''}></label>
+                <label>{escape(t('task_routing.provider', lang))}<select data-task-field="provider_id">{_provider_options(providers, provider_id)}</select></label>
+                <label>{escape(t('model.model', lang))}<input data-task-field="model" list="task-models-{role}" value="{escape(str(route.get('model') or ''))}" placeholder="{escape(t('provider.custom_model_placeholder', lang))}"><datalist id="task-models-{role}">{''.join(f'<option value="{escape(str(model))}"></option>' for model in models)}</datalist></label>
+                <label>{escape(t('settings.fallback', lang))}<input data-task-field="fallback_chain" value="{escape(', '.join(str(item) for item in route.get('fallback_chain', [])))}"></label>
+                <label>{escape(t('task_routing.timeout', lang))}<input data-task-field="timeout_seconds" type="number" min="1" max="120" value="{escape(str(route.get('timeout_seconds') or 30))}"></label>
+                <label>{escape(t('task_routing.max_tokens', lang))}<input data-task-field="max_output_tokens" type="number" min="128" max="32000" value="{escape(str(route.get('max_output_tokens') or 2000))}"></label>
+                <label>{escape(t('task_routing.reasoning', lang))}<select data-task-field="reasoning_effort"><option value="">--</option><option value="low"{_selected(route.get('reasoning_effort'), 'low')}>low</option><option value="medium"{_selected(route.get('reasoning_effort'), 'medium')}>medium</option><option value="high"{_selected(route.get('reasoning_effort'), 'high')}>high</option></select></label>
+              </div>
+              <div class="section-grid" style="margin-top:12px;">
+                {_metric(t('provider.latency', lang), str(latency) + 'ms' if latency is not None else '--', str(provider.get('health') or 'unknown'))}
+                {_metric(t('task_routing.usage', lang), usage_text, t('task_routing.last_call', lang))}
+                {_metric(t('task_routing.cost', lang), str(latest.get('cost_status') or 'Unknown'), str(latest.get('estimated_cost', 'Unknown')))}
+              </div>
+              <div class="button-row" style="margin-top:12px;"><button class="secondary-button" type="button" data-test-task-route>{escape(t('task_routing.test', lang))}</button><span data-task-call-status>{escape(str(latest.get('status') or 'not_run'))}</span></div>
+            </div>
+            """
+        )
+    return "".join(controls)
 
 
 def _provider_card(provider: Mapping[str, Any], active: str, lang: str) -> str:

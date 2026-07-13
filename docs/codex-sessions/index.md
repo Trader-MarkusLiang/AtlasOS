@@ -8,6 +8,9 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-13_1804_task-aware-multi-llm-routing.md`
+- `docs/codex-sessions/completed/2026-07-13_1755_llm-task-routing-goal-prompt.md`
+- `docs/codex-sessions/completed/2026-07-13_1427_restore-canonical-ui-service.md`
 - `docs/codex-sessions/completed/2026-07-13_1132_per-asset-source-routing.md`
 - `docs/codex-sessions/completed/2026-07-13_0810_public-market-source-expansion.md`
 - `docs/codex-sessions/completed/2026-07-13_0755_publish-investor-home-repair.md`
