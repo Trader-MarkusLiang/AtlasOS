@@ -170,7 +170,7 @@ def channel_status(
         "volatility": derived_status,
         "liquidity_proxy": derived_status,
         "news_announcement": str(external.get("news_announcement") or "NOT_CONFIGURED"),
-        "narrative_attention": "NOT_CONFIGURED",
+        "narrative_attention": str(external.get("narrative_attention") or "NOT_CONFIGURED"),
         "macro_policy": str(external.get("macro_policy") or "NOT_CONFIGURED"),
         "portfolio_relevance": "LIVE" if portfolio_available and not price_fixture else ("SIMULATED" if portfolio_available else "NOT_CONFIGURED"),
     }

@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import json
 import hashlib
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from typing import Any, Mapping
 from urllib.parse import urlencode, urljoin
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo
 
 from runtime.logging import utc_now_iso
 
@@ -16,6 +17,9 @@ from runtime.logging import utc_now_iso
 SINA_BREADTH_URL = "https://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData"
 PBOC_NEWS_URL = "https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html"
 SSE_ANNOUNCEMENT_URL = "https://query.sse.com.cn/security/stock/queryCompanyBulletin.do"
+CNINFO_SEARCH_URL = "https://www.cninfo.com.cn/new/information/topSearch/query"
+CNINFO_ANNOUNCEMENT_URL = "https://www.cninfo.com.cn/new/hisAnnouncement/query"
+EASTMONEY_ATTENTION_URL = "https://emappdata.eastmoney.com/stockrank/getAllCurrentList"
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AtlasOS/1.0"
 
 
@@ -27,6 +31,7 @@ def fetch_public_market_evidence(positions: list[Mapping[str, Any]], *, timeout:
     statuses = {
         "market_breadth": "NOT_CONFIGURED",
         "news_announcement": "NOT_CONFIGURED",
+        "narrative_attention": "NOT_CONFIGURED",
         "macro_policy": "NOT_CONFIGURED",
     }
     try:
@@ -43,13 +48,27 @@ def fetch_public_market_evidence(positions: list[Mapping[str, Any]], *, timeout:
     except Exception as exc:
         statuses["macro_policy"] = "FAILED"
         errors["macro_policy"] = _error(exc)
-    try:
-        announcements = fetch_sse_announcements(positions, limit_per_asset=3, timeout=timeout)
-        items.extend(announcements)
-        statuses["news_announcement"] = _items_status(announcements) if announcements else "NOT_CONFIGURED"
-    except Exception as exc:
+    announcements: list[dict[str, Any]] = []
+    for source, fetcher in (
+        ("sse_announcements", fetch_sse_announcements),
+        ("cninfo_announcements", fetch_cninfo_announcements),
+    ):
+        try:
+            announcements.extend(fetcher(positions, limit_per_asset=3, timeout=timeout))
+        except Exception as exc:
+            errors[source] = _error(exc)
+    items.extend(announcements)
+    if announcements:
+        statuses["news_announcement"] = _items_status(announcements)
+    elif {"sse_announcements", "cninfo_announcements"}.issubset(errors):
         statuses["news_announcement"] = "FAILED"
-        errors["news_announcement"] = _error(exc)
+    try:
+        attention = fetch_eastmoney_attention_sample(positions, timeout=timeout)
+        items.append(attention)
+        statuses["narrative_attention"] = str(attention.get("channel_status") or "DELAYED")
+    except Exception as exc:
+        statuses["narrative_attention"] = "FAILED"
+        errors["narrative_attention"] = _error(exc)
     return {
         "timestamp": utc_now_iso(),
         "items": items,
@@ -184,6 +203,156 @@ def fetch_sse_announcements(
     return output
 
 
+def fetch_cninfo_announcements(
+    positions: list[Mapping[str, Any]],
+    *,
+    limit_per_asset: int = 3,
+    timeout: float = 8.0,
+) -> list[dict[str, Any]]:
+    """Fetch official disclosure records for configured Shenzhen-listed assets."""
+
+    output = []
+    start_date = (datetime.now(timezone.utc) - timedelta(days=45)).date().isoformat()
+    end_date = datetime.now(timezone.utc).date().isoformat()
+    for position in positions:
+        asset = str(position.get("asset") or "")
+        code = asset.split(".")[0]
+        if not _is_shenzhen_asset(asset, str(position.get("market") or "")):
+            continue
+        matches = _post_form_json(
+            CNINFO_SEARCH_URL,
+            {"keyWord": code, "maxSecNum": 10},
+            timeout=timeout,
+            headers={"Referer": "https://www.cninfo.com.cn/"},
+        )
+        security = next(
+            (
+                item
+                for item in matches
+                if isinstance(item, Mapping) and str(item.get("code") or "") == code
+            ),
+            None,
+        ) if isinstance(matches, list) else None
+        if not isinstance(security, Mapping) or not security.get("orgId"):
+            continue
+        payload = _post_form_json(
+            CNINFO_ANNOUNCEMENT_URL,
+            {
+                "pageNum": 1,
+                "pageSize": max(1, limit_per_asset),
+                "column": "szse",
+                "tabName": "fulltext",
+                "plate": "sz",
+                "stock": f"{code},{security['orgId']}",
+                "searchkey": "",
+                "secid": "",
+                "category": "",
+                "trade": "",
+                "seDate": f"{start_date}~{end_date}",
+                "sortName": "",
+                "sortType": "",
+                "isHLtitle": "true",
+            },
+            timeout=timeout,
+            headers={"Referer": "https://www.cninfo.com.cn/"},
+        )
+        rows = payload.get("announcements", []) if isinstance(payload, Mapping) else []
+        for row in rows[:limit_per_asset]:
+            if not isinstance(row, Mapping):
+                continue
+            published_at = _epoch_millis_date(row.get("announcementTime"))
+            title = str(row.get("announcementTitle") or row.get("shortTitle") or "Company announcement")
+            output.append(
+                _evidence_item(
+                    channel="news_announcement",
+                    source="cninfo_official_disclosure",
+                    source_url=urljoin("https://static.cninfo.com.cn/", str(row.get("adjunctUrl") or "")),
+                    published_at=published_at,
+                    freshness=_date_freshness(published_at),
+                    source_type="official_company_announcement",
+                    classification="VERIFIED_EVIDENCE",
+                    verification_status="VERIFIED_OFFICIAL_SOURCE",
+                    headline=title[:300],
+                    affected_assets=[asset],
+                    affected_themes=[str(position.get("theme") or "Unspecified")],
+                    world_model_node="Company Evidence",
+                    details={"security_name": str(row.get("secName") or security.get("zwjc") or "")},
+                )
+            )
+    return output
+
+
+def fetch_eastmoney_attention_sample(
+    positions: list[Mapping[str, Any]],
+    *,
+    timeout: float = 8.0,
+) -> dict[str, Any]:
+    """Return a bounded public ranking sample, not sentiment or trading authority."""
+
+    payload = _post_json(
+        EASTMONEY_ATTENTION_URL,
+        {
+            "appId": "appId01",
+            "globalId": "atlas-os-public",
+            "marketType": "",
+            "pageNo": 1,
+            "pageSize": 100,
+        },
+        timeout=timeout,
+    )
+    rows = payload.get("data", []) if isinstance(payload, Mapping) else []
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("empty_attention_rank_sample")
+    ranks = {
+        str(item.get("sc") or "").upper(): item
+        for item in rows
+        if isinstance(item, Mapping) and item.get("sc")
+    }
+    matched = []
+    tracked = []
+    for position in positions:
+        symbol = _eastmoney_symbol(position)
+        if not symbol:
+            continue
+        tracked.append(str(position.get("asset") or symbol))
+        row = ranks.get(symbol)
+        if row:
+            matched.append(
+                {
+                    "asset": str(position.get("asset") or symbol),
+                    "rank": int(_number(row.get("rk"))),
+                    "rank_change": int(_number(row.get("rc"))),
+                }
+            )
+    headline = (
+        f"Public attention sample: {len(matched)} configured A-share asset(s) in the top 100"
+        if matched
+        else "Public attention sample: no configured A-share asset appeared in the top 100 sample"
+    )
+    return _evidence_item(
+        channel="narrative_attention",
+        source="eastmoney_stock_rank",
+        source_url=EASTMONEY_ATTENTION_URL,
+        published_at=utc_now_iso(),
+        freshness="DELAYED",
+        source_type="public_attention_rank_proxy",
+        classification="PUBLIC_ATTENTION_SAMPLE",
+        verification_status="VERIFIED_SOURCE_PARTIAL_COVERAGE",
+        headline=headline,
+        affected_assets=[item["asset"] for item in matched],
+        affected_themes=["A-share public attention"],
+        world_model_node="Public Attention",
+        details={
+            "sample_size": len(rows),
+            "tracked_a_share_count": len(tracked),
+            "matched_assets": matched,
+            "coverage": "eastmoney_current_top_100_rank",
+            "interpretation_limit": "attention proxy only; no sentiment, thesis, or action inference",
+        },
+        channel_status="DELAYED",
+    )
+
+
 def _evidence_item(**values: Any) -> dict[str, Any]:
     identity = "|".join(str(values[key]) for key in ("source", "channel", "published_at", "headline"))
     digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
@@ -209,6 +378,38 @@ def _evidence_item(**values: Any) -> dict[str, Any]:
 
 def _get_json(url: str, *, timeout: float, headers: Mapping[str, str] | None = None) -> Any:
     return json.loads(_get_text(url, timeout=timeout, headers=headers))
+
+
+def _post_json(
+    url: str,
+    payload: Mapping[str, Any],
+    *,
+    timeout: float,
+    headers: Mapping[str, str] | None = None,
+) -> Any:
+    request_headers = {"User-Agent": USER_AGENT, "Accept": "application/json", "Content-Type": "application/json"}
+    request_headers.update(dict(headers or {}))
+    request = Request(url, data=json.dumps(payload).encode("utf-8"), headers=request_headers, method="POST")
+    with urlopen(request, timeout=timeout) as response:
+        return json.loads(response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace"))
+
+
+def _post_form_json(
+    url: str,
+    payload: Mapping[str, Any],
+    *,
+    timeout: float,
+    headers: Mapping[str, str] | None = None,
+) -> Any:
+    request_headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "application/json, text/plain, */*",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    }
+    request_headers.update(dict(headers or {}))
+    request = Request(url, data=urlencode(payload).encode("utf-8"), headers=request_headers, method="POST")
+    with urlopen(request, timeout=timeout) as response:
+        return json.loads(response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace"))
 
 
 def _get_text(url: str, *, timeout: float, headers: Mapping[str, str] | None = None) -> str:
@@ -250,6 +451,34 @@ def _number(value: Any) -> float:
         return float(value)
     except (TypeError, ValueError):
         return 0.0
+
+
+def _is_shenzhen_asset(asset: str, market: str) -> bool:
+    code = asset.split(".")[0]
+    return code.isdigit() and (
+        asset.upper().endswith(".SZ")
+        or ("a-share" in market.lower() and code.startswith(("0", "2", "3")))
+    )
+
+
+def _eastmoney_symbol(position: Mapping[str, Any]) -> str:
+    asset = str(position.get("asset") or "")
+    code = asset.split(".")[0]
+    market = str(position.get("market") or "").lower()
+    if not code.isdigit() or not (asset.upper().endswith((".SH", ".SZ")) or "a-share" in market):
+        return ""
+    prefix = "SH" if asset.upper().endswith(".SH") or code.startswith(("5", "6", "9")) else "SZ"
+    return prefix + code.zfill(6)
+
+
+def _epoch_millis_date(value: Any) -> str:
+    try:
+        return datetime.fromtimestamp(
+            float(value) / 1000.0,
+            tz=ZoneInfo("Asia/Shanghai"),
+        ).date().isoformat()
+    except (TypeError, ValueError, OSError):
+        return ""
 
 
 def _error(exc: Exception) -> str:
