@@ -2,6 +2,11 @@
   "classification": "PROVEN_COMPLETE",
   "date": "2026-07-13",
   "issue": "ISSUE-2026-060",
+  "commits": [
+    "c671297",
+    "0295910",
+    "990bbca"
+  ],
   "live_provider": "morecode",
   "live_evidence": {
     "decision": {
