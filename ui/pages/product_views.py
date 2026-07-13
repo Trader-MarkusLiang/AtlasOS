@@ -2172,7 +2172,80 @@ def markets_content(state: Mapping[str, Any]) -> str:
       <span class="kicker">{escape(t("markets.latest_observations", lang))}</span>
       <div class="pill-row">{_channel_pills(channels)}</div>
     </section>
+    <section class="focus-card">
+      <span class="kicker">{escape(t("markets.asset_sources", lang))}</span>
+      <h2>{escape(t("markets.asset_sources", lang))}</h2>
+      <p>{escape(t("markets.asset_sources_note", lang))}</p>
+      {_asset_source_table(market, lang)}
+    </section>
     """
+
+
+def _asset_source_table(market: Mapping[str, Any], lang: str) -> str:
+    asset_rows = market.get("asset_source_map") if isinstance(market.get("asset_source_map"), list) else []
+    if not asset_rows:
+        return f'<p class="empty-state">{escape(t("markets.no_source", lang))}</p>'
+    rows = []
+    for item in asset_rows:
+        if not isinstance(item, Mapping):
+            continue
+        sources = item.get("sources") if isinstance(item.get("sources"), list) else []
+        price = _source_cell(sources, "price_volume", lang)
+        disclosure = _source_cell(sources, "company_disclosure", lang)
+        attention = _source_cell(sources, "public_attention", lang)
+        summary = item.get("summary") if isinstance(item.get("summary"), Mapping) else {}
+        health = (
+            f'{summary.get("used", 0)} {_source_status_label("USED", lang)} · '
+            f'{summary.get("standby", 0)} {_source_status_label("STANDBY", lang)} · '
+            f'{summary.get("failed", 0)} {_source_status_label("FAILED", lang)}'
+        )
+        rows.append(
+            "<tr>"
+            f'<td><strong>{escape(str(item.get("asset") or "Unknown"))}</strong><small>{escape(str(item.get("market") or ""))}</small></td>'
+            f"<td>{price}</td><td>{disclosure}</td><td>{attention}</td><td>{escape(health)}</td>"
+            "</tr>"
+        )
+    return f"""
+    <div class="table-scroll"><table class="practical-table">
+      <thead><tr>
+        <th>{escape(t("markets.asset", lang))}</th>
+        <th>{escape(t("markets.price_source", lang))}</th>
+        <th>{escape(t("markets.disclosure_source", lang))}</th>
+        <th>{escape(t("markets.attention_source", lang))}</th>
+        <th>{escape(t("markets.source_health", lang))}</th>
+      </tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table></div>
+    """
+
+
+def _source_cell(sources: list[Any], channel: str, lang: str) -> str:
+    selected = [item for item in sources if isinstance(item, Mapping) and item.get("channel") == channel]
+    if not selected:
+        return escape(t("markets.no_source", lang))
+    active = [item for item in selected if item.get("status") in {"USED", "CHECKED_NO_RECENT_RECORD", "CHECKED_NOT_IN_SAMPLE", "MANUAL_REVIEW"}]
+    visible = active or selected[:1]
+    parts = []
+    for item in visible[:2]:
+        label = escape(str(item.get("label") or item.get("source_id") or "Unknown"))
+        status = escape(_source_status_label(str(item.get("status") or ""), lang))
+        url = str(item.get("url") or "")
+        source_label = f'<a href="{escape(url)}" target="_blank" rel="noopener noreferrer">{label}</a>' if url else label
+        parts.append(f"{source_label}<small>{status}</small>")
+    return "<br>".join(parts)
+
+
+def _source_status_label(status: str, lang: str) -> str:
+    labels = {
+        "USED": ("Used", "已使用"),
+        "STANDBY": ("Standby", "待命"),
+        "FAILED": ("Failed", "失败"),
+        "CHECKED_NO_RECENT_RECORD": ("Checked · no recent record", "已检查 · 无近期记录"),
+        "CHECKED_NOT_IN_SAMPLE": ("Checked · not in sample", "已检查 · 未进入样本"),
+        "MANUAL_REVIEW": ("Manual review", "人工复核"),
+    }
+    en, zh = labels.get(status, (status or "Unknown", status or "未知"))
+    return zh if lang == "zh" else en
 
 
 def predictions_content(ledger: Mapping[str, Any]) -> str:

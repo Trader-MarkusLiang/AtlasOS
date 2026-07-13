@@ -263,8 +263,41 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-size: 0.88rem;
   line-height: 1.45;
 }
-.focus-card { padding: 22px; }
+.focus-card { min-width: 0; padding: 22px; }
 .panel { padding: 16px; box-shadow: none; }
+.table-scroll {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+.table-scroll > .practical-table { min-width: 720px; }
+.practical-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  margin-top: 12px;
+}
+.practical-table th {
+  padding: 0 9px 3px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-align: left;
+  text-transform: uppercase;
+}
+.practical-table td {
+  padding: 11px 10px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: rgba(255,255,255,0.032);
+  vertical-align: top;
+  line-height: 1.35;
+}
+.practical-table td:first-child { border-left: 1px solid var(--line); border-radius: 12px 0 0 12px; }
+.practical-table td:last-child { border-right: 1px solid var(--line); border-radius: 0 12px 12px 0; }
+.practical-table td small { display: block; margin-top: 5px; color: var(--muted); }
 .kicker {
   color: var(--muted);
   font-size: 0.74rem;
