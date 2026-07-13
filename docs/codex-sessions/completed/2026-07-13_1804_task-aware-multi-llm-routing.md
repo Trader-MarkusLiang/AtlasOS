@@ -66,6 +66,7 @@ tests, browser validation, and evidence-based completion classification.
 
 ## Current State
 
+- Implementation commit `c671297` is pushed to `origin/codex/frontend-master-upgrade`.
 - Canonical UI is available at `http://127.0.0.1:8765`.
 - Temporary ports `8766` and `8877` are closed.
 - The runtime daemon is not forced on by this Goal; users can start it through the existing UI.

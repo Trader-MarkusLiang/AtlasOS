@@ -6,6 +6,8 @@ Linked Issue: `ISSUE-2026-060`
 
 Linked IP: `IP-2026-060`
 
+Implementation commit: `c671297`
+
 Scope: Runtime/UI provider orchestration only. Atlas Core remains v2.1 RC.
 
 ## Result

@@ -1,4 +1,7 @@
-"""Validate Atlas task-aware multi-LLM routing with isolated runtime evidence."""
+"""Validate Atlas task-aware multi-LLM routing with isolated runtime evidence.
+
+Linked Issue: ISSUE-2026-060.
+"""
 
 from __future__ import annotations
 
