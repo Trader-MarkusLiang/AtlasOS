@@ -110,7 +110,7 @@ def main() -> int:
             _check("market_refresh_ok", entry.get("system_metrics", {}).get("market_refresh_status") == "ok", result)
             _check("channels_allowed", set(channels.values()).issubset(ALLOWED_CHANNEL_STATES), result)
             _check("price_volume_freshness_honest", channels.get("price_volume") in {"LIVE", "DELAYED", "CACHED"}, result)
-            _check("missing_channels_explicit", channels.get("narrative_attention") == "NOT_CONFIGURED", result)
+            _check("attention_channel_attempted", channels.get("narrative_attention") in {"LIVE", "DELAYED", "CACHED", "FAILED"}, result)
             _check("live_observation_present", bool(live_observations), result)
             _check("live_event_enqueued", any(row["event_type"] == "volume_price_breakout" and row["source"] != "controlled_fixture" for row in events), result)
             _check("freshness_present", any(item.get("freshness") not in {"", None, "Unknown"} and item.get("timestamp") for item in live_observations), result)

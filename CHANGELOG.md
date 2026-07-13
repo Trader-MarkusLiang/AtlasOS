@@ -1,5 +1,13 @@
 # Changelog
 
+## Bounded Public Market Source Expansion - 2026-07-13
+
+- Added CNInfo official disclosure retrieval for configured Shenzhen-listed assets.
+- Added Eastmoney Top 100 stock rank as a partial public-attention proxy with explicit limits.
+- Preserved source URLs, timestamps, freshness, verification status, and `UNASSESSED` thesis state.
+- Rejected unavailable Bing/Google news paths and kept screenshot OCR outside the unattended daemon.
+- Did not change cognition, Decision Contract, CDE, prediction, broker, or trading semantics.
+
 ## Portfolio-First Investor Home and Accountable Market Evidence - 2026-07-12
 
 - Rebuilt Home around portfolio state, today's review need, material evidence, reasoning lineage,

@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-13_0810_public-market-source-expansion.md`
 - `docs/codex-sessions/completed/2026-07-13_0755_publish-investor-home-repair.md`
 - `docs/codex-sessions/completed/2026-07-13_0724_home-data-availability-repair.md`
 - `docs/codex-sessions/completed/2026-07-12_1303_investor-home-goal.md`

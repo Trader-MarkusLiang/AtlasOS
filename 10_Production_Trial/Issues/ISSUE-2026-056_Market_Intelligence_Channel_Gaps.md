@@ -74,3 +74,16 @@ None
   multi-period observations without replacing stale weekend data with false `LIVE` status.
 - Current channel state includes real, delayed, cached, and explicitly not-configured channels;
   narrative / public-attention coverage remains the open gap.
+
+## 2026-07-13 Public Source Expansion
+
+- Added CNInfo's public disclosure endpoints for configured Shenzhen-listed assets. Records retain
+  official PDF URLs, source timestamps, freshness, affected assets, and `UNASSESSED` thesis state.
+- Added Eastmoney's public Top 100 stock-rank endpoint as a delayed, partial-coverage attention
+  proxy. It does not infer sentiment, thesis change, price direction, or trading authority.
+- Bing RSS redirected to a generic home page and Google News RSS timed out in the current network;
+  neither was accepted into the runtime path.
+- Automated screenshot/OCR ingestion remains out of the daemon because it is brittle and can expose
+  local portfolio context. Screenshots remain suitable as manually supplied Signals with source
+  and timestamp provenance.
+- HKEX structured announcement coverage and broader narrative-source diversity remain open.
