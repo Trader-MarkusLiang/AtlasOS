@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import json
 import hashlib
+import time
 from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from typing import Any, Mapping
 from urllib.parse import urlencode, urljoin
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
@@ -390,8 +392,8 @@ def _post_json(
     request_headers = {"User-Agent": USER_AGENT, "Accept": "application/json", "Content-Type": "application/json"}
     request_headers.update(dict(headers or {}))
     request = Request(url, data=json.dumps(payload).encode("utf-8"), headers=request_headers, method="POST")
-    with urlopen(request, timeout=timeout) as response:
-        return json.loads(response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace"))
+    raw, encoding = _read_request(request, timeout)
+    return json.loads(raw.decode(encoding, errors="replace"))
 
 
 def _post_form_json(
@@ -408,18 +410,30 @@ def _post_form_json(
     }
     request_headers.update(dict(headers or {}))
     request = Request(url, data=urlencode(payload).encode("utf-8"), headers=request_headers, method="POST")
-    with urlopen(request, timeout=timeout) as response:
-        return json.loads(response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace"))
+    raw, encoding = _read_request(request, timeout)
+    return json.loads(raw.decode(encoding, errors="replace"))
 
 
 def _get_text(url: str, *, timeout: float, headers: Mapping[str, str] | None = None) -> str:
     request_headers = {"User-Agent": USER_AGENT, "Accept": "application/json,text/html;q=0.9,*/*;q=0.8"}
     request_headers.update(dict(headers or {}))
     request = Request(url, headers=request_headers)
-    with urlopen(request, timeout=timeout) as response:
-        raw = response.read()
-        encoding = response.headers.get_content_charset() or "utf-8"
+    raw, encoding = _read_request(request, timeout)
     return raw.decode(encoding, errors="replace")
+
+
+def _read_request(request: Request, timeout: float) -> tuple[bytes, str]:
+    for attempt in range(2):
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                return response.read(), response.headers.get_content_charset() or "utf-8"
+        except HTTPError:
+            raise
+        except (URLError, TimeoutError, ConnectionError, OSError):
+            if attempt:
+                raise
+            time.sleep(0.2)
+    raise RuntimeError("unreachable_request_retry_state")
 
 
 def _items_status(items: list[Mapping[str, Any]]) -> str:

@@ -17,6 +17,7 @@ from runtime.adapter.input_router import route_to_runtime_event
 from runtime.event_stream import EventStream
 from runtime.logging import utc_now_iso
 from runtime.market_evidence_sources import fetch_public_market_evidence
+from runtime.market_source_registry import build_asset_source_map
 from runtime.portfolio_context import build_portfolio_context
 
 
@@ -57,6 +58,7 @@ def refresh_market_intelligence(
         [item for item in positions[:max_assets] if isinstance(item, Mapping)]
     )
     evidence_items = evidence.get("items", []) if isinstance(evidence, Mapping) else []
+    source_errors = evidence.get("errors", {}) if isinstance(evidence, Mapping) else {}
     for item in evidence_items:
         if isinstance(item, Mapping):
             events.append(market_evidence_to_event(item))
@@ -79,7 +81,13 @@ def refresh_market_intelligence(
         "portfolio_context_status": context.get("status"),
         "observations": observations,
         "evidence_items": evidence_items,
-        "source_errors": evidence.get("errors", {}),
+        "source_errors": source_errors,
+        "asset_source_map": build_asset_source_map(
+            [item for item in positions[:max_assets] if isinstance(item, Mapping)],
+            observations,
+            evidence_items,
+            source_errors,
+        ),
         "events_prepared": len(events),
         "events_enqueued": enqueued,
         "degraded": not observations or any(item.get("data_quality_status") not in USABLE_DATA_STATUSES for item in observations),
