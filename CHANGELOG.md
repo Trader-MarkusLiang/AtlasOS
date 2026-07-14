@@ -1,5 +1,21 @@
 # Changelog
 
+## Portfolio OS v1.3 / Decision Experience v1.2 - 2026-07-14
+
+- Added `ISSUE-2026-061` and `IP-2026-061` for local Home position-cost and PnL intelligence.
+- Added optional average cost, quantity, currency, cost timestamp, and four local visibility controls
+  to the bilingual Settings portfolio editor without requiring JSON.
+- Added deterministic decimal return, position cost, market value, and unrealized PnL calculations
+  with explicit identity, freshness, simulated-data, currency, and FX limitations.
+- Rebuilt the Home holdings board with configured allocation, cost-versus-price markers, a signed
+  zero-centered return bar, optional native-currency amounts, and source/freshness provenance.
+- Kept exact private values in ignored local configuration and ephemeral Home rendering only;
+  general `/state`, cognition, LLM contexts, telemetry, replay, logs, and Git remain private-field-free.
+- Proved synthetic calculations, privacy isolation, Settings save/masking, zh/en parity, desktop and
+  390px mobile layout, current public market availability, and protected cognition regressions.
+- Atlas Core remains v2.1 RC; no CDE, Decision Contract, trust, forecast, broker, prediction, or
+  trading semantics changed.
+
 ## Task-Aware Multi-LLM Routing Runtime/UI v1.5 - 2026-07-13
 
 - Added `ISSUE-2026-060` and `IP-2026-060` for the approved Workhorse, Research, and Decision

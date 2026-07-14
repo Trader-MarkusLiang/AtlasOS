@@ -1,0 +1,26 @@
+{
+  "checks": {
+    "general_state_contract_remains_private": true,
+    "market_price_currency_present": true,
+    "settings_save_masks_private_values": true,
+    "test_01_cost_schema_validation": true,
+    "test_02_return_calculation": true,
+    "test_03_amount_calculation": true,
+    "test_04_multi_currency": true,
+    "test_05_market_freshness": true,
+    "test_06_portfolio_weight_truth": true,
+    "test_07_privacy": true,
+    "test_08_llm_isolation": true,
+    "test_09_home_rendering": true,
+    "test_10_privacy_toggle": true,
+    "test_11_zh_en_parity": true,
+    "test_12_browser_contract": true,
+    "test_13_cognitive_regression": true,
+    "test_14_failure_recovery": true
+  },
+  "failures": [],
+  "fixture_policy": "synthetic_only_no_real_private_values",
+  "issue": "ISSUE-2026-061",
+  "private_runtime_config": "not_read_or_recorded",
+  "status": "PASS"
+}

@@ -54,10 +54,10 @@
     },
     {
       "track": "Atlas UI / Product",
-      "current_version": "UI v2.0 + provider v1.4.4",
+      "current_version": "UI v2.1 Home valuation + provider v1.5",
       "status": "current",
       "role": "Browser control surface, settings, provider health/model picker, roadmap/workflow pages.",
-      "current_focus": "Browser-level ordinary-user QA, stale-server guard, data freshness clarity, and bilingual coverage."
+      "current_focus": "Private local position valuation, browser-level ordinary-user QA, stale-server guard, data freshness clarity, and bilingual coverage."
     },
     {
       "track": "Atlas Data / Market Intelligence",

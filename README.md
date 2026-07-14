@@ -43,7 +43,7 @@ Runtime, UI, and Data tracks use separate version labels because they mature ind
 | Atlas Core / Knowledge OS | v2.1 RC Production Trial |
 | Atlas Runtime | real daemon / EventStream / DecisionLoop path proven through GOAL 07 and clean-room CR08 real-duration soaks; no 24h proof |
 | Atlas Cognitive Overlay | symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence |
-| Atlas UI / Product | first-user setup/start/ask/stop path proven; exhaustive bilingual parity and stale-server guard remain partial |
+| Atlas UI / Product | first-user setup/start/ask/stop and local position-valuation paths proven; exhaustive bilingual parity and stale-server guard remain partial |
 | Atlas Data / Market Intelligence | live market fetch attempted; daemon path currently degraded by provider/rate-limit failures; breadth/news/macro/narrative channels explicitly not configured |
 
 Current evidence levels:
@@ -494,7 +494,7 @@ Atlas is wealth-blind, but scale-aware.
 
 Atlas 不感知具体财富金额，但感知资金规模层级。
 
-Atlas does not store:
+Atlas cognition, telemetry, and Git do not store:
 
 - Money.
 - Balance.
@@ -503,6 +503,12 @@ Atlas does not store:
 - Market value.
 - Position amount.
 - Cost basis.
+
+Portfolio OS v1.3 adds an explicit local-only exception for Home valuation. A user may optionally
+store average cost, quantity, and currency in the ignored `runtime/config/user_config.json`. Exact
+values are used only by deterministic localhost UI rendering and do not enter cognition, external
+LLM prompts, telemetry, replay, runtime logs, verification evidence, or Git. They remain execution
+and risk context, never thesis evidence.
 
 Atlas stores only:
 

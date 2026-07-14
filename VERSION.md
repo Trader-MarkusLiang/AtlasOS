@@ -4,17 +4,17 @@ Current Core version: v2.1 RC
 
 Release candidate: v2.1 RC
 
-Portfolio layer version: Portfolio OS v1.2.1
+Portfolio layer version: Portfolio OS v1.3
 
 Runtime infrastructure version: v1.5
 
 Provider configuration UI version: v1.5
 
-Date: 2026-07-13
+Date: 2026-07-14
 
 Stage: Run First + Capital Deployment Engine
 
-Presentation stage: Decision Experience v1.1 RC
+Presentation stage: Decision Experience v1.2 RC
 
 Productization track: Clean-room verification complete; production trial candidate, not Release Candidate
 
@@ -23,7 +23,7 @@ Parallel version model:
 - Atlas Core / Knowledge OS: v2.1 RC
 - Atlas Runtime: v1.5 task-aware Workhorse / Research / Decision routing over the real daemon / EventStream / DecisionLoop path; no 24h proof
 - Atlas Cognitive Overlay: symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence
-- Atlas UI / Product: UI v2.x + task-aware provider configuration v1.5 + Decision Brief-first Home; task-route zh/en browser parity proven, exhaustive product-wide bilingual parity remains partial
+- Atlas UI / Product: UI v2.1 local portfolio valuation + task-aware provider configuration v1.5 + Decision Brief-first Home; valuation and task-route zh/en browser parity proven, exhaustive product-wide bilingual parity remains partial
 - Atlas Data / Market Intelligence: live market fetch attempted; daemon path currently degraded by provider/rate-limit failures
 
 Current evidence classification:

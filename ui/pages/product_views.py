@@ -3982,7 +3982,7 @@ def _asset_row(item: Mapping[str, Any], lang: str) -> str:
         <label>{escape(t("portfolio.average_cost", lang))}<input data-asset-field="average_cost_price" type="number" min="0.000001" step="any" inputmode="decimal" value="{escape(cost)}"><small class="position-field-note">{escape(t("portfolio.cost_missing_note", lang))}</small></label>
         <label>{escape(t("portfolio.quantity_optional", lang))}<input data-asset-field="quantity" type="number" min="0.000001" step="any" inputmode="decimal" value="{escape(quantity)}"><small class="position-field-note">{escape(t("portfolio.quantity_optional_note", lang))}</small></label>
         <label>{escape(t("portfolio.cost_currency", lang))}<select data-asset-field="position_currency"><option value="CNY"{_selected(currency, 'CNY')}>CNY</option><option value="HKD"{_selected(currency, 'HKD')}>HKD</option><option value="USD"{_selected(currency, 'USD')}>USD</option></select></label>
-        <label>{escape(t("portfolio.cost_updated", lang))}<input data-asset-field="cost_updated_at" type="hidden" value="{escape(cost_updated)}"><span class="position-field-note">{escape(cost_updated or ('保存成本后记录' if lang == 'zh' else 'Recorded after cost is saved'))}</span></label>
+        <label>{escape(t("portfolio.cost_updated", lang))}<input data-asset-field="cost_updated_at" type="hidden" value="{escape(cost_updated)}"><span class="position-field-note">{escape(_short_cost_timestamp(cost_updated, lang))}</span></label>
         <label>{escape(t("setup.theme", lang))}<input data-asset-field="theme" value="{escape(str(item.get("theme") or ""))}" placeholder="AI"></label>
         <label>{escape(t("setup.role", lang))}<input data-asset-field="role" value="{escape(str(item.get("role") or ""))}" placeholder="Core"></label>
         <label class="position-wide">{escape(t("setup.thesis", lang))}<textarea data-asset-field="user_thesis" rows="2">{escape(str(item.get("user_thesis") or item.get("thesis") or ""))}</textarea></label>
@@ -4000,6 +4000,12 @@ def _default_position_currency(item: Mapping[str, Any]) -> str:
     if asset.endswith((".SH", ".SS", ".SZ")) or market in {"a-share", "ashare", "cn"}:
         return "CNY"
     return "USD" if market == "us" else "CNY"
+
+
+def _short_cost_timestamp(value: str, lang: str) -> str:
+    if not value:
+        return "保存成本后记录" if lang == "zh" else "Recorded after cost is saved"
+    return value[:16].replace("T", " ")
 
 
 def _setup_step(number: str, title: str, body: str) -> str:
