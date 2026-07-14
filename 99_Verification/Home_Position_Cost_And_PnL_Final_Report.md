@@ -124,6 +124,7 @@ a green result.
 
 - `27499bb` - Production Trial Issue, IP, and privacy boundary.
 - `b52a559` - local valuation, Settings, Home, market currency, and privacy integration.
+- `67743d9` - synthetic verification, browser evidence, reports, and presentation version update.
 
 ## Personalized PnL Status
 

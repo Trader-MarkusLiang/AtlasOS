@@ -8,6 +8,8 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-14_0926_home-position-pnl-implementation.md`
+- `docs/codex-sessions/completed/2026-07-14_0917_home-position-pnl-goal-prompt.md`
 - `docs/codex-sessions/completed/2026-07-13_1804_task-aware-multi-llm-routing.md`
 - `docs/codex-sessions/completed/2026-07-13_1755_llm-task-routing-goal-prompt.md`
 - `docs/codex-sessions/completed/2026-07-13_1427_restore-canonical-ui-service.md`
