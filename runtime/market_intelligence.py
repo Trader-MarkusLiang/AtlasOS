@@ -205,6 +205,7 @@ def _observe_position(position: Mapping[str, Any], fixture: Mapping[str, Any] | 
             "volume": fixture.get("volume"),
             "turnover": fixture.get("turnover"),
             "data_freshness": fixture.get("data_freshness", "SIMULATED"),
+            "price_currency": fixture.get("price_currency") or _price_currency(market, asset),
         }
         source_type = "controlled_fixture"
     else:
@@ -247,6 +248,7 @@ def _observe_position(position: Mapping[str, Any], fixture: Mapping[str, Any] | 
         "portfolio_relevant": True,
         "latest_price_available": snapshot.get("latest_price") is not None,
         "latest_price": snapshot.get("latest_price"),
+        "price_currency": snapshot.get("price_currency") or _price_currency(market, asset),
         "source_url": _market_source_url(source),
         "daily_change_pct": snapshot.get("daily_change_pct"),
         "change_5d_pct": snapshot.get("change_5d_pct"),
@@ -274,6 +276,20 @@ def _freshness(snapshot: Mapping[str, Any]) -> str:
         except ValueError:
             return "Unknown"
     return "Unknown"
+
+
+def _price_currency(market: str, asset: str) -> str | None:
+    """Return the exchange settlement currency for a validated market/ticker."""
+
+    market_key = str(market or "").strip().lower()
+    ticker = str(asset or "").strip().upper()
+    if ticker.endswith(".HK") or market_key in {"hk", "hong kong", "hong_kong"}:
+        return "HKD"
+    if ticker.endswith((".SH", ".SS", ".SZ")) or market_key in {"a-share", "ashare", "cn", "china"}:
+        return "CNY"
+    if market_key in {"us", "nasdaq", "nyse"}:
+        return "USD"
+    return None
 
 
 def _market_source_url(source: str) -> str:

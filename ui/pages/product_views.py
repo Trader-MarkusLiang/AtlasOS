@@ -650,7 +650,7 @@ def _brief_copy(key: str, lang: str) -> str:
             "capital_relay": "Capital Relay",
             "current_holdings": "Current Holdings",
             "actual_configured_holdings": "Actual configured holdings only",
-            "privacy_percent_only": "Percentages only; no private account amounts.",
+            "privacy_percent_only": "Private values follow local visibility settings and never enter Atlas reasoning or external LLMs.",
             "capital_allocation": "Capital Allocation Board",
             "operational": "Operational checks",
             "waiting_triggers": "Waiting Triggers",
@@ -751,7 +751,7 @@ def _brief_copy(key: str, lang: str) -> str:
             "capital_relay": "资本迁移",
             "current_holdings": "当前持仓",
             "actual_configured_holdings": "仅显示实际配置持仓",
-            "privacy_percent_only": "只显示比例，不显示私人账户金额。",
+            "privacy_percent_only": "私密数值遵循本地显示设置，不进入 Atlas 推理或外部 LLM。",
             "capital_allocation": "资金调度",
             "operational": "操作检查",
             "waiting_triggers": "等待触发条件",
@@ -878,23 +878,208 @@ def _holding_action_board(holdings: Mapping[str, Any], lang: str) -> str:
         return f'<div class="empty-state">{escape(t("portfolio.no_percentages", lang))}</div>'
     rows = []
     for item in items:
+        valuation = _mapping(item.get("valuation"))
         rows.append(
             f"""
-            <article class="holding-brief-card">
-              <div>
-                <h3>{escape(str(item.get("asset") or ""))}</h3>
-                <p class="home-safety-note">{escape(_theme_label(item.get("theme"), lang))} · {escape(_pct_text(item.get("exposure_pct")))}</p>
+            <article class="holding-brief-card" data-valuation-status="{escape(str(valuation.get('valuation_status') or 'LIMITED').lower())}">
+              <div class="holding-valuation-column">
+                <div class="holding-title-row">
+                  <div><h3>{escape(str(item.get("asset") or ""))}</h3><p class="home-safety-note">{escape(_theme_label(item.get("theme"), lang))}</p></div>
+                  <div class="allocation-badge"><small>{escape(_valuation_copy('configured_allocation', lang))}</small><strong>{escape(_pct_text(item.get("exposure_pct")))}</strong></div>
+                </div>
+                {_holding_valuation_view(valuation, lang)}
               </div>
-              <dl class="decision-dl">
-                <dt>{escape(_brief_copy("posture", lang))}</dt><dd>{escape(_localized(item.get("posture_label"), lang))}</dd>
-                <dt>{escape(_brief_copy("why", lang))}</dt><dd>{escape(_localized(item.get("why"), lang))}</dd>
-                <dt>{escape(_brief_copy("key_trigger", lang))}</dt><dd>{escape(_localized(item.get("key_trigger"), lang))}</dd>
-                <dt>{escape(_brief_copy("review_priority", lang))}</dt><dd>{escape(_runtime_label(item.get("review_priority") or "", lang))}</dd>
-              </dl>
+              <div class="holding-decision-column">
+                <span class="kicker">{escape(_valuation_copy('decision_context', lang))}</span>
+                <dl class="decision-dl">
+                  <dt>{escape(_brief_copy("posture", lang))}</dt><dd>{escape(_localized(item.get("posture_label"), lang))}</dd>
+                  <dt>{escape(_brief_copy("why", lang))}</dt><dd>{escape(_localized(item.get("why"), lang))}</dd>
+                  <dt>{escape(_brief_copy("key_trigger", lang))}</dt><dd>{escape(_localized(item.get("key_trigger"), lang))}</dd>
+                  <dt>{escape(_brief_copy("review_priority", lang))}</dt><dd>{escape(_runtime_label(item.get("review_priority") or "", lang))}</dd>
+                </dl>
+              </div>
             </article>
             """
         )
-    return '<div class="holding-brief-grid">' + "".join(rows) + "</div>"
+    return _valuation_summary(_mapping(holdings.get("valuation_summary")), lang) + '<div class="holding-brief-grid">' + "".join(rows) + "</div>"
+
+
+def _holding_valuation_view(valuation: Mapping[str, Any], lang: str) -> str:
+    if not valuation:
+        return f'<div class="valuation-empty">{escape(_valuation_copy("market_missing", lang))}</div>'
+    currency = str(valuation.get("position_currency") or valuation.get("price_currency") or "")
+    latest = valuation.get("latest_price")
+    cost = valuation.get("average_cost_price")
+    return_pct = valuation.get("unrealized_return_pct")
+    price_comparison = _cost_price_comparison(cost, latest, currency, lang)
+    pnl_bar = _pnl_diverging_bar(return_pct, lang)
+    amounts = _amount_metrics(valuation, currency, lang)
+    limitations = _valuation_limitations(_list(valuation.get("limitations")), lang)
+    observed = str(valuation.get("observed_at") or _valuation_copy("time_missing", lang))
+    source = str(valuation.get("source") or _valuation_copy("source_missing", lang))
+    freshness = str(valuation.get("provider_status") or valuation.get("freshness") or "NOT_CONFIGURED")
+    return f"""
+    <div class="valuation-visuals">
+      {price_comparison}
+      {pnl_bar}
+      {amounts}
+    </div>
+    <div class="valuation-provenance">
+      <span class="freshness-badge freshness-{escape(freshness.lower())}">{escape(freshness.replace('_', ' '))}</span>
+      <span>{escape(source)}</span>
+      <time>{escape(observed)}</time>
+    </div>
+    {limitations}
+    """
+
+
+def _cost_price_comparison(cost: Any, latest: Any, currency: str, lang: str) -> str:
+    if cost is None:
+        return f'<div class="valuation-empty">{escape(_valuation_copy("cost_missing", lang))}</div>'
+    if latest is None:
+        return f'<div class="valuation-empty">{escape(_valuation_copy("market_missing", lang))}</div>'
+    cost_num = _num(cost, 0)
+    latest_num = _num(latest, 0)
+    low = min(cost_num, latest_num)
+    high = max(cost_num, latest_num)
+    span = max(high - low, high * .08, .000001)
+    floor = max(0, low - span * .45)
+    ceiling = high + span * .45
+    cost_left = max(3, min(97, (cost_num - floor) / max(ceiling - floor, .000001) * 100))
+    latest_left = max(3, min(97, (latest_num - floor) / max(ceiling - floor, .000001) * 100))
+    return f"""
+    <div class="cost-price-chart" role="img" aria-label="{escape(_valuation_copy('cost_vs_price', lang))}">
+      <div class="valuation-chart-head"><span>{escape(_valuation_copy('cost_vs_price', lang))}</span><small>{escape(currency)}</small></div>
+      <div class="cost-price-values">
+        <span><small>{escape(_valuation_copy('cost', lang))}</small><strong>{cost_num:,.2f}</strong></span>
+        <span><small>{escape(_valuation_copy('latest', lang))}</small><strong>{latest_num:,.2f}</strong></span>
+      </div>
+      <div class="cost-price-track">
+        <i class="cost-marker" style="left:{cost_left:.2f}%"><b></b></i>
+        <i class="price-marker" style="left:{latest_left:.2f}%"><b></b></i>
+      </div>
+    </div>
+    """
+
+
+def _pnl_diverging_bar(value: Any, lang: str) -> str:
+    if value is None:
+        return f'<div class="valuation-empty">{escape(_valuation_copy("return_unavailable", lang))}</div>'
+    number = _num(value, 0)
+    width = min(50, abs(number) / 100 * 50)
+    css = "gain" if number >= 0 else "loss"
+    left = 50 if number >= 0 else 50 - width
+    return f"""
+    <div class="pnl-chart {css}" role="img" aria-label="{escape(_valuation_copy('unrealized_return', lang))} {number:+.2f}%">
+      <div class="valuation-chart-head"><span>{escape(_valuation_copy('unrealized_return', lang))}</span><strong>{number:+.2f}%</strong></div>
+      <div class="pnl-track"><i style="left:{left:.2f}%;width:{width:.2f}%"></i><b></b></div>
+      <div class="pnl-axis"><span>-100%</span><span>0</span><span>+100%</span></div>
+    </div>
+    """
+
+
+def _amount_metrics(valuation: Mapping[str, Any], currency: str, lang: str) -> str:
+    quantity = valuation.get("quantity")
+    market_value = valuation.get("current_market_value")
+    pnl = valuation.get("unrealized_pnl_amount")
+    if quantity is None and market_value is None and pnl is None:
+        return ""
+    metrics = []
+    if quantity is not None:
+        metrics.append((_valuation_copy("quantity", lang), f"{_num(quantity, 0):,.4f}".rstrip("0").rstrip(".")))
+    if market_value is not None:
+        metrics.append((f'{_valuation_copy("market_value", lang)} ({currency})', f'{_num(market_value, 0):,.2f}'))
+    if pnl is not None:
+        pnl_value = _num(pnl, 0)
+        metrics.append((f'{_valuation_copy("pnl_amount", lang)} ({currency})', f'{"+" if pnl_value > 0 else ""}{pnl_value:,.2f}'))
+    return '<div class="valuation-amount-grid">' + "".join(
+        f'<span><small>{escape(label)}</small><strong>{escape(value)}</strong></span>' for label, value in metrics
+    ) + '</div>'
+
+
+def _valuation_limitations(limitations: list[Any], lang: str) -> str:
+    visible = []
+    for value in limitations:
+        key = str(value or "")
+        if key == "PRICE_NOT_LIVE":
+            visible.append(_valuation_copy("price_delayed", lang))
+        elif key == "AVERAGE_COST_NOT_CONFIGURED":
+            visible.append(_valuation_copy("cost_missing", lang))
+        elif key == "QUANTITY_NOT_CONFIGURED":
+            visible.append(_valuation_copy("quantity_missing", lang))
+        elif key == "MARKET_DATA_MISSING" or key == "MARKET_DATA_UNAVAILABLE":
+            visible.append(_valuation_copy("market_missing", lang))
+        elif key == "PRICE_COST_CURRENCY_MISMATCH":
+            visible.append(_valuation_copy("currency_mismatch", lang))
+        elif key == "IDENTITY_MISMATCH":
+            visible.append(_valuation_copy("identity_mismatch", lang))
+        elif key == "SIMULATED_PRICE_BLOCKED":
+            visible.append(_valuation_copy("simulated_blocked", lang))
+        elif key == "INVALID_PRIVATE_INPUT":
+            visible.append(_valuation_copy("invalid_input", lang))
+    unique = list(dict.fromkeys(visible))
+    if not unique:
+        return ""
+    return '<ul class="valuation-limitations">' + "".join(f'<li>{escape(item)}</li>' for item in unique) + '</ul>'
+
+
+def _valuation_summary(summary: Mapping[str, Any], lang: str) -> str:
+    if not summary:
+        return ""
+    complete = summary.get("return_complete_positions", 0)
+    total = summary.get("total_positions", 0)
+    limitations = _list(summary.get("limitations"))
+    fx_limited = "FX_DATA_MISSING_AGGREGATE_VALUATION_LIMITED" in limitations
+    return f"""
+    <div class="valuation-summary-strip">
+      <span><small>{escape(_valuation_copy('return_coverage', lang))}</small><strong>{escape(str(complete))}/{escape(str(total))}</strong></span>
+      <span><small>{escape(_valuation_copy('current_weight', lang))}</small><strong>{escape(_valuation_copy('unavailable', lang))}</strong></span>
+      <p>{escape(_valuation_copy('fx_limited', lang) if fx_limited else _valuation_copy('weight_limited', lang))}</p>
+    </div>
+    """
+
+
+def _valuation_copy(key: str, lang: str) -> str:
+    text = {
+        "en": {
+            "configured_allocation": "Configured allocation", "decision_context": "Atlas decision context",
+            "cost_vs_price": "Cost vs latest price", "cost": "Cost", "latest": "Latest",
+            "unrealized_return": "Unrealized return", "quantity": "Quantity", "market_value": "Market value",
+            "pnl_amount": "Unrealized PnL", "cost_missing": "Average cost not configured - PnL unavailable",
+            "quantity_missing": "Return percentage available - Amount and live weight unavailable",
+            "market_missing": "Market Data Missing or Unavailable - Valuation Limited",
+            "price_delayed": "Latest price is delayed - Verify before acting",
+            "currency_mismatch": "Price / Cost Currency Mismatch - PnL Blocked",
+            "identity_mismatch": "Candidate Identity Mismatch - Valuation Blocked",
+            "simulated_blocked": "Simulated price is not used for real PnL", "invalid_input": "Private position input is invalid",
+            "return_unavailable": "Unrealized return unavailable", "time_missing": "Observation time unavailable",
+            "source_missing": "Source unavailable", "return_coverage": "PnL coverage", "current_weight": "Estimated current weight",
+            "unavailable": "Unavailable", "fx_limited": "FX Data Missing - Aggregate Valuation Limited",
+            "weight_limited": "Current weight unavailable until quantity, complete prices, currency normalization, and cash value are available",
+        },
+        "zh": {
+            "configured_allocation": "配置比例", "decision_context": "Atlas 决策上下文",
+            "cost_vs_price": "成本价与最新价", "cost": "成本", "latest": "最新",
+            "unrealized_return": "未实现盈亏", "quantity": "持仓数量", "market_value": "当前市值",
+            "pnl_amount": "未实现盈亏金额", "cost_missing": "未配置平均成本，无法计算盈亏",
+            "quantity_missing": "可显示盈亏比例；金额与实时权重不可用",
+            "market_missing": "市场数据缺失或不可用，估值受限",
+            "price_delayed": "最新价格为延迟数据，行动前请复核",
+            "currency_mismatch": "价格与成本币种不一致，盈亏计算已阻止",
+            "identity_mismatch": "标的身份不匹配，估值已阻止",
+            "simulated_blocked": "模拟价格不用于真实盈亏", "invalid_input": "私密持仓输入无效",
+            "return_unavailable": "未实现盈亏不可用", "time_missing": "观测时间不可用",
+            "source_missing": "数据来源不可用", "return_coverage": "盈亏覆盖", "current_weight": "估算当前权重",
+            "unavailable": "不可用", "fx_limited": "FX 数据缺失，组合汇总估值受限",
+            "weight_limited": "需补齐数量、价格、币种归一化和现金价值后才能估算当前权重",
+        },
+    }
+    return text.get(lang, text["en"]).get(key, key.replace("_", " "))
+
+
+def _money(value: float, currency: str, *, signed: bool = False) -> str:
+    prefix = "+" if signed and value > 0 else ""
+    return f"{prefix}{value:,.2f} {currency}".strip()
 
 
 def _capital_allocation_panel(allocation: Mapping[str, Any], lang: str) -> str:
@@ -1763,8 +1948,28 @@ def _home_intelligence_style() -> str:
     .relay-node span { color:var(--accent); font-weight:760; }
     .relay-node small { color:var(--muted); }
     .relay-arrow { align-self:center; color:var(--muted); font-size:1.25rem; }
-    .holding-brief-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-    .holding-brief-card { padding:13px; border-radius:14px; }
+    .valuation-summary-strip { display:grid; grid-template-columns:150px 210px minmax(0,1fr); gap:12px; align-items:center; margin:8px 0 14px; padding:12px 14px; border:1px solid rgba(219,234,254,.1); border-radius:14px; background:rgba(0,0,0,.11); }
+    .valuation-summary-strip span { display:grid; gap:3px; } .valuation-summary-strip small { color:var(--muted); } .valuation-summary-strip p { margin:0; color:var(--subtle); font-size:.82rem; }
+    .holding-brief-grid { display:grid; grid-template-columns:1fr; gap:12px; }
+    .holding-brief-card { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr); gap:20px; padding:16px; border-radius:16px; }
+    .holding-title-row { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; } .holding-title-row h3 { margin:0 0 4px; font-size:1.1rem; }
+    .allocation-badge { display:grid; justify-items:end; gap:3px; } .allocation-badge small { color:var(--muted); font-size:.72rem; } .allocation-badge strong { font-size:1.12rem; }
+    .holding-decision-column { padding-left:18px; border-left:1px solid rgba(219,234,254,.1); }
+    .valuation-visuals { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px; }
+    .cost-price-chart,.pnl-chart,.valuation-empty { min-height:138px; padding:12px; border:1px solid rgba(219,234,254,.1); border-radius:13px; background:rgba(0,0,0,.12); }
+    .valuation-empty { display:grid; place-items:center; color:var(--muted); text-align:center; font-size:.82rem; }
+    .valuation-chart-head { display:flex; justify-content:space-between; gap:8px; color:var(--muted); font-size:.76rem; } .valuation-chart-head strong { color:var(--text); font-size:.92rem; }
+    .cost-price-values { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-top:11px; } .cost-price-values span { min-width:0; display:grid; gap:2px; } .cost-price-values small { color:var(--muted); font-size:.66rem; } .cost-price-values strong { font-size:.76rem; line-height:1.2; white-space:nowrap; }
+    .cost-price-track { position:relative; height:18px; margin:22px 8px 0; border-top:2px solid rgba(219,234,254,.16); }
+    .cost-price-track i { position:absolute; top:-7px; width:1px; height:17px; font-style:normal; } .cost-price-track i b { display:block; width:12px; height:12px; margin-left:-6px; border-radius:50%; background:var(--accent); }
+    .cost-price-track .price-marker b { background:#9ee6b8; }
+    .pnl-track { position:relative; height:10px; margin-top:22px; border-radius:999px; background:rgba(255,255,255,.07); overflow:hidden; } .pnl-track b { position:absolute; left:50%; top:0; width:1px; height:100%; background:rgba(255,255,255,.56); }
+    .pnl-track i { position:absolute; top:0; height:100%; background:#9ee6b8; } .pnl-chart.loss .pnl-track i { background:#f4a5b3; }
+    .pnl-axis { display:flex; justify-content:space-between; margin-top:7px; color:var(--muted); font-size:.66rem; }
+    .valuation-amount-grid { grid-column:1/-1; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; } .valuation-amount-grid span { min-width:0; display:grid; gap:4px; padding:9px 8px; border:1px solid rgba(219,234,254,.08); border-radius:9px; background:rgba(255,255,255,.025); } .valuation-amount-grid small { color:var(--muted); font-size:.66rem; } .valuation-amount-grid strong { font-size:clamp(.72rem,1vw,.88rem); white-space:nowrap; }
+    .valuation-provenance { display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; margin-top:10px; color:var(--muted); font-size:.74rem; }
+    .freshness-badge { display:inline-flex; min-height:24px; align-items:center; padding:3px 8px; border-radius:999px; background:rgba(246,215,122,.1); color:#ffe59a; font-weight:760; } .freshness-live { color:#9ee6b8; background:rgba(158,230,184,.1); } .freshness-failed,.freshness-not_configured { color:#f4a5b3; background:rgba(244,165,179,.1); }
+    .valuation-limitations { display:flex; flex-wrap:wrap; gap:6px 12px; margin:10px 0 0; padding:0; list-style:none; color:var(--muted); font-size:.76rem; } .valuation-limitations li::before { content:"!"; display:inline-grid; place-items:center; width:16px; height:16px; margin-right:6px; border-radius:50%; background:rgba(246,215,122,.12); color:#ffe59a; font-size:.66rem; }
     .holding-brief-card .decision-dl { grid-template-columns:1fr; gap:3px; font-size:.82rem; }
     .holding-brief-card .decision-dl dt { margin-top:6px; }
     .waiting-trigger-table { display:block; max-width:100%; overflow-x:auto; }
@@ -1877,9 +2082,9 @@ def _home_intelligence_style() -> str:
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid, .practical-operational-grid, .practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } .holding-brief-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-command-analysis,.scenario-grid,.material-evidence-item dl,.holding-brief-grid { grid-template-columns:1fr; } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
-    @media (max-width:640px) { .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:14px; } .portfolio-header-status { justify-items:start; text-align:left; } }
+    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-command-analysis,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
+    @media (max-width:640px) { .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:14px; } .portfolio-header-status { justify-items:start; text-align:left; } .valuation-visuals,.valuation-amount-grid { grid-template-columns:1fr; } .valuation-amount-grid { grid-column:auto; } .holding-title-row { align-items:flex-start; } }
     </style>
     """
 
@@ -2547,6 +2752,7 @@ def settings_content(config: Mapping[str, Any], state: Mapping[str, Any]) -> tup
     task_runtime = state.get("llm_task_runtime_state") if isinstance(state.get("llm_task_runtime_state"), Mapping) else {}
     system = config.get("system") if isinstance(config.get("system"), Mapping) else {}
     assets = config.get("assets") if isinstance(config.get("assets"), Mapping) else {}
+    privacy = config.get("portfolio_privacy") if isinstance(config.get("portfolio_privacy"), Mapping) else {}
     positions = _config_positions(assets)
     available = [p for p in providers if isinstance(p, Mapping) and str(p.get("health")) in {"healthy", "reachable"}]
     other = [p for p in providers if isinstance(p, Mapping) and p not in available]
@@ -2557,6 +2763,21 @@ def settings_content(config: Mapping[str, Any], state: Mapping[str, Any]) -> tup
     }
     provider_models_json = json.dumps(provider_models, ensure_ascii=False).replace("<", "\\u003c")
     content = f"""
+    <style>
+      .settings-position-editor {{ display:grid; gap:14px; }}
+      .settings-position-editor .asset-row {{ display:block; padding:18px; }}
+      .position-row-head {{ display:grid; grid-template-columns:minmax(180px,1.25fr) minmax(120px,.7fr) minmax(120px,.55fr) auto; gap:10px; align-items:end; }}
+      .position-row-fields {{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }}
+      .position-row-fields .position-wide {{ grid-column:span 2; }}
+      .position-row-fields textarea {{ min-height:74px; resize:vertical; }}
+      .position-field-note {{ display:block; margin-top:6px; color:var(--subtle); font-size:.76rem; line-height:1.4; }}
+      .portfolio-privacy-grid {{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:14px; }}
+      .privacy-option {{ display:flex; align-items:center; gap:10px; min-height:48px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.025); }}
+      .privacy-option input {{ width:18px; min-height:18px; margin:0; }}
+      [data-field-error="true"] {{ border-color:rgba(248,113,113,.72) !important; box-shadow:0 0 0 2px rgba(248,113,113,.12); }}
+      @media (max-width:900px) {{ .position-row-head,.position-row-fields,.portfolio-privacy-grid {{ grid-template-columns:1fr 1fr; }} .position-row-fields .position-wide {{ grid-column:1/-1; }} }}
+      @media (max-width:580px) {{ .position-row-head,.position-row-fields,.portfolio-privacy-grid {{ grid-template-columns:1fr; }} .position-row-fields .position-wide {{ grid-column:auto; }} }}
+    </style>
     <section class="hero-panel">
       <span class="kicker">{escape(t("page.settings", lang))}</span>
       <h1 class="hero-title">{escape(t("settings.providers_clean", lang))}</h1>
@@ -2599,12 +2820,19 @@ def settings_content(config: Mapping[str, Any], state: Mapping[str, Any]) -> tup
     </section>
     <section id="asset-config" class="focus-card">
       <span class="kicker">{escape(t("settings.assets_clean", lang))}</span>
-      <h2>{escape(t("portfolio.edit", lang))}</h2>
-      <p>{escape(t("setup.assets_note", lang))}</p>
-      <div id="asset-rows" class="page-content">{_asset_rows(positions, lang)}</div>
+      <h2>{escape(t("portfolio.valuation_title", lang))}</h2>
+      <p>{escape(t("portfolio.valuation_note", lang))}</p>
+      <div id="asset-rows" class="settings-position-editor">{_asset_rows(positions, lang)}</div>
       <div class="button-row" style="margin-top: 12px;">
         <button class="secondary-button" type="button" id="add-asset-row">{escape(t("setup.add_asset", lang))}</button>
       </div>
+      <div class="portfolio-privacy-grid" aria-label="{escape(t('portfolio.privacy_title', lang))}">
+        <label class="privacy-option"><input id="show-cost-price" type="checkbox"{' checked' if privacy.get('show_cost_price', True) else ''}><span>{escape(t("portfolio.show_cost", lang))}</span></label>
+        <label class="privacy-option"><input id="show-pnl-percentage" type="checkbox"{' checked' if privacy.get('show_pnl_percentage', True) else ''}><span>{escape(t("portfolio.show_return", lang))}</span></label>
+        <label class="privacy-option"><input id="show-quantity" type="checkbox"{' checked' if privacy.get('show_quantity', False) else ''}><span>{escape(t("portfolio.show_quantity", lang))}</span></label>
+        <label class="privacy-option"><input id="show-amounts" type="checkbox"{' checked' if privacy.get('show_amounts', False) else ''}><span>{escape(t("portfolio.show_amounts", lang))}</span></label>
+      </div>
+      <p class="home-safety-note">{escape(t("portfolio.private_local_note", lang))}</p>
     </section>
     <section class="focus-card">
       <span class="kicker">{escape(t("settings.system", lang))}</span>
@@ -2749,6 +2977,17 @@ SETTINGS_JS = """
       const item = {};
       row.querySelectorAll("[data-asset-field]").forEach(function (field) { item[field.dataset.assetField] = field.value.trim(); });
       item.portfolio_percentage = Number(item.portfolio_percentage || 0);
+      if (item.average_cost_price) item.average_cost_price = Number(item.average_cost_price);
+      else delete item.average_cost_price;
+      if (item.quantity) item.quantity = Number(item.quantity);
+      else delete item.quantity;
+      if (item.average_cost_price) {
+        item.cost_basis_method = "user_supplied_adjusted_average_cost";
+        if (String(item.average_cost_price) !== String(row.dataset.originalCost || "")) item.cost_updated_at = new Date().toISOString();
+      } else {
+        delete item.position_currency;
+        delete item.cost_updated_at;
+      }
       return item;
     }).filter(function (item) { return item.asset; });
   }
@@ -2769,9 +3008,34 @@ SETTINGS_JS = """
     return routes;
   }
   function assetTemplate() {
-    return document.querySelector("[data-asset-row]").outerHTML.replace(/value="[^"]*"/g, 'value=""').replace(/>[^<]*<\\/textarea>/g, '></textarea>');
+    const clone = document.querySelector("[data-asset-row]").cloneNode(true);
+    clone.dataset.originalCost = "";
+    clone.querySelectorAll("[data-asset-field]").forEach(function (field) {
+      field.value = field.dataset.assetField === "position_currency" ? "CNY" : "";
+      field.removeAttribute("data-field-error");
+      field.setCustomValidity("");
+    });
+    return clone.outerHTML;
+  }
+  function validatePositions() {
+    let valid = true;
+    document.querySelectorAll("#asset-rows [data-asset-row]").forEach(function (row) {
+      row.querySelectorAll("[data-asset-field]").forEach(function (field) { field.setCustomValidity(""); field.removeAttribute("data-field-error"); });
+      const cost = row.querySelector('[data-asset-field="average_cost_price"]');
+      const quantity = row.querySelector('[data-asset-field="quantity"]');
+      const currency = row.querySelector('[data-asset-field="position_currency"]');
+      if (cost.value && Number(cost.value) <= 0) { cost.setCustomValidity("positive"); cost.dataset.fieldError = "true"; valid = false; }
+      if (quantity.value && Number(quantity.value) <= 0) { quantity.setCustomValidity("positive"); quantity.dataset.fieldError = "true"; valid = false; }
+      if (cost.value && !currency.value) { currency.setCustomValidity("required"); currency.dataset.fieldError = "true"; valid = false; }
+    });
+    if (!valid) document.querySelector("#asset-rows :invalid")?.reportValidity();
+    return valid;
   }
   async function saveSettings() {
+    if (!validatePositions()) {
+      document.getElementById("settings-result").textContent = document.documentElement.lang === "zh" ? "保存前请检查高亮的持仓字段。" : "Check the highlighted position fields before saving.";
+      return { status: "validation_error" };
+    }
     const assets = assetRows("asset-rows");
     const payload = {
       ui: { language: document.getElementById("global-language-select") ? document.getElementById("global-language-select").value : "en" },
@@ -2791,16 +3055,36 @@ SETTINGS_JS = """
         hypothesis_switching_sensitivity: Number(document.getElementById("hypothesis-sensitivity-setting").value || 0.08)
       },
       assets: { portfolio_json: JSON.stringify({ positions: assets }), asset_list: assets.map(function (x) { return x.asset; }), weights: Object.fromEntries(assets.map(function (x) { return [x.asset, x.portfolio_percentage]; })) },
+      portfolio_privacy: {
+        show_cost_price: document.getElementById("show-cost-price").checked,
+        show_pnl_percentage: document.getElementById("show-pnl-percentage").checked,
+        show_quantity: document.getElementById("show-quantity").checked,
+        show_amounts: document.getElementById("show-amounts").checked
+      },
       metadata: { ui_only: true, no_runtime_reload: true, no_trading_execution: true }
     };
     const response = await fetch("/settings", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
     const data = await response.json();
-    document.getElementById("settings-result").textContent = data.status === "saved" ? msg("saved") : msg("save_failed");
+    if (data.status === "validation_error") {
+      (data.errors || []).forEach(function (error) {
+        const row = document.querySelectorAll("#asset-rows [data-asset-row]")[error.position_index];
+        const field = row?.querySelector('[data-asset-field="' + error.field + '"]');
+        if (field) { field.dataset.fieldError = "true"; field.setCustomValidity(error.code || "invalid"); }
+      });
+      document.getElementById("settings-result").textContent = document.documentElement.lang === "zh" ? "保存前请检查高亮的持仓字段。" : "Check the highlighted position fields before saving.";
+    } else {
+      document.getElementById("settings-result").textContent = data.status === "saved" ? msg("saved") : msg("save_failed");
+    }
     return data;
   }
   document.getElementById("save-settings").addEventListener("click", saveSettings);
   document.getElementById("add-asset-row").addEventListener("click", function () {
     document.getElementById("asset-rows").insertAdjacentHTML("beforeend", assetTemplate());
+  });
+  document.getElementById("asset-rows").addEventListener("click", function (event) {
+    if (!event.target.matches("[data-remove-asset]")) return;
+    const rows = document.querySelectorAll("#asset-rows [data-asset-row]");
+    if (rows.length > 1) event.target.closest("[data-asset-row]").remove();
   });
   document.getElementById("test-all-providers").addEventListener("click", async function () {
     await saveSettings();
@@ -3682,15 +3966,40 @@ def _asset_rows(positions: list[Mapping[str, Any]], lang: str) -> str:
 
 
 def _asset_row(item: Mapping[str, Any], lang: str) -> str:
+    cost = str(item.get("average_cost_price") or "")
+    quantity = str(item.get("quantity") or "")
+    currency = str(item.get("position_currency") or _default_position_currency(item) or "CNY")
+    cost_updated = str(item.get("cost_updated_at") or "")
     return f"""
-    <div class="asset-row" data-asset-row>
-      <label>{escape(t("setup.asset", lang))}<input data-asset-field="asset" value="{escape(str(item.get("asset") or ""))}" placeholder="AAPL"></label>
-      <label>{escape(t("setup.market", lang))}<input data-asset-field="market" value="{escape(str(item.get("market") or ""))}" placeholder="US"></label>
-      <label>{escape(t("setup.percentage", lang))}<input data-asset-field="portfolio_percentage" type="number" min="0" max="100" step="0.1" value="{escape(str(item.get("portfolio_percentage") or ""))}"></label>
-      <label>{escape(t("setup.theme", lang))}<input data-asset-field="theme" value="{escape(str(item.get("theme") or ""))}" placeholder="AI"></label>
-      <label>{escape(t("setup.role", lang))}<input data-asset-field="role" value="{escape(str(item.get("role") or ""))}" placeholder="Core"></label>
+    <div class="asset-row" data-asset-row data-original-cost="{escape(cost)}">
+      <div class="position-row-head">
+        <label>{escape(t("setup.asset", lang))}<input data-asset-field="asset" value="{escape(str(item.get("asset") or ""))}" placeholder="002384.SZ"></label>
+        <label>{escape(t("setup.market", lang))}<input data-asset-field="market" value="{escape(str(item.get("market") or ""))}" placeholder="A-share / HK / US"></label>
+        <label>{escape(t("setup.percentage", lang))}<input data-asset-field="portfolio_percentage" type="number" min="0" max="100" step="0.1" value="{escape(str(item.get("portfolio_percentage") or ""))}"></label>
+        <button class="ghost-button" type="button" data-remove-asset>{escape(t("settings.remove", lang))}</button>
+      </div>
+      <div class="position-row-fields">
+        <label>{escape(t("portfolio.average_cost", lang))}<input data-asset-field="average_cost_price" type="number" min="0.000001" step="any" inputmode="decimal" value="{escape(cost)}"><small class="position-field-note">{escape(t("portfolio.cost_missing_note", lang))}</small></label>
+        <label>{escape(t("portfolio.quantity_optional", lang))}<input data-asset-field="quantity" type="number" min="0.000001" step="any" inputmode="decimal" value="{escape(quantity)}"><small class="position-field-note">{escape(t("portfolio.quantity_optional_note", lang))}</small></label>
+        <label>{escape(t("portfolio.cost_currency", lang))}<select data-asset-field="position_currency"><option value="CNY"{_selected(currency, 'CNY')}>CNY</option><option value="HKD"{_selected(currency, 'HKD')}>HKD</option><option value="USD"{_selected(currency, 'USD')}>USD</option></select></label>
+        <label>{escape(t("portfolio.cost_updated", lang))}<input data-asset-field="cost_updated_at" type="hidden" value="{escape(cost_updated)}"><span class="position-field-note">{escape(cost_updated or ('保存成本后记录' if lang == 'zh' else 'Recorded after cost is saved'))}</span></label>
+        <label>{escape(t("setup.theme", lang))}<input data-asset-field="theme" value="{escape(str(item.get("theme") or ""))}" placeholder="AI"></label>
+        <label>{escape(t("setup.role", lang))}<input data-asset-field="role" value="{escape(str(item.get("role") or ""))}" placeholder="Core"></label>
+        <label class="position-wide">{escape(t("setup.thesis", lang))}<textarea data-asset-field="user_thesis" rows="2">{escape(str(item.get("user_thesis") or item.get("thesis") or ""))}</textarea></label>
+        <label class="position-wide">{escape(t("setup.risk_note", lang))}<textarea data-asset-field="risk_note" rows="2">{escape(str(item.get("risk_note") or ""))}</textarea></label>
+      </div>
     </div>
     """
+
+
+def _default_position_currency(item: Mapping[str, Any]) -> str:
+    market = str(item.get("market") or "").strip().lower()
+    asset = str(item.get("asset") or "").strip().upper()
+    if asset.endswith(".HK") or market == "hk":
+        return "HKD"
+    if asset.endswith((".SH", ".SS", ".SZ")) or market in {"a-share", "ashare", "cn"}:
+        return "CNY"
+    return "USD" if market == "us" else "CNY"
 
 
 def _setup_step(number: str, title: str, body: str) -> str:

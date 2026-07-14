@@ -23,6 +23,7 @@ from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_for
 from runtime.llm.provider_registry import health_check_provider, list_provider_models, load_provider_registry, safe_registry_view
 from runtime.llm.task_routing import load_task_routes, route_task_request, safe_task_routes_view
 from runtime.portfolio_context import build_portfolio_context
+from runtime.portfolio_valuation import build_local_portfolio_valuation
 from runtime.state_store import StateStore
 from runtime.telemetry.llm_trace_logger import read_llm_traces
 from ui.components.app_shell import render_app_shell
@@ -620,10 +621,15 @@ def _product_shell(
 
 def _home_content_with_setup_banner(state: Dict[str, Any]) -> str:
     config = load_user_config(_user_config_path())
+    home_state = dict(state)
+    home_state["local_portfolio_valuation"] = build_local_portfolio_valuation(
+        config=config,
+        market_intelligence=state.get("market_intelligence") if isinstance(state.get("market_intelligence"), dict) else {},
+    )
     readiness = build_getting_started_status(config, state)
     overall = readiness.get("overall_readiness", {}) if isinstance(readiness.get("overall_readiness"), dict) else {}
     if overall.get("can_start"):
-        return home_content(state)
+        return home_content(home_state)
     lang = str(config.get("ui", {}).get("language") or "en") if isinstance(config.get("ui"), dict) else "en"
     banner = f"""
     <section class="focus-card" id="setup-incomplete-banner" data-setup-incomplete-banner>
@@ -648,7 +654,7 @@ def _home_content_with_setup_banner(state: Dict[str, Any]) -> str:
     }})();
     </script>
     """
-    return banner + home_content(state)
+    return banner + home_content(home_state)
 
 
 def _system_interface_page() -> Any:

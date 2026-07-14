@@ -81,6 +81,7 @@ def build_practical_decision_brief(
 
     packet = _mapping(state.get("last_decision_packet"))
     market = _mapping(state.get("market_intelligence"))
+    local_valuation = _mapping(state.get("local_portfolio_valuation"))
     portfolio = _mapping(state.get("portfolio_context"))
     ledger = _mapping(state.get("forecast_ledger"))
     bottlenecks = _bottleneck_index()
@@ -88,7 +89,7 @@ def build_practical_decision_brief(
     triggers = _waiting_triggers(market, forecast_accountability, bottlenecks)
     allocation = _capital_allocation_board(portfolio, bottlenecks, triggers)
     predictions = _strongest_predictions(ledger, packet, market)
-    holdings = _current_holdings_board(portfolio, market)
+    holdings = _current_holdings_board(portfolio, market, local_valuation)
     action = _action_today(packet, market, portfolio)
     portfolio_command = _portfolio_command(portfolio, market, action)
     material_changes = _material_changes(market)
@@ -140,7 +141,8 @@ def build_practical_decision_brief(
             "no_forecast_semantics_change": True,
             "no_portfolio_mutation": True,
             "no_trading_execution": True,
-            "no_private_amounts": True,
+            "private_amounts_local_home_only": True,
+            "no_private_amounts_in_cognition_or_llm": True,
         },
     }
 
@@ -1172,13 +1174,23 @@ def _capital_relay(
     }
 
 
-def _current_holdings_board(portfolio: Mapping[str, Any], market: Mapping[str, Any]) -> dict[str, Any]:
+def _current_holdings_board(
+    portfolio: Mapping[str, Any],
+    market: Mapping[str, Any],
+    local_valuation: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     observations = {
         _text(_mapping(item).get("asset"), ""): _mapping(item)
         for item in _usable_market_observations(market)
         if isinstance(item, Mapping)
     }
     holdings = []
+    valuation = _mapping(local_valuation)
+    valuation_by_asset = {
+        _text(_mapping(item).get("asset"), ""): _mapping(item)
+        for item in _list(valuation.get("positions"))
+        if isinstance(item, Mapping)
+    }
     for item in _list(portfolio.get("positions")):
         if not isinstance(item, Mapping):
             continue
@@ -1209,6 +1221,7 @@ def _current_holdings_board(portfolio: Mapping[str, Any], market: Mapping[str, A
                 ),
                 "review_priority": _holding_priority(item, observation),
                 "source": portfolio.get("source"),
+                "valuation": valuation_by_asset.get(asset, {}),
             }
         )
     return {
@@ -1216,6 +1229,9 @@ def _current_holdings_board(portfolio: Mapping[str, Any], market: Mapping[str, A
         "source": portfolio.get("source"),
         "privacy": portfolio.get("privacy", "percentage_only_no_account_amounts"),
         "holdings": holdings,
+        "valuation_summary": valuation.get("summary", {}),
+        "valuation_privacy": valuation.get("privacy", {}),
+        "valuation_scope": valuation.get("scope"),
         "only_actual_configured_holdings": True,
     }
 

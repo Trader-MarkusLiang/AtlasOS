@@ -18,6 +18,11 @@ from runtime.llm.task_routing import (
     normalize_task_routes,
     safe_task_routes_view,
 )
+from runtime.portfolio_valuation import (
+    DEFAULT_PRIVACY,
+    normalize_local_portfolio_config,
+    redact_private_portfolio_config,
+)
 from ui.i18n.i18n import current_language, set_language, t, translation_payload
 
 
@@ -47,6 +52,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "asset_list": [],
         "weights": {},
     },
+    "portfolio_privacy": dict(DEFAULT_PRIVACY),
     "metadata": {
         "ui_only": True,
         "no_runtime_reload": True,
@@ -71,6 +77,14 @@ def save_user_config(payload: Mapping[str, Any], path: str | None = None) -> dic
 
     target = Path(path) if path else DEFAULT_CONFIG_PATH
     config = _config_from_payload(payload)
+    normalized = normalize_local_portfolio_config(config)
+    if normalized["status"] != "valid":
+        return {
+            "status": "validation_error",
+            "errors": normalized["errors"],
+            "path": str(target),
+        }
+    config = normalized["config"]
     target.parent.mkdir(parents=True, exist_ok=True)
     existing = load_user_config(str(target))
     registry_payload = config.pop("llm_registry", None)
@@ -1063,6 +1077,14 @@ def _config_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
                 "asset_list": assets.get("asset_list", []) if isinstance(assets.get("asset_list"), list) else [],
                 "weights": assets.get("weights", {}) if isinstance(assets.get("weights"), dict) else {},
             },
+            "portfolio_privacy": {
+                key: bool(
+                    (payload.get("portfolio_privacy") if isinstance(payload.get("portfolio_privacy"), Mapping) else {}).get(
+                        key, default
+                    )
+                )
+                for key, default in DEFAULT_PRIVACY.items()
+            },
             "metadata": {"ui_only": True, "no_runtime_reload": True, "no_trading_execution": True},
         }
     portfolio_json = str(payload.get("portfolio_json", "{}") or "{}")
@@ -1098,6 +1120,7 @@ def _config_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
             "asset_list": [line.strip() for line in asset_text.splitlines() if line.strip()],
             "weights": weights,
         },
+        "portfolio_privacy": dict(DEFAULT_PRIVACY),
         "metadata": {"ui_only": True, "no_runtime_reload": True, "no_trading_execution": True},
     }
 
@@ -1113,7 +1136,7 @@ def _merge_defaults(value: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _masked_config(config: Mapping[str, Any]) -> dict[str, Any]:
-    masked = _merge_defaults(config)
+    masked = redact_private_portfolio_config(_merge_defaults(config))
     registry = safe_registry_view(masked.get("llm_registry", default_provider_registry()))
     masked["llm_registry"] = registry
     masked["llm_task_routes"] = safe_task_routes_view(masked.get("llm_task_routes"), registry)
