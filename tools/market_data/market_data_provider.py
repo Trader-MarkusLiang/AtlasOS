@@ -11,7 +11,9 @@ import multiprocessing as mp
 import os
 import queue
 import signal
+import sys
 import threading
+import time
 import urllib.parse
 import urllib.request
 from contextlib import contextmanager
@@ -23,6 +25,82 @@ import pandas as pd
 
 MISSING_VALUE = None
 DEFAULT_PROVIDER_TIMEOUT_SECONDS = 4.0
+
+# In-memory cache for market data snapshots and provider health tracking.
+# Cache key: (ticker, market) -> (timestamp, snapshot_dict)
+# TTL avoids redundant requests within the same tick cycle.
+_MEMO_CACHE: dict[tuple[str, str], tuple[float, dict[str, Any]]] = {}
+_MEMO_CACHE_LOCK = threading.Lock()
+_MEMO_CACHE_TTL_SECONDS = 30.0
+
+# Provider health tracker: provider_name -> (success_count, fail_count, last_success_epoch, last_fail_epoch)
+_PROVIDER_HEALTH: dict[str, tuple[int, int, float, float]] = {}
+_PROVIDER_HEALTH_LOCK = threading.Lock()
+_PROVIDER_HEALTH_WINDOW_SECONDS = 300.0  # weight decays beyond 5 minutes
+
+
+def _cache_get(ticker: str, market: str) -> dict[str, Any] | None:
+    """Return cached snapshot if fresh, else None."""
+    key = (ticker.upper().strip(), market.upper().strip())
+    with _MEMO_CACHE_LOCK:
+        entry = _MEMO_CACHE.get(key)
+        if entry is None:
+            return None
+        cached_at, snapshot = entry
+        if time.time() - cached_at > _MEMO_CACHE_TTL_SECONDS:
+            del _MEMO_CACHE[key]
+            return None
+        return snapshot
+
+
+def _cache_set(ticker: str, market: str, snapshot: dict[str, Any]) -> None:
+    key = (ticker.upper().strip(), market.upper().strip())
+    with _MEMO_CACHE_LOCK:
+        _MEMO_CACHE[key] = (time.time(), dict(snapshot))
+
+
+def _cache_clear() -> None:
+    """Clear the entire cache. Useful for testing or forced refresh."""
+    with _MEMO_CACHE_LOCK:
+        _MEMO_CACHE.clear()
+
+
+def _record_provider_success(provider: str) -> None:
+    now = time.time()
+    with _PROVIDER_HEALTH_LOCK:
+        s, f, _, last_fail = _PROVIDER_HEALTH.get(provider, (0, 0, 0.0, 0.0))
+        _PROVIDER_HEALTH[provider] = (s + 1, f, now, last_fail)
+
+
+def _record_provider_failure(provider: str) -> None:
+    now = time.time()
+    with _PROVIDER_HEALTH_LOCK:
+        s, f, last_success, _ = _PROVIDER_HEALTH.get(provider, (0, 0, 0.0, 0.0))
+        _PROVIDER_HEALTH[provider] = (s, f + 1, last_success, now)
+
+
+def _provider_health_score(provider: str) -> float:
+    """Return a score [0, 1] where higher = more reliable.
+
+    Uses a weighted ratio within a recency window so that a provider
+    with recent failures is deprioritized but not permanently banned.
+    """
+    now = time.time()
+    with _PROVIDER_HEALTH_LOCK:
+        entry = _PROVIDER_HEALTH.get(provider)
+        if entry is None:
+            return 0.5  # neutral for unseen providers
+        s, f, last_success, last_fail = entry
+        total = s + f
+        if total == 0:
+            return 0.5
+        recency_penalty = 0.0
+        if last_fail > last_success:
+            seconds_since_fail = now - last_fail
+            if seconds_since_fail < _PROVIDER_HEALTH_WINDOW_SECONDS:
+                recency_penalty = 0.3 * (1.0 - seconds_since_fail / _PROVIDER_HEALTH_WINDOW_SECONDS)
+        raw = s / total
+        return max(0.0, min(1.0, raw - recency_penalty))
 
 
 def _safe_float(value: Any) -> Optional[float]:
@@ -312,19 +390,18 @@ def _yahoo_chart_history(ticker: str, market: str, period: str) -> pd.DataFrame:
 
 
 def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
-    """Return recent daily history with normalized columns where possible."""
+    """Return recent daily history with normalized columns where possible.
+
+    Uses a per-symbol cache (TTL 30s) and health-aware provider ordering
+    to reduce redundant requests and prefer reliable sources.
+    """
 
     if not ticker:
         return pd.DataFrame()
 
     attempts: list[str] = []
-    if market in {"A-share", "HK"}:
-        attempts.append("eastmoney_kline")
-        attempts.append("tencent_kline")
-        attempts.append("akshare")
-    if market in {"A-share", "HK", "US", "US / ETF", "ETF"}:
-        attempts.append("yfinance")
-        attempts.append("yahoo_chart")
+    # Health-order the attempt list so reliable providers are tried first.
+    _ordered_providers(market, attempts)
 
     errors: List[str] = []
     for source in attempts:
@@ -332,14 +409,34 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
             df = _load_history_with_deadline(source, ticker, market, period)
             if df is not None and not df.empty:
                 df.attrs["source"] = source
+                _record_provider_success(source)
                 return df
             errors.append(f"{source}: empty")
+            _record_provider_failure(source)
         except Exception as exc:
             errors.append(f"{source}: {type(exc).__name__}: {exc}")
+            _record_provider_failure(source)
 
     df = pd.DataFrame()
     df.attrs["errors"] = errors
     return df
+
+
+def _ordered_providers(market: str, attempts: list[str]) -> None:
+    """Populate `attempts` with provider names ordered by recent health."""
+    raw: list[str] = []
+    if market in {"A-share", "HK"}:
+        raw.append("eastmoney_kline")
+        raw.append("tencent_kline")
+        raw.append("akshare")
+    if market in {"A-share", "HK", "US", "US / ETF", "ETF"}:
+        raw.append("yfinance")
+        raw.append("yahoo_chart")
+    # Sort by health score descending (most reliable first).
+    scored = [(raw_provider, _provider_health_score(raw_provider)) for raw_provider in raw]
+    scored.sort(key=lambda pair: -pair[1])
+    for provider, _score in scored:
+        attempts.append(provider)
 
 
 def _run_history_loader(source: str, ticker: str, market: str, period: str) -> pd.DataFrame:
@@ -368,9 +465,18 @@ def _hard_timeout_enabled(source: str) -> bool:
     return raw not in {"0", "false", "no", "off"} and source in {"akshare", "yfinance"}
 
 
+def _market_provider_process_context():
+    methods = mp.get_all_start_methods()
+    if sys.platform == "darwin" and "spawn" in methods:
+        return mp.get_context("spawn")
+    if "fork" in methods:
+        return mp.get_context("fork")
+    return mp.get_context()
+
+
 def _load_history_in_process(source: str, ticker: str, market: str, period: str) -> pd.DataFrame:
     seconds = _provider_attempt_timeout_seconds()
-    ctx = mp.get_context("fork") if "fork" in mp.get_all_start_methods() else mp.get_context()
+    ctx = _market_provider_process_context()
     result_queue = ctx.Queue(maxsize=1)
     process = ctx.Process(target=_history_worker, args=(source, ticker, market, period, result_queue))
     process.daemon = True
@@ -471,7 +577,13 @@ def get_market_snapshot(ticker: str, market: str) -> Dict[str, Any]:
     """Return a normalized market snapshot.
 
     Valuation fields are optional and may remain missing.
+    Results are cached in memory for _MEMO_CACHE_TTL_SECONDS to avoid
+    redundant provider requests within the same tick cycle.
     """
+
+    cached = _cache_get(ticker, market)
+    if cached is not None:
+        return dict(cached)
 
     result: Dict[str, Any] = {
         "ticker": ticker,
@@ -530,6 +642,8 @@ def get_market_snapshot(ticker: str, market: str) -> Dict[str, Any]:
 
     result["missing_fields"] = _missing_fields(result)
     result["data_status"] = _data_status(result)
+
+    _cache_set(ticker, market, result)
     return result
 
 
