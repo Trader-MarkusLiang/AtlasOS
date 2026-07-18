@@ -12,6 +12,13 @@ from html import escape
 from typing import Any, Iterable, Mapping
 
 from ui.components.cognitive_flow_map import render_cognitive_flow_map
+from ui.components.templates import (
+    card,
+    data_table,
+    grid,
+    page_shell,
+    pill,
+)
 from ui.i18n.i18n import current_language, t
 from ui.presentation.cognitive_localization import (
     build_cognitive_presentation,
@@ -2089,6 +2096,11 @@ def _home_intelligence_style() -> str:
     """
 
 
+def _markets_style() -> str:
+    """Reuse home intelligence styles for markets and shared product pages."""
+    return _home_intelligence_style()
+
+
 def _home_intelligence_script(*, include_candidate_filters: bool = True) -> str:
     if not include_candidate_filters:
         return """
@@ -2343,47 +2355,22 @@ def markets_content(state: Mapping[str, Any]) -> str:
     lang = current_language()
     market = _market(state)
     channels = market.get("channels") if isinstance(market.get("channels"), Mapping) else {}
-    return f"""
-    <section class="hero-panel">
-      <span class="kicker">{escape(t("markets.regime", lang))}</span>
-      <h1 class="hero-title">{escape(_main_change(market, _packet(state), lang))}</h1>
-      <p class="hero-copy">{escape(t("markets.what_changed", lang))}: {escape(_market_impact_summary(state, lang))}</p>
-    </section>
-    <section class="two-grid">
-      <article class="visual-card">
-        <span class="kicker">{escape(t("markets.trajectory", lang))}</span>
-        <h2>{escape(t("markets.trajectory", lang))}</h2>
-        {_regime_trajectory(state)}
-      </article>
-      <article class="visual-card">
-        <span class="kicker">{escape(t("markets.attention_liquidity", lang))}</span>
-        <h2>{escape(t("markets.attention_liquidity", lang))}</h2>
-        {_attention_liquidity_phase(state)}
-      </article>
-    </section>
-    <section class="two-grid">
-      <article class="visual-card">
-        <span class="kicker">{escape(t("markets.theme_landscape", lang))}</span>
-        <h2>{escape(t("markets.theme_landscape", lang))}</h2>
-        {_theme_landscape(state)}
-      </article>
-      <article class="visual-card">
-        <span class="kicker">{escape(t("markets.data_health", lang))}</span>
-        <h2>{escape(t("markets.channel_status", lang))}</h2>
-        {_freshness_map(market)}
-      </article>
-    </section>
-    <section class="focus-card">
-      <span class="kicker">{escape(t("markets.latest_observations", lang))}</span>
-      <div class="pill-row">{_channel_pills(channels)}</div>
-    </section>
-    <section class="focus-card">
-      <span class="kicker">{escape(t("markets.asset_sources", lang))}</span>
-      <h2>{escape(t("markets.asset_sources", lang))}</h2>
-      <p>{escape(t("markets.asset_sources_note", lang))}</p>
-      {_asset_source_table(market, lang)}
-    </section>
+    content = f"""
+    {card(_main_change(market, _packet(state), lang), '<p class="hero-copy">' + escape(t("markets.what_changed", lang)) + ': ' + escape(_market_impact_summary(state, lang)) + '</p>', kicker=t("markets.regime", lang))}
+    {grid(
+        card(t("markets.trajectory", lang), _regime_trajectory(state), kicker=t("markets.trajectory", lang)) +
+        card(t("markets.attention_liquidity", lang), _attention_liquidity_phase(state), kicker=t("markets.attention_liquidity", lang)),
+        cols=2,
+    )}
+    {grid(
+        card(t("markets.theme_landscape", lang), _theme_landscape(state), kicker=t("markets.theme_landscape", lang)) +
+        card(t("markets.channel_status", lang), _freshness_map(market), kicker=t("markets.data_health", lang)),
+        cols=2,
+    )}
+    {card(t("markets.channel_status", lang), '<div class="pill-row">' + _channel_pills(channels) + '</div>', kicker=t("markets.latest_observations", lang))}
+    {card(t("markets.asset_sources", lang), '<p>' + escape(t("markets.asset_sources_note", lang)) + '</p>' + _asset_source_table(market, lang), kicker=t("markets.asset_sources", lang))}
     """
+    return page_shell(title=t("markets.title", lang), lang=lang, content=content, extra_style=_markets_style())
 
 
 def _asset_source_table(market: Mapping[str, Any], lang: str) -> str:
