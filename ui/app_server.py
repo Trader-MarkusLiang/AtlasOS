@@ -814,8 +814,9 @@ def _system_interface_page() -> Any:
         + "</main>"
         + "</div>"
     )
-    html = """<!doctype html>
-<html lang="en">
+    ui_lang = current_language()
+    html = f"""<!doctype html>
+	<html lang="{ui_lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">

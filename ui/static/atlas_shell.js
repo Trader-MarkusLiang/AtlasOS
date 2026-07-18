@@ -1,4 +1,26 @@
   const pollMs = 1500;
+  const uiLang = (document.documentElement.getAttribute("lang") || "en").slice(0, 2);
+
+  function msg(key) {
+    const strings = {
+      "initializing": {"en": "System initializing reasoning layer", "zh": "系统正在初始化推理层"},
+      "waiting_signal": {"en": "Waiting for cognitive signal", "zh": "等待认知信号"},
+      "insufficient_context": {"en": "Insufficient system context", "zh": "系统上下文不足"},
+      "neutral_signal": {"en": "No strong regime signal is active.", "zh": "当前没有强宏观状态信号。"},
+      "runtime_active": {"en": "Runtime loop active", "zh": "运行时循环运行中"},
+      "initializing_cognition": {"en": "Initializing cognition layer", "zh": "认知层初始化中"},
+      "no_drift": {"en": "No structural drift summary yet", "zh": "尚无结构漂移摘要"},
+      "stable_trust": {"en": "Stable trust field", "zh": "信任场稳定"},
+      "moderate_trust": {"en": "Moderate trust field", "zh": "信任场中等"},
+      "low_trust": {"en": "Low trust field", "zh": "信任场偏低"},
+      "stable": {"en": "Stable", "zh": "稳定"},
+      "watchful": {"en": "Watchful", "zh": "关注中"},
+      "active_basin": {"en": "active basin", "zh": "当前吸引子"},
+      "stability_basin": {"en": "stability basin", "zh": "稳定吸引子"},
+    };
+    const entry = strings[key] || {};
+    return entry[uiLang] || entry["en"] || key;
+  }
   let lastTick = null;
   let stillPolls = 0;
   let lastStreamSignature = "";
@@ -10,14 +32,14 @@
     if (!node) return;
     const text = clean(value);
     node.textContent = text;
-    if (text === "Waiting for cognitive signal") {
-      node.title = "System has not yet converged on this metric.";
+    if (text === msg("waiting_signal")) {
+      node.title = msg("waiting_signal");
       node.classList.add("empty-pulse");
-    } else if (text === "Insufficient system context" || text === "System initializing reasoning layer") {
-      node.title = "Atlas needs more runtime context before this field becomes meaningful.";
+    } else if (text === msg("insufficient_context") || text === msg("initializing")) {
+      node.title = msg("insufficient_context");
       node.classList.add("empty-pulse");
     } else if (String(value || "").toLowerCase() === "neutral") {
-      node.title = "No strong regime signal is active.";
+      node.title = msg("neutral_signal");
       node.classList.remove("empty-pulse");
     } else {
       node.removeAttribute("title");
@@ -41,10 +63,10 @@
     }
   }
   function clean(value) {
-    if (value === null || value === undefined || value === "") return "System initializing reasoning layer";
+    if (value === null || value === undefined || value === "") return msg("initializing");
     const textValue = String(value).trim();
-    if (textValue.toUpperCase() === "UNKNOWN") return "Waiting for cognitive signal";
-    if (textValue.toLowerCase() === "unknown") return "Insufficient system context";
+    if (textValue.toUpperCase() === "UNKNOWN") return msg("waiting_signal");
+    if (textValue.toLowerCase() === "unknown") return msg("insufficient_context");
     if (typeof value === "number") return Number.isInteger(value) ? String(value) : value.toFixed(3);
     return String(value);
   }
@@ -101,7 +123,7 @@
     setText("llm-call-count", (state.llm_trace_summary || {}).call_count || 0);
     setText("llm-model", (state.llm_trace_summary || {}).latest_model);
     setText("llm-latency", clean((state.llm_trace_summary || {}).latest_latency_ms) + " ms");
-    setText("focus-runtime-status", state.tick_counter ? "Runtime loop active" : "Initializing cognition layer");
+    setText("focus-runtime-status", state.tick_counter ? msg("runtime_active") : msg("initializing_cognition"));
     updateProviderMini(state.llm_provider_registry || {});
 
     const trust = typeof state.trust_index === "number" ? Math.max(0, Math.min(1, state.trust_index)) : 0;
