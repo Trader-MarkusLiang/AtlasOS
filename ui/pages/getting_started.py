@@ -180,6 +180,24 @@ def render_getting_started_page(
             <div><strong>{escape(t("getting.neutral_label", lang))}</strong><span>{escape(t("getting.neutral_meaning", lang))}</span></div>
             <div><strong>{escape(t("getting.no_trade_label", lang))}</strong><span>{escape(t("getting.no_trade_meaning", lang))}</span></div>
           </div>
+          <div class="getting-concepts" style="margin-top:18px; display:grid; gap:10px; grid-template-columns:repeat(2,minmax(0,1fr));">
+            <div class="getting-concept-card">
+              <strong>{escape(t("getting.concept_decision_first", lang))}</strong>
+              <span>{escape(t("getting.concept_decision_first_body", lang))}</span>
+            </div>
+            <div class="getting-concept-card">
+              <strong>{escape(t("getting.concept_knowledge_pyramid", lang))}</strong>
+              <span>{escape(t("getting.concept_knowledge_pyramid_body", lang))}</span>
+            </div>
+            <div class="getting-concept-card">
+              <strong>{escape(t("getting.concept_cde", lang))}</strong>
+              <span>{escape(t("getting.concept_cde_body", lang))}</span>
+            </div>
+            <div class="getting-concept-card">
+              <strong>{escape(t("getting.concept_wealth_blind", lang))}</strong>
+              <span>{escape(t("getting.concept_wealth_blind_body", lang))}</span>
+            </div>
+          </div>
           <button class="secondary-button" type="button" id="mark-understood">{escape(t("getting.mark_understood", lang))}</button>
         </section>
 
@@ -679,13 +697,15 @@ GETTING_STARTED_CSS = """
   gap: 10px;
   margin: 14px 0;
 }
-.getting-meaning-grid div, .getting-channel {
+.getting-meaning-grid div, .getting-channel, .getting-concept-card {
   min-height: 86px;
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: var(--r12);
   background: rgba(255,255,255,0.035);
 }
+.getting-concept-card strong { display:block; color:var(--accent); font-size:.82rem; margin-bottom:6px; }
+.getting-concept-card span { display:block; color:var(--subtle, #cbd5e1); font-size:.82rem; line-height:1.4; }
 .getting-meaning-grid strong, .getting-channel span, .getting-summary-list dt {
   display: block;
   color: var(--muted);
