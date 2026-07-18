@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import time
+from decimal import Decimal, InvalidOperation
 from html import escape
 from pathlib import Path
 from typing import Any, Mapping
@@ -72,11 +73,79 @@ def load_user_config(path: str | None = None) -> dict[str, Any]:
     return _merge_defaults(data if isinstance(data, dict) else {})
 
 
+def validate_system_config(config: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate known system and UI config fields with type/range checks.
+
+    Returns {"status": "valid"} or {"status": "invalid", "errors": [...]}.
+    Unknown fields pass through without validation to avoid breaking forward
+    compatibility.
+    """
+    errors: list[dict[str, Any]] = []
+    system = config.get("system") if isinstance(config.get("system"), Mapping) else {}
+
+    tick = system.get("tick_interval")
+    if tick is not None:
+        try:
+            tick_int = int(tick)
+            if tick_int not in {10, 30, 60, 300}:
+                errors.append({"field": "system.tick_interval", "error": "must_be_10_30_60_or_300", "received": tick})
+        except (TypeError, ValueError):
+            errors.append({"field": "system.tick_interval", "error": "must_be_integer", "received": tick})
+
+    mode = system.get("runtime_mode")
+    if mode is not None and str(mode).strip().lower() not in {"auto", "simulation", "live"}:
+        errors.append({"field": "system.runtime_mode", "error": "must_be_auto_simulation_or_live", "received": mode})
+
+    proactive = system.get("proactive_update_interval_seconds")
+    if proactive is not None:
+        try:
+            val = int(proactive)
+            if val < 60 or val > 86400:
+                errors.append({"field": "system.proactive_update_interval_seconds", "error": "must_be_60_to_86400", "received": proactive})
+        except (TypeError, ValueError):
+            errors.append({"field": "system.proactive_update_interval_seconds", "error": "must_be_integer", "received": proactive})
+
+    trust = system.get("trust_threshold")
+    if trust is not None:
+        try:
+            t_val = float(trust)
+            if t_val < 0.0 or t_val > 1.0:
+                errors.append({"field": "system.trust_threshold", "error": "must_be_between_0_and_1", "received": trust})
+        except (TypeError, ValueError):
+            errors.append({"field": "system.trust_threshold", "error": "must_be_number", "received": trust})
+
+    sensitivity = system.get("hypothesis_switching_sensitivity")
+    if sensitivity is not None:
+        try:
+            s_val = float(sensitivity)
+            if s_val < 0.0 or s_val > 1.0:
+                errors.append({"field": "system.hypothesis_switching_sensitivity", "error": "must_be_between_0_and_1", "received": sensitivity})
+        except (TypeError, ValueError):
+            errors.append({"field": "system.hypothesis_switching_sensitivity", "error": "must_be_number", "received": sensitivity})
+
+    ui = config.get("ui") if isinstance(config.get("ui"), Mapping) else {}
+    lang = ui.get("language")
+    if lang is not None and str(lang).strip() not in {"en", "zh"}:
+        errors.append({"field": "ui.language", "error": "must_be_en_or_zh", "received": lang})
+
+    return {"status": "valid" if not errors else "invalid", "errors": errors}
+
+
 def save_user_config(payload: Mapping[str, Any], path: str | None = None) -> dict[str, Any]:
-    """Save UI-only config to local JSON."""
+    """Save UI-only config to local JSON with full validation."""
 
     target = Path(path) if path else DEFAULT_CONFIG_PATH
     config = _config_from_payload(payload)
+
+    # Validate system and UI settings before saving.
+    system_validation = validate_system_config(config)
+    if system_validation["status"] != "valid":
+        return {
+            "status": "validation_error",
+            "errors": system_validation["errors"],
+            "path": str(target),
+        }
+
     normalized = normalize_local_portfolio_config(config)
     if normalized["status"] != "valid":
         return {
