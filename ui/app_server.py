@@ -333,6 +333,47 @@ def create_app() -> Any:
     async def state() -> Any:
         return JSONResponse(state_api())
 
+    @app.get("/state/summary")
+    async def state_summary() -> Any:
+        full = state_api()
+        packet = full.get("last_decision_packet") if isinstance(full.get("last_decision_packet"), dict) else {}
+        return JSONResponse(
+            {
+                "timestamp": full.get("timestamp"),
+                "regime_state": full.get("regime_state"),
+                "proposed_state": full.get("proposed_state"),
+                "trust_index": full.get("trust_index"),
+                "tick_counter": full.get("tick_counter"),
+                "data_provenance": full.get("data_provenance"),
+                "market_intelligence": {
+                    "status": full.get("market_intelligence", {}).get("status"),
+                    "degraded": full.get("market_intelligence", {}).get("degraded", True),
+                    "channels": full.get("market_intelligence", {}).get("channels"),
+                },
+                "portfolio_context": {
+                    "status": full.get("portfolio_context", {}).get("status"),
+                    "exposure_sum_pct": full.get("portfolio_context", {}).get("exposure_sum_pct"),
+                },
+                "llm_trace_summary": {
+                    "call_count": full.get("llm_trace_summary", {}).get("call_count", 0),
+                    "latest_model": full.get("llm_trace_summary", {}).get("latest_model"),
+                    "latest_inference_status": full.get("llm_trace_summary", {}).get("latest_inference_status"),
+                },
+                "last_decision_packet": {
+                    "recommended_action": packet.get("recommended_action"),
+                    "confidence": packet.get("confidence"),
+                    "risk_level": packet.get("risk_level"),
+                    "causal_summary": packet.get("causal_summary"),
+                },
+                "runtime": {
+                    "status": full.get("runtime", {}).get("status"),
+                    "mode": full.get("runtime", {}).get("mode"),
+                },
+                "daily_cycle": full.get("daily_cycle"),
+                "last_event_summary": full.get("last_event_summary"),
+            }
+        )
+
     @app.get("/replay")
     async def replay(start_tick: int = 0, end_tick: int = 10, format: str = "html") -> Any:
         replay_data = replay_session(
