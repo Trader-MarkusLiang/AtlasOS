@@ -432,6 +432,12 @@ def state_api() -> Dict[str, Any]:
     user_config = load_user_config(_user_config_path())
     system_config = user_config.get("system", {}) if isinstance(user_config.get("system"), dict) else {}
     runtime["mode"] = str(system_config.get("runtime_mode") or "simulation")
+    data_provenance = _build_data_provenance(
+        market_intelligence=market_intelligence,
+        portfolio_context=portfolio_context,
+        llm_status=llm_summary.get("latest_inference_status", "not_run"),
+        latest_packet=latest_packet,
+    )
     payload = {
         "timestamp": utc_now_iso(),
         "regime_state": system_state.get("current_state", "Unknown"),
@@ -448,6 +454,7 @@ def state_api() -> Dict[str, Any]:
         "forecast_ledger": forecast_ledger,
         "candidate_pool": candidate_pool,
         "market_intelligence": market_intelligence,
+        "data_provenance": data_provenance,
         "proactive_update_state": store.get_state("proactive_update_state"),
         "daily_cycle": store.get_state("daily_cycle_state"),
         "runtime": runtime,
@@ -513,6 +520,87 @@ def _llm_inference_status(packet: Any) -> str:
     if "unavailable" in summary or "invalid" in summary:
         return "failed"
     return "succeeded"
+
+
+def _build_data_provenance(
+    *,
+    market_intelligence: Dict[str, Any],
+    portfolio_context: Dict[str, Any],
+    llm_status: str,
+    latest_packet: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Return a standardized provenance verdict for each data category.
+
+    Each entry reports whether the data is fresh/valid versus merely present,
+    so UI components never conflate "data exists" with "data is trustworthy."
+    """
+    market_observations = market_intelligence.get("observations") if isinstance(market_intelligence.get("observations"), list) else []
+    usable_quality = {"Available", "Partial"}
+    usable_observations = [
+        item for item in market_observations
+        if isinstance(item, dict) and str(item.get("data_quality_status", "") or "") in usable_quality
+    ]
+    market_verdict = "fresh" if usable_observations else (
+        "degraded" if market_observations else (
+            "unconfigured" if market_intelligence.get("status") in ("not_run", "no_configured_assets") else "missing"
+        )
+    )
+    portfolio_status = str(portfolio_context.get("status") or "").lower()
+    portfolio_verdict = "configured" if portfolio_status == "configured" else (
+        "stale" if portfolio_status in ("partial", "limited") else "missing"
+    )
+    inference_verdict = llm_status if llm_status in ("succeeded", "failed") else "not_run"
+    packet_reasoning = str(latest_packet.get("reasoning_trace") or "")
+    packet_verdict = "succeeded" if packet_reasoning and not any(
+        m in packet_reasoning.lower() for m in ("all_providers_failed", "invalid_llm_output", "provider_error")
+    ) else "failed" if packet_reasoning else "not_run"
+    degraded_channels = [
+        key for key, value in (market_intelligence.get("channels") or {}).items()
+        if str(value).upper() in ("FAILED", "RATE_LIMITED")
+    ]
+    missing_channels = [
+        key for key, value in (market_intelligence.get("channels") or {}).items()
+        if str(value).upper() in ("NOT_CONFIGURED",)
+    ]
+    return {
+        "market_intelligence": {
+            "verdict": market_verdict,
+            "observation_count": len(market_observations),
+            "usable_count": len(usable_observations),
+            "degraded": market_intelligence.get("degraded", True),
+            "degraded_channels": degraded_channels,
+            "missing_channels": missing_channels,
+        },
+        "portfolio": {
+            "verdict": portfolio_verdict,
+            "status": portfolio_status,
+        },
+        "llm_inference": {
+            "verdict": inference_verdict,
+        },
+        "last_decision_packet": {
+            "verdict": packet_verdict,
+        },
+        "summary": _data_provenance_summary(market_verdict, portfolio_verdict, inference_verdict),
+    }
+
+
+def _data_provenance_summary(market: str, portfolio: str, inference: str) -> str:
+    parts = []
+    if market == "fresh":
+        parts.append("market=fresh")
+    elif market in ("degraded", "missing"):
+        parts.append(f"market={market}")
+    else:
+        parts.append("market=unconfigured")
+    parts.append(f"portfolio={portfolio}")
+    parts.append(f"inference={inference}")
+    verdicts = [market, portfolio, inference]
+    if all(v == "fresh" or (v == "configured") for v in verdicts):
+        return "all_fresh"
+    if any(v in ("degraded", "failed", "missing", "stale") for v in verdicts):
+        return "degraded_" + "_".join(v for v in verdicts if v in ("degraded", "failed", "missing", "stale"))
+    return "; ".join(parts)
 
 
 def _safe_provider_registry() -> Dict[str, Any]:
