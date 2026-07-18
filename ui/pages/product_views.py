@@ -2097,8 +2097,30 @@ def _home_intelligence_style() -> str:
 
 
 def _markets_style() -> str:
-    """Reuse home intelligence styles for markets and shared product pages."""
-    return _home_intelligence_style()
+    """Reuse home intelligence styles with CDE section additions."""
+    base = _home_intelligence_style()
+    # Remove the closing </style> tag so we can append more rules.
+    close_tag = "\n</style>"
+    cde_css = """
+.cde-section { margin-top:22px; padding:22px; border:1px solid var(--line); border-radius:18px; background:var(--panel); }
+.cde-header { margin-bottom:18px; }
+.cde-header h2 { margin:6px 0 0; font-size:1.15rem; }
+.cde-layout { display:grid; grid-template-columns:1fr 280px; gap:18px; }
+.cde-stages { display:flex; flex-direction:column; gap:8px; }
+.cde-stage { display:flex; align-items:center; gap:12px; padding:12px; border:1px solid rgba(255,255,255,.06); border-radius:12px; background:rgba(255,255,255,.025); opacity:0.5; }
+.cde-stage.active { border-color:var(--accent); background:rgba(125,211,252,.08); opacity:1; }
+.cde-stage-num { width:26px; height:26px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.08); color:var(--text); font-weight:700; font-size:.82rem; flex-shrink:0; }
+.cde-stage.active .cde-stage-num { background:var(--accent); color:#0b0f14; }
+.cde-stage strong { display:block; font-size:.92rem; }
+.cde-stage small { display:block; margin-top:2px; color:var(--muted); font-size:.78rem; }
+.cde-metrics { display:flex; flex-direction:column; gap:14px; }
+.cde-metric { padding:14px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.03); }
+.cde-metric strong { display:block; margin-top:4px; font-size:1rem; overflow-wrap:anywhere; }
+@media (max-width:820px) { .cde-layout { grid-template-columns:1fr; } }
+</style>"""
+    if base.rstrip().endswith(close_tag):
+        return base.rstrip()[:-len(close_tag)] + cde_css
+    return base + cde_css
 
 
 def _home_intelligence_script(*, include_candidate_filters: bool = True) -> str:
@@ -2320,6 +2342,7 @@ def portfolio_content(state: Mapping[str, Any]) -> str:
         {_metric(t("portfolio.positions", lang), str(len(positions)), t("portfolio.summary", lang))}
       </div>
     </section>
+    {_cde_lifecycle_section(portfolio, lang)}
     <section class="two-grid">
       <article class="visual-card">
         <span class="kicker">{escape(t("portfolio.exposure_map", lang))}</span>
@@ -2343,6 +2366,7 @@ def portfolio_content(state: Mapping[str, Any]) -> str:
         <ul class="plain-list">{_position_rows(positions, lang)}</ul>
       </article>
     </section>
+    {_execution_log_section()}
     <section class="focus-card">
       <span class="kicker">{escape(t("portfolio.edit", lang))}</span>
       <p>{escape(t("setup.assets_note", lang))}</p>
@@ -3370,6 +3394,76 @@ def _regime_headline(regime: str, lang: str) -> str:
     }
     mapping = zh if lang == "zh" else en
     return mapping.get(key, regime.replace("_", " ").title())
+
+
+def _cde_lifecycle_section(portfolio: Mapping[str, Any], lang: str) -> str:
+    """CDE Deployment Lifecycle, authority, and dry powder overview.
+
+    CDE runtime state is not yet implemented; this section shows the framework
+    lifecycle stages with current portfolio data overlaid where available.
+    """
+    stages = [
+        ("Observe", "1", "Monitor; no deployment authority established yet."),
+        ("Pilot Deployment", "2", "Small test allocation before thesis is confirmed."),
+        ("Initial Deployment", "3", "First capital tranche deployed; limited repeat authority."),
+        ("Scaling", "4", "Repeat deployment authority; gradual position building."),
+        ("Maximum Opportunity", "5", "Highest deployment authority; full thesis commitment."),
+        ("Capital Preservation", "6", "Defensive; deployment is restricted or paused."),
+    ]
+    exposure_pct = portfolio.get("exposure_sum_pct")
+    unallocated = portfolio.get("cash_or_unassigned_pct")
+    current_stage = (
+        "Scaling" if (exposure_pct is not None and exposure_pct >= 60) else
+        "Initial Deployment" if (exposure_pct is not None and exposure_pct >= 30) else
+        "Pilot Deployment" if (exposure_pct is not None and exposure_pct >= 10) else
+        "Observe"
+    )
+    stage_rows = ""
+    for name, num, desc in stages:
+        active = " active" if name == current_stage else ""
+        stage_rows += f"""<div class="cde-stage{active}">
+<span class="cde-stage-num">{num}</span>
+<div><strong>{escape(name)}</strong><small>{escape(desc)}</small></div>
+</div>"""
+    dry_powder = _pct_text(unallocated) if unallocated is not None else "N/A (unconfigured)"
+    return f"""<section class="cde-section">
+<div class="cde-header">
+<span class="kicker">Capital Deployment Engine</span>
+<h2>Deployment Lifecycle</h2>
+<span class="home-safety-note">Framework reference · runtime CDE state not yet implemented</span>
+</div>
+<div class="cde-layout">
+  <div class="cde-stages">{stage_rows}</div>
+  <div class="cde-metrics">
+    <div class="cde-metric">
+      <span class="metric-label">Current Stage</span>
+      <strong>{escape(current_stage)}</strong>
+    </div>
+    <div class="cde-metric">
+      <span class="metric-label">Deployment Authority</span>
+      <strong>{escape("Framework reference (not runtime)")}</strong>
+    </div>
+    <div class="cde-metric">
+      <span class="metric-label">Dry Powder (unallocated)</span>
+      <strong>{escape(str(dry_powder))}</strong>
+    </div>
+    <div class="cde-metric">
+      <span class="metric-label">Lifecycle Unlock</span>
+      <strong>{escape("Evidence quality + world model stability + portfolio fit")}</strong>
+    </div>
+  </div>
+</div>
+</section>"""
+
+
+def _execution_log_section() -> str:
+    """Execution log placeholder — runtime execution history TBD."""
+    return """<section class="focus-card">
+<span class="kicker">Execution Log</span>
+<h2>Portfolio Actions</h2>
+<p class="empty-state">No execution history yet. Portfolio actions appear here after the first CDE-authorized deployment cycle completes.</p>
+<div class="pill-row"><span class="pill pill-gray">Runtime TBD</span></div>
+</section>"""
 
 
 def _portfolio_headline(portfolio: Mapping[str, Any], lang: str) -> str:
