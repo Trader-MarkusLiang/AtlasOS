@@ -185,6 +185,15 @@ def _portfolio_command(
         "exposure_pct": exposure_pct,
         "unassigned_pct": buffer_pct,
         "position_count": len(_list(portfolio.get("positions"))),
+        "positions": [
+            {
+                "asset": str(item.get("asset") or ""),
+                "name": str(item.get("name") or ""),
+                "weight": _safe_number(item.get("portfolio_percentage"), 0.0),
+            }
+            for item in _list(portfolio.get("positions"))
+            if isinstance(item, Mapping)
+        ],
         "largest_asset": largest_asset,
         "largest_theme": {"theme": largest_theme[0], "exposure_pct": largest_theme[1]},
         "market_concentration": _mapping(exposure.get("market_concentration")),

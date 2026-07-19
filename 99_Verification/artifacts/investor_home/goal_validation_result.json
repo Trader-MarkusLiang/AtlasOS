@@ -19,12 +19,13 @@
   },
   "evidence": {
     "channel_status_counts": {
-      "DELAYED": 6,
-      "LIVE": 2
+      "CACHED": 1,
+      "DELAYED": 4,
+      "LIVE": 3
     },
     "configured_provider_present": true,
     "latest_inference_status": "succeeded",
-    "market_observation_count": 3,
+    "market_observation_count": 5,
     "portfolio_scenario_signatures": [
       "PORT_A",
       "PORT_B",
@@ -32,7 +33,7 @@
       "Configured portfolio"
     ],
     "tick_counter_present": true,
-    "usable_observation_count": 3
+    "usable_observation_count": 5
   },
   "failures": [],
   "status": "PASS"

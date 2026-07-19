@@ -73,6 +73,7 @@ def _positions_from_assets(assets: Mapping[str, Any]) -> list[dict[str, Any]]:
             weight = item.get("portfolio_percentage", item.get("weight", weights.get(asset, 0.0)))
             record = {
                 "asset": asset[:80],
+                "name": str(item.get("name") or item.get("company") or "")[:80],
                 "market": str(item.get("market") or _guess_market(asset))[:40],
                 "portfolio_percentage": _percent(weight),
                 "theme": str(item.get("theme") or "Unspecified")[:80],
@@ -165,7 +166,7 @@ def _guess_market(asset: str) -> str:
     clean = asset.strip().upper()
     if clean.endswith(".HK") or (clean.isdigit() and len(clean) == 5):
         return "HK"
-    if clean.endswith((".SS", ".SZ")) or (clean.isdigit() and len(clean) == 6):
+    if clean.endswith((".SS", ".SH", ".SZ")) or (clean.isdigit() and len(clean) == 6):
         return "A-share"
     if clean:
         return "US"

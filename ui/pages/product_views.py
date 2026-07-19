@@ -228,9 +228,9 @@ def home_content(state: Mapping[str, Any]) -> str:
         <p>{escape(_localized(portfolio_command.get("human_summary"), lang))}</p>
       </div>
     </div>
-    <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="{escape(_brief_copy("portfolio_command", lang))}">
-        <article class="decision-card portfolio-command-card" id="home-portfolio-command" data-practical-section="portfolio_command">
-          <div class="journey-step"><span>01</span>{escape(_brief_copy("portfolio_command", lang))}</div>
+    <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="{escape(_brief_copy("portfolio_overview_title", lang))}">
+        <article class="decision-card portfolio-overview-card" id="home-portfolio-command" data-practical-section="portfolio_command">
+          <div class="journey-step"><span>01</span>{escape(_brief_copy("portfolio_overview_title", lang))}</div>
           <div class="home-section-header">
             <div>
               <span class="kicker">{escape(_brief_copy("portfolio_state_first", lang))}</span>
@@ -242,22 +242,11 @@ def home_content(state: Mapping[str, Any]) -> str:
               <strong>{escape(_review_status_label(portfolio_command.get("action_status") or "NO", lang))}</strong>
             </div>
           </div>
-          {_portfolio_command_view(portfolio_command, lang)}
-        </article>
-
-        <article class="decision-card holdings-primary-card" id="home-current-holdings" data-practical-section="current_holdings">
-          <div class="journey-step"><span>02</span>{escape(_brief_copy("current_holdings", lang))}</div>
-          <div class="home-section-header">
-            <div>
-              <h2>{escape(_brief_copy("actual_configured_holdings", lang))}</h2>
-              <p class="home-safety-note">{escape(_brief_copy("privacy_percent_only", lang))}</p>
-            </div>
-          </div>
-          {_holding_action_board(holdings, lang)}
+          {_portfolio_overview_view(portfolio_command, holdings, lang)}
         </article>
 
         <article class="decision-card action-today-card" id="home-action-today" data-practical-section="action_today">
-          <div class="journey-step"><span>03</span>{escape(_brief_copy("action_today", lang))}</div>
+          <div class="journey-step"><span>02</span>{escape(_brief_copy("action_today", lang))}</div>
           <span class="kicker">{escape(_brief_copy("first_answer", lang))}</span>
           <h1 class="action-answer">{escape(_runtime_label(action.get("status") or "NO", lang))}</h1>
           <div class="posture-pill">{escape(_localized(action.get("posture_label"), lang))}</div>
@@ -266,7 +255,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         </article>
 
         <article class="decision-card core-judgment-card" id="home-core-judgment" data-practical-section="core_judgment">
-          <div class="journey-step"><span>04</span>{escape(_brief_copy("core_judgment", lang))}</div>
+          <div class="journey-step"><span>03</span>{escape(_brief_copy("core_judgment", lang))}</div>
           <span class="kicker">{escape(_brief_copy("one_total_judgment", lang))}</span>
           <h2>{escape(_localized(core.get("headline"), lang))}</h2>
           <ul class="judgment-because">{''.join(f'<li>{escape(_localized(b, lang))}</li>' for b in _list(core.get("because_bullets")))}</ul>
@@ -274,7 +263,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         </article>
         {_conviction_hierarchy_view(decision_home.get("conviction_hierarchy"), lang)}
         <article class="decision-support-card predictions-card" id="home-predictions" data-practical-section="strongest_predictions">
-          <div class="journey-step"><span>05</span>{escape(_brief_copy("strongest_predictions", lang))}</div>
+          <div class="journey-step"><span>04</span>{escape(_brief_copy("strongest_predictions", lang))}</div>
           <div class="home-section-header">
             <div><p class="home-safety-note">{escape(_brief_copy("max_three", lang))}</p></div>
             <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
@@ -286,7 +275,7 @@ def home_content(state: Mapping[str, Any]) -> str:
 
       <section class="investor-evidence-grid" aria-label="{escape(_brief_copy("what_changed", lang))}">
         <article class="decision-support-card material-change-card" id="home-material-changes" data-practical-section="material_changes">
-          <div class="journey-step"><span>06</span>{escape(_brief_copy("what_changed", lang))}</div>
+          <div class="journey-step"><span>05</span>{escape(_brief_copy("what_changed", lang))}</div>
           <div class="home-section-header">
             <div>
               <h2>{escape(_brief_copy("material_evidence", lang))}</h2>
@@ -298,7 +287,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         </article>
 
         <article class="decision-support-card reasoning-chain-card" id="home-reasoning-chain" data-practical-section="reasoning_chain">
-          <div class="journey-step"><span>07</span>{escape(_brief_copy("reasoning_chain", lang))}</div>
+          <div class="journey-step"><span>06</span>{escape(_brief_copy("reasoning_chain", lang))}</div>
           <h2>{escape(_brief_copy("from_signal_to_decision", lang))}</h2>
           {_reasoning_chain_view(reasoning_chain, lang)}
         </article>
@@ -306,7 +295,7 @@ def home_content(state: Mapping[str, Any]) -> str:
 
       <section class="scenario-section" aria-label="{escape(_brief_copy("scenario_outlook", lang))}">
         <article class="decision-support-card scenario-outlook-card" id="home-scenario-outlook" data-practical-section="scenario_outlook">
-          <div class="journey-step"><span>08</span>{escape(_brief_copy("scenario_outlook", lang))}</div>
+          <div class="journey-step"><span>07</span>{escape(_brief_copy("scenario_outlook", lang))}</div>
           <div class="home-section-header">
             <div><h2>{escape(_brief_copy("four_scenarios", lang))}</h2><p class="home-safety-note">{escape(_brief_copy("no_uncalibrated_probability", lang))}</p></div>
           </div>
@@ -314,7 +303,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         </article>
 
         <article class="decision-support-card action-playbook-card" id="home-action-playbook" data-practical-section="action_playbook">
-          <div class="journey-step"><span>09</span>{escape(_brief_copy("conditional_actions", lang))}</div>
+          <div class="journey-step"><span>08</span>{escape(_brief_copy("conditional_actions", lang))}</div>
           <h2>{escape(_brief_copy("scenario_action_playbook", lang))}</h2>
           {_action_playbook_view(playbook, lang)}
         </article>
@@ -322,7 +311,7 @@ def home_content(state: Mapping[str, Any]) -> str:
 
       <section class="candidate-score-section">
         <article class="decision-support-card" id="home-candidate-board" data-practical-section="candidate_board">
-          <div class="journey-step"><span>10</span>{escape(_brief_copy("candidate_board", lang))}</div>
+          <div class="journey-step"><span>09</span>{escape(_brief_copy("candidate_board", lang))}</div>
           <div class="home-section-header">
             <div><h2>{escape(_brief_copy("candidate_score_basis", lang))}</h2><p class="home-safety-note">{escape(_brief_copy("candidate_not_authority", lang))}</p></div>
             <a class="secondary-button" href="/candidates">{escape(_home_label("view_full_candidate_pool", lang))}</a>
@@ -334,7 +323,7 @@ def home_content(state: Mapping[str, Any]) -> str:
       <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
         <div class="home-section-header">
           <div>
-            <span class="journey-step"><span>11</span>{escape(_home_label("forecast_accountability", lang))}</span>
+            <span class="journey-step"><span>10</span>{escape(_home_label("forecast_accountability", lang))}</span>
             <h2>{escape(_brief_copy("forecast_compact", lang))}</h2>
           </div>
           <div class="button-row">
@@ -379,7 +368,9 @@ def home_content(state: Mapping[str, Any]) -> str:
     """
 
 
-def _portfolio_command_view(command: Mapping[str, Any], lang: str) -> str:
+def _portfolio_overview_view(command: Mapping[str, Any], holdings: Mapping[str, Any], lang: str) -> str:
+    """Integrated portfolio overview: summary strip on top, holdings board as the
+    primary content, theme/donut/sensitivity as supporting side panel."""
     metrics = [
         (_brief_copy("configured_exposure", lang), _pct_text(command.get("exposure_pct"))),
         (_brief_copy("unassigned_capital", lang), _pct_text(command.get("unassigned_pct"))),
@@ -388,18 +379,48 @@ def _portfolio_command_view(command: Mapping[str, Any], lang: str) -> str:
     ]
     metric_html = "".join(f'<div><span>{escape(label)}</span><strong>{escape(value)}</strong></div>' for label, value in metrics)
     largest = _mapping(command.get("largest_theme"))
+    accents = _theme_accent_map(holdings, lang)
+    largest_label = _theme_label(largest.get("theme"), lang) or str(largest.get("theme") or "Unknown")
+    largest_accent = accents.get(largest_label, "#9ee6b8")
     return f"""
     <div class="portfolio-command-metrics">{metric_html}</div>
     {_cde_lifecycle_bar(command, lang)}
-    <div class="portfolio-command-analysis">
-      <div><span>{escape(_brief_copy("largest_theme", lang))}</span><strong>{escape(str(largest.get("theme") or "Unknown"))} · {escape(_pct_text(largest.get("exposure_pct")))}</strong></div>
-      <div><span>{escape(_brief_copy("liquidity_sensitivity", lang))}</span><strong>{escape(_runtime_label(command.get("liquidity_sensitivity") or "Unknown", lang))}</strong></div>
-      <div><span>{escape(_brief_copy("regime_sensitivity", lang))}</span><strong>{escape(_runtime_label(command.get("regime_sensitivity") or "Unknown", lang))}</strong></div>
-      {_portfolio_exposure_donut(command, lang)}
+    <div class="portfolio-overview-body">
+      <div class="portfolio-holdings-region" id="home-current-holdings" data-practical-section="current_holdings">
+        <div class="home-section-header holdings-subheader">
+          <div>
+            <h2>{escape(_brief_copy("current_holdings", lang))}</h2>
+            <p class="home-safety-note">{escape(_brief_copy("privacy_percent_only", lang))}</p>
+          </div>
+        </div>
+        {_holding_action_board(holdings, lang, accents)}
+      </div>
+      <aside class="portfolio-side-panel">
+        <div class="side-metric largest-theme-metric" style="--theme-accent:{largest_accent}"><span>{escape(_brief_copy("largest_theme", lang))}</span><strong>{escape(largest_label)} · {escape(_pct_text(largest.get("exposure_pct")))}</strong></div>
+        <div class="side-metric"><span>{escape(_brief_copy("liquidity_sensitivity", lang))}</span><strong>{escape(_runtime_label(command.get("liquidity_sensitivity") or "Unknown", lang))}</strong></div>
+        <div class="side-metric"><span>{escape(_brief_copy("regime_sensitivity", lang))}</span><strong>{escape(_runtime_label(command.get("regime_sensitivity") or "Unknown", lang))}</strong></div>
+        {_portfolio_exposure_donut(command, lang)}
+      </aside>
     </div>
     <div class="portfolio-risk-callout"><span>{escape(_brief_copy("primary_portfolio_risk", lang))}</span><p>{escape(_localized(command.get("primary_risk"), lang))}</p></div>
     <p class="decision-change">{escape(_localized(command.get("action_reason"), lang))}</p>
     """
+
+
+_THEME_ACCENT_PALETTE = ("#9fd3ff", "#9ee6b8", "#f6d77a", "#f4a5b3", "#c5b8ff", "#8ad8d0")
+
+
+def _theme_accent_map(holdings: Mapping[str, Any], lang: str) -> dict[str, str]:
+    """Assign a stable accent color per holding theme so each holding visually
+    ties to the largest-theme cluster in the side panel."""
+    accents: dict[str, str] = {}
+    for item in _list(holdings.get("holdings")):
+        if not isinstance(item, Mapping):
+            continue
+        label = _theme_label(item.get("theme"), lang).strip()
+        if label and label not in accents:
+            accents[label] = _THEME_ACCENT_PALETTE[len(accents) % len(_THEME_ACCENT_PALETTE)]
+    return accents
 
 
 def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
@@ -607,7 +628,7 @@ def _conviction_hierarchy_view(hierarchy: Mapping[str, Any], lang: str) -> str:
     for key, label, color, width in levels:
         items = _list(hierarchy.get(key))
         if not items and key == "level_4":
-            count = _num(_mapping(hierarchy.get("level_4")).get("count_on_home"), 0)
+            count = int(_num(_mapping(hierarchy.get("level_4")).get("count_on_home"), 0))
             text = f"{_journey_copy('top_three_research', lang)} ({count})" if count else _journey_copy("top_three_research", lang)
             items = [{"statement": {"en": text, "zh": text}}]
         texts = []
@@ -711,7 +732,20 @@ def _candidate_score_bar(score: float | None) -> str:
     return f'<div class="candidate-score-bar" title="Score: {pct:.0f}"><div class="candidate-score-fill" style="width:{pct:.0f}%;background:{color}"></div></div>'
 
 
+def _i18n_override(key: str, lang: str) -> str | None:
+    """Return central i18n text for a Home copy key when it exists.
+
+    `ui/i18n/i18n.py` wins over the inline fallback dicts in this file, so
+    editing the central TRANSLATIONS table directly changes Home rendering.
+    """
+    text = t(key, lang)
+    return text if text != key else None
+
+
 def _home_label(key: str, lang: str) -> str:
+    override = _i18n_override(f"home.{key}", lang)
+    if override is not None:
+        return override
     return HOME_INTELLIGENCE_TEXT.get(lang, HOME_INTELLIGENCE_TEXT["en"]).get(key, key.replace("_", " ").title())
 
 
@@ -808,6 +842,9 @@ def _journey_copy(key: str, lang: str) -> str:
             "matured": "已到期",
         },
     }
+    override = _i18n_override(f"journey.{key}", lang)
+    if override is not None:
+        return override
     return text.get(lang, text["en"]).get(key, key.replace("_", " ").title())
 
 
@@ -815,6 +852,7 @@ def _brief_copy(key: str, lang: str) -> str:
     text = {
         "en": {
             "portfolio_command": "Portfolio Command View",
+            "portfolio_overview_title": "Portfolio Overview",
             "portfolio_state_first": "Your capital and positions come first",
             "portfolio_overview": "Current Portfolio State",
             "action_review_today": "Decision review today",
@@ -922,6 +960,7 @@ def _brief_copy(key: str, lang: str) -> str:
         },
         "zh": {
             "portfolio_command": "组合指挥视图",
+            "portfolio_overview_title": "组合总览",
             "portfolio_state_first": "先看你的资本与持仓",
             "portfolio_overview": "当前组合状态",
             "action_review_today": "今日",
@@ -1028,6 +1067,9 @@ def _brief_copy(key: str, lang: str) -> str:
             "atlas_summary": "Atlas 一句话总结",
         },
     }
+    override = _i18n_override(f"brief.{key}", lang)
+    if override is not None:
+        return override
     return text.get(lang, text["en"]).get(key, key.replace("_", " ").title())
 
 
@@ -1110,19 +1152,24 @@ def _capital_relay_view(relay: Mapping[str, Any], lang: str) -> str:
     return '<div class="capital-relay-path">' + '<span class="relay-arrow">→</span>'.join(nodes) + "</div>"
 
 
-def _holding_action_board(holdings: Mapping[str, Any], lang: str) -> str:
+def _holding_action_board(holdings: Mapping[str, Any], lang: str, accents: Mapping[str, str] | None = None) -> str:
     items = [item for item in _list(holdings.get("holdings")) if isinstance(item, Mapping)]
     if not items:
         return f'<div class="empty-state">{escape(t("portfolio.no_percentages", lang))}</div>'
+    accents = accents or {}
     rows = []
     for item in items:
         valuation = _mapping(item.get("valuation"))
+        theme_label = _theme_label(item.get("theme"), lang).strip()
+        theme_accent = accents.get(theme_label, "")
+        chip_style = f' style="--theme-accent:{theme_accent}"' if theme_accent else ""
+        theme_chip = f'<p class="holding-theme-chip"{chip_style}>{escape(theme_label)}</p>' if theme_label else ""
         rows.append(
             f"""
             <article class="holding-brief-card" data-valuation-status="{escape(str(valuation.get('valuation_status') or 'LIMITED').lower())}">
               <div class="holding-valuation-column">
                 <div class="holding-title-row">
-                  <div><h3>{escape(str(item.get("asset") or ""))}</h3><p class="home-safety-note">{escape(_theme_label(item.get("theme"), lang))}</p></div>
+                  <div><h3>{escape(str(item.get("asset") or ""))}</h3>{theme_chip}</div>
                   <div class="allocation-badge"><small>{escape(_valuation_copy('configured_allocation', lang))}</small><strong>{escape(_pct_text(item.get("exposure_pct")))}</strong></div>
                 </div>
                 {_holding_valuation_view(valuation, lang)}
@@ -1312,6 +1359,9 @@ def _valuation_copy(key: str, lang: str) -> str:
             "weight_limited": "需补齐数量、价格、币种归一化和现金价值后才能估算当前权重",
         },
     }
+    override = _i18n_override(f"valuation.{key}", lang)
+    if override is not None:
+        return override
     return text.get(lang, text["en"]).get(key, key.replace("_", " "))
 
 
@@ -1474,6 +1524,11 @@ def _localize_headline(text: str, lang: str) -> str:
 
 def _runtime_label(value: Any, lang: str) -> str:
     text = _localized(value, lang).strip()
+    normalized = text.replace("_", " ").upper()
+    slug = normalized.lower().replace(" ", "_").replace("/", "_").replace("-", "_")
+    override = _i18n_override(f"runtime.{slug}", lang) if slug else None
+    if override is not None:
+        return override
     if lang != "zh":
         return text.replace("_", " ")
     labels = {
@@ -1540,7 +1595,6 @@ def _runtime_label(value: Any, lang: str) -> str:
         "FORECAST OUTCOME MARKED INVALIDATED THROUGH SUPPORTED LIFECYCLE": "预测在支持的生命周期中被标记为失效",
         "OK": "正常",
     }
-    normalized = text.replace("_", " ").upper()
     return labels.get(normalized, text.replace("_", " "))
 
 
@@ -2207,25 +2261,29 @@ def _home_intelligence_style() -> str:
     .decision-home-shell { display:grid; gap:18px; }
     .investor-home { gap:24px; }
     .portfolio-first-viewport { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
-    .portfolio-command-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
-    .holdings-primary-card { grid-column:span 8; grid-row:2; min-height:100%; }
+    .portfolio-overview-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
+    .portfolio-holdings-region { min-width:0; }
     .portfolio-first-viewport .action-today-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; grid-template-columns:1fr; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; align-content:start; }
     .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:2; min-height:100%; }
     .portfolio-first-viewport .conviction-hierarchy-card,
     .portfolio-first-viewport .predictions-card { grid-column:1 / -1; }
-    .portfolio-command-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
+    .portfolio-overview-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
     .portfolio-header-status { display:grid; justify-items:end; gap:5px; text-align:right; }
     .portfolio-header-status small { color:var(--muted); font-size:.72rem; }
     .portfolio-header-status strong { max-width:12ch; font-size:.92rem; line-height:1.25; }
     .portfolio-command-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0 14px; }
     .portfolio-command-metrics > div { min-height:84px; display:grid; align-content:center; gap:6px; padding:12px; border-top:1px solid rgba(219,234,254,.14); border-bottom:1px solid rgba(219,234,254,.08); }
-    .portfolio-command-metrics span,.portfolio-command-analysis span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
+    .portfolio-command-metrics span,.portfolio-side-panel span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
     .portfolio-command-metrics strong { font-size:1.34rem; }
-    .portfolio-command-analysis { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-    .portfolio-command-analysis > div,.portfolio-command-analysis ul { min-height:74px; margin:0; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
-    .portfolio-command-analysis > div { display:grid; gap:6px; align-content:center; }
-    .portfolio-command-analysis ul { list-style:none; display:grid; gap:4px; }
-    .portfolio-command-analysis li { display:flex; justify-content:space-between; gap:10px; color:var(--subtle); font-size:.78rem; }
+    .portfolio-overview-body { display:grid; grid-template-columns:minmax(0,1fr) minmax(230px,280px); gap:18px; margin-top:18px; align-items:start; }
+    .holdings-subheader { margin-bottom:12px; }
+    .holdings-subheader h2 { margin:0 0 4px; font-size:1.12rem; }
+    .portfolio-side-panel { display:grid; gap:10px; align-content:start; }
+    .portfolio-side-panel .side-metric { display:grid; gap:6px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
+    .portfolio-side-panel .largest-theme-metric { border-left:3px solid var(--theme-accent, var(--accent)); }
+    .portfolio-side-panel .exposure-donut { flex-wrap:wrap; }
+    .holding-theme-chip { display:inline-flex; align-items:center; gap:7px; margin:0; color:var(--subtle); font-size:.74rem; }
+    .holding-theme-chip::before { content:""; width:9px; height:9px; border-radius:3px; background:var(--theme-accent, var(--accent)); }
     .portfolio-risk-callout { margin-top:12px; padding:13px 14px; border-left:3px solid rgba(244,165,179,.72); background:rgba(244,165,179,.045); }
     .portfolio-risk-callout p { margin:6px 0 0; color:var(--text); }
     .investor-evidence-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(380px,.92fr); gap:16px; align-items:start; }
@@ -2454,8 +2512,8 @@ def _home_intelligence_style() -> str:
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
-    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-command-analysis,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
+    @media (max-width:1180px) { .portfolio-overview-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-overview-body,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .portfolio-side-panel { grid-template-columns:repeat(2,minmax(0,1fr)); } .portfolio-side-panel .exposure-donut { grid-column:1 / -1; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
     @media (max-width:640px) { .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:14px; } .portfolio-header-status { justify-items:start; text-align:left; } .valuation-visuals,.valuation-amount-grid { grid-template-columns:1fr; } .valuation-amount-grid { grid-column:auto; } .holding-title-row { align-items:flex-start; } }
     .predictions-card .prediction-stack { display:grid; gap:14px; }
     .prediction-item { padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--surface-muted); }
@@ -2479,15 +2537,14 @@ def _home_intelligence_style() -> str:
     .evidence-confidence-pill.is-limited { color:var(--warning); background:rgba(246,215,122,.12); border-color:rgba(246,215,122,.35); }
     .evidence-confidence-pill.is-calibrated { color:var(--positive); background:rgba(158,230,184,.12); border-color:rgba(158,230,184,.35); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
-    .portfolio-command-analysis { grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; }
     .exposure-donut { display:flex; align-items:center; gap:14px; min-height:74px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
     .exposure-donut .atlas-viz { width:90px; height:90px; flex-shrink:0; }
     .donut-legend { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
     .donut-legend li { display:flex; align-items:center; gap:8px; font-size:.78rem; color:var(--subtle); }
     .donut-legend strong { margin-left:auto; color:var(--text); font-size:.9rem; }
     .donut-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
-    @media (max-width:1180px) { .portfolio-command-analysis { grid-template-columns:repeat(2,minmax(0,1fr)); } .exposure-donut { grid-column:1 / -1; } .conviction-hierarchy-card { grid-column:1 / -1; } }
-    @media (max-width:640px) { .portfolio-command-analysis { grid-template-columns:1fr; } }
+    @media (max-width:1180px) { .conviction-hierarchy-card { grid-column:1 / -1; } }
+    @media (max-width:640px) { .portfolio-side-panel { grid-template-columns:1fr; } }
     .conviction-hierarchy-card .journey-step span { border-radius:50%; width:22px; height:22px; display:grid; place-items:center; font-size:.7rem; }
     .conviction-pyramid { display:grid; gap:10px; }
     .conviction-level { display:grid; justify-items:center; gap:6px; }
@@ -4096,16 +4153,23 @@ def _theme_bars(values: Any, viz_id: str = "theme_concentration", question_key: 
 
 
 def _portfolio_exposure_donut(command: Mapping[str, Any], lang: str) -> str:
-    """Inline SVG donut of market concentration + unallocated buffer."""
-    market = _mapping(command.get("market_concentration"))
+    """Inline SVG donut of per-holding weights + unallocated buffer."""
+    positions = [
+        (str(item.get("name") or item.get("asset") or ""), _num(item.get("weight"), 0))
+        for item in _list(command.get("positions"))
+        if isinstance(item, Mapping) and _num(item.get("weight"), 0) > 0
+    ]
     unallocated = _num(command.get("unassigned_pct"), 0)
-    items = [(name, _num(value, 0)) for name, value in market.items() if _num(value, 0) > 0]
+    items = sorted(positions, key=lambda pair: pair[1], reverse=True)
+    if not items:
+        market = _mapping(command.get("market_concentration"))
+        items = [(name, _num(value, 0)) for name, value in market.items() if _num(value, 0) > 0]
     if not items:
         items = [("Configured", 100 - unallocated)]
     total = sum(value for _, value in items) + unallocated
     if total <= 0:
         return '<div class="exposure-donut empty"></div>'
-    colors = {"A-share": "#9ee6b8", "HK": "#9fd3ff", "US": "#f6d77a", "Unknown": "#dbeafe"}
+    palette = ("#9ee6b8", "#9fd3ff", "#f6d77a", "#f4a5b3", "#c5b8ff", "#8ad8d0")
     segments = []
     legend_rows = []
     offset = 0
@@ -4114,7 +4178,7 @@ def _portfolio_exposure_donut(command: Mapping[str, Any], lang: str) -> str:
     for index, (name, value) in enumerate(items):
         pct = value / total
         dash = pct * circumference
-        color = colors.get(str(name), ["#dbeafe", "#9ee6b8", "#f6d77a", "#9fd3ff", "#f4a5b3"][index % 5])
+        color = palette[index % len(palette)]
         segments.append(f'<circle cx="60" cy="60" r="{radius}" fill="none" stroke="{color}" stroke-width="12" stroke-dasharray="{dash:.2f} {circumference - dash:.2f}" stroke-dashoffset="{-offset:.2f}" transform="rotate(-90 60 60)"/>')
         legend_rows.append(f'<li><span class="donut-dot" style="background:{color}"></span>{escape(str(name))}<strong>{value:.1f}%</strong></li>')
         offset += dash
@@ -4123,7 +4187,7 @@ def _portfolio_exposure_donut(command: Mapping[str, Any], lang: str) -> str:
         segments.append(f'<circle cx="60" cy="60" r="{radius}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="12" stroke-dasharray="{dash:.2f} {circumference - dash:.2f}" stroke-dashoffset="{-offset:.2f}" transform="rotate(-90 60 60)"/>')
         legend_rows.append(f'<li><span class="donut-dot" style="background:rgba(255,255,255,.12)"></span>{escape(_brief_copy("unassigned_capital", lang))}<strong>{unallocated:.1f}%</strong></li>')
     return f'''<div class="exposure-donut">
-      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="{escape(_brief_copy("configured_exposure", lang))}">{''.join(segments)}</svg>
+      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="{escape(_brief_copy("current_holdings", lang))}">{''.join(segments)}</svg>
       <ul class="donut-legend">{''.join(legend_rows)}</ul>
     </div>'''
 

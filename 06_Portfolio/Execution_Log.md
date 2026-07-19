@@ -30,3 +30,14 @@ Before any execution entry is treated as valid, it must have:
 2. Evidence.
 3. Capital action.
 4. Review plan.
+
+## Log
+
+| Date | Company | Action | Reason | Evidence | Result | Review | Lessons Learned |
+|---|---|---|---|---|---|---|---|
+| 2026-07-19 | 东山精密 002384.SZ | Exit | User confirmed full exit of previous positions | User-confirmed portfolio refresh 2026-07-19 | Pending | 2026-07-26 weekly review | Thesis evidence was never refreshed; concept exposure alone did not justify holding |
+| 2026-07-19 | 中船特气 688146.SH | Build (29.0%) | Electronic specialty gases / semiconductor materials exposure | User-confirmed holding 2026-07-19; demand and qualification evidence Unverified | Pending | 2026-07-26 weekly review | Largest single position; concentration risk to monitor |
+| 2026-07-19 | 风华高科 000636.SZ | Build (12.5%) | MLCC / AI server BOM component exposure | User-confirmed holding 2026-07-19; AI demand linkage Unverified | Pending | 2026-07-26 weekly review | Indirect thematic exposure; needs order/price evidence |
+| 2026-07-19 | 国际复材 301526.SZ | Build (7.2%) | Electronic glass fiber cloth upstream of PCB / CCL | User-confirmed holding 2026-07-19; AI PCB transmission Unverified | Pending | 2026-07-26 weekly review | Smallest position; thesis-sensitive |
+| 2026-07-19 | 建滔集团 00148.HK | Hold (26.0% -> 18.4%) | Position resized within full portfolio refresh | User-confirmed holding and cost basis 2026-07-19 | Pending | 2026-07-26 weekly review | Deep drawdown; thesis re-verification required before any action |
+| 2026-07-19 | 安集科技 688019.SH | Hold (34.0% -> 12.2%) | Position resized within full portfolio refresh | User-confirmed holding and cost basis 2026-07-19 | Pending | 2026-07-26 weekly review | Deep drawdown; thesis re-verification required before any action |
