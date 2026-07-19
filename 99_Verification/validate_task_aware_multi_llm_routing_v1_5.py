@@ -445,12 +445,15 @@ def _assert_proactive_cycle(config_path: Path, trace_path: Path, root: Path) -> 
         )
     )
     entry = daemon.run_tick(0)
-    assert entry["system_metrics"]["proactive_update_status"] == "planned"
+    assert entry["system_metrics"]["proactive_update_status"] in {"COMPLETED", "DEGRADED", "FAILED"}
     new_traces = read_llm_traces(str(trace_path), limit=100)[before:]
     assert [trace.get("task_role") for trace in new_traces] == ["workhorse", "research", "decision"]
     store = StateStore(db_path=str(root / "proactive.sqlite"))
     task_state = store.get_state("llm_task_runtime_state")
     assert task_state["research"]["output"]["status"] == "ok"
+    persisted = store.get_state("proactive_update_state")
+    assert persisted.get("status") in {"COMPLETED", "DEGRADED", "FAILED"}
+    assert persisted.get("completed_at")
 
 
 def _assert_failed_decision_isolation(config_path: Path, trace_path: Path, root: Path) -> None:
@@ -496,14 +499,15 @@ def _assert_heartbeat_cost_safety(config_path: Path, trace_path: Path, db_path: 
         )
     )
     loop._last_heartbeat = 0.0
+    latest_before = StateStore(db_path=str(db_path)).get_latest_decision_brief().get("id")
     result = loop.run_once()
     after = len(read_llm_traces(str(trace_path), limit=100))
-    assert result["status"] == "success"
+    assert result["status"] == "skipped_no_material_delta"
+    assert result["skip_reason"] == "heartbeat_only"
     assert after == before, (before, after)
-    tick = result["results"][0]
-    assert tick["decision_packet_fresh"] is False
-    assert tick["llm_tasks"]["decision"]["status"] == "skipped_no_meaningful_delta"
-    assert tick["llm_feedback_status"] == "not_applied_no_fresh_decision"
+    assert result["results"] == []
+    latest_after = StateStore(db_path=str(db_path)).get_latest_decision_brief().get("id")
+    assert latest_after == latest_before
 
 
 def _assert_security(config_path: Path, trace_path: Path) -> None:

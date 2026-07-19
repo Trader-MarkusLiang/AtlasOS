@@ -20,8 +20,8 @@ from runtime.telemetry.llm_trace_logger import log_llm_trace
 
 TASK_ROLES = ("workhorse", "research", "decision")
 _ROLE_DEFAULTS = {
-    "workhorse": {"enabled": False, "timeout_seconds": 20, "max_output_tokens": 2000},
-    "research": {"enabled": False, "timeout_seconds": 30, "max_output_tokens": 4000},
+    "workhorse": {"enabled": True, "timeout_seconds": 20, "max_output_tokens": 2000},
+    "research": {"enabled": True, "timeout_seconds": 30, "max_output_tokens": 4000},
     "decision": {"enabled": True, "timeout_seconds": 45, "max_output_tokens": 4000},
 }
 
@@ -42,13 +42,22 @@ def default_task_routes(registry: Mapping[str, Any] | None = None) -> dict[str, 
         routes[role] = {
             "enabled": bool(defaults["enabled"]),
             "provider_id": active,
-            "model": str(active_provider.get("model") or ""),
+            "model": _preferred_model(role, active_provider),
             "fallback_chain": [item for item in fallback if item != active],
             "timeout_seconds": int(defaults["timeout_seconds"]),
             "max_output_tokens": int(defaults["max_output_tokens"]),
             "reasoning_effort": "medium" if role == "decision" else "",
         }
     return routes
+
+
+def _preferred_model(role: str, provider: Mapping[str, Any]) -> str:
+    available = [str(item) for item in provider.get("available_models", [])] if isinstance(provider.get("available_models"), list) else []
+    if role in {"workhorse", "research"} and "kimi-k2.6" in available:
+        return "kimi-k2.6"
+    if role == "decision" and "gpt5.5" in available:
+        return "gpt5.5"
+    return str(provider.get("model") or "")
 
 
 def load_task_routes(config_path: str | None = None) -> dict[str, dict[str, Any]]:

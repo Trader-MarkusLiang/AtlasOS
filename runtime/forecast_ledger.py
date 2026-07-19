@@ -71,7 +71,11 @@ def create_forecast(payload: Mapping[str, Any], *, db_path: str | None = None) -
 
 
 def list_forecasts(*, db_path: str | None = None, status: str | None = None, limit: int = 100) -> dict[str, Any]:
-    """Return ledger rows and compact accountability metrics."""
+    """Return ledger rows and compact accountability metrics.
+
+    The `forecasts` list is limited to `limit` rows for display efficiency.
+    The `metrics` dict is always computed from the full ledger for accurate counts.
+    """
 
     _ensure_schema(db_path)
     query = "SELECT record_json FROM forecast_ledger"
@@ -82,13 +86,14 @@ def list_forecasts(*, db_path: str | None = None, status: str | None = None, lim
     query += " ORDER BY created_at DESC LIMIT ?"
     params.append(int(limit))
     with _connect(db_path) as conn:
-        rows = conn.execute(query, params).fetchall()
-    forecasts = [json.loads(row["record_json"]) for row in rows]
+        recent = conn.execute(query, params).fetchall()
+        forecasts = [json.loads(row["record_json"]) for row in recent]
+        metrics = _ledger_metrics_query(conn, status=status)
     return {
         "timestamp": utc_now_iso(),
         "forecasts": forecasts,
-        "metrics": ledger_metrics(forecasts),
-        "sample_warning": _sample_warning(forecasts),
+        "metrics": metrics,
+        "sample_warning": _sample_warning_from_metrics(metrics),
         "no_trading_execution": True,
     }
 
@@ -285,10 +290,55 @@ def ledger_metrics(forecasts: list[Mapping[str, Any]]) -> dict[str, Any]:
         "matured": sum(1 for item in forecasts if item.get("status") == "MATURED"),
         "evaluated": len(evaluated),
         "verified": len(verified),
+        "invalidated": sum(1 for item in evaluated if item.get("status") == "INVALIDATED"),
+        "inconclusive": sum(1 for item in evaluated if item.get("status") == "INCONCLUSIVE"),
         "accuracy": round(len(verified) / len(evaluated), 4) if evaluated else None,
         "mean_forecast_error": round(sum(errors) / len(errors), 4) if errors else None,
         "mean_calibration_error": round(sum(calibration) / len(calibration), 4) if calibration else None,
         "minimum_sample_size_met": len(evaluated) >= 20,
+    }
+
+
+def _ledger_metrics_query(conn: sqlite3.Connection, *, status: str | None = None) -> dict[str, Any]:
+    where = "WHERE status = ?" if status else ""
+    params: tuple[Any, ...] = (status.upper(),) if status else ()
+    row = conn.execute(
+        f"""
+        SELECT
+            COUNT(*) total,
+            SUM(CASE WHEN status = 'OPEN' THEN 1 ELSE 0 END) open_count,
+            SUM(CASE WHEN status = 'MATURED' THEN 1 ELSE 0 END) matured_count,
+            SUM(CASE WHEN status IN ('VERIFIED','INVALIDATED','INCONCLUSIVE') THEN 1 ELSE 0 END) evaluated,
+            SUM(CASE WHEN status = 'VERIFIED' THEN 1 ELSE 0 END) verified,
+            SUM(CASE WHEN status = 'INVALIDATED' THEN 1 ELSE 0 END) invalidated,
+            SUM(CASE WHEN status = 'INCONCLUSIVE' THEN 1 ELSE 0 END) inconclusive,
+            AVG(CASE WHEN status IN ('VERIFIED','INVALIDATED','INCONCLUSIVE')
+                THEN CAST(json_extract(record_json, '$.forecast_error') AS REAL) END) mean_forecast_error,
+            AVG(CASE WHEN status IN ('VERIFIED','INVALIDATED','INCONCLUSIVE')
+                THEN CAST(json_extract(record_json, '$.calibration_error') AS REAL) END) mean_calibration_error
+        FROM forecast_ledger
+        {where}
+        """,
+        params,
+    ).fetchone()
+    evaluated = int(row["evaluated"] or 0)
+    verified = int(row["verified"] or 0)
+    return {
+        "total": int(row["total"] or 0),
+        "open": int(row["open_count"] or 0),
+        "matured": int(row["matured_count"] or 0),
+        "evaluated": evaluated,
+        "verified": verified,
+        "invalidated": int(row["invalidated"] or 0),
+        "inconclusive": int(row["inconclusive"] or 0),
+        "accuracy": round(verified / evaluated, 4) if evaluated else None,
+        "mean_forecast_error": round(float(row["mean_forecast_error"]), 4)
+        if row["mean_forecast_error"] is not None
+        else None,
+        "mean_calibration_error": round(float(row["mean_calibration_error"]), 4)
+        if row["mean_calibration_error"] is not None
+        else None,
+        "minimum_sample_size_met": evaluated >= 20,
     }
 
 
@@ -368,6 +418,12 @@ def _confidence(value: Any) -> float:
 def _sample_warning(forecasts: list[Mapping[str, Any]]) -> str:
     evaluated = [item for item in forecasts if item.get("status") in {"VERIFIED", "INVALIDATED", "INCONCLUSIVE"}]
     if len(evaluated) < 20:
+        return "Low sample size: calibration is directional only, not statistically reliable."
+    return "Minimum sample size met for basic calibration review."
+
+
+def _sample_warning_from_metrics(metrics: Mapping[str, Any]) -> str:
+    if int(metrics.get("evaluated", 0) or 0) < 20:
         return "Low sample size: calibration is directional only, not statistically reliable."
     return "Minimum sample size met for basic calibration review."
 

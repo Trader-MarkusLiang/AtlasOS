@@ -8,7 +8,7 @@ adapter.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, time as clock_time, timezone
 from pathlib import Path
 from typing import Any, Mapping
 from zoneinfo import ZoneInfo
@@ -113,6 +113,10 @@ def market_observation_to_event(observation: Mapping[str, Any]) -> dict[str, Any
                 "freshness": observation.get("freshness"),
                 "data_quality_status": observation.get("data_quality_status"),
                 "source_type": observation.get("source_type"),
+                "latest_price": observation.get("latest_price"),
+                "daily_change_pct": observation.get("daily_change_pct"),
+                "market_session_status": observation.get("market_session_status"),
+                "market_session_timestamp": observation.get("market_session_timestamp"),
                 "raw_reference": observation.get("raw_reference"),
                 "change_5d_pct": observation.get("change_5d_pct"),
                 "change_20d_pct": observation.get("change_20d_pct"),
@@ -227,6 +231,7 @@ def _observe_position(position: Mapping[str, Any], fixture: Mapping[str, Any] | 
     source = snapshot.get("source") or "none"
     confidence = 0.75 if status == "Available" else 0.45 if status == "Partial" else 0.1
     event_type = "price_breakout" if snapshot.get("latest_price") is not None else "market_event"
+    market_session_status, market_session_timestamp = _market_session_semantics(snapshot, market)
     return {
         "timestamp": snapshot.get("timestamp") or utc_now_iso(),
         "source": source,
@@ -235,6 +240,8 @@ def _observe_position(position: Mapping[str, Any], fixture: Mapping[str, Any] | 
         "theme": position.get("theme") or "Unspecified",
         "market": market,
         "freshness": _freshness(snapshot),
+        "market_session_status": market_session_status,
+        "market_session_timestamp": market_session_timestamp,
         "confidence": confidence,
         "raw_reference": {
             "provider": source,
@@ -276,6 +283,45 @@ def _freshness(snapshot: Mapping[str, Any]) -> str:
         except ValueError:
             return "Unknown"
     return "Unknown"
+
+
+def _market_session_semantics(
+    snapshot: Mapping[str, Any],
+    market: str,
+    *,
+    now: datetime | None = None,
+) -> tuple[str, str | None]:
+    """Distinguish a valid prior close from stale or failed market data."""
+
+    raw_timestamp = snapshot.get("timestamp")
+    if not raw_timestamp:
+        return "MARKET_TIMESTAMP_MISSING", None
+    try:
+        observed = datetime.fromisoformat(str(raw_timestamp).replace("Z", "+00:00"))
+    except ValueError:
+        return "MARKET_TIMESTAMP_INVALID", str(raw_timestamp)
+    if observed.tzinfo is None:
+        observed = observed.replace(tzinfo=timezone.utc)
+    market_key = str(market or "").strip().lower()
+    if market_key in {"us", "nasdaq", "nyse"}:
+        zone, open_at, close_at = ZoneInfo("America/New_York"), clock_time(9, 30), clock_time(16, 0)
+    elif market_key in {"hk", "hong kong", "hong_kong"}:
+        zone, open_at, close_at = ZoneInfo("Asia/Hong_Kong"), clock_time(9, 30), clock_time(16, 0)
+    elif market_key in {"a-share", "ashare", "cn", "china"}:
+        zone, open_at, close_at = ZoneInfo("Asia/Shanghai"), clock_time(9, 30), clock_time(15, 0)
+    else:
+        return "SESSION_UNKNOWN", observed.astimezone(timezone.utc).isoformat()
+    now = now.astimezone(zone) if now and now.tzinfo else (now.replace(tzinfo=zone) if now else datetime.now(zone))
+    local_observed = observed.astimezone(zone)
+    age_hours = max(0.0, (now - local_observed).total_seconds() / 3600.0)
+    if age_hours > 120:
+        return "STALE_MARKET_DATA", observed.astimezone(timezone.utc).isoformat()
+    market_open = now.weekday() < 5 and open_at <= now.time() <= close_at
+    if market_open:
+        status = "CURRENT_SESSION" if local_observed.date() == now.date() else "DELAYED_SESSION"
+    else:
+        status = "LAST_MARKET_CLOSE"
+    return status, observed.astimezone(timezone.utc).isoformat()
 
 
 def _price_currency(market: str, asset: str) -> str | None:

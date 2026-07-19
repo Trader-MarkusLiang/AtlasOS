@@ -10,12 +10,14 @@ from typing import Any, Dict, Optional
 try:
     from runtime.logging import utc_now_iso
     from runtime.state_store import StateStore
+    from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
 except ModuleNotFoundError:  # pragma: no cover
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     from runtime.logging import utc_now_iso
     from runtime.state_store import StateStore
+    from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
 
 
 DEFAULT_SNAPSHOT_PATH = Path("runtime/logs/cognitive_snapshots.jsonl")
@@ -127,23 +129,13 @@ def capture_cognitive_snapshot(
 
 def read_cognitive_snapshots(log_path: Optional[str] = None, limit: int = 100) -> list[Dict[str, Any]]:
     path = _resolve_path(log_path)
-    if not path.exists():
-        return []
-    records: list[Dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8").splitlines()[-limit:]:
-        try:
-            records.append(json.loads(line))
-        except json.JSONDecodeError:
-            records.append({"timestamp": utc_now_iso(), "status": "invalid_log_record"})
-    return records
+    return read_jsonl_tail(path, limit)
 
 
 def _append_snapshot(snapshot: Dict[str, Any], log_path: Optional[str]) -> Path:
     path = _resolve_path(log_path)
     try:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(snapshot, ensure_ascii=False, sort_keys=True) + "\n")
+        append_jsonl(path, snapshot)
     except Exception:
         return path
     return path

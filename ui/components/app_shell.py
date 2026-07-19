@@ -100,17 +100,24 @@ SHELL_JS = """
     const market = state && state.market_intelligence ? state.market_intelligence : {};
     const channels = market.channels || {};
     const observations = Array.isArray(market.observations) ? market.observations : [];
+    const observationCount = Number.isFinite(Number(market.observation_count)) ? Number(market.observation_count) : observations.length;
+    const usableCount = Number.isFinite(Number(market.usable_observation_count))
+      ? Number(market.usable_observation_count)
+      : observations.filter((item) => item && ["Available", "Partial"].includes(item.data_quality_status)).length;
+    const partialCount = Number.isFinite(Number(market.partial_observation_count))
+      ? Number(market.partial_observation_count)
+      : observations.filter((item) => item && item.data_quality_status === "Partial").length;
+    const lastCloseCount = Number(market.last_market_close_count || 0);
     const keys = Object.keys(channels);
     if (keys.length) {
       const live = keys.filter((key) => String(channels[key]).toUpperCase() === "LIVE").length;
       const failed = keys.filter((key) => ["FAILED", "RATE_LIMITED"].includes(String(channels[key]).toUpperCase())).length;
       const missing = keys.filter((key) => String(channels[key]).toUpperCase() === "NOT_CONFIGURED").length;
-      const available = observations.filter((item) => item && ["Available", "Partial"].includes(item.data_quality_status)).length;
-      const partial = observations.filter((item) => item && item.data_quality_status === "Partial").length;
       const zh = document.documentElement.lang === "zh";
-      const prefix = observations.length ? (zh ? `价格 ${available}/${observations.length}` : `price ${available}/${observations.length}`) : (zh ? `${live} 实时` : `${live} live`);
+      const prefix = observationCount ? (zh ? `价格 ${usableCount}/${observationCount}` : `price ${usableCount}/${observationCount}`) : (zh ? `${live} 实时` : `${live} live`);
+      if (lastCloseCount && lastCloseCount === usableCount) return zh ? `${prefix} · 最近收盘` : `${prefix} · last market close`;
       if (failed) return zh ? `${prefix} · ${failed} 失败` : `${prefix} · ${failed} failed`;
-      if (partial) return zh ? `${prefix} · ${partial} 部分` : `${prefix} · ${partial} partial`;
+      if (partialCount) return zh ? `${prefix} · ${partialCount} 部分` : `${prefix} · ${partialCount} partial`;
       if (missing) return zh ? `${prefix} · ${missing} 未配置` : `${prefix} · ${missing} not configured`;
       return zh ? `${prefix} · 可用` : `${prefix} · available`;
     }
@@ -118,7 +125,7 @@ SHELL_JS = """
   }
   async function refreshTopbar() {
     try {
-      const response = await fetch("/state", { cache: "no-store" });
+      const response = await fetch("/state/summary", { cache: "no-store" });
       if (!response.ok) return;
       const state = await response.json();
       text("[data-provider-name]", providerName(state));

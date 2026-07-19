@@ -1,0 +1,112 @@
+{
+  "checks": {
+    "accelerated_500_ticks_zero_errors": true,
+    "accelerated_heartbeat_zero_churn": true,
+    "brief_current_is_section_refreshable": true,
+    "closed_market_last_close_semantics": true,
+    "decision_contract_fields_unchanged": true,
+    "heartbeat_zero_brief_revisions": true,
+    "heartbeat_zero_llm_calls": true,
+    "home_matches_decision_packet": true,
+    "identical_market_no_duplicate_calls": true,
+    "identical_market_no_duplicate_revision": true,
+    "jsonl_rotation_bounded": true,
+    "market_change_within_refresh_tick": true,
+    "no_trading_execution": true,
+    "portfolio_change_excludes_private_amounts": true,
+    "portfolio_change_published_next_tick": true,
+    "proactive_all_role_timestamps": true,
+    "proactive_terminal_state": true,
+    "restart_retains_last_valid_brief": true,
+    "reviewed_unchanged_visible": true,
+    "two_hour_equivalent_polling_memory_bounded": true,
+    "ui_event_executed_all_roles": true,
+    "ui_event_published_within_one_tick": true
+  },
+  "evidence": {
+    "accelerated_ticks": {
+      "brief_revision": 0,
+      "cycles": 501,
+      "errors": 0,
+      "llm_calls": 0
+    },
+    "closed_market": {
+      "status": "LAST_MARKET_CLOSE",
+      "timestamp": "2026-07-17T20:00:00+00:00"
+    },
+    "heartbeat": {
+      "brief_revision": 0,
+      "llm_calls": 0,
+      "no_trading_execution": true,
+      "status": "success"
+    },
+    "home": {
+      "action": "reduce",
+      "brief_revision": 2,
+      "has_home_html": true,
+      "no_trading_execution": true,
+      "posture_visible": true,
+      "reviewed_unchanged_visible": true,
+      "risk": "high"
+    },
+    "market_delta": {
+      "changed_revision": 2,
+      "duplicate_call_delta": 0,
+      "duplicate_revision": 1,
+      "initial_revision": 1,
+      "no_trading_execution": true
+    },
+    "polling_memory": {
+      "growth_bytes": 420693,
+      "peak_bytes": 527665,
+      "poll_count": 3600
+    },
+    "portfolio_change": {
+      "change_status": "changed",
+      "changed_revision": 2,
+      "initial_revision": 1,
+      "no_trading_execution": true,
+      "private_amounts_included": false,
+      "restart_revision": 2
+    },
+    "proactive": {
+      "no_trading_execution": true,
+      "role_statuses": {
+        "decision": "validated_decision_packet",
+        "research": "ok",
+        "workhorse": "ok"
+      },
+      "role_timestamps": {
+        "decision": "2026-07-19T03:10:43.268184+00:00",
+        "research": "2026-07-19T03:10:43.268184+00:00",
+        "workhorse": "2026-07-19T03:10:43.268184+00:00"
+      },
+      "status": "COMPLETED"
+    },
+    "retention": {
+      "backup_count": 2,
+      "total_bytes": 2508
+    },
+    "ui_event": {
+      "brief_revision": 1,
+      "changed_sections": [
+        "portfolio_state",
+        "action_review",
+        "core_judgment",
+        "material_changes",
+        "scenario_outlook",
+        "candidate_delta",
+        "data_freshness"
+      ],
+      "no_trading_execution": true,
+      "role_calls": {
+        "decision": 1,
+        "research": 1,
+        "workhorse": 1
+      },
+      "status": "success"
+    }
+  },
+  "failures": [],
+  "status": "PASS"
+}

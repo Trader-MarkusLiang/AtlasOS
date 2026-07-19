@@ -9,11 +9,13 @@ from typing import Any, Dict, Optional
 
 try:
     from runtime.logging import utc_now_iso
+    from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
 except ModuleNotFoundError:  # pragma: no cover
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     from runtime.logging import utc_now_iso
+    from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
 
 
 DEFAULT_DECISION_TRACE_PATH = Path("runtime/logs/decision_traces.jsonl")
@@ -57,8 +59,7 @@ def log_decision_trace(
             if confidence_adjustment_factor is not None
             else 1.0,
         }
-        with path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+        append_jsonl(path, record)
     except Exception:
         return path
     return path
@@ -66,15 +67,7 @@ def log_decision_trace(
 
 def read_decision_traces(log_path: Optional[str] = None, limit: int = 100) -> list[Dict[str, Any]]:
     path = _resolve_path(log_path)
-    if not path.exists():
-        return []
-    records: list[Dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8").splitlines()[-limit:]:
-        try:
-            records.append(json.loads(line))
-        except json.JSONDecodeError:
-            records.append({"timestamp": utc_now_iso(), "status": "invalid_log_record"})
-    return records
+    return read_jsonl_tail(path, limit)
 
 
 def _resolve_path(log_path: Optional[str]) -> Path:

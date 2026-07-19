@@ -19,8 +19,8 @@
   },
   "evidence": {
     "channel_status_counts": {
-      "DELAYED": 7,
-      "LIVE": 1
+      "DELAYED": 6,
+      "LIVE": 2
     },
     "configured_provider_present": true,
     "latest_inference_status": "succeeded",

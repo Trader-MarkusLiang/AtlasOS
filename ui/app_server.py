@@ -342,44 +342,11 @@ def create_app() -> Any:
 
     @app.get("/state/summary")
     async def state_summary() -> Any:
-        full = state_api()
-        packet = full.get("last_decision_packet") if isinstance(full.get("last_decision_packet"), dict) else {}
-        return JSONResponse(
-            {
-                "timestamp": full.get("timestamp"),
-                "regime_state": full.get("regime_state"),
-                "proposed_state": full.get("proposed_state"),
-                "trust_index": full.get("trust_index"),
-                "tick_counter": full.get("tick_counter"),
-                "data_provenance": full.get("data_provenance"),
-                "market_intelligence": {
-                    "status": full.get("market_intelligence", {}).get("status"),
-                    "degraded": full.get("market_intelligence", {}).get("degraded", True),
-                    "channels": full.get("market_intelligence", {}).get("channels"),
-                },
-                "portfolio_context": {
-                    "status": full.get("portfolio_context", {}).get("status"),
-                    "exposure_sum_pct": full.get("portfolio_context", {}).get("exposure_sum_pct"),
-                },
-                "llm_trace_summary": {
-                    "call_count": full.get("llm_trace_summary", {}).get("call_count", 0),
-                    "latest_model": full.get("llm_trace_summary", {}).get("latest_model"),
-                    "latest_inference_status": full.get("llm_trace_summary", {}).get("latest_inference_status"),
-                },
-                "last_decision_packet": {
-                    "recommended_action": packet.get("recommended_action"),
-                    "confidence": packet.get("confidence"),
-                    "risk_level": packet.get("risk_level"),
-                    "causal_summary": packet.get("causal_summary"),
-                },
-                "runtime": {
-                    "status": full.get("runtime", {}).get("status"),
-                    "mode": full.get("runtime", {}).get("mode"),
-                },
-                "daily_cycle": full.get("daily_cycle"),
-                "last_event_summary": full.get("last_event_summary"),
-            }
-        )
+        return JSONResponse(state_summary_api())
+
+    @app.get("/brief/current")
+    async def brief_current() -> Any:
+        return JSONResponse(brief_current_api())
 
     @app.get("/replay")
     async def replay(start_tick: int = 0, end_tick: int = 10, format: str = "html") -> Any:
@@ -505,6 +472,9 @@ def state_api() -> Dict[str, Any]:
         "data_provenance": data_provenance,
         "proactive_update_state": store.get_state("proactive_update_state"),
         "daily_cycle": store.get_state("daily_cycle_state"),
+        "brief_runtime_state": store.get_state("current_brief_state"),
+        "evidence_assessment_state": store.get_state("evidence_assessment_state"),
+        "candidate_runtime_overlay": store.get_state("candidate_runtime_overlay"),
         "runtime": runtime,
         "llm_trace_summary": llm_summary,
         "llm_provider_registry": _safe_provider_registry(),
@@ -521,6 +491,87 @@ def state_api() -> Dict[str, Any]:
     }
     payload["ui_presentation"] = build_cognitive_presentation(payload, current_language())
     return payload
+
+
+def state_summary_api() -> Dict[str, Any]:
+    """Return the bounded state required by global polling and Brief revision checks."""
+
+    store = StateStore(db_path=_db_path())
+    system_state = store.get_system_state()
+    latest_brief = store.get_latest_decision_brief()
+    metadata = latest_brief.get("metadata", {}) if isinstance(latest_brief, dict) else {}
+    packet = metadata.get("decision_packet", {}) if isinstance(metadata, dict) else {}
+    packet = packet if isinstance(packet, dict) else {}
+    market = _market_intelligence_state()
+    observations = market.get("observations", []) if isinstance(market.get("observations"), list) else []
+    usable = [item for item in observations if isinstance(item, dict) and item.get("data_quality_status") in {"Available", "Partial"}]
+    partial = [item for item in usable if item.get("data_quality_status") == "Partial"]
+    last_close = [item for item in usable if item.get("market_session_status") == "LAST_MARKET_CLOSE"]
+    portfolio = build_portfolio_context(config_path=_user_config_path())
+    llm_summary = _llm_trace_summary(read_llm_traces(log_path=_llm_trace_path(), limit=100))
+    llm_summary["latest_inference_status"] = _llm_inference_status(packet)
+    runtime = runtime_status(pid_file=_pid_file(), db_path=_db_path())
+    user_config = load_user_config(_user_config_path())
+    system_config = user_config.get("system", {}) if isinstance(user_config.get("system"), dict) else {}
+    runtime["mode"] = str(system_config.get("runtime_mode") or "simulation")
+    events = store.get_event_history(limit=1)
+    return {
+        "timestamp": utc_now_iso(),
+        "regime_state": system_state.get("current_state", "Unknown"),
+        "proposed_state": system_state.get("proposed_state", "Unknown"),
+        "trust_index": store.get_state("system_trust_state").get("rolling_trust_index"),
+        "tick_counter": store.count_state_transitions(),
+        "market_intelligence": {
+            "status": market.get("status"),
+            "degraded": market.get("degraded", True),
+            "channels": market.get("channels", {}),
+            "observation_count": len(observations),
+            "usable_observation_count": len(usable),
+            "partial_observation_count": len(partial),
+            "last_market_close_count": len(last_close),
+            "last_market_close_at": max(
+                (str(item.get("market_session_timestamp") or item.get("timestamp") or "") for item in last_close),
+                default=None,
+            ),
+            "timestamp": market.get("timestamp"),
+        },
+        "portfolio_context": {
+            "status": portfolio.get("status"),
+            "exposure_sum_pct": portfolio.get("exposure_sum_pct"),
+        },
+        "llm_trace_summary": llm_summary,
+        "llm_provider_registry": _safe_provider_registry(),
+        "last_decision_packet": {
+            "recommended_action": packet.get("recommended_action"),
+            "confidence": packet.get("confidence"),
+            "risk_level": packet.get("risk_level"),
+            "causal_summary": packet.get("causal_summary"),
+        },
+        "last_decision_brief_id": latest_brief.get("id"),
+        "brief_runtime_state": store.get_state("current_brief_state"),
+        "runtime": runtime,
+        "proactive_update_state": store.get_state("proactive_update_state"),
+        "daily_cycle": store.get_state("daily_cycle_state"),
+        "last_event_summary": events[0] if events else {},
+    }
+
+
+def brief_current_api() -> Dict[str, Any]:
+    """Return the coherent current Brief and renderable Home sections on demand."""
+
+    state = state_api()
+    brief = state.get("brief_runtime_state") if isinstance(state.get("brief_runtime_state"), dict) else {}
+    return {
+        "status": "available" if brief else "initializing",
+        "brief_revision": int(brief.get("brief_revision", 0) or 0),
+        "published_at": brief.get("published_at"),
+        "trigger_reason": brief.get("trigger_reason"),
+        "changed_sections": brief.get("changed_sections", []),
+        "sections": brief.get("sections", {}),
+        "review_summary": brief.get("review_summary", {}),
+        "home_html": _home_content_with_setup_banner(state),
+        "no_trading_execution": True,
+    }
 
 
 def getting_started_status_api() -> Dict[str, Any]:
@@ -1226,6 +1277,10 @@ class _StdlibHandler(BaseHTTPRequestHandler):
             self._send_html(_product_shell("system_guide", system_guide_content(), state))
         elif parsed.path == "/state":
             self._send_json(state_api())
+        elif parsed.path == "/state/summary":
+            self._send_json(state_summary_api())
+        elif parsed.path == "/brief/current":
+            self._send_json(brief_current_api())
         elif parsed.path == "/replay":
             start = int(query.get("start_tick", 0))
             end = int(query.get("end_tick", 10))

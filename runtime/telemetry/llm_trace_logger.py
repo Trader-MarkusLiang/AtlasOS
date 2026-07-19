@@ -15,11 +15,13 @@ from typing import Any, Dict, Mapping, Optional
 
 try:
     from runtime.logging import utc_now_iso
+    from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
 except ModuleNotFoundError:  # pragma: no cover
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
     from runtime.logging import utc_now_iso
+    from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
 
 
 DEFAULT_LLM_TRACE_PATH = Path("runtime/logs/llm_traces.jsonl")
@@ -91,8 +93,7 @@ def log_llm_trace(
             "hallucination_risk_proxy": _hallucination_risk_proxy(output_text),
             "response_consistency_index": output_stability_score,
         }
-        with path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+        append_jsonl(path, record)
     except Exception:
         return path
     return path
@@ -145,15 +146,7 @@ def _mask_secrets(value: str) -> str:
 
 
 def _read_jsonl(path: Path, limit: int) -> list[Dict[str, Any]]:
-    if not path.exists():
-        return []
-    records: list[Dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8").splitlines()[-limit:]:
-        try:
-            records.append(json.loads(line))
-        except json.JSONDecodeError:
-            records.append({"timestamp": utc_now_iso(), "status": "invalid_log_record"})
-    return records
+    return read_jsonl_tail(path, limit)
 
 
 def _previous_outputs(path: Path, prompt_hash: str) -> list[str]:

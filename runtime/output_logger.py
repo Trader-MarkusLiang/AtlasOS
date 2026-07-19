@@ -12,11 +12,13 @@ from typing import Any, Dict, Iterable, Optional
 
 try:
     from runtime.logging import utc_now_iso
+    from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
 except ModuleNotFoundError:  # pragma: no cover
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from runtime.logging import utc_now_iso
+    from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
 
 
 DEFAULT_OUTPUT_LOG_PATH = Path("runtime/logs/atlas_runtime.log")
@@ -38,21 +40,11 @@ class RuntimeOutputLogger:
             "decision_brief": entry.get("decision_brief", {}),
             "system_metrics": entry.get("system_metrics", {}),
         }
-        with self.log_path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+        append_jsonl(self.log_path, record)
         return self.log_path
 
     def tail(self, limit: int = 3) -> list[Dict[str, Any]]:
-        if not self.log_path.exists():
-            return []
-        lines = self.log_path.read_text(encoding="utf-8").splitlines()
-        records = []
-        for line in lines[-limit:]:
-            try:
-                records.append(json.loads(line))
-            except json.JSONDecodeError:
-                records.append({"timestamp": utc_now_iso(), "system_metrics": {"status": "invalid_log_record"}})
-        return records
+        return read_jsonl_tail(self.log_path, limit)
 
 
 def read_runtime_log(log_path: Optional[str] = None, limit: int = 3) -> list[Dict[str, Any]]:

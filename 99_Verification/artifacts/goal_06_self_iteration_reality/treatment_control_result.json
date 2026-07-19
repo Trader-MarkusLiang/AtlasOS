@@ -22,10 +22,10 @@
     "confidence_treatment": 0.0,
     "control_feedback_status": "applied",
     "hypothesis_distribution_changed": true,
-    "structural_shift_delta": -0.1013,
+    "structural_shift_delta": -0.1113,
     "treatment_feedback_delta": -0.12,
     "treatment_feedback_status": "applied",
-    "trust_delta_vs_control": -0.1527
+    "trust_delta_vs_control": -0.155
   },
   "control": {
     "evaluated_forecast_status": "VERIFIED",
@@ -33,23 +33,23 @@
       "action_bias": "neutral",
       "active_causal_hypothesis_id": "H_INSTITUTIONAL_ROTATION",
       "causal_hypothesis_score_distribution": {
-        "H_ATTENTION_FLOW": 0.4614,
-        "H_INSTITUTIONAL_ROTATION": 0.498,
-        "H_LIQUIDITY_STRESS": 0.4951,
-        "H_NARRATIVE_REFLEXIVITY": 0.4602
+        "H_ATTENTION_FLOW": 0.4633,
+        "H_INSTITUTIONAL_ROTATION": 0.5004,
+        "H_LIQUIDITY_STRESS": 0.4974,
+        "H_NARRATIVE_REFLEXIVITY": 0.4613
       },
       "causal_snapshot": {
         "attention_meaning": "attention not dominant",
         "primary_driver": "Mixed / Low Signal",
-        "regime_transition_probability": 49
+        "regime_transition_probability": 50
       },
-      "decision_brief_id": "brief-ffbdc56f-6508-4e19-85fa-6a9d8357f087",
+      "decision_brief_id": "brief-b5dcb7dc-dba1-42c6-9837-6d152868a1d5",
       "decision_packet": {
         "attention_state": "unknown",
         "causal_summary": "LLM reasoning unavailable or invalid.",
         "confidence": 0.0,
         "liquidity_state": "unknown",
-        "reasoning_trace": "litellm_not_installed",
+        "reasoning_trace": "all_providers_failed",
         "recommended_action": "neutral",
         "regime_state": "unknown",
         "risk_level": "unknown"
@@ -59,15 +59,15 @@
       "forecast_calibration_feedback_delta": 0.0,
       "forecast_calibration_feedback_source": "no_forecast_outcomes",
       "forecast_calibration_feedback_status": "not_available",
-      "global_trust_index": 0.53,
+      "global_trust_index": 0.5479,
       "status": "success",
-      "structural_mutation_intensity": 0.0129,
-      "structural_shift_index": 0.1195,
+      "structural_mutation_intensity": 0.0152,
+      "structural_shift_index": 0.1408,
       "trust_score": {
         "cognitive_trust": 0.3929,
-        "feedback_consistency_trust": 0.9108,
+        "feedback_consistency_trust": 1.0,
         "forecast_calibration_adjustment": 0.0,
-        "global_trust_index": 0.53,
+        "global_trust_index": 0.5479,
         "llm_trust": 0.35,
         "regime_stability_trust": 0.57
       }
@@ -76,23 +76,23 @@
       "action_bias": "neutral",
       "active_causal_hypothesis_id": "H_INSTITUTIONAL_ROTATION",
       "causal_hypothesis_score_distribution": {
-        "H_ATTENTION_FLOW": 0.5289,
-        "H_INSTITUTIONAL_ROTATION": 0.6311,
-        "H_LIQUIDITY_STRESS": 0.5825,
-        "H_NARRATIVE_REFLEXIVITY": 0.54
+        "H_ATTENTION_FLOW": 0.5304,
+        "H_INSTITUTIONAL_ROTATION": 0.6343,
+        "H_LIQUIDITY_STRESS": 0.5856,
+        "H_NARRATIVE_REFLEXIVITY": 0.5412
       },
       "causal_snapshot": {
         "attention_meaning": "attention not dominant",
         "primary_driver": "Mixed / Low Signal",
-        "regime_transition_probability": 49
+        "regime_transition_probability": 50
       },
-      "decision_brief_id": "brief-b1a13db1-ae85-44e7-9624-29e7c7785851",
+      "decision_brief_id": "brief-65dbd432-9a8f-4055-9877-75ae71d7fb20",
       "decision_packet": {
         "attention_state": "unknown",
         "causal_summary": "LLM reasoning unavailable or invalid.",
         "confidence": 0.0,
         "liquidity_state": "unknown",
-        "reasoning_trace": "litellm_not_installed",
+        "reasoning_trace": "all_providers_failed",
         "recommended_action": "neutral",
         "regime_state": "unknown",
         "risk_level": "unknown"
@@ -102,15 +102,15 @@
       "forecast_calibration_feedback_delta": 0.035,
       "forecast_calibration_feedback_source": "forecast_calibration_state",
       "forecast_calibration_feedback_status": "applied",
-      "global_trust_index": 0.5659,
+      "global_trust_index": 0.5857,
       "status": "success",
-      "structural_mutation_intensity": 0.0154,
-      "structural_shift_index": 0.1434,
+      "structural_mutation_intensity": 0.0181,
+      "structural_shift_index": 0.1693,
       "trust_score": {
         "cognitive_trust": 0.3707,
-        "feedback_consistency_trust": 0.9358,
+        "feedback_consistency_trust": 1.0,
         "forecast_calibration_adjustment": 0.035,
-        "global_trust_index": 0.5659,
+        "global_trust_index": 0.5857,
         "llm_trust": 0.385,
         "regime_stability_trust": 0.685
       }
@@ -118,8 +118,8 @@
     "mutation_method": "supported_prediction_api_control",
     "no_trading_execution": true,
     "runtime_forecast": {
-      "decision_brief_id": "ffbdc56f-6508-4e19-85fa-6a9d8357f087",
-      "forecast_id": "runtime-ffbdc56f-6508-4e19-85fa-6a9d8357f087",
+      "decision_brief_id": "b5dcb7dc-dba1-42c6-9837-6d152868a1d5",
+      "forecast_id": "runtime-b5dcb7dc-dba1-42c6-9837-6d152868a1d5",
       "status_before_treatment": "OPEN"
     }
   },
@@ -131,23 +131,23 @@
       "action_bias": "neutral",
       "active_causal_hypothesis_id": "H_INSTITUTIONAL_ROTATION",
       "causal_hypothesis_score_distribution": {
-        "H_ATTENTION_FLOW": 0.4616,
-        "H_INSTITUTIONAL_ROTATION": 0.4982,
-        "H_LIQUIDITY_STRESS": 0.4953,
-        "H_NARRATIVE_REFLEXIVITY": 0.4603
+        "H_ATTENTION_FLOW": 0.4633,
+        "H_INSTITUTIONAL_ROTATION": 0.5004,
+        "H_LIQUIDITY_STRESS": 0.4974,
+        "H_NARRATIVE_REFLEXIVITY": 0.4613
       },
       "causal_snapshot": {
         "attention_meaning": "attention not dominant",
         "primary_driver": "Mixed / Low Signal",
         "regime_transition_probability": 50
       },
-      "decision_brief_id": "brief-36705f60-afb3-4c83-85f4-526571efe762",
+      "decision_brief_id": "brief-b3157bac-08ce-4a79-88b9-ab455e58457e",
       "decision_packet": {
         "attention_state": "unknown",
         "causal_summary": "LLM reasoning unavailable or invalid.",
         "confidence": 0.0,
         "liquidity_state": "unknown",
-        "reasoning_trace": "litellm_not_installed",
+        "reasoning_trace": "all_providers_failed",
         "recommended_action": "neutral",
         "regime_state": "unknown",
         "risk_level": "unknown"
@@ -157,15 +157,15 @@
       "forecast_calibration_feedback_delta": 0.0,
       "forecast_calibration_feedback_source": "no_forecast_outcomes",
       "forecast_calibration_feedback_status": "not_available",
-      "global_trust_index": 0.5319,
+      "global_trust_index": 0.5479,
       "status": "success",
-      "structural_mutation_intensity": 0.0132,
-      "structural_shift_index": 0.1224,
+      "structural_mutation_intensity": 0.0152,
+      "structural_shift_index": 0.1408,
       "trust_score": {
         "cognitive_trust": 0.3929,
-        "feedback_consistency_trust": 0.92,
+        "feedback_consistency_trust": 1.0,
         "forecast_calibration_adjustment": 0.0,
-        "global_trust_index": 0.5319,
+        "global_trust_index": 0.5479,
         "llm_trust": 0.35,
         "regime_stability_trust": 0.57
       }
@@ -174,23 +174,23 @@
       "action_bias": "neutral",
       "active_causal_hypothesis_id": "H_INSTITUTIONAL_ROTATION",
       "causal_hypothesis_score_distribution": {
-        "H_ATTENTION_FLOW": 0.5175,
-        "H_INSTITUTIONAL_ROTATION": 0.6099,
-        "H_LIQUIDITY_STRESS": 0.5622,
-        "H_NARRATIVE_REFLEXIVITY": 0.5308
+        "H_ATTENTION_FLOW": 0.5188,
+        "H_INSTITUTIONAL_ROTATION": 0.6123,
+        "H_LIQUIDITY_STRESS": 0.5646,
+        "H_NARRATIVE_REFLEXIVITY": 0.5319
       },
       "causal_snapshot": {
         "attention_meaning": "attention not dominant",
         "primary_driver": "Mixed / Low Signal",
         "regime_transition_probability": 50
       },
-      "decision_brief_id": "brief-610181fa-f609-43f3-9f02-f122ba2bf632",
+      "decision_brief_id": "brief-aa0c9a1b-668b-441d-8fb1-a886a58652d2",
       "decision_packet": {
         "attention_state": "unknown",
         "causal_summary": "LLM reasoning unavailable or invalid.",
         "confidence": 0.0,
         "liquidity_state": "unknown",
-        "reasoning_trace": "litellm_not_installed",
+        "reasoning_trace": "all_providers_failed",
         "recommended_action": "neutral",
         "regime_state": "unknown",
         "risk_level": "unknown"
@@ -200,15 +200,15 @@
       "forecast_calibration_feedback_delta": -0.12,
       "forecast_calibration_feedback_source": "forecast_calibration_state",
       "forecast_calibration_feedback_status": "applied",
-      "global_trust_index": 0.4132,
+      "global_trust_index": 0.4307,
       "status": "success",
-      "structural_mutation_intensity": 0.0045,
-      "structural_shift_index": 0.0421,
+      "structural_mutation_intensity": 0.0062,
+      "structural_shift_index": 0.058,
       "trust_score": {
         "cognitive_trust": 0.2157,
-        "feedback_consistency_trust": 0.7924,
+        "feedback_consistency_trust": 0.88,
         "forecast_calibration_adjustment": -0.12,
-        "global_trust_index": 0.4132,
+        "global_trust_index": 0.4307,
         "llm_trust": 0.23,
         "regime_stability_trust": 0.53
       }
@@ -216,8 +216,8 @@
     "mutation_method": "supported_prediction_api",
     "no_trading_execution": true,
     "runtime_forecast": {
-      "decision_brief_id": "36705f60-afb3-4c83-85f4-526571efe762",
-      "forecast_id": "runtime-36705f60-afb3-4c83-85f4-526571efe762",
+      "decision_brief_id": "b3157bac-08ce-4a79-88b9-ab455e58457e",
+      "forecast_id": "runtime-b3157bac-08ce-4a79-88b9-ab455e58457e",
       "status_before_treatment": "OPEN"
     }
   }

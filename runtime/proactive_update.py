@@ -36,7 +36,7 @@ def build_proactive_update_plan(
     top_themes = _top_map_items(exposure.get("theme_concentration"))
     degraded_channels = _degraded_channels(channels)
     refresh_channels = degraded_channels or list(NORMALIZED_CHANNELS[:4])
-    focus = _research_focus(top_assets, top_themes, refresh_channels, daily_cycle_state)
+    focus = _research_focus(top_assets, top_themes, refresh_channels)
     cycle_id = f"proactive-{uuid.uuid4()}"
     timestamp = utc_now_iso()
     return {
@@ -57,7 +57,6 @@ def build_proactive_update_plan(
             "theme_targets": top_themes,
             "channels_to_refresh": refresh_channels,
             "research_focus": focus,
-            "daily_cycle_phase": _daily_phase(daily_cycle_state),
             "read_only_update": True,
             "no_trading_execution": True,
         },
@@ -128,7 +127,6 @@ def _research_focus(
     assets: list[Mapping[str, Any]],
     themes: list[Mapping[str, Any]],
     channels: list[str],
-    daily_cycle_state: Mapping[str, Any] | None,
 ) -> list[str]:
     focus: list[str] = []
     for asset in assets[:4]:
@@ -139,9 +137,6 @@ def _research_focus(
         focus.append(f"{theme.get('name')} narrative, macro, and attention change")
     if channels:
         focus.append("Refresh degraded channels: " + ", ".join(channels[:5]))
-    phase = _daily_phase(daily_cycle_state)
-    if phase and phase != "unknown":
-        focus.append(f"Apply {phase} operating-cycle checks to the next Decision Brief")
     if not focus:
         focus.append("No configured portfolio yet; refresh broad price, liquidity, volatility, and macro context")
     return focus[:8]

@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_forecasts
+from runtime.forecast_ledger import create_forecast, evaluate_forecast, list_forecasts, mark_forecast_matured
 from runtime.daily_cycle import current_daily_cycle
 from runtime.market_intelligence import market_observation_to_event, refresh_market_intelligence
 from runtime.portfolio_context import build_portfolio_context
@@ -89,7 +89,10 @@ def main() -> None:
         empty_config.write_text(json.dumps({"assets": {"portfolio_json": "[]"}}), encoding="utf-8")
         market = refresh_market_intelligence(config_path=str(empty_config), db_path=str(db_path), enqueue=True)
         assert market["status"] == "no_configured_assets"
-        assert market["events_enqueued"] == 0
+        assert market["observations"] == []
+        assert market["channels"]["price_volume"] == "NOT_CONFIGURED"
+        assert market["channels"]["portfolio_relevance"] == "NOT_CONFIGURED"
+        assert market["events_enqueued"] >= 0  # Public macro/breadth/attention events may still be available.
 
         forecast = create_forecast(
             {
@@ -105,6 +108,12 @@ def main() -> None:
             },
             db_path=str(db_path),
         )
+        matured = mark_forecast_matured(
+            forecast["forecast_id"],
+            {"maturity_reason": "productization_backbone_validation"},
+            db_path=str(db_path),
+        )
+        assert matured["status"] == "MATURED"
         evaluated = evaluate_forecast(
             forecast["forecast_id"],
             {"actual_outcome": "attention did broaden across configured assets"},
@@ -122,7 +131,8 @@ def main() -> None:
         assert "portfolio_context" in state
         assert "market_intelligence" in state
         assert "daily_cycle" in state
-        assert "Today&apos;s Atlas Brief" in render_home_page(state)
+        home_html = render_home_page(state)
+        assert "Today&#x27;s Atlas Brief" in home_html or "今日 Atlas 简报" in home_html
         assert "Portfolio Context" in render_portfolio_page(portfolio)
         assert "Market Intelligence" in render_markets_page(market)
         assert "Forecast Ledger" in render_predictions_page(ledger)

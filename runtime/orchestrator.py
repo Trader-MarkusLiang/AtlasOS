@@ -76,6 +76,8 @@ class RuntimeResult:
     event_type: Optional[str] = None
     decision_packet: Dict[str, Any] = field(default_factory=dict)
     decision_packet_fresh: bool = True
+    decision_brief_id: str = ""
+    brief_published: bool = True
     llm_tasks: Dict[str, Any] = field(default_factory=dict)
     errors: List[str] = field(default_factory=list)
 
@@ -91,6 +93,8 @@ class RuntimeResult:
             "decision_brief": self.decision_brief,
             "decision_packet": self.decision_packet,
             "decision_packet_fresh": self.decision_packet_fresh,
+            "decision_brief_id": self.decision_brief_id,
+            "brief_published": self.brief_published,
             "llm_tasks": self.llm_tasks,
             "log_path": self.log_path,
             "errors": self.errors,
@@ -250,6 +254,8 @@ def run_runtime(
         log_path=str(written_log),
         decision_packet=decision_packet,
         decision_packet_fresh=decision_packet_fresh,
+        decision_brief_id=brief_id,
+        brief_published=True,
         llm_tasks=supporting_tasks,
         errors=errors,
     ).to_dict()
@@ -269,6 +275,7 @@ def run_state_runtime(
     timestamp = utc_now_iso()
     errors: List[str] = []
     store = StateStore(db_path=db_path)
+    previous_brief = store.get_latest_decision_brief()
     event_type = event.get("event_type") if event else None
     route = route_for_state(system_state)
     trigger_type = "autonomous_state_loop"
@@ -339,44 +346,52 @@ def run_state_runtime(
                 "cache_status": "no_input_delta",
                 "fallback_attempts": [],
             }
+            _touch_task_state(store, "decision", cache_status="no_input_delta")
             decision_packet_fresh = False
         supporting_tasks["decision"] = _task_result_summary(llm_result, output=decision_packet)
         risk_level = _packet_risk_to_runtime(decision_packet["risk_level"], fallback=risk_level)
         action_bias = _packet_action_to_bias(decision_packet["recommended_action"])
-        decision_brief = generate_decision_brief(
-            brief_id=brief_id,
-            trigger_type=trigger_type,
-            pipeline=pipeline,
-            event_type=event_type,
-            market_state=market_state,
-            regime_state=regime_state,
-            portfolio_state=portfolio_state,
-            risk_level=risk_level,
-            action_bias=action_bias,
-            modules_executed=modules_executed,
-            llm_result=llm_result,
+        brief_published = bool(decision_packet_fresh or not previous_brief)
+        published_brief_id = brief_id if brief_published else str(previous_brief.get("id") or "")
+        decision_brief = (
+            generate_decision_brief(
+                brief_id=brief_id,
+                trigger_type=trigger_type,
+                pipeline=pipeline,
+                event_type=event_type,
+                market_state=market_state,
+                regime_state=regime_state,
+                portfolio_state=portfolio_state,
+                risk_level=risk_level,
+                action_bias=action_bias,
+                modules_executed=modules_executed,
+                llm_result=llm_result,
+            )
+            if brief_published
+            else str(previous_brief.get("content") or "")
         )
         store.save_portfolio_snapshot(portfolio_state)
         store.save_regime_state(regime_state)
-        store.save_decision_brief(
-            brief_id=brief_id,
-            trigger_type=trigger_type,
-            event_type=event_type,
-            content=decision_brief,
-            metadata={
-                "pipeline": pipeline,
-                "system_state": system_state,
-                "risk_level": risk_level,
-                "action_bias": action_bias,
-                "llm_provider": llm_result.get("provider"),
-                "llm_model": llm_result.get("model"),
-                "llm_status": llm_result.get("status"),
-                "decision_packet": decision_packet,
-                "decision_packet_fresh": decision_packet_fresh,
-                "llm_tasks": supporting_tasks,
-                "raw_llm_output_stored": False,
-            },
-        )
+        if brief_published:
+            store.save_decision_brief(
+                brief_id=brief_id,
+                trigger_type=trigger_type,
+                event_type=event_type,
+                content=decision_brief,
+                metadata={
+                    "pipeline": pipeline,
+                    "system_state": system_state,
+                    "risk_level": risk_level,
+                    "action_bias": action_bias,
+                    "llm_provider": llm_result.get("provider"),
+                    "llm_model": llm_result.get("model"),
+                    "llm_status": llm_result.get("status"),
+                    "decision_packet": decision_packet,
+                    "decision_packet_fresh": decision_packet_fresh,
+                    "llm_tasks": supporting_tasks,
+                    "raw_llm_output_stored": False,
+                },
+            )
         status = "success"
     except Exception as exc:
         modules_executed = []
@@ -400,6 +415,8 @@ def run_state_runtime(
         )
         decision_packet = _failure_decision_packet()
         decision_packet_fresh = False
+        brief_published = False
+        published_brief_id = str(previous_brief.get("id") or "")
         supporting_tasks = {}
         status = "failure"
         errors.append(str(exc))
@@ -417,7 +434,8 @@ def run_state_runtime(
         "decision_packet": decision_packet,
         "decision_packet_fresh": decision_packet_fresh,
         "llm_tasks": supporting_tasks,
-        "decision_brief_id": brief_id,
+        "decision_brief_id": published_brief_id,
+        "brief_published": brief_published,
         "status": status,
         "errors": errors,
     }
@@ -435,6 +453,8 @@ def run_state_runtime(
         log_path=str(written_log),
         decision_packet=decision_packet,
         decision_packet_fresh=decision_packet_fresh,
+        decision_brief_id=published_brief_id,
+        brief_published=brief_published,
         llm_tasks=supporting_tasks,
         errors=errors,
     ).to_dict()
@@ -704,6 +724,7 @@ def _run_task_with_cache(
         and isinstance(previous.get("output"), dict)
         and previous["output"].get("status") not in {"invalid", "unavailable"}
     ):
+        _touch_task_state(store, role, cache_status="hit")
         return {
             "task_role": role,
             "status": "cached",
@@ -909,6 +930,18 @@ def _store_task_state(
     store.set_state("llm_task_runtime_state", state)
 
 
+def _touch_task_state(store: StateStore, role: str, *, cache_status: str) -> None:
+    state = _task_state(store)
+    previous = state.get(role)
+    if not isinstance(previous, dict):
+        return
+    previous = dict(previous)
+    previous["last_used_at"] = utc_now_iso()
+    previous["last_cache_status"] = cache_status
+    state[role] = previous
+    store.set_state("llm_task_runtime_state", state)
+
+
 def _decision_call_required(task_context: Dict[str, Any], input_hash: str, store: StateStore) -> bool:
     if _task_trigger_kind(task_context) == "heartbeat":
         return False
@@ -968,8 +1001,8 @@ def _stable_value(value: Any) -> Any:
         "fused_at",
         "last_checked_at",
         "event_id",
-        "update_cycle_id",
         "decision_packet_id",
+        "update_cycle_id",
     }
     if isinstance(value, dict):
         return {key: _stable_value(item) for key, item in value.items() if key not in volatile}

@@ -1,22 +1,20 @@
 {
-  "passed": true,
+  "passed": false,
   "checks": [
     {
       "name": "A_home_begins_with_action_today",
       "passed": true,
       "details": [
-        "action_today",
-        "core_judgment",
-        "strongest_predictions",
-        "ai_bottleneck_index",
-        "capital_relay",
+        "portfolio_command",
         "current_holdings",
-        "capital_allocation",
-        "waiting_triggers",
-        "research_tasks",
-        "intelligence_alerts",
-        "counter_argument",
-        "review_plan"
+        "action_today",
+        "material_changes",
+        "reasoning_chain",
+        "scenario_outlook",
+        "action_playbook",
+        "candidate_board",
+        "forecast_accountability",
+        "supporting_context"
       ]
     },
     {
@@ -24,18 +22,32 @@
       "passed": true,
       "details": {
         "headline": {
-          "en": "AI infrastructure thesis is not invalidated, but Atlas should wait for confirmation before expanding risk.",
-          "zh": "AI 基建主线未被证伪，但 Atlas 需要等待确认后再扩大风险暴露。"
+          "en": "Risk is high; Atlas posture is Reduce and a portfolio risk review is required.",
+          "zh": "当前风险等级为 high；Atlas 姿态为降低暴露，需要进行组合风险复核。"
         },
         "supporting_sentence": {
-          "en": "Runtime is unknown, 3 portfolio-linked price observations are live, and the relay map still points toward Equipment / Materials; unassigned buffer is 20.0%.",
-          "zh": "运行态为 unknown，3 个组合相关价量观测可用，资本接力仍指向 Equipment / Materials；未部署缓冲为 20.0%。"
+          "en": "Runtime is RISK_OFF with 3 usable portfolio-linked observations. Decision confidence is 35%; causal summary: Runtime remains in RISK_OFF because the proposed transition to NORMAL is blocked. Current fused stress is low, but signal quality is limited, market pressure source is data insufficient, sampled breadth is weak, and portfolio relevance is elevated due to concentrated semiconductor and PCB-related exposure across A-share and HK holdings. Attention signals are weak and not converting efficiently into capital flow, while missing turnover and valuation data reduce interpretability.. Unassigned buffer is 20.0%.",
+          "zh": "运行态为 RISK_OFF，有 3 个可用的组合相关观测。决策置信度为 35%；因果摘要：Runtime remains in RISK_OFF because the proposed transition to NORMAL is blocked. Current fused stress is low, but signal quality is limited, market pressure source is data insufficient, sampled breadth is weak, and portfolio relevance is elevated due to concentrated semiconductor and PCB-related exposure across A-share and HK holdings. Attention signals are weak and not converting efficiently into capital flow, while missing turnover and valuation data reduce interpretability.。未部署缓冲为 20.0%。"
         },
         "source": "DecisionPacket + market_intelligence + portfolio_context + Capital Relay snapshot",
         "relay_stage": {
           "en": "Memory strengthening -> Equipment relay -> Materials starting.",
           "zh": "Memory 强化 → Equipment 接力 → Materials 启动。"
-        }
+        },
+        "because_bullets": [
+          {
+            "en": "DecisionPacket posture: Reduce; risk: high; confidence: 35%.",
+            "zh": "DecisionPacket 姿态：降低暴露；风险：high；置信度：35%。"
+          },
+          {
+            "en": "Evidence review: 0 reviewed, 0 changed, 0 unchanged, 0 pending review.",
+            "zh": "证据复核：已复核 0 条，改变判断 0 条，结论不变 0 条，待复核 0 条。"
+          },
+          {
+            "en": "Portfolio-linked market observations: 3 usable; unassigned buffer: 20.0%.",
+            "zh": "组合相关市场观测：3 个可用；未部署缓冲：20.0%。"
+          }
+        ]
       }
     },
     {
@@ -56,20 +68,20 @@
             "en": "Strongest available runtime forecast; low conviction, not a high-conviction call.",
             "zh": "当前最强可追踪运行态预测；低置信，不是高强度判断。"
           },
-          "confidence": 0.0,
-          "confidence_text": "0%",
+          "confidence": 0.35,
+          "confidence_text": "35%",
           "horizon": "next_runtime_cycle",
           "evidence": [
             "Mixed / Low Signal",
             "attention not dominant",
-            "fresh_portfolio_price_volume_observations"
+            "usable_portfolio_market_observations"
           ],
           "invalidation": [
             "later_runtime_state_conflicts_with_expected_structure",
             "forecast_outcome_marked_invalidated_through_supported_lifecycle"
           ],
           "source": "forecast_ledger",
-          "forecast_id": "runtime-d7db56c3-a465-4cc0-a3e1-7d8050e40948"
+          "forecast_id": "runtime-3eaf7fac-1052-4707-bc00-b8a652b9fde3"
         }
       ]
     },
@@ -173,7 +185,7 @@
           "en": "Equipment / Materials observation pool",
           "zh": "Equipment / Materials 观察池"
         },
-        "trigger_status": "2 / 6",
+        "trigger_status": "3 / 6",
         "execution_style": {
           "en": "Wait; do not front-run without trigger confirmation.",
           "zh": "等待，不提前抢跑。"
@@ -306,7 +318,7 @@
             "zh": "持仓个别证据刷新"
           }
         ],
-        "forecast_due": "runtime-d7db56c3-a465-4cc0-a3e1-7d8050e40948",
+        "forecast_due": "runtime-3eaf7fac-1052-4707-bc00-b8a652b9fde3",
         "triggers_may_change": [
           {
             "condition": {
@@ -321,7 +333,7 @@
               "en": "Portfolio-linked price/volume observations are fresh.",
               "zh": "组合相关价量观测保持新鲜。"
             },
-            "status": "MET",
+            "status": "UNKNOWN",
             "source": "market_intelligence.observations"
           },
           {
@@ -365,8 +377,10 @@
     },
     {
       "name": "U_no_exact_private_amounts_or_secrets",
-      "passed": true,
-      "details": []
+      "passed": false,
+      "details": [
+        "sk-[A-Za-z0-9]"
+      ]
     },
     {
       "name": "V_chinese_mode_covers_required_chain",
@@ -388,7 +402,7 @@
     },
     {
       "name": "V2_english_mode_covers_required_chain",
-      "passed": true,
+      "passed": false,
       "details": [
         "Action Today",
         "Today's Core Judgment",
@@ -406,20 +420,18 @@
     },
     {
       "name": "chain_order_exact",
-      "passed": true,
+      "passed": false,
       "details": [
-        "action_today",
-        "core_judgment",
-        "strongest_predictions",
-        "ai_bottleneck_index",
-        "capital_relay",
+        "portfolio_command",
         "current_holdings",
-        "capital_allocation",
-        "waiting_triggers",
-        "research_tasks",
-        "intelligence_alerts",
-        "counter_argument",
-        "review_plan"
+        "action_today",
+        "material_changes",
+        "reasoning_chain",
+        "scenario_outlook",
+        "action_playbook",
+        "candidate_board",
+        "forecast_accountability",
+        "supporting_context"
       ]
     }
   ]

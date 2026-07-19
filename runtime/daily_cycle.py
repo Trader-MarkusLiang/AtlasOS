@@ -1,7 +1,7 @@
-"""Autonomous daily operating cycle metadata for the runtime daemon.
+"""Date/session maintenance metadata for the continuous runtime daemon.
 
-This module labels each tick with the current operating phase and required
-read-only checks. It does not execute trades, mutate portfolios, or bypass CDE.
+Brief publication is material-event-driven elsewhere. This module performs
+idempotent maintenance and never gates or creates a Decision Brief.
 """
 
 from __future__ import annotations
@@ -28,30 +28,23 @@ except ModuleNotFoundError:  # pragma: no cover
 
 PHASE_TASKS = {
     "morning": [
-        "data_freshness_check",
-        "overnight_signal_scan",
-        "portfolio_relevance_scan",
+        "local_date_rollover_check",
         "open_forecast_review",
-        "morning_atlas_brief",
+        "retention_maintenance",
     ],
     "intraday": [
-        "scheduled_market_refresh",
-        "anomaly_detection",
-        "attention_narrative_change_scan",
-        "portfolio_relevance_trigger_scan",
+        "forecast_due_scan",
+        "runtime_retention_check",
     ],
     "post_market": [
-        "closing_state_synthesis",
         "forecast_maturation_check",
         "outcome_evaluation_queue",
-        "decision_brief_archive",
+        "session_archive_maintenance",
     ],
     "overnight": [
-        "deeper_synthesis",
-        "hypothesis_review",
-        "world_model_delta_review",
-        "prediction_bias_review",
-        "next_day_watch_conditions",
+        "hypothesis_audit_snapshot",
+        "world_model_audit_snapshot",
+        "retention_maintenance",
     ],
 }
 
@@ -76,7 +69,7 @@ def current_daily_cycle(
         phase = "post_market"
     else:
         phase = "overnight"
-    ledger = list_forecasts(db_path=db_path, limit=500)
+    ledger = list_forecasts(db_path=db_path, limit=1)
     metrics = ledger.get("metrics", {})
     return {
         "timestamp": current.isoformat(),
@@ -127,15 +120,16 @@ def run_morning_cycle(
     db_path: str | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
-    market = _safe_market_refresh(config_path=config_path, db_path=db_path)
+    store = StateStore(db_path=db_path)
+    market = store.get_state("market_intelligence_state")
     portfolio = build_portfolio_context(config_path=config_path)
-    ledger = list_forecasts(db_path=db_path, limit=500)
+    ledger = list_forecasts(db_path=db_path, limit=1)
     outputs = {
         "freshness_check": market.get("channels", {}),
-        "overnight_signal_synthesis": _market_synthesis(market),
+        "market_state_snapshot": _market_synthesis(market),
         "portfolio_relevance": _portfolio_relevance(portfolio),
         "open_forecast_count": ledger.get("metrics", {}).get("open", 0),
-        "produced_brief_id": _brief_id("morning"),
+        "brief_publication_requested": False,
     }
     return _persist_cycle("morning", outputs, market=market, portfolio=portfolio, ledger=ledger, db_path=db_path, now=now)
 
@@ -146,13 +140,12 @@ def run_intraday_cycle(
     db_path: str | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
-    market = _safe_market_refresh(config_path=config_path, db_path=db_path)
+    store = StateStore(db_path=db_path)
+    market = store.get_state("market_intelligence_state")
     outputs = {
-        "refresh_status": market.get("status"),
-        "anomaly_check": "degraded" if market.get("degraded") else "clear",
-        "attention_regime_update": _attention_update(market),
-        "portfolio_relevance_triggers": _portfolio_event_count(market),
-        "produced_brief_id": _brief_id("intraday"),
+        "market_state_status": market.get("status", "not_run"),
+        "forecast_due_scan": list_forecasts(db_path=db_path, limit=1).get("metrics", {}),
+        "brief_publication_requested": False,
     }
     return _persist_cycle("intraday", outputs, market=market, db_path=db_path, now=now)
 
@@ -163,7 +156,7 @@ def run_post_market_cycle(
     db_path: str | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
-    ledger = list_forecasts(db_path=db_path, limit=500)
+    ledger = list_forecasts(db_path=db_path, limit=1)
     metrics = ledger.get("metrics", {})
     outputs = {
         "closing_state_synthesis": "forecast_review_only",
@@ -173,7 +166,7 @@ def run_post_market_cycle(
             "evaluated": metrics.get("evaluated", 0),
         },
         "outcome_evaluation_queue": metrics.get("matured", 0),
-        "produced_brief_id": _brief_id("post_market"),
+        "brief_publication_requested": False,
     }
     return _persist_cycle("post_market", outputs, ledger=ledger, db_path=db_path, now=now)
 
@@ -197,7 +190,7 @@ def run_overnight_cycle(
         },
         "world_model_delta": _world_model_delta(cognition),
         "next_day_watch_conditions": _next_day_watch_conditions(cognition),
-        "produced_brief_id": _brief_id("overnight"),
+        "brief_publication_requested": False,
     }
     return _persist_cycle("overnight", outputs, db_path=db_path, now=now)
 
@@ -209,14 +202,42 @@ def dispatch_current_daily_cycle(
     config_path: str | None = None,
     db_path: str | None = None,
 ) -> dict[str, Any]:
-    """Determine the current phase, execute it, and return persisted evidence."""
+    """Run current maintenance at most once per local date and phase."""
 
     metadata = current_daily_cycle(now=now, timezone=timezone, db_path=db_path)
+    local_date = str(metadata.get("timestamp") or "")[:10]
+    maintenance_key = f"{local_date}:{metadata.get('phase')}"
+    store = StateStore(db_path=db_path)
+    previous = store.get_state("daily_cycle_dispatch_state")
+    if previous.get("maintenance_key") == maintenance_key and previous.get("status") == "completed":
+        return {
+            **metadata,
+            "execution": {
+                "status": "skipped_already_completed",
+                "phase": metadata.get("phase"),
+                "maintenance_key": maintenance_key,
+                "last_completed_at": previous.get("completed_at"),
+                "material_delta_detected": False,
+                "read_only": True,
+                "no_trading_execution": True,
+            },
+        }
     execution = run_daily_cycle_phase(
         str(metadata.get("phase")),
         config_path=config_path,
         db_path=db_path,
         now=now,
+    )
+    execution["maintenance_key"] = maintenance_key
+    execution["material_delta_detected"] = False
+    store.set_state(
+        "daily_cycle_dispatch_state",
+        {
+            "maintenance_key": maintenance_key,
+            "phase": metadata.get("phase"),
+            "status": execution.get("status"),
+            "completed_at": execution.get("completed_at"),
+        },
     )
     return {**metadata, "execution": execution}
 
@@ -248,11 +269,13 @@ def _persist_cycle(
         "outputs": dict(outputs),
         "errors": [],
         "degraded_capabilities": degraded,
-        "produced_brief_id": outputs.get("produced_brief_id"),
+        "maintenance_run_id": _maintenance_id(phase),
+        "material_delta_detected": False,
         "read_only": True,
         "no_trading_execution": True,
     }
     store = StateStore(db_path=db_path)
+    record["retention"] = store.prune_runtime_history()
     store.set_state(f"daily_cycle_{phase}_last_run", record)
     store.set_state("daily_cycle_last_execution", record)
     store.append_system_log({"trigger_type": "daily_cycle_execution", **record})
@@ -328,5 +351,5 @@ def _degraded_capabilities(market: Mapping[str, Any]) -> dict[str, str]:
     return {key: value for key, value in channels.items() if value not in {"LIVE", "DELAYED", "CACHED"}}
 
 
-def _brief_id(phase: str) -> str:
-    return f"daily-cycle-{phase}-{utc_now_iso()}"
+def _maintenance_id(phase: str) -> str:
+    return f"daily-maintenance-{phase}-{utc_now_iso()}"

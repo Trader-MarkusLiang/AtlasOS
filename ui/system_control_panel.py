@@ -94,7 +94,12 @@ def stop_runtime_daemon(*, pid_file: Optional[str] = None) -> Dict[str, Any]:
     return {"status": "stop_requested", "running": _process_is_running(pid), "pid": pid}
 
 
-def runtime_status(*, pid_file: Optional[str] = None, db_path: Optional[str] = None) -> Dict[str, Any]:
+def runtime_status(
+    *,
+    pid_file: Optional[str] = None,
+    db_path: Optional[str] = None,
+    discover: bool = True,
+) -> Dict[str, Any]:
     pid_path = _pid_path(pid_file)
     running = False
     pid = None
@@ -106,7 +111,7 @@ def runtime_status(*, pid_file: Optional[str] = None, db_path: Optional[str] = N
             running = False
         if not running:
             pid_path.unlink(missing_ok=True)
-    if not running:
+    if not running and discover:
         discovered = _discover_runtime_pid()
         if discovered is not None:
             pid = discovered

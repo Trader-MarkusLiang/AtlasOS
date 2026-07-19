@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
@@ -113,6 +114,23 @@ class DecisionLoop:
         self._enqueue_heartbeat_if_due()
         events = self.event_stream.poll(limit=self.config.max_events_per_cycle)
         results: List[Dict[str, object]] = []
+
+        material_events, material_signature, skip_reason = _material_event_batch(events, self.store)
+        if skip_reason:
+            for event in events:
+                self.event_stream.acknowledge(event["event_id"], "handled")
+            return {
+                "timestamp": utc_now_iso(),
+                "trigger_type": "decision_loop_cycle",
+                "events_ingested": ingested,
+                "events_processed": 0,
+                "raw_events_processed": len(events),
+                "results": [],
+                "status": "skipped_no_material_delta",
+                "skip_reason": skip_reason,
+                "material_signature": material_signature,
+            }
+        events = material_events
 
         if events:
             fusion = self.fusion_engine.fuse(events)
@@ -488,7 +506,8 @@ class DecisionLoop:
                         "feedback_influence_score"
                     ],
                     "result_status": result["status"],
-                    "decision_brief_id": result["run_id"],
+                    "decision_brief_id": result.get("decision_brief_id") or result["run_id"],
+                    "brief_published": bool(result.get("brief_published", True)),
                     "forecast_id": runtime_forecast.get("forecast_id"),
                     "forecast_status": runtime_forecast.get("status"),
                     "forecast_registration_reason": runtime_forecast.get("reason"),
@@ -550,8 +569,13 @@ class DecisionLoop:
             "results": results,
             "status": "success",
         }
-        log_execution(cycle_record, log_path=self.config.log_path)
-        self.store.append_system_log(cycle_record)
+        if events:
+            self.store.set_state(
+                "decision_loop_material_state",
+                {"material_signature": material_signature, "processed_at": cycle_record["timestamp"]},
+            )
+            log_execution(cycle_record, log_path=self.config.log_path)
+            self.store.append_system_log(cycle_record)
         return cycle_record
 
     def run_forever(self, max_cycles: Optional[int] = None) -> None:
@@ -764,6 +788,64 @@ def _build_llm_task_context(events: List[Dict[str, object]]) -> Dict[str, object
             }
         )
     return {"events": bounded_events, "event_count": len(events)}
+
+
+def _material_event_batch(
+    events: List[Dict[str, Any]],
+    store: StateStore,
+) -> tuple[List[Dict[str, Any]], str, str]:
+    if not events:
+        return [], "", "no_events"
+    material = [event for event in events if str(event.get("event_type") or "") != EVENT_HEARTBEAT]
+    if not material:
+        return [], "", "heartbeat_only"
+    force = any(
+        str(event.get("source") or "") in {"proactive_update", "ui_chat"}
+        or str(event.get("event_type") or "") == "user_input_event"
+        for event in material
+    )
+    signature = _stable_material_hash(material)
+    previous = store.get_state("decision_loop_material_state")
+    if not force and previous.get("material_signature") == signature:
+        return [], signature, "duplicate_material_batch"
+    return material, signature, ""
+
+
+def _stable_material_hash(events: List[Dict[str, Any]]) -> str:
+    payload = [_stable_material_event(event) for event in events]
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _stable_material_event(event: Dict[str, Any]) -> Dict[str, Any]:
+    payload = event.get("payload") if isinstance(event.get("payload"), dict) else {}
+    coupling = payload.get("perception_coupling_metrics") if isinstance(payload.get("perception_coupling_metrics"), dict) else {}
+    evidence_payload = {
+        key: value
+        for key, value in payload.items()
+        if not str(key).startswith("perception_")
+    }
+    return {
+        "event_type": event.get("event_type"),
+        "source": event.get("source"),
+        "priority": coupling.get("raw_priority", event.get("priority")),
+        "payload": _stable_material_value(evidence_payload),
+    }
+
+
+def _stable_material_value(value: Any) -> Any:
+    volatile = {"timestamp", "created_at", "updated_at", "last_checked_at", "event_id", "fused_at"}
+    if isinstance(value, dict):
+        return {
+            str(key): _stable_material_value(item)
+            for key, item in value.items()
+            if str(key) not in volatile
+        }
+    if isinstance(value, list):
+        return [_stable_material_value(item) for item in value]
+    if isinstance(value, str):
+        return value[:4000]
+    return value
 
 
 def _bounded_task_value(value: object, *, depth: int) -> object:

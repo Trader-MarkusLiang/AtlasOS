@@ -81,6 +81,10 @@ class StateStore:
                     transition_json TEXT NOT NULL,
                     created_at TEXT NOT NULL
                 );
+                CREATE INDEX IF NOT EXISTS idx_decision_briefs_created_at ON decision_briefs(created_at);
+                CREATE INDEX IF NOT EXISTS idx_system_logs_created_at ON system_logs(created_at);
+                CREATE INDEX IF NOT EXISTS idx_events_updated_at ON events(updated_at);
+                CREATE INDEX IF NOT EXISTS idx_state_transitions_created_at ON state_transitions(created_at);
                 """
             )
 
@@ -283,6 +287,45 @@ class StateStore:
             {"created_at": row["created_at"], **json.loads(row["transition_json"])}
             for row in rows
         ]
+
+    def count_state_transitions(self) -> int:
+        with self._connect() as conn:
+            row = conn.execute("SELECT COUNT(*) count FROM state_transitions").fetchone()
+        return int(row["count"] or 0)
+
+    def prune_runtime_history(
+        self,
+        *,
+        decision_briefs: int = 2000,
+        system_logs: int = 5000,
+        events: int = 5000,
+        state_transitions: int = 5000,
+        attention_history: int = 2000,
+    ) -> Dict[str, Any]:
+        """Bound high-churn runtime tables while preserving current state and forecasts."""
+
+        limits = {
+            "decision_briefs": max(100, int(decision_briefs)),
+            "system_logs": max(100, int(system_logs)),
+            "events": max(100, int(events)),
+            "state_transitions": max(100, int(state_transitions)),
+            "attention_history": max(100, int(attention_history)),
+        }
+        deleted: Dict[str, int] = {}
+        with self._connect() as conn:
+            for table, limit in limits.items():
+                cursor = conn.execute(
+                    f"DELETE FROM {table} WHERE rowid NOT IN (SELECT rowid FROM {table} ORDER BY rowid DESC LIMIT ?)",
+                    (limit,),
+                )
+                deleted[table] = max(0, int(cursor.rowcount or 0))
+            conn.execute("PRAGMA optimize")
+        return {
+            "status": "completed",
+            "limits": limits,
+            "deleted": deleted,
+            "database_bytes": self.db_path.stat().st_size if self.db_path.exists() else 0,
+        }
 
     def query_series(self, table: str, limit: int = 50) -> List[Dict[str, Any]]:
         allowed = {

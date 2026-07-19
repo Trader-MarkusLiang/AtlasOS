@@ -41,10 +41,10 @@ PHASE_TIMESTAMPS = {
 }
 
 PHASE_REQUIRED_OUTPUTS = {
-    "morning": ["freshness_check", "overnight_signal_synthesis", "portfolio_relevance", "produced_brief_id"],
-    "intraday": ["refresh_status", "anomaly_check", "attention_regime_update", "produced_brief_id"],
-    "post_market": ["closing_state_synthesis", "forecast_maturity_check", "outcome_evaluation_queue", "produced_brief_id"],
-    "overnight": ["hypothesis_review", "world_model_delta", "next_day_watch_conditions", "produced_brief_id"],
+    "morning": ["freshness_check", "market_state_snapshot", "portfolio_relevance", "brief_publication_requested"],
+    "intraday": ["market_state_status", "forecast_due_scan", "brief_publication_requested"],
+    "post_market": ["forecast_maturity_check", "outcome_evaluation_queue", "brief_publication_requested"],
+    "overnight": ["hypothesis_review", "world_model_delta", "next_day_watch_conditions", "brief_publication_requested"],
 }
 
 
@@ -83,7 +83,11 @@ def main() -> int:
             _check("daily_artifacts_persisted", all(item["persisted"] for item in result["daily_cycles"].values()), result)
             _check("accelerated_500_cycles", result["accelerated_soak"]["cycles"] >= 500, result)
             _check("accelerated_zero_tick_errors", result["accelerated_soak"]["tick_errors"] == 0, result)
-            _check("accelerated_decision_briefs", result["accelerated_soak"]["db_counts"].get("decision_briefs", 0) >= 500, result)
+            _check(
+                "accelerated_decision_briefs_bounded",
+                0 < result["accelerated_soak"]["db_counts"].get("decision_briefs", 0) <= result["accelerated_soak"]["cycles"],
+                result,
+            )
             _check("accelerated_queue_bounded", result["accelerated_soak"]["pending_queue_depth"] <= 5, result)
             _check("real_duration_used_sleep", result["real_duration_soak"]["elapsed_seconds"] >= 9.0, result)
             _check("real_duration_zero_tick_errors", result["real_duration_soak"]["tick_errors"] == 0, result)
@@ -302,7 +306,7 @@ def _recovery_stale_pid(root: Path) -> dict[str, Any]:
     root.mkdir(parents=True, exist_ok=True)
     pid_file = root / "stale.pid"
     pid_file.write_text("99999999", encoding="utf-8")
-    status = runtime_status(pid_file=str(pid_file), db_path=str(root / "pid.sqlite"))
+    status = runtime_status(pid_file=str(pid_file), db_path=str(root / "pid.sqlite"), discover=False)
     return {
         "status": "passed" if status.get("running") is False and not pid_file.exists() else "failed",
         "runtime_status": status,

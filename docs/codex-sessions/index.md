@@ -8,6 +8,13 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-19_1005_realtime-brief-closure-implementation.md`
+- `docs/codex-sessions/completed/2026-07-19_0950_realtime-brief-repair-plan.md`
+- `docs/codex-sessions/completed/2026-07-19_0940_overnight-runtime-effect-audit.md`
+- `docs/codex-sessions/completed/2026-07-19_0022_conviction-hierarchy-layout-fix.md`
+- `docs/codex-sessions/completed/2026-07-19_0010_home-wide-layout-fix.md`
+- `docs/codex-sessions/completed/2026-07-18_1306_market-provider-spawn-fix.md`
+- `docs/codex-sessions/completed/2026-07-18_1251_market-provider-fork-curl-crash.md`
 - `docs/codex-sessions/completed/2026-07-14_0926_home-position-pnl-implementation.md`
 - `docs/codex-sessions/completed/2026-07-14_0917_home-position-pnl-goal-prompt.md`
 - `docs/codex-sessions/completed/2026-07-13_1804_task-aware-multi-llm-routing.md`

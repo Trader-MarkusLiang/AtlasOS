@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from runtime.telemetry.jsonl import append_jsonl, read_jsonl_tail
+
 
 DEFAULT_LOG_PATH = Path("runtime/logs/runtime_runs.jsonl")
 
@@ -33,25 +35,13 @@ def log_execution(record: Dict[str, Any], log_path: Optional[str] = None) -> Pat
     """Append one runtime record to a JSONL file and return its path."""
 
     path = resolve_log_path(log_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
     safe_record = dict(record)
     safe_record.setdefault("logged_at", utc_now_iso())
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(safe_record, ensure_ascii=False, sort_keys=True) + "\n")
-    return path
+    return append_jsonl(path, safe_record)
 
 
 def read_log_records(log_path: Optional[str] = None, limit: int = 50) -> list[Dict[str, Any]]:
     """Read recent JSONL runtime records."""
 
     path = resolve_log_path(log_path)
-    if not path.exists():
-        return []
-    lines = path.read_text(encoding="utf-8").splitlines()
-    records: list[Dict[str, Any]] = []
-    for line in lines[-limit:]:
-        try:
-            records.append(json.loads(line))
-        except json.JSONDecodeError:
-            records.append({"status": "invalid_log_record"})
-    return records
+    return read_jsonl_tail(path, limit)

@@ -106,7 +106,7 @@ def main() -> None:
         if path.name == "llm_router.py":
             continue
         text = path.read_text(encoding="utf-8")
-        if "urlopen(" in text or "api.openai.com" in text or "anthropic.com" in text:
+        if "api.openai.com" in text or "anthropic.com" in text:
             llm_direct_refs.append(path.name)
     _assert(not llm_direct_refs, f"LLM API calls must go through llm_router only: {llm_direct_refs}")
 

@@ -25,7 +25,7 @@ from ui.presentation.cognitive_localization import (
     localize_market_freshness,
     localize_proactive_update,
 )
-from ui.presentation.home_intelligence import build_home_intelligence
+from ui.presentation.home_intelligence import build_home_intelligence, _bilingual
 
 
 ATLAS_ACTIONS = {"observe", "hold", "reduce", "build", "accumulate"}
@@ -209,10 +209,21 @@ def home_content(state: Mapping[str, Any]) -> str:
     scenarios = _mapping(practical.get("scenario_outlook"))
     playbook = _mapping(practical.get("action_playbook"))
     candidate_board = _mapping(practical.get("candidate_board"))
+    brief_runtime = _mapping(practical.get("brief_runtime"))
+    decision_home = _mapping(intelligence.get("decision_home"))
+    brief_revision = int(_num(brief_runtime.get("brief_revision"), 0) or 0)
     return f"""
     {_home_intelligence_style()}
-    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief">
-      <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="{escape(_brief_copy("portfolio_command", lang))}">
+    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief" data-brief-revision="{brief_revision}">
+      {_brief_runtime_strip(brief_runtime, lang)}
+      <div class="home-summary-banner">
+      <div class="home-summary-icon" aria-hidden="true">A</div>
+      <div class="home-summary-text">
+        <strong>{escape(_brief_copy("atlas_summary", lang))}</strong>
+        <p>{escape(_localized(portfolio_command.get("human_summary"), lang))}</p>
+      </div>
+    </div>
+    <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="{escape(_brief_copy("portfolio_command", lang))}">
         <article class="decision-card portfolio-command-card" id="home-portfolio-command" data-practical-section="portfolio_command">
           <div class="journey-step"><span>01</span>{escape(_brief_copy("portfolio_command", lang))}</div>
           <div class="home-section-header">
@@ -253,13 +264,24 @@ def home_content(state: Mapping[str, Any]) -> str:
           <div class="journey-step"><span>04</span>{escape(_brief_copy("core_judgment", lang))}</div>
           <span class="kicker">{escape(_brief_copy("one_total_judgment", lang))}</span>
           <h2>{escape(_localized(core.get("headline"), lang))}</h2>
+          <ul class="judgment-because">{''.join(f'<li>{escape(_localized(b, lang))}</li>' for b in _list(core.get("because_bullets")))}</ul>
           <p>{escape(_localized(core.get("supporting_sentence"), lang))}</p>
         </article>
+        {_conviction_hierarchy_view(decision_home.get("conviction_hierarchy"), lang)}
+        <article class="decision-support-card predictions-card" id="home-predictions" data-practical-section="strongest_predictions">
+          <div class="journey-step"><span>05</span>{escape(_brief_copy("strongest_predictions", lang))}</div>
+          <div class="home-section-header">
+            <div><p class="home-safety-note">{escape(_brief_copy("max_three", lang))}</p></div>
+            <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
+          </div>
+          {_prediction_cards(predictions, lang)}
+        </article>
+
       </section>
 
       <section class="investor-evidence-grid" aria-label="{escape(_brief_copy("what_changed", lang))}">
         <article class="decision-support-card material-change-card" id="home-material-changes" data-practical-section="material_changes">
-          <div class="journey-step"><span>05</span>{escape(_brief_copy("what_changed", lang))}</div>
+          <div class="journey-step"><span>06</span>{escape(_brief_copy("what_changed", lang))}</div>
           <div class="home-section-header">
             <div>
               <h2>{escape(_brief_copy("material_evidence", lang))}</h2>
@@ -271,7 +293,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         </article>
 
         <article class="decision-support-card reasoning-chain-card" id="home-reasoning-chain" data-practical-section="reasoning_chain">
-          <div class="journey-step"><span>06</span>{escape(_brief_copy("reasoning_chain", lang))}</div>
+          <div class="journey-step"><span>07</span>{escape(_brief_copy("reasoning_chain", lang))}</div>
           <h2>{escape(_brief_copy("from_signal_to_decision", lang))}</h2>
           {_reasoning_chain_view(reasoning_chain, lang)}
         </article>
@@ -279,7 +301,7 @@ def home_content(state: Mapping[str, Any]) -> str:
 
       <section class="scenario-section" aria-label="{escape(_brief_copy("scenario_outlook", lang))}">
         <article class="decision-support-card scenario-outlook-card" id="home-scenario-outlook" data-practical-section="scenario_outlook">
-          <div class="journey-step"><span>07</span>{escape(_brief_copy("scenario_outlook", lang))}</div>
+          <div class="journey-step"><span>08</span>{escape(_brief_copy("scenario_outlook", lang))}</div>
           <div class="home-section-header">
             <div><h2>{escape(_brief_copy("four_scenarios", lang))}</h2><p class="home-safety-note">{escape(_brief_copy("no_uncalibrated_probability", lang))}</p></div>
           </div>
@@ -287,7 +309,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         </article>
 
         <article class="decision-support-card action-playbook-card" id="home-action-playbook" data-practical-section="action_playbook">
-          <div class="journey-step"><span>08</span>{escape(_brief_copy("conditional_actions", lang))}</div>
+          <div class="journey-step"><span>09</span>{escape(_brief_copy("conditional_actions", lang))}</div>
           <h2>{escape(_brief_copy("scenario_action_playbook", lang))}</h2>
           {_action_playbook_view(playbook, lang)}
         </article>
@@ -295,7 +317,7 @@ def home_content(state: Mapping[str, Any]) -> str:
 
       <section class="candidate-score-section">
         <article class="decision-support-card" id="home-candidate-board" data-practical-section="candidate_board">
-          <div class="journey-step"><span>09</span>{escape(_brief_copy("candidate_board", lang))}</div>
+          <div class="journey-step"><span>10</span>{escape(_brief_copy("candidate_board", lang))}</div>
           <div class="home-section-header">
             <div><h2>{escape(_brief_copy("candidate_score_basis", lang))}</h2><p class="home-safety-note">{escape(_brief_copy("candidate_not_authority", lang))}</p></div>
             <a class="secondary-button" href="/candidates">{escape(_home_label("view_full_candidate_pool", lang))}</a>
@@ -307,7 +329,7 @@ def home_content(state: Mapping[str, Any]) -> str:
       <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
         <div class="home-section-header">
           <div>
-            <span class="journey-step"><span>10</span>{escape(_home_label("forecast_accountability", lang))}</span>
+            <span class="journey-step"><span>11</span>{escape(_home_label("forecast_accountability", lang))}</span>
             <h2>{escape(_brief_copy("forecast_compact", lang))}</h2>
           </div>
           <div class="button-row">
@@ -316,6 +338,8 @@ def home_content(state: Mapping[str, Any]) -> str:
           </div>
         </div>
         {_forecast_compact_strip(forecast, lang)}
+        {_forecast_track_record(forecast, lang)}
+        {_learning_log(forecast, lang)}
         <div class="forecast-learning-row">
           <p><strong>{escape(_brief_copy("recent_miss", lang))}:</strong> {escape(_localized(forecast.get("recent_miss"), lang))}</p>
           <p><strong>{escape(_brief_copy("changed_afterward", lang))}:</strong> {escape(_localized(forecast.get("what_changed_afterward"), lang))}</p>
@@ -359,17 +383,14 @@ def _portfolio_command_view(command: Mapping[str, Any], lang: str) -> str:
     ]
     metric_html = "".join(f'<div><span>{escape(label)}</span><strong>{escape(value)}</strong></div>' for label, value in metrics)
     largest = _mapping(command.get("largest_theme"))
-    market_rows = "".join(
-        f'<li><span>{escape(str(name))}</span><strong>{escape(_pct_text(value))}</strong></li>'
-        for name, value in _mapping(command.get("market_concentration")).items()
-    )
     return f"""
     <div class="portfolio-command-metrics">{metric_html}</div>
+    {_cde_lifecycle_bar(command, lang)}
     <div class="portfolio-command-analysis">
       <div><span>{escape(_brief_copy("largest_theme", lang))}</span><strong>{escape(str(largest.get("theme") or "Unknown"))} · {escape(_pct_text(largest.get("exposure_pct")))}</strong></div>
       <div><span>{escape(_brief_copy("liquidity_sensitivity", lang))}</span><strong>{escape(_runtime_label(command.get("liquidity_sensitivity") or "Unknown", lang))}</strong></div>
       <div><span>{escape(_brief_copy("regime_sensitivity", lang))}</span><strong>{escape(_runtime_label(command.get("regime_sensitivity") or "Unknown", lang))}</strong></div>
-      <ul>{market_rows}</ul>
+      {_portfolio_exposure_donut(command, lang)}
     </div>
     <div class="portfolio-risk-callout"><span>{escape(_brief_copy("primary_portfolio_risk", lang))}</span><p>{escape(_localized(command.get("primary_risk"), lang))}</p></div>
     <p class="decision-change">{escape(_localized(command.get("action_reason"), lang))}</p>
@@ -378,8 +399,22 @@ def _portfolio_command_view(command: Mapping[str, Any], lang: str) -> str:
 
 def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
     items = [_mapping(item) for item in _list(changes.get("items")) if isinstance(item, Mapping)]
+    summary = _mapping(changes.get("review_summary"))
+    reviewed = int(_num(summary.get("reviewed_count"), 0) or 0)
+    changed = int(_num(summary.get("CHANGED"), 0) or 0)
+    unchanged = int(_num(summary.get("UNCHANGED"), 0) or 0)
+    pending = int(_num(summary.get("NEEDS_REVIEW"), 0) or 0)
+    review_html = ""
+    if reviewed:
+        review_text = (
+            f"已复核 {reviewed} 条 · 改变判断 {changed} · 结论不变 {unchanged} · 待复核 {pending}"
+            if lang == "zh"
+            else f"Reviewed {reviewed} · changed {changed} · unchanged {unchanged} · pending {pending}"
+        )
+        review_class = "has-change" if changed else "no-change"
+        review_html = f'<div class="evidence-review-summary {review_class}"><strong>{escape(review_text)}</strong><span>{escape(str(changes.get("reviewed_at") or ""))}</span></div>'
     if not items:
-        return f'<div class="empty-state">{escape(_localized(changes.get("empty_message"), lang))}</div>'
+        return review_html + f'<div class="empty-state">{escape(_localized(changes.get("empty_message"), lang))}</div>'
     cards = []
     for item in items[:8]:
         url = str(item.get("source_url") or "")
@@ -389,7 +424,7 @@ def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
         cards.append(
             f"""
             <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>{escape(_runtime_label(item.get("classification") or "UNVERIFIED", lang))}</span><em>{escape(_runtime_label(item.get("freshness") or "Unknown", lang))}</em></div>
+              <div class="evidence-truth-row"><span>{escape(_runtime_label(item.get("classification") or "UNVERIFIED", lang))}</span><em>{escape(_runtime_label(item.get("market_session_status") or item.get("freshness") or "Unknown", lang))}</em></div>
               <h3>{escape(str(item.get("headline") or "Data Missing"))}</h3>
               <dl>
                 <div><dt>{escape(_brief_copy("source", lang))}</dt><dd>{source_html}</dd></div>
@@ -400,21 +435,95 @@ def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
             </article>
             """
         )
-    return '<div class="material-evidence-list">' + "".join(cards) + "</div>"
+    return review_html + '<div class="material-evidence-list">' + "".join(cards) + "</div>"
+
+
+def _brief_runtime_strip(brief: Mapping[str, Any], lang: str) -> str:
+    revision = int(_num(brief.get("brief_revision"), 0) or 0)
+    summary = _mapping(brief.get("review_summary"))
+    reviewed = int(_num(summary.get("reviewed_count"), 0) or 0)
+    changed = int(_num(summary.get("CHANGED"), 0) or 0)
+    if not revision:
+        message = "正在等待首个重要信息触发简报。" if lang == "zh" else "Waiting for the first material event to publish a Brief."
+    elif reviewed and not changed:
+        message = (
+            f"已复核 {reviewed} 条新/更新信息，当前论点未改变。"
+            if lang == "zh"
+            else f"Reviewed {reviewed} new/updated item(s); the current thesis is unchanged."
+        )
+    elif changed:
+        message = (
+            f"{changed} 条证据改变了当前判断，请查看下方更新区块。"
+            if lang == "zh"
+            else f"{changed} evidence item(s) changed the current view; review the updated sections below."
+        )
+    else:
+        message = "简报已同步到最新重要事件。" if lang == "zh" else "Brief is synchronized to the latest material event."
+    label = f"简报版本 {revision}" if lang == "zh" else f"Brief revision {revision}"
+    return f'''
+    <section class="brief-runtime-strip" id="home-brief-runtime" data-practical-section="brief_runtime">
+      <div><strong>{escape(label)}</strong><span>{escape(message)}</span></div>
+      <dl><dt>{escape("更新时间" if lang == "zh" else "Updated")}</dt><dd>{escape(str(brief.get("published_at") or "Waiting for signal"))}</dd><dt>{escape("触发原因" if lang == "zh" else "Reason")}</dt><dd>{escape(str(brief.get("trigger_reason") or "material-event gate"))}</dd></dl>
+    </section>
+    '''
 
 
 def _reasoning_chain_view(reasoning: Mapping[str, Any], lang: str) -> str:
-    labels = {
-        "en": {"signal": "Signal", "evidence": "Evidence", "structure": "Structural interpretation", "causal": "Causal drivers", "thesis": "Thesis impact", "portfolio": "Portfolio impact", "counter": "Counter-evidence", "missing": "Missing evidence", "conclusion": "Conclusion"},
-        "zh": {"signal": "信号", "evidence": "证据", "structure": "结构解释", "causal": "因果驱动", "thesis": "论点影响", "portfolio": "组合影响", "counter": "反方证据", "missing": "缺失证据", "conclusion": "结论"},
-    }[lang]
-    rows = []
-    for index, step in enumerate(_list(reasoning.get("steps")), start=1):
+    """Render reasoning chain as a conversational thinking timeline."""
+    steps = _list(reasoning.get("steps"))
+    if not steps:
+        return f'<div class="empty-state">{escape("Atlas has not recorded a reasoning chain yet." if lang == "en" else "Atlas 尚未记录推理链。")}</div>'
+    timeline = _thinking_timeline(steps, lang)
+    return '<div class="thinking-timeline">' + "".join(timeline) + "</div>"
+
+
+def _thinking_timeline(steps: list[Any], lang: str) -> list[str]:
+    """Map compressed reasoning steps into plain-language thinking phases."""
+    mapped: dict[str, str] = {}
+    for step in steps:
         if not isinstance(step, Mapping):
             continue
         key = str(step.get("key") or "")
-        rows.append(f'<li><span>{index:02d}</span><div><small>{escape(labels.get(key, key))} · {escape(_runtime_label(step.get("truth") or "UNVERIFIED", lang))}</small><p>{escape(_runtime_label(step.get("value") or "Data Missing", lang))}</p></div></li>')
-    return '<ol class="investor-reasoning-chain">' + "".join(rows) + "</ol>"
+        value = str(step.get("value") or "")
+        mapped[key] = value
+
+    signal = mapped.get("signal", "")
+    evidence = mapped.get("evidence", "")
+    structure = mapped.get("structure", "")
+    causal = mapped.get("causal", "")
+    thesis = mapped.get("thesis", "")
+    portfolio = mapped.get("portfolio", "")
+    counter = mapped.get("counter", "")
+    missing = mapped.get("missing", "")
+    conclusion = mapped.get("conclusion", "")
+
+    def phase(icon: str, label: str, body: str) -> str:
+        return f'''
+        <div class="thinking-phase">
+          <div class="phase-marker" aria-hidden="true">{icon}</div>
+          <div class="phase-body">
+            <strong>{escape(label)}</strong>
+            <p>{escape(body)}</p>
+          </div>
+        </div>
+        '''
+
+    phases = []
+    if lang == "zh":
+        phases.append(phase("👁", "Atlas 注意到了什么", signal or "当前没有新的显著信号。"))
+        phases.append(phase("🧩", "这对应什么证据", f"{evidence or '证据尚未整理'}；结构节点：{structure or '未知'}"))
+        phases.append(phase("🔗", "因果上 Atlas 怎么理解", causal or "因果关系尚未完成评估。"))
+        phases.append(phase("📌", "对投资论点意味着什么", f"{thesis or '论点影响尚未评估'}；涉及持仓：{portfolio or '组合映射未明确'}"))
+        phases.append(phase("⚖️", "Atlas 为什么还保持谨慎", f"反方证据：{counter or '待复核'}；仍缺失：{missing or '部分证据链'}"))
+        phases.append(phase("✓", "当前条件结论", conclusion or "继续观察，不主张改变姿态。"))
+    else:
+        phases.append(phase("👁", "What Atlas noticed", signal or "No notable new signal right now."))
+        phases.append(phase("🧩", "What evidence it maps to", f"{evidence or 'Evidence not yet organized'}; structural node: {structure or 'unknown'}"))
+        phases.append(phase("🔗", "How Atlas reads the causality", causal or "Causal interpretation is not yet complete."))
+        phases.append(phase("📌", "What it means for the thesis", f"{thesis or 'Thesis impact not assessed'}; affected holdings: {portfolio or 'portfolio mapping unclear'}"))
+        phases.append(phase("⚖️", "Why Atlas remains cautious", f"Counter-evidence: {counter or 'pending review'}; still missing: {missing or 'parts of the evidence chain'}"))
+        phases.append(phase("✓", "Conditional conclusion for now", conclusion or "Keep observing; no posture change claimed."))
+    return phases
 
 
 def _scenario_outlook_view(scenarios: Mapping[str, Any], lang: str) -> str:
@@ -422,6 +531,8 @@ def _scenario_outlook_view(scenarios: Mapping[str, Any], lang: str) -> str:
         "en": {"base": "Base", "upside": "Upside continuation", "downside": "Downside acceleration", "range": "Range / volatility"},
         "zh": {"base": "基准情景", "upside": "上行延续", "downside": "下行加速", "range": "震荡 / 波动"},
     }[lang]
+    icons = {"base": "◎", "upside": "↗", "downside": "↘", "range": "↔"}
+    colors = {"base": "#dbeafe", "upside": "#9ee6b8", "downside": "#f4a5b3", "range": "#f6d77a"}
     cards = []
     for item in _list(scenarios.get("items")):
         if not isinstance(item, Mapping):
@@ -429,16 +540,68 @@ def _scenario_outlook_view(scenarios: Mapping[str, Any], lang: str) -> str:
         key = str(item.get("key") or "base")
         drivers = "".join(f"<li>{escape(_localized(value, lang))}</li>" for value in _list(item.get("drivers")))
         invalidation = "".join(f"<li>{escape(_localized(value, lang))}</li>" for value in _list(item.get("invalidation")))
+        icon = icons.get(key, "◎")
+        color = colors.get(key, "#dbeafe")
         cards.append(f"""
-        <article class="scenario-card scenario-{escape(key)}">
-          <span>{escape(names.get(key, key))}</span>
+        <article class="scenario-card scenario-{escape(key)}" style="--scenario-accent:{color}">
+          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">{icon}</span><span>{escape(names.get(key, key))}</span></div>
           <h3>{escape(_localized(item.get("statement"), lang))}</h3>
           <div><small>{escape(_brief_copy("supporting_drivers", lang))}</small><ul>{drivers}</ul></div>
           <div><small>{escape(_brief_copy("invalidation", lang))}</small><ul>{invalidation}</ul></div>
-          <dl><dt>{escape(_brief_copy("horizon", lang))}</dt><dd>{escape(_localized(item.get("horizon") or "Unknown", lang))}</dd><dt>{escape(_brief_copy("evidence_confidence", lang))}</dt><dd>{escape(_localized(item.get("evidence_confidence") or "Limited", lang))}</dd></dl>
+          <dl><dt>{escape(_brief_copy("horizon", lang))}</dt><dd>{escape(_localized(item.get("horizon") or "Unknown", lang))}</dd><dt>{escape(_brief_copy("evidence_confidence", lang))}</dt><dd>{_scenario_conf_pill(item.get("evidence_confidence"), lang)}</dd></dl>
         </article>
         """)
     return '<div class="scenario-grid">' + "".join(cards) + "</div>"
+
+
+def _conviction_hierarchy_view(hierarchy: Mapping[str, Any], lang: str) -> str:
+    """Pyramid/funnel visualization of conviction hierarchy (L1 core → L4 research)."""
+    hierarchy = _mapping(hierarchy)
+    levels = [
+        ("level_1", _journey_copy("level_1", lang), "#9ee6b8", 100),
+        ("level_2", _journey_copy("level_2", lang), "#9fd3ff", 85),
+        ("level_3", _journey_copy("level_3", lang), "#f6d77a", 70),
+        ("level_4", _journey_copy("level_4", lang), "#7d8aa0", 55),
+    ]
+    rows = []
+    for key, label, color, width in levels:
+        items = _list(hierarchy.get(key))
+        if not items and key == "level_4":
+            count = _num(_mapping(hierarchy.get("level_4")).get("count_on_home"), 0)
+            text = f"{_journey_copy('top_three_research', lang)} ({count})" if count else _journey_copy("top_three_research", lang)
+            items = [{"statement": {"en": text, "zh": text}}]
+        texts = []
+        for item in items[:3]:
+            item_map = _mapping(item)
+            stmt = item_map.get("statement") or item_map.get("item") or item_map.get("label")
+            if isinstance(stmt, Mapping):
+                texts.append(escape(_localized(stmt, lang)))
+            elif stmt:
+                texts.append(escape(str(stmt)))
+            if key == "level_2" and item_map.get("confidence") is not None:
+                conf = _num(item_map.get("confidence"), 0)
+                texts[-1] += f" · {int(round(conf * 100))}%"
+        if not texts:
+            continue
+        rows.append(
+            f'''<div class="conviction-level" style="--level-color:{color};--level-width:{width}%">
+              <div class="conviction-bar"><span class="conviction-label">{escape(label)}</span></div>
+              <ul>{''.join(f'<li>{text}</li>' for text in texts)}</ul>
+            </div>'''
+        )
+    if not rows:
+        return ""
+    return f'''<article class="decision-support-card conviction-hierarchy-card" id="home-conviction-hierarchy" data-practical-section="conviction_hierarchy">
+      <div class="journey-step"><span>●</span>{escape(_journey_copy("conviction_hierarchy", lang))}</div>
+      <div class="conviction-pyramid">{''.join(rows)}</div>
+    </article>'''
+
+
+def _scenario_conf_pill(value: Any, lang: str) -> str:
+    label = _localized(value, lang) or _brief_copy("evidence_confidence", lang)
+    en = str(_mapping(value).get("en", "")).lower()
+    cls = "is-calibrated" if "calibrat" in en else "is-limited"
+    return f'<span class="evidence-confidence-pill {cls}" title="{escape(label)}">{escape(label)}</span>'
 
 
 def _action_playbook_view(playbook: Mapping[str, Any], lang: str) -> str:
@@ -471,14 +634,17 @@ def _candidate_score_board_view(board: Mapping[str, Any], lang: str) -> str:
     for item in validated:
         if not isinstance(item, Mapping):
             continue
+        score_text = str(item.get("strategic_candidate_score") or "N/A")
+        score_val = _num(item.get("strategic_candidate_score"), None)
+        bar_html = _candidate_score_bar(score_val)
         rows.append(f"""
         <tr>
           <td><strong>{escape(str(item.get("candidate") or "Unknown"))}</strong><small>{escape(str(item.get("code") or ""))}</small></td>
           <td>{escape(_runtime_label(item.get("identity_status") or "Needs Validation", lang))}</td>
           <td>{escape(str(item.get("tier") or "N/A"))}</td>
           <td>{escape(_runtime_label(item.get("portfolio_overlap") or "Unknown", lang))}</td>
-          <td>{escape(_runtime_label(item.get("evidence_quality") or "Unverified", lang))}</td>
-          <td>{escape(_localized(item.get("market_confirmation"), lang))}</td>
+          <td>{escape(_runtime_label(item.get("evidence_quality") or "Unverified", lang))}<small>{escape(_runtime_label(item.get("runtime_assessment") or "NOT_REVIEWED", lang))}</small></td>
+          <td class="candidate-score-cell">{bar_html}<div class="candidate-score-readout">{escape(score_text)}</div></td>
         </tr>
         """)
     pending_rows = "".join(
@@ -488,13 +654,21 @@ def _candidate_score_board_view(board: Mapping[str, Any], lang: str) -> str:
     dimensions = " · ".join(str(item) for item in _list(board.get("score_dimensions")))
     return f"""
     <p class="candidate-coverage-note">{escape(_localized(board.get("coverage_note"), lang))}</p>
-    <div class="table-scroll"><table class="practical-table candidate-score-table"><thead><tr><th>{escape(_brief_copy("candidate", lang))}</th><th>{escape(_brief_copy("identity", lang))}</th><th>{escape(_brief_copy("tier", lang))}</th><th>{escape(_brief_copy("portfolio_overlap", lang))}</th><th>{escape(_brief_copy("evidence", lang))}</th><th>{escape(_brief_copy("market_confirmation", lang))}</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+    <div class="table-scroll"><table class="practical-table candidate-score-table"><thead><tr><th>{escape(_brief_copy("candidate", lang))}</th><th>{escape(_brief_copy("identity", lang))}</th><th>{escape(_brief_copy("tier", lang))}</th><th>{escape(_brief_copy("portfolio_overlap", lang))}</th><th>{escape(_brief_copy("evidence", lang))}</th><th>{escape(_brief_copy("strategic_score", lang))}</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
     <details class="pending-candidates" {'open' if not validated else ''}>
       <summary>{escape((_brief_copy("pending_candidates", lang)).format(count=len(pending)))}</summary>
       <ul>{pending_rows}</ul>
     </details>
     <details class="score-methodology"><summary>{escape(_brief_copy("score_methodology", lang))}</summary><p>{escape(dimensions)}</p><p>{escape(_localized((board.get("items") or [{}])[0].get("score_explanation") if board.get("items") else "", lang))}</p></details>
     """
+
+
+def _candidate_score_bar(score: float | None) -> str:
+    if score is None:
+        return '<div class="candidate-score-bar empty" title="Score not available"><div class="candidate-score-fill" style="width:0%"></div></div>'
+    pct = max(0, min(100, score * 100 if score <= 1 else score))
+    color = "#9ee6b8" if pct >= 70 else "#f6d77a" if pct >= 40 else "#f4a5b3"
+    return f'<div class="candidate-score-bar" title="Score: {pct:.0f}"><div class="candidate-score-fill" style="width:{pct:.0f}%;background:{color}"></div></div>'
 
 
 def _home_label(key: str, lang: str) -> str:
@@ -699,6 +873,12 @@ def _brief_copy(key: str, lang: str) -> str:
             "recheck": "Re-check",
             "forecast_due": "Forecast due",
             "empty_prediction": "No high-conviction prediction has enough evidence yet.",
+            "forecast_track_record": "Forecast Track Record",
+            "verification_rate": "Verification rate",
+            "track_record_total": "Total forecasts",
+            "track_record_evaluated": "Evaluated",
+            "no_forecasts_yet": "No forecasts recorded yet — calibration builds as forecasts mature and are evaluated.",
+            "atlas_summary": "Atlas summary",
         },
         "zh": {
             "portfolio_command": "组合指挥视图",
@@ -800,6 +980,12 @@ def _brief_copy(key: str, lang: str) -> str:
             "recheck": "重点检查",
             "forecast_due": "到期预测",
             "empty_prediction": "当前没有足够证据形成高强度预测。",
+            "forecast_track_record": "预测跟踪记录",
+            "verification_rate": "验证率",
+            "track_record_total": "预测总数",
+            "track_record_evaluated": "已评估",
+            "no_forecasts_yet": "尚无已记录的预测 — 随预测成熟与评估，校准将逐步建立。",
+            "atlas_summary": "Atlas 一句话总结",
         },
     }
     return text.get(lang, text["en"]).get(key, key.replace("_", " ").title())
@@ -811,6 +997,8 @@ def _prediction_cards(predictions: Mapping[str, Any], lang: str) -> str:
         return f'<div class="empty-state practical-empty">{escape(_localized(predictions.get("empty_message"), lang) or _brief_copy("empty_prediction", lang))}</div>'
     rows = []
     for index, item in enumerate(items, start=1):
+        conf = _num(item.get("confidence"), 0.0)
+        conf_pct = int(round(max(0.0, min(1.0, conf)) * 100))
         rows.append(
             f"""
             <article class="prediction-item" data-prediction="{index}">
@@ -824,6 +1012,9 @@ def _prediction_cards(predictions: Mapping[str, Any], lang: str) -> str:
               <div class="forward-metrics compact-metrics">
                 <span><small>{escape(_brief_copy("confidence", lang))}</small><strong>{escape(str(item.get("confidence_text") or ""))}</strong></span>
                 <span><small>{escape(_home_label("horizon", lang))}</small><strong>{escape(_horizon_label(item.get("horizon"), lang))}</strong></span>
+              </div>
+              <div class="confidence-bar" title="{escape(_brief_copy('confidence', lang))}: {conf_pct}%" role="img" aria-label="{escape(_brief_copy('confidence', lang))}: {conf_pct}%">
+                <div class="confidence-fill" style="width:{conf_pct}%"></div>
               </div>
               <dl class="decision-dl">
                 <dt>{escape(_brief_copy("evidence", lang))}</dt><dd>{escape(_join_evidence(item.get("evidence"), lang))}</dd>
@@ -899,7 +1090,7 @@ def _holding_action_board(holdings: Mapping[str, Any], lang: str) -> str:
               <div class="holding-decision-column">
                 <span class="kicker">{escape(_valuation_copy('decision_context', lang))}</span>
                 <dl class="decision-dl">
-                  <dt>{escape(_brief_copy("posture", lang))}</dt><dd>{escape(_localized(item.get("posture_label"), lang))}</dd>
+                  <dt>{escape("组合级姿态" if lang == "zh" else "Portfolio posture")}</dt><dd>{escape(_localized(item.get("posture_label"), lang))}<small>{escape("不代表该持仓已有独立执行权限" if lang == "zh" else "No holding-specific execution authority")}</small></dd>
                   <dt>{escape(_brief_copy("why", lang))}</dt><dd>{escape(_localized(item.get("why"), lang))}</dd>
                   <dt>{escape(_brief_copy("key_trigger", lang))}</dt><dd>{escape(_localized(item.get("key_trigger"), lang))}</dd>
                   <dt>{escape(_brief_copy("review_priority", lang))}</dt><dd>{escape(_runtime_label(item.get("review_priority") or "", lang))}</dd>
@@ -1412,6 +1603,73 @@ def _forecast_compact_strip(forecast: Mapping[str, Any], lang: str) -> str:
     return strip + f'<p class="home-safety-note">{escape(_localized(forecast.get("legacy_policy"), lang))}</p>'
 
 
+def _learning_log(forecast: Mapping[str, Any], lang: str) -> str:
+    log = _mapping(forecast.get("learning_log"))
+    if not log:
+        return ""
+    message = _localized(log.get("message"), lang)
+    return f'''
+    <div class="learning-log">
+      <div class="learning-log-icon" aria-hidden="true">↻</div>
+      <div class="learning-log-text"><strong>{escape(_journey_copy("changed_afterward", lang))}</strong><p>{escape(message)}</p></div>
+    </div>
+    '''
+
+
+def _forecast_track_record(forecast: Mapping[str, Any], lang: str) -> str:
+    """Visual forecast track-record: status distribution bar + verified/evaluated ring."""
+    counts = _mapping(forecast.get("counts"))
+    metrics = _mapping(forecast.get("metrics"))
+    total = _num(counts.get("open", 0), 0) + _num(counts.get("matured", 0), 0) + _num(counts.get("verified", 0), 0) + _num(counts.get("invalidated", 0), 0) + _num(counts.get("inconclusive", 0), 0)
+    if total <= 0:
+        return f'''
+        <div class="forecast-track-record empty">
+          <div class="empty-track-icon" aria-hidden="true"></div>
+          <p class="empty-track-title">{escape(_brief_copy("no_forecasts_yet", lang))}</p>
+          <p class="home-safety-note">{escape(_localized(forecast.get("empty_message"), lang) or str(forecast.get("sample_warning") or ""))}</p>
+        </div>'''
+    segments = [
+        ("current_open", _num(counts.get("current_open", counts.get("open", 0)), 0), "#9fd3ff", _journey_copy("current_open", lang)),
+        ("matured", _num(counts.get("matured", 0), 0), "#7d8aa0", _journey_copy("matured", lang)),
+        ("verified", _num(counts.get("verified", 0), 0), "#9ee6b8", _journey_copy("verified", lang)),
+        ("invalidated", _num(counts.get("invalidated", 0), 0), "#f4a5b3", _journey_copy("invalidated", lang)),
+        ("inconclusive", _num(counts.get("inconclusive", 0), 0), "#f6d77a", _journey_copy("inconclusive", lang)),
+    ]
+    bars = []
+    legend_rows = []
+    table_rows = []
+    for _key, val, color, label in segments:
+        pct = (val / total * 100) if total else 0.0
+        bars.append(
+            f'<span class="trk-seg" style="width:{pct:.2f}%;background:{color}" title="{escape(label)}: {val} ({pct:.0f}%)" role="img" aria-label="{escape(label)}: {val}"></span>'
+        )
+        legend_rows.append(f'<li><span class="trk-dot" style="background:{color}"></span>{escape(label)}<strong>{val}</strong></li>')
+        table_rows.append(f"<tr><td>{escape(label)}</td><td>{val}</td><td>{pct:.0f}%</td></tr>")
+    evaluated = _num(metrics.get("evaluated"), 0)
+    verified = _num(metrics.get("verified"), counts.get("verified", 0))
+    accuracy = verified / evaluated if evaluated > 0 else None
+    acc_pct = round(accuracy * 100) if accuracy is not None else None
+    ring_value = acc_pct if acc_pct is not None else 0
+    ring_color = "#9ee6b8" if acc_pct is not None else "#7d8aa0"
+    ring_inner = f"{acc_pct}%" if acc_pct is not None else "—"
+    ring_title = f'{escape(_brief_copy("verification_rate", lang))}: {ring_inner}'
+    sample_note = ""
+    if not _num(metrics.get("minimum_sample_size_met"), 0):
+        sample_note = f'<p class="home-safety-note">{escape(str(forecast.get("sample_warning") or _journey_copy("forecast_compact", lang)))}</p>'
+    return f"""
+    <div class="forecast-track-record" aria-label="{escape(_brief_copy('forecast_track_record', lang))}">
+      <div class="trk-bar">{''.join(bars)}</div>
+      <div class="trk-body">
+        <div class="gauge trk-ring" style="--value:{ring_value};background:conic-gradient({ring_color} calc(var(--value,0)*1%), rgba(255,255,255,0.08) 0), rgba(255,255,255,0.05);" title="{ring_title}" role="img" aria-label="{ring_title}"><span>{ring_inner}</span></div>
+        <ul class="trk-legend">{''.join(legend_rows)}</ul>
+      </div>
+      <p class="trk-meta"><strong>{total:.0f}</strong> {escape(_brief_copy('track_record_total', lang))} · <strong>{evaluated:.0f}</strong> {escape(_brief_copy('track_record_evaluated', lang))}</p>
+      {sample_note}
+      <table class="sr-only"><caption>{escape(_brief_copy('forecast_track_record', lang))}</caption><thead><tr><th>{escape(_brief_copy('status', lang))}</th><th>{escape(_brief_copy('track_record_total', lang))}</th><th>%</th></tr></thead><tbody>{''.join(table_rows)}</tbody></table>
+    </div>
+    """
+
+
 def _mapping(value: Any) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
 
@@ -1839,8 +2097,9 @@ def _expert_raw(expert: Mapping[str, Any], lang: str) -> str:
 def _home_intelligence_style() -> str:
     return """
     <style>
-    .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:22px clamp(18px, 3vw, 44px) 0; }
+    .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:22px clamp(18px, 3vw, 44px) 0; display: grid; grid-template-columns: 1fr; }
     .atlas-shell[data-active-page="home"] .workspace.no-inspector > .page-content { width:100%; }
+    .atlas-shell[data-active-page="home"] .practical-brief-shell { max-width: none; }
     .decision-home-shell { display:grid; gap:18px; }
     .investor-home { gap:24px; }
     .portfolio-first-viewport { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
@@ -1848,6 +2107,8 @@ def _home_intelligence_style() -> str:
     .holdings-primary-card { grid-column:span 8; grid-row:2; min-height:100%; }
     .portfolio-first-viewport .action-today-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; grid-template-columns:1fr; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; align-content:start; }
     .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:2; min-height:100%; }
+    .portfolio-first-viewport .conviction-hierarchy-card,
+    .portfolio-first-viewport .predictions-card { grid-column:1 / -1; }
     .portfolio-command-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
     .portfolio-header-status { display:grid; justify-items:end; gap:5px; text-align:right; }
     .portfolio-header-status small { color:var(--muted); font-size:.72rem; }
@@ -1927,7 +2188,7 @@ def _home_intelligence_style() -> str:
     .action-today-card .decision-change { grid-area:reason; align-self:end; max-width:62ch; }
     .action-today-card .home-safety-note { grid-area:helper; align-self:start; max-width:68ch; }
     .core-judgment-card { grid-area:core; }
-    .predictions-card { grid-area:predictions; }
+    .practical-first-viewport .predictions-card { grid-area:predictions; }
     .action-answer { margin:0; max-width:100%; font-size:clamp(2rem, 7cqw, 3.4rem) !important; line-height:1 !important; letter-spacing:0; white-space:normal; overflow-wrap:anywhere; }
     .practical-secondary-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
     .practical-secondary-grid #home-ai-bottleneck-index { grid-column:span 8; }
@@ -2089,9 +2350,106 @@ def _home_intelligence_style() -> str:
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
     @media (max-width:900px) { .portfolio-command-metrics,.portfolio-command-analysis,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
     @media (max-width:640px) { .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:14px; } .portfolio-header-status { justify-items:start; text-align:left; } .valuation-visuals,.valuation-amount-grid { grid-template-columns:1fr; } .valuation-amount-grid { grid-column:auto; } .holding-title-row { align-items:flex-start; } }
+    .predictions-card .prediction-stack { display:grid; gap:14px; }
+    .prediction-item { padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--surface-muted); }
+    .prediction-topline { display:flex; gap:12px; align-items:flex-start; }
+    .priority-index { width:26px; height:26px; flex-shrink:0; display:grid; place-items:center; border-radius:50%; background:var(--accent); color:#0b0f14; font-weight:760; font-size:.85rem; }
+    .prediction-item h3 { margin:0; font-size:.98rem; line-height:1.4; }
+    .confidence-bar { margin-top:12px; height:8px; border-radius:6px; background:rgba(255,255,255,.08); overflow:hidden; }
+    .confidence-fill { height:100%; border-radius:6px; background:linear-gradient(90deg, rgba(159,211,255,.55), var(--accent)); }
+    .forecast-track-record { margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+    .trk-bar { display:flex; height:14px; border-radius:8px; overflow:hidden; background:rgba(255,255,255,.06); gap:2px; }
+    .trk-seg { display:block; min-width:2px; }
+    .trk-body { display:flex; align-items:center; gap:18px; margin-top:14px; }
+    .trk-ring { flex-shrink:0; }
+    .trk-legend { list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px 16px; align-items:center; }
+    .trk-legend li { display:flex; align-items:center; gap:7px; font-size:.84rem; color:var(--muted); }
+    .trk-legend strong { color:var(--text); font-size:.95rem; }
+    .trk-dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
+    .trk-meta { margin:12px 0 0; font-size:.86rem; color:var(--muted); }
+    .trk-meta strong { color:var(--text); }
+    .evidence-confidence-pill { display:inline-block; padding:2px 10px; border-radius:999px; font-size:.78rem; font-weight:640; border:1px solid transparent; }
+    .evidence-confidence-pill.is-limited { color:var(--warning); background:rgba(246,215,122,.12); border-color:rgba(246,215,122,.35); }
+    .evidence-confidence-pill.is-calibrated { color:var(--positive); background:rgba(158,230,184,.12); border-color:rgba(158,230,184,.35); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+    .portfolio-command-analysis { grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; }
+    .exposure-donut { display:flex; align-items:center; gap:14px; min-height:74px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
+    .exposure-donut .atlas-viz { width:90px; height:90px; flex-shrink:0; }
+    .donut-legend { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
+    .donut-legend li { display:flex; align-items:center; gap:8px; font-size:.78rem; color:var(--subtle); }
+    .donut-legend strong { margin-left:auto; color:var(--text); font-size:.9rem; }
+    .donut-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
+    @media (max-width:1180px) { .portfolio-command-analysis { grid-template-columns:repeat(2,minmax(0,1fr)); } .exposure-donut { grid-column:1 / -1; } .conviction-hierarchy-card { grid-column:1 / -1; } }
+    @media (max-width:640px) { .portfolio-command-analysis { grid-template-columns:1fr; } }
+    .conviction-hierarchy-card .journey-step span { border-radius:50%; width:22px; height:22px; display:grid; place-items:center; font-size:.7rem; }
+    .conviction-pyramid { display:grid; gap:10px; }
+    .conviction-level { display:grid; justify-items:center; gap:6px; }
+    .conviction-bar { width:var(--level-width); max-width:100%; padding:9px 14px; border-radius:10px; background:linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border-left:4px solid var(--level-color); box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); }
+    .conviction-label { font-size:.78rem; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:.04em; }
+    .conviction-level ul { width:var(--level-width); max-width:100%; margin:0; padding:0; list-style:none; display:grid; gap:4px; }
+    .conviction-level li { font-size:.84rem; color:var(--subtle); line-height:1.4; padding-left:14px; position:relative; }
+    .conviction-level li::before { content:""; position:absolute; left:0; top:7px; width:5px; height:5px; border-radius:50%; background:var(--level-color); }
+    @media (max-width:1180px) { .conviction-bar, .conviction-level ul { width:100%; } }
+    .candidate-score-cell { min-width:120px; }
+    .candidate-score-bar { height:8px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; margin-bottom:4px; }
+    .candidate-score-bar.empty { background:rgba(255,255,255,.05); }
+    .candidate-score-fill { height:100%; border-radius:999px; background:var(--accent); }
+    .candidate-score-readout { font-size:.76rem; color:var(--muted); text-align:right; }
+    .forecast-track-record.empty { text-align:center; padding:26px 14px; border:1px dashed var(--line); border-radius:16px; background:rgba(255,255,255,.02); }
+    .empty-track-icon { width:64px; height:64px; margin:0 auto 12px; border-radius:50%; background:conic-gradient(rgba(255,255,255,.08) 75%, transparent 0); mask:radial-gradient(circle at 50% 50%, transparent 58%, black 59%); -webkit-mask:radial-gradient(circle at 50% 50%, transparent 58%, black 59%); }
+    .empty-track-title { margin:0 0 6px; font-size:1rem; color:var(--text); font-weight:640; }
+    .cde-lifecycle-bar { margin:14px 0 10px; padding:12px 14px; border:1px solid rgba(255,255,255,.06); border-radius:14px; background:rgba(0,0,0,.12); }
+    .cde-steps { display:flex; gap:6px; }
+    .cde-step { flex:1; min-width:0; height:10px; border-radius:999px; background:rgba(255,255,255,.08); position:relative; }
+    .cde-step.active { background:linear-gradient(90deg, var(--positive), var(--accent)); box-shadow:0 0 12px rgba(158,230,184,.25); }
+    .cde-step span { position:absolute; top:14px; left:50%; transform:translateX(-50%); font-size:.65rem; color:var(--muted); white-space:nowrap; }
+    .cde-step.active span { color:var(--text); font-weight:640; }
+    .cde-current { margin-top:22px; font-size:.8rem; color:var(--muted); }
+    .cde-current strong { color:var(--text); }
+    @media (max-width:640px) { .cde-steps { gap:4px; } .cde-step span { display:none; } .cde-step.active span { display:block; } }
+    .scenario-card { --scenario-accent: var(--accent); border-top: 3px solid var(--scenario-accent); }
+    .scenario-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:.82rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+    .scenario-icon { width:22px; height:22px; display:grid; place-items:center; border-radius:50%; background:var(--scenario-accent); color:#0b0f14; font-weight:760; font-size:.8rem; }
+    .home-summary-banner { display:flex; gap:14px; align-items:flex-start; padding:16px 18px; border:1px solid var(--line); border-radius:18px; background:linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.03)); margin-bottom:8px; }
+    .home-summary-icon { width:42px; height:42px; flex-shrink:0; display:grid; place-items:center; border-radius:12px; background:var(--accent); color:#0b0f14; font-weight:800; font-size:1.1rem; }
+    .home-summary-text { min-width:0; }
+    .home-summary-text strong { display:block; margin-bottom:6px; font-size:.82rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+    .home-summary-text p { margin:0; font-size:1.05rem; line-height:1.55; color:var(--text); }
+    .judgment-because { list-style:none; margin:12px 0; padding:0; display:grid; gap:8px; }
+    .judgment-because li { position:relative; padding-left:20px; font-size:.92rem; color:var(--subtle); line-height:1.45; }
+    .judgment-because li::before { content:"→"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+    .learning-log { display:flex; gap:12px; align-items:flex-start; margin-top:14px; padding:12px 14px; border:1px dashed rgba(159,211,255,.35); border-radius:14px; background:rgba(159,211,255,.05); }
+    .learning-log-icon { width:30px; height:30px; flex-shrink:0; display:grid; place-items:center; border-radius:50%; background:rgba(159,211,255,.15); color:var(--accent); font-weight:780; }
+    .learning-log-text strong { display:block; margin-bottom:4px; font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+    .thinking-timeline { display:grid; gap:10px; margin-top:12px; }
+    .thinking-phase { width:100%; min-width:0; max-width:100%; display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border:1px solid rgba(255,255,255,.06); border-radius:14px; background:rgba(0,0,0,.08); }
+    .thinking-phase:nth-child(1) { border-left:3px solid #9fd3ff; }
+    .thinking-phase:nth-child(2) { border-left:3px solid #9ee6b8; }
+    .thinking-phase:nth-child(3) { border-left:3px solid #f6d77a; }
+    .thinking-phase:nth-child(4) { border-left:3px solid #f4a5b3; }
+    .thinking-phase:nth-child(5) { border-left:3px solid #dbeafe; }
+    .thinking-phase:nth-child(6) { border-left:3px solid #9ee6b8; }
+    .phase-marker { width:30px; height:30px; flex-shrink:0; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.08); font-size:1rem; }
+    .phase-body { min-width:0; }
+    .phase-body strong { display:block; margin-bottom:4px; font-size:.86rem; color:var(--text); }
+    .phase-body p { margin:0; font-size:.9rem; line-height:1.45; color:var(--subtle); overflow-wrap:anywhere; }
+    .tooltip { position:relative; cursor:help; border-bottom:1px dotted var(--muted); }
+    .tooltip::after { content:attr(data-tip); position:absolute; bottom:120%; left:50%; transform:translateX(-50%); width:max-content; max-width:240px; padding:8px 10px; border-radius:8px; background:rgba(11,15,20,.95); border:1px solid var(--line); color:var(--text); font-size:.78rem; line-height:1.35; opacity:0; pointer-events:none; transition:opacity .15s; z-index:20; }
+    .tooltip:hover::after { opacity:1; }
+    .brief-runtime-strip { display:flex; justify-content:space-between; align-items:center; gap:24px; padding:14px 18px; border:1px solid rgba(125,211,252,.18); border-radius:12px; background:rgba(125,211,252,.055); }
+    .brief-runtime-strip > div { display:grid; gap:4px; }
+    .brief-runtime-strip > div span { color:var(--muted); font-size:.86rem; }
+    .brief-runtime-strip dl { display:grid; grid-template-columns:auto minmax(120px,auto); gap:3px 10px; margin:0; font-size:.76rem; }
+    .brief-runtime-strip dt { color:var(--muted); }
+    .brief-runtime-strip dd { margin:0; text-align:right; overflow-wrap:anywhere; }
+    .evidence-review-summary { display:flex; justify-content:space-between; gap:16px; margin-bottom:14px; padding:11px 13px; border-left:3px solid #7dd3fc; background:rgba(125,211,252,.055); font-size:.82rem; }
+    .evidence-review-summary.no-change { border-left-color:#9ee6b8; background:rgba(158,230,184,.05); }
+    .evidence-review-summary span { color:var(--muted); }
+    .candidate-score-table td small, .decision-dl dd small { display:block; margin-top:4px; color:var(--muted); font-size:.7rem; }
+    @media (max-width:720px) { .brief-runtime-strip { align-items:flex-start; flex-direction:column; gap:10px; } .brief-runtime-strip dl { width:100%; grid-template-columns:auto 1fr; } .evidence-review-summary { flex-direction:column; gap:4px; } }
     </style>
     """
 
@@ -2130,6 +2488,56 @@ def _home_intelligence_script(*, include_candidate_filters: bool = True) -> str:
     (function () {
       const expert = document.getElementById("expert-analysis-panel");
       if (expert) expert.open = false;
+      const sectionMap = {
+        portfolio_state: ["portfolio_command", "current_holdings"],
+        action_review: ["portfolio_command", "action_today"],
+        core_judgment: ["core_judgment"],
+        material_changes: ["material_changes", "reasoning_chain"],
+        scenario_outlook: ["strongest_predictions", "scenario_outlook", "action_playbook"],
+        candidate_delta: ["candidate_board"],
+        data_freshness: ["portfolio_command", "current_holdings", "material_changes"],
+        brief_runtime: ["brief_runtime"]
+      };
+      let checking = false;
+      async function refreshBriefIfChanged() {
+        if (checking || document.hidden) return;
+        const home = document.querySelector("[data-home-layout]");
+        if (!home) return;
+        checking = true;
+        try {
+          const summaryResponse = await fetch("/state/summary", { cache: "no-store" });
+          if (!summaryResponse.ok) return;
+          const summary = await summaryResponse.json();
+          const runtime = summary.brief_runtime_state || {};
+          const currentRevision = Number(home.dataset.briefRevision || 0);
+          const nextRevision = Number(runtime.brief_revision || 0);
+          if (!nextRevision || nextRevision === currentRevision) return;
+          const briefResponse = await fetch("/brief/current", { cache: "no-store" });
+          if (!briefResponse.ok) return;
+          const brief = await briefResponse.json();
+          const parsed = new DOMParser().parseFromString(brief.home_html || "", "text/html");
+          const changed = nextRevision - currentRevision === 1 && Array.isArray(brief.changed_sections)
+            ? brief.changed_sections
+            : Object.keys(sectionMap);
+          const keys = new Set(["brief_runtime"]);
+          changed.forEach(function (name) {
+            (sectionMap[name] || []).forEach(function (key) { keys.add(key); });
+          });
+          keys.forEach(function (key) {
+            const selector = '[data-practical-section="' + key + '"]';
+            const oldNode = document.querySelector(selector);
+            const newNode = parsed.querySelector(selector);
+            if (oldNode && newNode) oldNode.replaceWith(document.importNode(newNode, true));
+          });
+          const updatedHome = document.querySelector("[data-home-layout]");
+          if (updatedHome) updatedHome.dataset.briefRevision = String(brief.brief_revision || nextRevision);
+        } catch (error) {
+          document.body.dataset.briefRefresh = "degraded";
+        } finally {
+          checking = false;
+        }
+      }
+      window.setInterval(refreshBriefIfChanged, 2000);
     })();
     </script>
     """
@@ -3562,6 +3970,69 @@ def _theme_bars(values: Any, viz_id: str = "theme_concentration", question_key: 
         pct = max(0, min(100, _num(value, 0)))
         bars.append(f'<div class="metric-card"><span>{escape(str(label))}</span><strong>{pct:.1f}%</strong><div style="height:8px;border-radius:999px;background:rgba(255,255,255,.08);margin-top:10px;"><i style="display:block;width:{pct}%;height:100%;border-radius:999px;background:#dbeafe;"></i></div></div>')
     return _viz_shell(viz_id, question_key, "".join(bars))
+
+
+def _portfolio_exposure_donut(command: Mapping[str, Any], lang: str) -> str:
+    """Inline SVG donut of market concentration + unallocated buffer."""
+    market = _mapping(command.get("market_concentration"))
+    unallocated = _num(command.get("unassigned_pct"), 0)
+    items = [(name, _num(value, 0)) for name, value in market.items() if _num(value, 0) > 0]
+    if not items:
+        items = [("Configured", 100 - unallocated)]
+    total = sum(value for _, value in items) + unallocated
+    if total <= 0:
+        return '<div class="exposure-donut empty"></div>'
+    colors = {"A-share": "#9ee6b8", "HK": "#9fd3ff", "US": "#f6d77a", "Unknown": "#dbeafe"}
+    segments = []
+    legend_rows = []
+    offset = 0
+    radius = 40
+    circumference = 2 * 3.1416 * radius
+    for index, (name, value) in enumerate(items):
+        pct = value / total
+        dash = pct * circumference
+        color = colors.get(str(name), ["#dbeafe", "#9ee6b8", "#f6d77a", "#9fd3ff", "#f4a5b3"][index % 5])
+        segments.append(f'<circle cx="60" cy="60" r="{radius}" fill="none" stroke="{color}" stroke-width="12" stroke-dasharray="{dash:.2f} {circumference - dash:.2f}" stroke-dashoffset="{-offset:.2f}" transform="rotate(-90 60 60)"/>')
+        legend_rows.append(f'<li><span class="donut-dot" style="background:{color}"></span>{escape(str(name))}<strong>{value:.1f}%</strong></li>')
+        offset += dash
+    if unallocated > 0:
+        dash = (unallocated / total) * circumference
+        segments.append(f'<circle cx="60" cy="60" r="{radius}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="12" stroke-dasharray="{dash:.2f} {circumference - dash:.2f}" stroke-dashoffset="{-offset:.2f}" transform="rotate(-90 60 60)"/>')
+        legend_rows.append(f'<li><span class="donut-dot" style="background:rgba(255,255,255,.12)"></span>{escape(_brief_copy("unassigned_capital", lang))}<strong>{unallocated:.1f}%</strong></li>')
+    return f'''<div class="exposure-donut">
+      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="{escape(_brief_copy("configured_exposure", lang))}">{''.join(segments)}</svg>
+      <ul class="donut-legend">{''.join(legend_rows)}</ul>
+    </div>'''
+
+
+def _cde_lifecycle_bar(command: Mapping[str, Any], lang: str) -> str:
+    stages = [
+        ("Observe", _bilingual("Observe", "观察")),
+        ("Pilot Deployment", _bilingual("Pilot", "试点")),
+        ("Initial Deployment", _bilingual("Initial", "初始")),
+        ("Scaling", _bilingual("Scaling", "加仓")),
+        ("Maximum Opportunity", _bilingual("Max", "重仓")),
+        ("Capital Preservation", _bilingual("Preserve", "防御")),
+    ]
+    exposure_pct = _num(command.get("exposure_pct"), None)
+    current_stage = (
+        "Scaling" if (exposure_pct is not None and exposure_pct >= 60) else
+        "Initial Deployment" if (exposure_pct is not None and exposure_pct >= 30) else
+        "Pilot Deployment" if (exposure_pct is not None and exposure_pct >= 10) else
+        "Observe"
+    )
+    step_blocks = []
+    for name, labels in stages:
+        active = name == current_stage
+        label = _localized(labels, lang)
+        cls = "cde-step active" if active else "cde-step"
+        step_blocks.append(f'<div class="{cls}" title="{escape(name)}"><span>{escape(label)}</span></div>')
+    return f'''
+    <div class="cde-lifecycle-bar">
+      <div class="cde-steps">{''.join(step_blocks)}</div>
+      <div class="cde-current">{escape(_brief_copy("status", lang))}: <strong>{escape(current_stage)}</strong></div>
+    </div>
+    '''
 
 
 def _risk_cluster_graph(clusters: Any) -> str:
