@@ -7,25 +7,29 @@
     .decision-home-shell { display:grid; gap:18px; }
     .investor-home { gap:24px; }
     .portfolio-first-viewport { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
-    .portfolio-command-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
-    .holdings-primary-card { grid-column:span 8; grid-row:2; min-height:100%; }
+    .portfolio-overview-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
+    .portfolio-holdings-region { min-width:0; }
     .portfolio-first-viewport .action-today-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; grid-template-columns:1fr; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; align-content:start; }
-    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:2; min-height:100%; }
+    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; }
     .portfolio-first-viewport .conviction-hierarchy-card,
     .portfolio-first-viewport .predictions-card { grid-column:1 / -1; }
-    .portfolio-command-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
+    .portfolio-overview-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
     .portfolio-header-status { display:grid; justify-items:end; gap:5px; text-align:right; }
     .portfolio-header-status small { color:var(--muted); font-size:.72rem; }
     .portfolio-header-status strong { max-width:12ch; font-size:.92rem; line-height:1.25; }
     .portfolio-command-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0 14px; }
     .portfolio-command-metrics > div { min-height:84px; display:grid; align-content:center; gap:6px; padding:12px; border-top:1px solid rgba(219,234,254,.14); border-bottom:1px solid rgba(219,234,254,.08); }
-    .portfolio-command-metrics span,.portfolio-command-analysis span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
+    .portfolio-command-metrics span,.portfolio-side-panel span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
     .portfolio-command-metrics strong { font-size:1.34rem; }
-    .portfolio-command-analysis { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-    .portfolio-command-analysis > div,.portfolio-command-analysis ul { min-height:74px; margin:0; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
-    .portfolio-command-analysis > div { display:grid; gap:6px; align-content:center; }
-    .portfolio-command-analysis ul { list-style:none; display:grid; gap:4px; }
-    .portfolio-command-analysis li { display:flex; justify-content:space-between; gap:10px; color:var(--subtle); font-size:.78rem; }
+    .portfolio-overview-body { display:grid; grid-template-columns:minmax(0,1fr) minmax(230px,280px); gap:18px; margin-top:18px; align-items:start; }
+    .holdings-subheader { margin-bottom:12px; }
+    .holdings-subheader h2 { margin:0 0 4px; font-size:1.12rem; }
+    .portfolio-side-panel { display:grid; gap:10px; align-content:start; }
+    .portfolio-side-panel .side-metric { display:grid; gap:6px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
+    .portfolio-side-panel .largest-theme-metric { border-left:3px solid var(--theme-accent, var(--accent)); }
+    .portfolio-side-panel .exposure-donut { flex-wrap:wrap; }
+    .holding-theme-chip { display:inline-flex; align-items:center; gap:7px; margin:0; color:var(--subtle); font-size:.74rem; }
+    .holding-theme-chip::before { content:""; width:9px; height:9px; border-radius:3px; background:var(--theme-accent, var(--accent)); }
     .portfolio-risk-callout { margin-top:12px; padding:13px 14px; border-left:3px solid rgba(244,165,179,.72); background:rgba(244,165,179,.045); }
     .portfolio-risk-callout p { margin:6px 0 0; color:var(--text); }
     .investor-evidence-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(380px,.92fr); gap:16px; align-items:start; }
@@ -254,8 +258,8 @@
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
-    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-command-analysis,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
+    @media (max-width:1180px) { .portfolio-overview-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-overview-body,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .portfolio-side-panel { grid-template-columns:repeat(2,minmax(0,1fr)); } .portfolio-side-panel .exposure-donut { grid-column:1 / -1; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
     @media (max-width:640px) { .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:14px; } .portfolio-header-status { justify-items:start; text-align:left; } .valuation-visuals,.valuation-amount-grid { grid-template-columns:1fr; } .valuation-amount-grid { grid-column:auto; } .holding-title-row { align-items:flex-start; } }
     .predictions-card .prediction-stack { display:grid; gap:14px; }
     .prediction-item { padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--surface-muted); }
@@ -279,15 +283,14 @@
     .evidence-confidence-pill.is-limited { color:var(--warning); background:rgba(246,215,122,.12); border-color:rgba(246,215,122,.35); }
     .evidence-confidence-pill.is-calibrated { color:var(--positive); background:rgba(158,230,184,.12); border-color:rgba(158,230,184,.35); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
-    .portfolio-command-analysis { grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; }
     .exposure-donut { display:flex; align-items:center; gap:14px; min-height:74px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
     .exposure-donut .atlas-viz { width:90px; height:90px; flex-shrink:0; }
     .donut-legend { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
     .donut-legend li { display:flex; align-items:center; gap:8px; font-size:.78rem; color:var(--subtle); }
     .donut-legend strong { margin-left:auto; color:var(--text); font-size:.9rem; }
     .donut-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
-    @media (max-width:1180px) { .portfolio-command-analysis { grid-template-columns:repeat(2,minmax(0,1fr)); } .exposure-donut { grid-column:1 / -1; } .conviction-hierarchy-card { grid-column:1 / -1; } }
-    @media (max-width:640px) { .portfolio-command-analysis { grid-template-columns:1fr; } }
+    @media (max-width:1180px) { .conviction-hierarchy-card { grid-column:1 / -1; } }
+    @media (max-width:640px) { .portfolio-side-panel { grid-template-columns:1fr; } }
     .conviction-hierarchy-card .journey-step span { border-radius:50%; width:22px; height:22px; display:grid; place-items:center; font-size:.7rem; }
     .conviction-pyramid { display:grid; gap:10px; }
     .conviction-level { display:grid; justify-items:center; gap:6px; }
@@ -354,102 +357,257 @@
     .evidence-review-summary span { color:var(--muted); }
     .candidate-score-table td small, .decision-dl dd small { display:block; margin-top:4px; color:var(--muted); font-size:.7rem; }
     @media (max-width:720px) { .brief-runtime-strip { align-items:flex-start; flex-direction:column; gap:10px; } .brief-runtime-strip dl { width:100%; grid-template-columns:auto 1fr; } .evidence-review-summary { flex-direction:column; gap:4px; } }
+    .home-fold { border:1px solid rgba(219,234,254,.105); border-radius:20px; background:linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); }
+    .home-fold > summary { cursor:pointer; display:flex; align-items:center; gap:10px; padding:16px 20px; color:var(--subtle); font-weight:740; list-style:none; }
+    .home-fold > summary::-webkit-details-marker { display:none; }
+    .home-fold > summary::before { content:"+"; width:24px; height:24px; flex-shrink:0; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-size:.85rem; font-weight:780; }
+    .home-fold[open] > summary::before { content:"−"; }
+    .home-fold > summary .fold-hint { margin-left:auto; color:var(--muted); font-size:.78rem; font-weight:400; text-align:right; }
+    .home-fold > .home-fold-body { display:grid; gap:16px; padding:4px 16px 16px; }
+    .home-fold > .home-fold-body > .decision-support-card,
+    .home-fold > .home-fold-body > .forecast-compact-card { box-shadow:none; }
+    .holdings-compact-table { min-width:760px; }
+    .holding-name-cell strong { display:block; font-size:.95rem; }
+    .holding-name-cell small { display:block; margin-top:3px; color:var(--muted); font-size:.72rem; }
+    .holding-cost-latest { white-space:nowrap; font-size:.86rem; }
+    .holding-multiday { white-space:nowrap; font-size:.82rem; }
+    .pnl-value { font-weight:780; }
+    .pnl-pos { color:#9ee6b8; }
+    .pnl-neg { color:#f4a5b3; }
+    .valuation-note { color:var(--muted); font-size:.74rem; line-height:1.35; }
+    .risk-fact-list { margin:8px 0 0; padding-left:18px; display:grid; gap:5px; }
+    .risk-fact-list li { color:var(--text); font-size:.92rem; line-height:1.45; }
+    .scenario-compact-table { min-width:640px; }
+    .scenario-name { display:inline-flex; align-items:center; gap:9px; }
+    .scenario-name .scenario-icon { background:var(--scenario-accent, var(--accent)); }
+    .playbook-shared-notes { margin:0 0 4px; padding-left:18px; display:grid; gap:4px; color:var(--subtle); font-size:.88rem; }
+    .evidence-status-line { margin-top:12px; padding:9px 12px; border:1px solid rgba(219,234,254,.1); border-radius:10px; background:rgba(0,0,0,.1); color:var(--muted) !important; font-size:.8rem; }
+    .posture-derived-line { margin-top:12px; padding-top:12px; border-top:1px solid rgba(219,234,254,.12); color:var(--text) !important; font-size:.95rem; line-height:1.5; }
+    @media (max-width:640px) { .home-fold > summary { padding:14px 16px; } .home-fold > .home-fold-body { padding:2px 10px 12px; } }
     </style>
     
-    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief" data-brief-revision="31">
+    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief" data-brief-revision="209">
       
     <section class="brief-runtime-strip" id="home-brief-runtime" data-practical-section="brief_runtime">
-      <div><strong>简报版本 31</strong><span>1 条证据改变了当前判断，请查看下方更新区块。</span></div>
-      <dl><dt>更新时间</dt><dd>2026-07-19T04:49:41.908031+00:00</dd><dt>触发原因</dt><dd>material_runtime_delta:brief</dd></dl>
+      <div><strong>第 209 期简报</strong><span>5 条证据改变了当前判断，请查看下方更新区块。</span></div>
+      <dl><dt>更新时间</dt><dd>2026年7月19日 21:40:54</dd><dt>更新原因</dt><dd title="material_runtime_delta:brief">市场出现实质性变化</dd></dl>
     </section>
     
-      <div class="home-summary-banner">
-      <div class="home-summary-icon" aria-hidden="true">A</div>
-      <div class="home-summary-text">
-        <strong>Atlas 一句话总结</strong>
-        <p>Atlas 今天看到 3 个可用市场信号。你的组合已配置 0.0%，最大暴露主题是 Unknown（0.0%）。当前运行状态为 RISK OFF。Atlas 的姿态是「降低暴露」：需要进行组合风险复核。</p>
-      </div>
-    </div>
-    <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="组合指挥视图">
-        <article class="decision-card portfolio-command-card" id="home-portfolio-command" data-practical-section="portfolio_command">
-          <div class="journey-step"><span>01</span>组合指挥视图</div>
+    <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="组合总览">
+        <article class="decision-card portfolio-overview-card" id="home-portfolio-command" data-practical-section="portfolio_command">
+          <div class="journey-step"><span>01</span>组合总览</div>
           <div class="home-section-header">
             <div>
               <span class="kicker">先看你的资本与持仓</span>
               <h1>当前组合状态</h1>
             </div>
-            <div class="portfolio-header-status">
-              <div class="posture-pill">降低暴露</div>
-              <small>今日决策复核</small>
-              <strong>需要复核</strong>
-            </div>
           </div>
           
-    <div class="portfolio-command-metrics"><div><span>已配置暴露</span><strong>0.0%</strong></div><div><span>未部署资金</span><strong>0.0%</strong></div><div><span>组合一致性</span><strong>通过</strong></div><div><span>可用市场证据</span><strong>3/3</strong></div></div>
+    <div class="portfolio-command-metrics"><div><span>已配置暴露</span><strong>79.3%</strong></div><div><span>未部署资金</span><strong>20.7%</strong></div><div><span>配置校验</span><strong>正常</strong></div><div><span>市场信号</span><strong>5/5</strong></div></div>
     
     <div class="cde-lifecycle-bar">
-      <div class="cde-steps"><div class="cde-step active" title="Observe"><span>观察</span></div><div class="cde-step" title="Pilot Deployment"><span>试点</span></div><div class="cde-step" title="Initial Deployment"><span>初始</span></div><div class="cde-step" title="Scaling"><span>加仓</span></div><div class="cde-step" title="Maximum Opportunity"><span>重仓</span></div><div class="cde-step" title="Capital Preservation"><span>防御</span></div></div>
-      <div class="cde-current">状态: <strong>Observe</strong></div>
+      <div class="cde-steps"><div class="cde-step" title="观察"><span>观察</span></div><div class="cde-step" title="试点部署"><span>试点</span></div><div class="cde-step" title="初始部署"><span>初始</span></div><div class="cde-step active" title="加仓"><span>加仓</span></div><div class="cde-step" title="重仓机会"><span>重仓</span></div><div class="cde-step" title="资本防御"><span>防御</span></div></div>
+      <div class="cde-current">状态: <strong>加仓</strong></div>
     </div>
     
-    <div class="portfolio-command-analysis">
-      <div><span>最大主题暴露</span><strong>Unknown · 0.0%</strong></div>
-      <div><span>流动性敏感度</span><strong>diversified or unknown</strong></div>
-      <div><span>市场状态敏感度</span><strong>broad or unclassified</strong></div>
-      <div class="exposure-donut">
-      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="已配置暴露"><circle cx="60" cy="60" r="40" fill="none" stroke="#dbeafe" stroke-width="12" stroke-dasharray="251.33 0.00" stroke-dashoffset="0.00" transform="rotate(-90 60 60)"/></svg>
-      <ul class="donut-legend"><li><span class="donut-dot" style="background:#dbeafe"></span>Configured<strong>100.0%</strong></li></ul>
-    </div>
-    </div>
-    <div class="portfolio-risk-callout"><span>当前组合首要风险</span><p>最大主题暴露为 Unknown，占 0.0%；相关证据或流动性冲击可能同时影响多个持仓。</p></div>
-    <p class="decision-change">最新有效 DecisionPacket 要求进行风险复核：Atlas 姿态为降低暴露，风险等级为 high。系统不会生成订单。</p>
-    
-        </article>
-
-        <article class="decision-card holdings-primary-card" id="home-current-holdings" data-practical-section="current_holdings">
-          <div class="journey-step"><span>02</span>当前持仓</div>
-          <div class="home-section-header">
-            <div>
-              <h2>仅显示实际配置持仓</h2>
-              <p class="home-safety-note">私密数值遵循本地显示设置，不进入 Atlas 推理或外部 LLM。</p>
-            </div>
+    <div class="portfolio-overview-body">
+      <div class="portfolio-holdings-region" id="home-current-holdings" data-practical-section="current_holdings">
+        <div class="home-section-header holdings-subheader">
+          <div>
+            <h2>当前持仓</h2>
+            <p class="home-safety-note">私密数值遵循本地显示设置，不进入 Atlas 推理或外部 LLM。</p>
           </div>
-          <div class="empty-state">尚未配置组合百分比。</div>
-        </article>
-
-        <article class="decision-card action-today-card" id="home-action-today" data-practical-section="action_today">
-          <div class="journey-step"><span>03</span>今日是否行动</div>
-          <span class="kicker">第一答案</span>
-          <h1 class="action-answer">需要复核</h1>
-          <div class="posture-pill">降低暴露</div>
-          <p class="decision-change">最新有效 DecisionPacket 要求进行风险复核：Atlas 姿态为降低暴露，风险等级为 high。系统不会生成订单。</p>
-          <p class="home-safety-note">这里判断的是今天是否值得进入决策复核，不代表交易指令。</p>
+        </div>
+        
+    <div class="table-scroll"><table class="practical-table holdings-compact-table">
+      <thead><tr><th>持仓</th><th>权重</th><th>成本 → 最新</th><th>盈亏</th><th>主题</th><th>5日 · 20日</th></tr></thead>
+      <tbody>
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>建滔集团</strong><small>00148.HK</small></td>
+              <td><strong>18.4%</strong></td>
+              <td><small class="valuation-note">未配置成本</small></td>
+              <td><small class="valuation-note">行情缺失</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#9fd3ff">AI 基础设施材料 / 制造</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -30.1%</span> · <span class="pnl-neg">20d -55.9%</span></span></td>
+            </tr>
+            
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>国际复材</strong><small>301526.SZ</small></td>
+              <td><strong>7.2%</strong></td>
+              <td><small class="valuation-note">未配置成本</small></td>
+              <td><small class="valuation-note">行情缺失</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#9fd3ff">AI 基础设施材料 / 制造</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -16.4%</span> · <span class="pnl-neg">20d -22.7%</span></span></td>
+            </tr>
+            
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>安集科技</strong><small>688019.SH</small></td>
+              <td><strong>12.2%</strong></td>
+              <td><small class="valuation-note">未配置成本</small></td>
+              <td><small class="valuation-note">行情缺失</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#9ee6b8">半导体材料</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -23.6%</span> · <span class="pnl-neg">20d -2.8%</span></span></td>
+            </tr>
+            
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>中船特气</strong><small>688146.SH</small></td>
+              <td><strong>29.0%</strong></td>
+              <td><small class="valuation-note">未配置成本</small></td>
+              <td><small class="valuation-note">行情缺失</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#9ee6b8">半导体材料</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -14.6%</span> · <span class="pnl-neg">20d -21.1%</span></span></td>
+            </tr>
+            
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>风华高科</strong><small>000636.SZ</small></td>
+              <td><strong>12.5%</strong></td>
+              <td><small class="valuation-note">未配置成本</small></td>
+              <td><small class="valuation-note">行情缺失</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#f6d77a">AI 基础设施元器件</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -22.5%</span> · <span class="pnl-neg">20d -37.5%</span></span></td>
+            </tr>
+            </tbody>
+    </table></div>
+    
+      </div>
+      <aside class="portfolio-side-panel">
+        <div class="side-metric largest-theme-metric" style="--theme-accent:#9ee6b8"><span>最大主题暴露</span><strong>半导体材料 · 41.2%</strong></div>
+        <div class="side-metric"><span>流动性敏感度</span><strong>区域流动性敏感</strong></div>
+        <div class="side-metric"><span>市场状态敏感度</span><strong>主题集群敏感</strong></div>
+        <div class="exposure-donut">
+      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="当前持仓"><circle cx="60" cy="60" r="40" fill="none" stroke="#9ee6b8" stroke-width="12" stroke-dasharray="72.89 178.44" stroke-dashoffset="0.00" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#9fd3ff" stroke-width="12" stroke-dasharray="46.24 205.08" stroke-dashoffset="-72.89" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#f6d77a" stroke-width="12" stroke-dasharray="31.42 219.91" stroke-dashoffset="-119.13" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#f4a5b3" stroke-width="12" stroke-dasharray="30.66 220.67" stroke-dashoffset="-150.55" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#c5b8ff" stroke-width="12" stroke-dasharray="18.10 233.23" stroke-dashoffset="-181.21" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="12" stroke-dasharray="52.02 199.30" stroke-dashoffset="-199.30" transform="rotate(-90 60 60)"/></svg>
+      <ul class="donut-legend"><li><span class="donut-dot" style="background:#9ee6b8"></span>中船特气<strong>29.0%</strong></li><li><span class="donut-dot" style="background:#9fd3ff"></span>建滔集团<strong>18.4%</strong></li><li><span class="donut-dot" style="background:#f6d77a"></span>风华高科<strong>12.5%</strong></li><li><span class="donut-dot" style="background:#f4a5b3"></span>安集科技<strong>12.2%</strong></li><li><span class="donut-dot" style="background:#c5b8ff"></span>国际复材<strong>7.2%</strong></li><li><span class="donut-dot" style="background:rgba(255,255,255,.12)"></span>未部署资金<strong>20.7%</strong></li></ul>
+    </div>
+      </aside>
+    </div>
+    <div class="portfolio-risk-callout"><span>当前组合首要风险</span><ul class="risk-fact-list"><li>最大单票 中船特气 29.0%，单一持仓集中度过高</li><li>主题集中度 半导体材料 41.2%，同主题波动会同时影响多只持仓</li><li>持仓盈亏数据暂不可用</li><li>当前姿态 降低暴露，系统不生成订单</li></ul></div>
+    <p class="decision-change">最新有效决策结论要求进行风险复核：Atlas 姿态为降低暴露，风险等级为高。系统不会生成订单。</p>
+    
         </article>
 
         <article class="decision-card core-judgment-card" id="home-core-judgment" data-practical-section="core_judgment">
-          <div class="journey-step"><span>04</span>今日总判断</div>
-          <span class="kicker">只保留一个总判断</span>
-          <h2>当前风险等级为 high；Atlas 姿态为降低暴露，需要进行组合风险复核。</h2>
-          <ul class="judgment-because"><li>DecisionPacket 姿态：降低暴露；风险：high；置信度：35%。</li><li>证据复核：已复核 14 条，改变判断 1 条，结论不变 12 条，待复核 0 条。</li><li>组合相关市场观测：3 个可用；未部署缓冲：0.0%。</li></ul>
-          <p>运行态为 RISK_OFF，有 3 个可用的组合相关观测。决策置信度为 35%；因果摘要：Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.。未部署缓冲为 0.0%。</p>
+          <div class="journey-step"><span>02</span>核心判断</div>
+          <span class="kicker">今日是否行动</span>
+          <h2>市场处于「高波动」状态；组合已配置 79.3%，最大主题 半导体材料（41.2%）的集中暴露使组合对该状态敏感；5 个组合相关观测可用，证据强度偏低。</h2>
+          <ul class="judgment-because"><li>决策结论姿态：降低暴露；风险：高；置信度：35%。</li><li>证据复核：已复核 22 条，改变判断 5 条，结论不变 17 条，待复核 0 条。</li><li>组合相关市场观测：5 个可用；未部署缓冲：20.7%。</li></ul>
+          <p class="evidence-status-line">已复核 22 条 · 改变判断 5 条 · 置信度 35% · 风险等级高 · 更新于 2026年7月19日 21:40:54（北京时间）</p>
+          <p class="posture-derived-line" id="home-action-today" data-practical-section="action_today">因此当前姿态：降低暴露 · 需要复核。这不代表交易指令，系统不会生成订单。</p>
         </article>
-        <article class="decision-support-card conviction-hierarchy-card" id="home-conviction-hierarchy" data-practical-section="conviction_hierarchy">
-      <div class="journey-step"><span>●</span>判断强度层级</div>
-      <div class="conviction-pyramid"><div class="conviction-level" style="--level-color:#9ee6b8;--level-width:100%">
-              <div class="conviction-bar"><span class="conviction-label">Level 1 · 核心判断</span></div>
-              <ul><li>组合相关价格在移动，但 Atlas 仍将当前环境视为风险约束状态。</li></ul>
-            </div><div class="conviction-level" style="--level-color:#9fd3ff;--level-width:85%">
-              <div class="conviction-bar"><span class="conviction-label">Level 2 · 关键预测</span></div>
-              <ul><li>NORMAL 仍是当前前瞻工作结构，除非后续观测状态与之冲突。 · 35%</li><li>若市场广度/流动性修复，确认度会提升。 · 35%</li><li>若流动性、数据新鲜度或预测结果恶化，风险会升高。 · 35%</li></ul>
-            </div><div class="conviction-level" style="--level-color:#7d8aa0;--level-width:55%">
-              <div class="conviction-bar"><span class="conviction-label">Level 4 · 研究候选</span></div>
-              <ul><li>今天最值得深入研究 Top 3 (3.0)</li></ul>
-            </div></div>
-    </article>
-        <article class="decision-support-card predictions-card" id="home-predictions" data-practical-section="strongest_predictions">
-          <div class="journey-step"><span>05</span>最强预测</div>
+      </section>
+
+      <details class="home-fold" data-home-fold="material_changes">
+        <summary>重要变化<span class="fold-hint">已复核 22 条 · 改变 5 条</span></summary>
+        <div class="home-fold-body">
+        <article class="decision-support-card material-change-card" id="home-material-changes" data-practical-section="material_changes">
           <div class="home-section-header">
-            <div><p class="home-safety-note">最多 3 条，必须标注证据</p></div>
+            <div>
+              <h2>真正影响判断的最新证据</h2>
+              <p class="home-safety-note">新闻只是信号，不是行动；这里只展示与论点相关的变化。</p>
+            </div>
+            <a class="secondary-button" href="/markets">查看市场证据</a>
+          </div>
+          <div class="evidence-review-summary has-change"><strong>已复核 22 条 · 改变判断 5 · 结论不变 17 · 待复核 0</strong><span>2026年7月19日 21:40:54</span></div><div class="material-evidence-list">
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>公开关注度样本</span><em>延迟</em></div>
+              <h3>公开关注度样本：前 100 名中包含 1 只已配置 A 股</h3>
+              <dl>
+                <div><dt>来源</dt><dd><a href="https://emappdata.eastmoney.com/stockrank/getAllCurrentList" target="_blank" rel="noopener noreferrer" title="eastmoney_stock_rank">东方财富</a></dd></div>
+                <div><dt>发布 / 观测时间</dt><dd>2026年7月19日 21:37:46</dd></div>
+                <div><dt>影响范围</dt><dd>301526.SZ, A股公开关注度</dd></div>
+                <div><dt>论点变化</dt><dd>结论不变</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>实时观测样本</span><em>延迟</em></div>
+              <h3>A股涨跌家数样本：上涨 21，下跌 77，平盘 2</h3>
+              <dl>
+                <div><dt>来源</dt><dd><a href="https://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData" target="_blank" rel="noopener noreferrer" title="sina_market_center">新浪财经</a></dd></div>
+                <div><dt>发布 / 观测时间</dt><dd>2026年7月19日 21:37:43</dd></div>
+                <div><dt>影响范围</dt><dd>A股市场广度</dd></div>
+                <div><dt>论点变化</dt><dd>结论不变</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>已验证证据</span><em>实时</em></div>
+              <h3>中国人民银行副行长宣昌能会见布基纳法索经济财政部部长阿布巴卡尔·纳卡纳...</h3>
+              <dl>
+                <div><dt>来源</dt><dd><a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026071814542725789/index.html" target="_blank" rel="noopener noreferrer" title="pbo_c_official">人民银行</a></dd></div>
+                <div><dt>发布 / 观测时间</dt><dd>2026年7月18日 08:00:00</dd></div>
+                <div><dt>影响范围</dt><dd>宏观政策</dd></div>
+                <div><dt>论点变化</dt><dd>结论不变</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>已验证证据</span><em>实时</em></div>
+              <h3>2026年第二次临时股东会会议资料</h3>
+              <dl>
+                <div><dt>来源</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688019_20260718_VCV1.pdf" target="_blank" rel="noopener noreferrer" title="sse_official">上交所</a></dd></div>
+                <div><dt>发布 / 观测时间</dt><dd>2026年7月18日 08:00:00</dd></div>
+                <div><dt>影响范围</dt><dd>688019.SH, 半导体材料</dd></div>
+                <div><dt>论点变化</dt><dd>已改变</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>已验证证据</span><em>实时</em></div>
+              <h3>中船（邯郸）派瑞特种气体股份有限公司2026年度“提质增效重回报”行动方案的半年度评估报告</h3>
+              <dl>
+                <div><dt>来源</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688146_20260718_4FVV.pdf" target="_blank" rel="noopener noreferrer" title="sse_official">上交所</a></dd></div>
+                <div><dt>发布 / 观测时间</dt><dd>2026年7月18日 08:00:00</dd></div>
+                <div><dt>影响范围</dt><dd>688146.SH, 半导体材料</dd></div>
+                <div><dt>论点变化</dt><dd>结论不变</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>已验证证据</span><em>实时</em></div>
+              <h3>中船特气2026年半年度报告_摘要</h3>
+              <dl>
+                <div><dt>来源</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688146_20260718_LHXM.pdf" target="_blank" rel="noopener noreferrer" title="sse_official">上交所</a></dd></div>
+                <div><dt>发布 / 观测时间</dt><dd>2026年7月18日 08:00:00</dd></div>
+                <div><dt>影响范围</dt><dd>688146.SH, 半导体材料</dd></div>
+                <div><dt>论点变化</dt><dd>结论不变</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>已验证证据</span><em>实时</em></div>
+              <h3>中船特气2026年半年度募集资金存放、管理与实际使用情况的专项报告</h3>
+              <dl>
+                <div><dt>来源</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688146_20260718_M9MC.pdf" target="_blank" rel="noopener noreferrer" title="sse_official">上交所</a></dd></div>
+                <div><dt>发布 / 观测时间</dt><dd>2026年7月18日 08:00:00</dd></div>
+                <div><dt>影响范围</dt><dd>688146.SH, 半导体材料</dd></div>
+                <div><dt>论点变化</dt><dd>结论不变</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>数据源观测</span><em>上一收盘</em></div>
+              <h3>00148.HK: 51.4 (-9.59%)</h3>
+              <dl>
+                <div><dt>来源</dt><dd><a href="https://web.ifzq.gtimg.cn/appstock/app/fqkline/get" target="_blank" rel="noopener noreferrer" title="tencent_kline">腾讯行情</a></dd></div>
+                <div><dt>发布 / 观测时间</dt><dd>2026年7月17日 08:00:00</dd></div>
+                <div><dt>影响范围</dt><dd>00148.HK, AI 基础设施材料 / 制造</dd></div>
+                <div><dt>论点变化</dt><dd>已改变</dd></div>
+              </dl>
+            </article>
+            </div>
+        </article>
+        </div>
+      </details>
+
+      <details class="home-fold" data-home-fold="predictions">
+        <summary>最强预测与兑现<span class="fold-hint">账本 4060 条 · 已验证 602 条</span></summary>
+        <div class="home-fold-body">
+        <article class="decision-support-card predictions-card" id="home-predictions" data-practical-section="strongest_predictions">
+          <div class="home-section-header">
+            <div>
+              <h2>最强预测</h2>
+              <p class="home-safety-note">最多 3 条，必须标注证据</p>
+            </div>
             <a class="secondary-button" href="/predictions">查看全部预测</a>
           </div>
           <div class="prediction-stack">
@@ -463,131 +621,62 @@
               </div>
               <div class="forward-metrics compact-metrics">
                 <span><small>置信度</small><strong>35%</strong></span>
-                <span><small>观察周期</small><strong>下一运行周期</strong></span>
+                <span><small>复核周期</small><strong>下一运行周期</strong></span>
               </div>
               <div class="confidence-bar" title="置信度: 35%" role="img" aria-label="置信度: 35%">
                 <div class="confidence-fill" style="width:35%"></div>
               </div>
               <dl class="decision-dl">
-                <dt>核心证据</dt><dd>Mixed / Low Signal / attention not dominant / usable portfolio market observations</dd>
-                <dt>失效条件</dt><dd>later runtime state conflicts with expected structure / forecast outcome marked invalidated through supported lifecycle</dd>
+                <dt>核心证据</dt><dd>可用的组合市场观测</dd>
+                <dt>失效条件</dt><dd>后续运行状态与预期结构冲突 / 预测在支持的生命周期中被标记为失效</dd>
               </dl>
             </article>
             </div>
         </article>
 
-      </section>
-
-      <section class="investor-evidence-grid" aria-label="发生了什么重要变化">
-        <article class="decision-support-card material-change-card" id="home-material-changes" data-practical-section="material_changes">
-          <div class="journey-step"><span>06</span>发生了什么重要变化</div>
+        <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
           <div class="home-section-header">
             <div>
-              <h2>真正影响判断的最新证据</h2>
-              <p class="home-safety-note">新闻只是信号，不是行动；这里只展示与论点相关的变化。</p>
+              <h2>近期预测责任检查</h2>
             </div>
-            <a class="secondary-button" href="/markets">查看市场证据</a>
+            <div class="button-row">
+              <a class="secondary-button" href="/predictions">查看全部预测</a>
+              <a class="secondary-button" href="/learning">查看学习记录</a>
+            </div>
           </div>
-          <div class="evidence-review-summary has-change"><strong>已复核 14 条 · 改变判断 1 · 结论不变 12 · 待复核 0</strong><span>2026-07-19T04:49:41.906959+00:00</span></div><div class="material-evidence-list">
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>PUBLIC ATTENTION SAMPLE</span><em>延迟</em></div>
-              <h3>Public attention sample: 1 configured A-share asset(s) in the top 100</h3>
-              <dl>
-                <div><dt>来源</dt><dd><a href="https://emappdata.eastmoney.com/stockrank/getAllCurrentList" target="_blank" rel="noopener noreferrer">eastmoney_stock_rank</a></dd></div>
-                <div><dt>发布 / 观测时间</dt><dd>2026-07-19T04:48:01.441330+00:00</dd></div>
-                <div><dt>影响范围</dt><dd>002384.SZ, A-share public attention</dd></div>
-                <div><dt>论点变化</dt><dd>NOT RELEVANT</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>LIVE OBSERVATION SAMPLE</span><em>延迟</em></div>
-              <h3>A-share breadth sample: 21 advancing, 77 declining, 2 unchanged</h3>
-              <dl>
-                <div><dt>来源</dt><dd><a href="https://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData" target="_blank" rel="noopener noreferrer">sina_market_center</a></dd></div>
-                <div><dt>发布 / 观测时间</dt><dd>2026-07-19T04:48:00.132580+00:00</dd></div>
-                <div><dt>影响范围</dt><dd>A-share market breadth</dd></div>
-                <div><dt>论点变化</dt><dd>CHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>实时</em></div>
-              <h3>中国人民银行副行长宣昌能会见布基纳法索经济财政部部长阿布巴卡尔·纳卡纳...</h3>
-              <dl>
-                <div><dt>来源</dt><dd><a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026071814542725789/index.html" target="_blank" rel="noopener noreferrer">pbo_c_official</a></dd></div>
-                <div><dt>发布 / 观测时间</dt><dd>2026-07-18</dd></div>
-                <div><dt>影响范围</dt><dd>Macro Policy</dd></div>
-                <div><dt>论点变化</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>实时</em></div>
-              <h3>2026年第二次临时股东会会议资料</h3>
-              <dl>
-                <div><dt>来源</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688019_20260718_VCV1.pdf" target="_blank" rel="noopener noreferrer">sse_official</a></dd></div>
-                <div><dt>发布 / 观测时间</dt><dd>2026-07-18</dd></div>
-                <div><dt>影响范围</dt><dd>688019.SH, Semiconductor Materials</dd></div>
-                <div><dt>论点变化</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>数据源观测</span><em>LAST MARKET CLOSE</em></div>
-              <h3>00148.HK: 51.4 (-9.59%)</h3>
-              <dl>
-                <div><dt>来源</dt><dd><a href="https://web.ifzq.gtimg.cn/appstock/app/fqkline/get" target="_blank" rel="noopener noreferrer">tencent_kline</a></dd></div>
-                <div><dt>发布 / 观测时间</dt><dd>2026-07-17T00:00:00</dd></div>
-                <div><dt>影响范围</dt><dd>00148.HK, PCB / Materials / AI Infrastructure</dd></div>
-                <div><dt>论点变化</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>数据源观测</span><em>LAST MARKET CLOSE</em></div>
-              <h3>002384.SZ: 241.92 (-10.00%)</h3>
-              <dl>
-                <div><dt>来源</dt><dd><a href="https://web.ifzq.gtimg.cn/appstock/app/fqkline/get" target="_blank" rel="noopener noreferrer">tencent_kline</a></dd></div>
-                <div><dt>发布 / 观测时间</dt><dd>2026-07-17T00:00:00</dd></div>
-                <div><dt>影响范围</dt><dd>002384.SZ, PCB / AI Hardware Manufacturing</dd></div>
-                <div><dt>论点变化</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>数据源观测</span><em>LAST MARKET CLOSE</em></div>
-              <h3>688019.SH: 239.06 (-6.81%)</h3>
-              <dl>
-                <div><dt>来源</dt><dd><a href="https://web.ifzq.gtimg.cn/appstock/app/fqkline/get" target="_blank" rel="noopener noreferrer">tencent_kline</a></dd></div>
-                <div><dt>发布 / 观测时间</dt><dd>2026-07-17T00:00:00</dd></div>
-                <div><dt>影响范围</dt><dd>688019.SH, Semiconductor Materials</dd></div>
-                <div><dt>论点变化</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>延迟</em></div>
-              <h3>中国人民银行行长潘功胜会见利比亚央行行长纳吉·伊萨·贝尔卡西姆</h3>
-              <dl>
-                <div><dt>来源</dt><dd><a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026071714315618324/index.html" target="_blank" rel="noopener noreferrer">pbo_c_official</a></dd></div>
-                <div><dt>发布 / 观测时间</dt><dd>2026-07-17</dd></div>
-                <div><dt>影响范围</dt><dd>Macro Policy</dd></div>
-                <div><dt>论点变化</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            </div>
-        </article>
+          <div class="forecast-compact-strip"><span><strong>1466</strong>当前未完成</span><span><strong>0</strong>历史未分类</span><span><strong>0</strong>已到期</span><span><strong>602</strong>已验证</span><span><strong>1992</strong>已失效</span><span><strong>0</strong>无法判断</span></div><p class="home-safety-note">缺少 material signature 的历史未完成预测保持未分类，不会依据单次观测批量结算。</p>
+          
+    <div class="forecast-track-record" aria-label="预测跟踪记录">
+      <div class="trk-bar"><span class="trk-seg" style="width:36.11%;background:#9fd3ff" title="当前未完成: 1466 (36%)" role="img" aria-label="当前未完成: 1466"></span><span class="trk-seg" style="width:0.00%;background:#7d8aa0" title="已到期: 0 (0%)" role="img" aria-label="已到期: 0"></span><span class="trk-seg" style="width:14.83%;background:#9ee6b8" title="已验证: 602 (15%)" role="img" aria-label="已验证: 602"></span><span class="trk-seg" style="width:49.06%;background:#f4a5b3" title="已失效: 1992 (49%)" role="img" aria-label="已失效: 1992"></span><span class="trk-seg" style="width:0.00%;background:#f6d77a" title="无法判断: 0 (0%)" role="img" aria-label="无法判断: 0"></span></div>
+      <div class="trk-body">
+        <div class="gauge trk-ring" style="--value:23;background:conic-gradient(#9ee6b8 calc(var(--value,0)*1%), rgba(255,255,255,0.08) 0), rgba(255,255,255,0.05);" title="验证率: 23%" role="img" aria-label="验证率: 23%"><span>23%</span></div>
+        <ul class="trk-legend"><li><span class="trk-dot" style="background:#9fd3ff"></span>当前未完成<strong>1466</strong></li><li><span class="trk-dot" style="background:#7d8aa0"></span>已到期<strong>0</strong></li><li><span class="trk-dot" style="background:#9ee6b8"></span>已验证<strong>602</strong></li><li><span class="trk-dot" style="background:#f4a5b3"></span>已失效<strong>1992</strong></li><li><span class="trk-dot" style="background:#f6d77a"></span>无法判断<strong>0</strong></li></ul>
+      </div>
+      <p class="trk-meta"><strong>4060</strong> 预测总数 · <strong>2594</strong> 已评估</p>
+      
+      <table class="sr-only"><caption>预测跟踪记录</caption><thead><tr><th>状态</th><th>预测总数</th><th>%</th></tr></thead><tbody><tr><td>当前未完成</td><td>1466</td><td>36%</td></tr><tr><td>已到期</td><td>0</td><td>0%</td></tr><tr><td>已验证</td><td>602</td><td>15%</td></tr><tr><td>已失效</td><td>1992</td><td>49%</td></tr><tr><td>无法判断</td><td>0</td><td>0%</td></tr></tbody></table>
+    </div>
+    
+          
+          <div class="forecast-learning-row">
+            <p><strong>近期失误:</strong> 非约束性结构预测：当前因果结构仍保持一致，除非后续观测状态与之冲突。</p>
+            <p><strong>Atlas 后续改变:</strong> Atlas 已通过预测账本暴露该失误；后续校准影响必须通过运行态行为验证。</p>
+          </div>
+        </section>
+        </div>
+      </details>
 
+      <details class="home-fold" data-home-fold="reasoning_chain">
+        <summary>推理链</summary>
+        <div class="home-fold-body">
         <article class="decision-support-card reasoning-chain-card" id="home-reasoning-chain" data-practical-section="reasoning_chain">
-          <div class="journey-step"><span>07</span>Atlas 推理链</div>
           <h2>从信号到条件结论</h2>
           <div class="thinking-timeline">
         <div class="thinking-phase">
           <div class="phase-marker" aria-hidden="true">👁</div>
           <div class="phase-body">
             <strong>Atlas 注意到了什么</strong>
-            <p>Public attention sample: 1 configured A-share asset(s) in the top 100</p>
+            <p>公开关注度样本：前 100 名中包含 1 只已配置 A 股</p>
           </div>
         </div>
         
@@ -603,7 +692,7 @@
           <div class="phase-marker" aria-hidden="true">🔗</div>
           <div class="phase-body">
             <strong>因果上 Atlas 怎么理解</strong>
-            <p>Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.</p>
+            <p>Primary driver is unknown. The controller remains in 高波动 because transition to 平稳 is not allowed despite low fusion stress. Regime probabilities are dominated by data_insufficient at 55%, with distribution_risk at 25% and crash_stress at 20%. Portfolio context shows concentrated exposure to semiconductor materials and AI infrastructure-related themes, increasing relevance of anomaly and risk review under limited confidence.</p>
           </div>
         </div>
         
@@ -611,7 +700,7 @@
           <div class="phase-marker" aria-hidden="true">📌</div>
           <div class="phase-body">
             <strong>对投资论点意味着什么</strong>
-            <p>NOT_RELEVANT；涉及持仓：002384.SZ</p>
+            <p>结论不变；涉及持仓：301526.SZ</p>
           </div>
         </div>
         
@@ -619,7 +708,7 @@
           <div class="phase-marker" aria-hidden="true">⚖️</div>
           <div class="phase-body">
             <strong>Atlas 为什么还保持谨慎</strong>
-            <p>反方证据：No conclusion until counter-evidence and invalidation conditions are reviewed.；仍缺失：Narrative/attention and evaluated forecast evidence remain incomplete.</p>
+            <p>反方证据：复核反证与失效条件前不下结论。；仍缺失：叙事/关注度与已评估预测证据仍不完整。</p>
           </div>
         </div>
         
@@ -627,103 +716,67 @@
           <div class="phase-marker" aria-hidden="true">✓</div>
           <div class="phase-body">
             <strong>当前条件结论</strong>
-            <p>Reduce is the current portfolio-level review posture; no order or holding-specific execution authority is generated.</p>
+            <p>当前组合级复核姿态为降低暴露；不生成订单或单持仓执行权限。</p>
           </div>
         </div>
         </div>
         </article>
-      </section>
+        </div>
+      </details>
 
-      <section class="scenario-section" aria-label="情景推演">
+      <details class="home-fold" data-home-fold="scenarios">
+        <summary>情景推演与条件行动</summary>
+        <div class="home-fold-body">
         <article class="decision-support-card scenario-outlook-card" id="home-scenario-outlook" data-practical-section="scenario_outlook">
-          <div class="journey-step"><span>08</span>情景推演</div>
           <div class="home-section-header">
             <div><h2>四种可问责情景</h2><p class="home-safety-note">预测校准未成立前，不展示看似精确的概率。</p></div>
           </div>
-          <div class="scenario-grid">
-        <article class="scenario-card scenario-base" style="--scenario-accent:#dbeafe">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">◎</span><span>基准情景</span></div>
-          <h3>证据仍然混合；在数据新鲜度和论点影响完成验证前，保留组合选择权。</h3>
-          <div><small>支持驱动</small><ul><li>当前组合结构</li><li>可用数据源证据</li><li>框架快照</li></ul></div>
-          <div><small>失效条件</small><ul><li>已验证证据实质性强化或削弱组合论点</li></ul></div>
-          <dl><dt>Horizon</dt><dd>下一复核周期</dd><dt>证据置信度</dt><dd><span class="evidence-confidence-pill is-calibrated" title="已校准">已校准</span></dd></dl>
-        </article>
+          
+    <div class="table-scroll"><table class="practical-table scenario-compact-table">
+      <thead><tr><th>情景</th><th>触发条件</th><th>Atlas 姿态</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:#dbeafe" aria-hidden="true">◎</span><strong>基准情景</strong></span></td>
+          <td>多个通道出现新的同向确认</td>
+          <td><span class="trigger-status">观察</span></td>
+        </tr>
         
-        <article class="scenario-card scenario-upside" style="--scenario-accent:#9ee6b8">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">↗</span><span>上行延续</span></div>
-          <h3>上行情景需要价格参与度、市场广度、流动性与公司证据同步改善。</h3>
-          <div><small>支持驱动</small><ul><li>市场广度改善</li><li>持仓价格形成确认</li><li>公司公告证据增强</li></ul></div>
-          <div><small>失效条件</small><ul><li>市场广度转弱或公司证据与论点矛盾</li></ul></div>
-          <dl><dt>Horizon</dt><dd>下一复核周期</dd><dt>证据置信度</dt><dd><span class="evidence-confidence-pill is-calibrated" title="已校准">已校准</span></dd></dl>
-        </article>
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:#9ee6b8" aria-hidden="true">↗</span><strong>上行延续</strong></span></td>
+          <td>实时市场广度与持仓新证据同步改善</td>
+          <td><span class="trigger-status">观察</span></td>
+        </tr>
         
-        <article class="scenario-card scenario-downside" style="--scenario-accent:#f4a5b3">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">↘</span><span>下行加速</span></div>
-          <h3>若流动性转弱且持仓相关证据使现有论点失效，下行加速情景将变得重要。</h3>
-          <div><small>支持驱动</small><ul><li>流动性恶化</li><li>公司负面证据</li><li>同主题资产共同承压</li></ul></div>
-          <div><small>失效条件</small><ul><li>流动性企稳且负面证据未持续</li></ul></div>
-          <dl><dt>Horizon</dt><dd>下一复核周期</dd><dt>证据置信度</dt><dd><span class="evidence-confidence-pill is-calibrated" title="已校准">已校准</span></dd></dl>
-        </article>
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:#f4a5b3" aria-hidden="true">↘</span><strong>下行加速</strong></span></td>
+          <td>已验证证据显示论点恶化</td>
+          <td><span class="trigger-status">持有</span></td>
+        </tr>
         
-        <article class="scenario-card scenario-range" style="--scenario-accent:#f6d77a">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">↔</span><span>震荡 / 波动</span></div>
-          <h3>当方向性证据不完整或相互冲突时，震荡情景仍然成立。</h3>
-          <div><small>支持驱动</small><ul><li>各数据通道新鲜度不一</li><li>信号相互冲突</li><li>预测置信度较低</li></ul></div>
-          <div><small>失效条件</small><ul><li>市场参与度与流动性形成同向变化</li></ul></div>
-          <dl><dt>Horizon</dt><dd>下一复核周期</dd><dt>证据置信度</dt><dd><span class="evidence-confidence-pill is-calibrated" title="已校准">已校准</span></dd></dl>
-        </article>
-        </div>
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:#f6d77a" aria-hidden="true">↔</span><strong>震荡 / 波动</strong></span></td>
+          <td>市场广度与流动性形成方向共振</td>
+          <td><span class="trigger-status">持有</span></td>
+        </tr>
+        </tbody>
+    </table></div>
+    
         </article>
 
         <article class="decision-support-card action-playbook-card" id="home-action-playbook" data-practical-section="action_playbook">
-          <div class="journey-step"><span>09</span>条件行动</div>
           <h2>组合条件行动方案</h2>
           
     <div class="playbook-warning">CDE 权限只是许可，不是行动；当前运行时尚未创建资本部署权限。</div>
-    <div class="table-scroll"><table class="practical-table action-playbook-table"><thead><tr><th>情景</th><th>触发条件</th><th>Atlas 姿态</th><th>影响持仓</th><th>CDE</th><th>限制因素</th></tr></thead><tbody>
-        <tr>
-          <td><strong>基准</strong></td>
-          <td>多个通道出现新的同向确认</td>
-          <td><span class="trigger-status">观察</span></td>
-          <td>Configured portfolio</td>
-          <td>本情景无可用资本权限</td>
-          <td>证据与 CDE 权限均不完整</td>
-        </tr>
-        
-        <tr>
-          <td><strong>上行</strong></td>
-          <td>实时市场广度与持仓新证据同步改善</td>
-          <td><span class="trigger-status">观察</span></td>
-          <td>Configured portfolio</td>
-          <td>本情景无可用资本权限</td>
-          <td>证据与 CDE 权限均不完整</td>
-        </tr>
-        
-        <tr>
-          <td><strong>下行</strong></td>
-          <td>已验证证据显示论点恶化</td>
-          <td><span class="trigger-status">持有</span></td>
-          <td>Configured portfolio</td>
-          <td>本情景无可用资本权限</td>
-          <td>证据与 CDE 权限均不完整</td>
-        </tr>
-        
-        <tr>
-          <td><strong>震荡</strong></td>
-          <td>市场广度与流动性形成方向共振</td>
-          <td><span class="trigger-status">持有</span></td>
-          <td>Configured portfolio</td>
-          <td>本情景无可用资本权限</td>
-          <td>证据与 CDE 权限均不完整</td>
-        </tr>
-        </tbody></table></div>
+    <ul class="plain-list playbook-shared-notes"><li>本情景无可用资本权限</li><li>证据与 CDE 权限均不完整</li></ul>
     
         </article>
-      </section>
+        </div>
+      </details>
 
-      <section class="candidate-score-section">
+      <details class="home-fold" data-home-fold="candidates">
+        <summary>重点候选池<span class="fold-hint">8 个候选</span></summary>
+        <div class="home-fold-body">
         <article class="decision-support-card" id="home-candidate-board" data-practical-section="candidate_board">
-          <div class="journey-step"><span>10</span>重点候选池</div>
           <div class="home-section-header">
             <div><h2>候选优先级与评分依据</h2><p class="home-safety-note">Strategic Candidate Score 只代表研究优先级，不代表 CDE 资本权限。</p></div>
             <a class="secondary-button" href="/candidates">查看完整候选池</a>
@@ -736,7 +789,7 @@
           <td>已核验</td>
           <td>S</td>
           <td>Direct</td>
-          <td>中<small>NOT REVIEWED</small></td>
+          <td>中<small>未复核</small></td>
           <td class="candidate-score-cell"><div class="candidate-score-bar empty" title="Score not available"><div class="candidate-score-fill" style="width:0%"></div></div><div class="candidate-score-readout">N/A</div></td>
         </tr>
         
@@ -745,7 +798,7 @@
           <td>已核验</td>
           <td>S</td>
           <td>Direct</td>
-          <td>中<small>UNCHANGED</small></td>
+          <td>中<small>未复核</small></td>
           <td class="candidate-score-cell"><div class="candidate-score-bar empty" title="Score not available"><div class="candidate-score-fill" style="width:0%"></div></div><div class="candidate-score-readout">N/A</div></td>
         </tr>
         </tbody></table></div>
@@ -753,41 +806,11 @@
       <summary>6 个候选仍需身份或行情核验</summary>
       <ul><li><strong>罗博特科</strong><span>待核验 · S</span></li><li><strong>德福科技</strong><span>待核验 · S</span></li><li><strong>DRAM ETF</strong><span>待核验 · S</span></li><li><strong>Micron（MU）</strong><span>待核验 · S</span></li><li><strong>SK Hynix</strong><span>待核验 · A</span></li><li><strong>LRCX</strong><span>待核验 · A</span></li></ul>
     </details>
-    <details class="score-methodology"><summary>评分方法与当前限制</summary><p>Thesis Fit /20 · Industry Cycle /15 · Evidence Quality /15 · Market Confirmation /15 · Valuation Risk /10 · Technical Structure /10 · Portfolio Fit /10 · Trigger Readiness /5</p><p>仓库研究优先级可用，但尚未形成有证据支持的 0-100 分评分。</p></details>
+    <details class="score-methodology"><summary>评分方法与当前限制</summary><p>论点匹配 /20 · 行业周期 /15 · 证据质量 /15 · 市场确认 /15 · 估值风险 /10 · 技术结构 /10 · 组合匹配 /10 · 触发就绪 /5</p><p>仓库研究优先级可用，但尚未形成有证据支持的 0-100 分评分。</p></details>
     
         </article>
-      </section>
-
-      <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
-        <div class="home-section-header">
-          <div>
-            <span class="journey-step"><span>11</span>预测与兑现</span>
-            <h2>近期预测责任检查</h2>
-          </div>
-          <div class="button-row">
-            <a class="secondary-button" href="/predictions">查看全部预测</a>
-            <a class="secondary-button" href="/learning">查看学习记录</a>
-          </div>
         </div>
-        <div class="forecast-compact-strip"><span><strong>1555</strong>当前未完成</span><span><strong>0</strong>历史未分类</span><span><strong>0</strong>已到期</span><span><strong>596</strong>已验证</span><span><strong>1824</strong>已失效</span><span><strong>0</strong>无法判断</span></div><p class="home-safety-note">缺少 material signature 的历史未完成预测保持未分类，不会依据单次观测批量结算。</p>
-        
-    <div class="forecast-track-record" aria-label="预测跟踪记录">
-      <div class="trk-bar"><span class="trk-seg" style="width:39.12%;background:#9fd3ff" title="当前未完成: 1555.0 (39%)" role="img" aria-label="当前未完成: 1555.0"></span><span class="trk-seg" style="width:0.00%;background:#7d8aa0" title="已到期: 0.0 (0%)" role="img" aria-label="已到期: 0.0"></span><span class="trk-seg" style="width:14.99%;background:#9ee6b8" title="已验证: 596.0 (15%)" role="img" aria-label="已验证: 596.0"></span><span class="trk-seg" style="width:45.89%;background:#f4a5b3" title="已失效: 1824.0 (46%)" role="img" aria-label="已失效: 1824.0"></span><span class="trk-seg" style="width:0.00%;background:#f6d77a" title="无法判断: 0.0 (0%)" role="img" aria-label="无法判断: 0.0"></span></div>
-      <div class="trk-body">
-        <div class="gauge trk-ring" style="--value:25;background:conic-gradient(#9ee6b8 calc(var(--value,0)*1%), rgba(255,255,255,0.08) 0), rgba(255,255,255,0.05);" title="验证率: 25%" role="img" aria-label="验证率: 25%"><span>25%</span></div>
-        <ul class="trk-legend"><li><span class="trk-dot" style="background:#9fd3ff"></span>当前未完成<strong>1555.0</strong></li><li><span class="trk-dot" style="background:#7d8aa0"></span>已到期<strong>0.0</strong></li><li><span class="trk-dot" style="background:#9ee6b8"></span>已验证<strong>596.0</strong></li><li><span class="trk-dot" style="background:#f4a5b3"></span>已失效<strong>1824.0</strong></li><li><span class="trk-dot" style="background:#f6d77a"></span>无法判断<strong>0.0</strong></li></ul>
-      </div>
-      <p class="trk-meta"><strong>3975</strong> 预测总数 · <strong>2420</strong> 已评估</p>
-      
-      <table class="sr-only"><caption>预测跟踪记录</caption><thead><tr><th>状态</th><th>预测总数</th><th>%</th></tr></thead><tbody><tr><td>当前未完成</td><td>1555.0</td><td>39%</td></tr><tr><td>已到期</td><td>0.0</td><td>0%</td></tr><tr><td>已验证</td><td>596.0</td><td>15%</td></tr><tr><td>已失效</td><td>1824.0</td><td>46%</td></tr><tr><td>无法判断</td><td>0.0</td><td>0%</td></tr></tbody></table>
-    </div>
-    
-        
-        <div class="forecast-learning-row">
-          <p><strong>近期失误:</strong> Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</p>
-          <p><strong>Atlas 后续改变:</strong> Atlas 已通过预测账本暴露该失误；后续校准影响必须通过运行态行为验证。</p>
-        </div>
-      </section>
+      </details>
 
       <details class="supporting-context" id="home-supporting-context">
         <summary>展开底层框架与复核上下文</summary>
@@ -867,7 +890,7 @@
           <article class="decision-support-card" id="home-capital-allocation"><h2>资金调度</h2>
     <dl class="decision-dl allocation-dl">
       <dt>今天是否调仓</dt><dd><strong>NO</strong></dd>
-      <dt>潜在资金来源</dt><dd><ul class="plain-list"><li>未部署缓冲（0.0% 配置）</li><li>只有触发证据出现时，才复核高位持仓是否可成为资金来源。</li></ul></dd>
+      <dt>潜在资金来源</dt><dd><ul class="plain-list"><li>未部署缓冲（20.7% 配置）</li><li>只有触发证据出现时，才复核高位持仓是否可成为资金来源。</li></ul></dd>
       <dt>潜在资金去向</dt><dd>Equipment / Materials 观察池</dd>
       <dt>触发进度</dt><dd>3 / 6</dd>
       <dt>建议执行方式</dt><dd>等待，不提前抢跑。</dd>
@@ -926,6 +949,34 @@
               <div class="research-item-main">
                 <span class="priority-index">1</span>
                 <div>
+                  <h3>核验 688146.SH 是否仍有新的订单、利润率或认证证据。</h3>
+                  <p class="home-safety-note">688146.SH / 半导体材料</p>
+                </div>
+              </div>
+              <dl class="research-item-detail">
+                <div><dt>为什么现在</dt><dd>688146.SH 是当前真实配置持仓，会影响组合层面的解释。</dd></div>
+                <div><dt>证据缺口</dt><dd>晶圆厂资本开支放缓; 特气价格竞争; 单一产品集中度风险.</dd></div>
+              </dl>
+            </article>
+            
+            <article class="research-priority-card" data-research-task="2">
+              <div class="research-item-main">
+                <span class="priority-index">2</span>
+                <div>
+                  <h3>核验 00148.HK 是否仍有新的订单、利润率或认证证据。</h3>
+                  <p class="home-safety-note">00148.HK / AI 基础设施材料 / 制造</p>
+                </div>
+              </div>
+              <dl class="research-item-detail">
+                <div><dt>为什么现在</dt><dd>00148.HK 是当前真实配置持仓，会影响组合层面的解释。</dd></div>
+                <div><dt>证据缺口</dt><dd>无 AI 基建订单证据; PCB/覆铜板毛利压缩; 港股流动性或板块估值压力.</dd></div>
+              </dl>
+            </article>
+            
+            <article class="research-priority-card" data-research-task="3">
+              <div class="research-item-main">
+                <span class="priority-index">3</span>
+                <div>
                   <h3>核验 Equipment 接力是否通过订单或 backlog 信号增强。</h3>
                   <p class="home-safety-note">Equipment / Materials</p>
                 </div>
@@ -939,7 +990,7 @@
           <article class="decision-support-card" id="home-intelligence-alerts"><h2>情报与预警</h2><ul class="intelligence-alert-list">
         <li>
           <strong>市场情绪</strong>
-          <span>运行态为 RISK_OFF；注意力偏低到中等，市场广度尚未配置。</span>
+          <span>市场状态为「高波动」；注意力偏低到中等，市场广度尚未配置。</span>
         </li>
         
         <li>
@@ -949,7 +1000,7 @@
         
         <li>
           <strong>持仓相关信号</strong>
-          <span>3 个配置持仓市场观测可用。</span>
+          <span>5 个配置持仓市场观测可用。</span>
         </li>
         
         <li>
@@ -973,7 +1024,7 @@
     <dl class="decision-dl">
       <dt>下次复盘</dt><dd>下一次计划主动更新（约 7200 秒周期）</dd>
       <dt>重点检查</dt><dd><ul class="plain-list"><li>资本迁移是否确认</li><li>预测是否偏离或到期</li><li>等待触发条件数量与状态</li><li>持仓个别证据刷新</li></ul></dd>
-      <dt>到期预测</dt><dd>runtime-3eaf7fac-1052-4707-bc00-b8a652b9fde3</dd>
+      <dt>到期预测</dt><dd>周期预测 1 条在跟踪，最近一条待复核（ID 已隐藏）。</dd>
       <dt>等待触发条件</dt><dd><ul class="plain-list"><li>Equipment / Materials 仍在瓶颈图中被确认。 · 已满足</li><li>组合相关价量观测保持新鲜。 · 未知</li><li>市场广度通道确认参与度。 · 未满足</li></ul></dd>
     </dl>
     </article>
@@ -991,24 +1042,24 @@
     <details class="expert-details home-expert-panel" id="expert-analysis-panel">
       <summary><span>专家分析</span><strong>9</strong></summary>
       <div class="expert-grid">
-        <article class="expert-section"><span>A</span><h3>因果链</h3><div class="causal-chain"><span>Narrative Pressure -&gt; Attention</span><span>Price Momentum -&gt; Attention</span><span>Attention -&gt; Retail Flow</span><span>Retail Flow -&gt; Price Momentum</span></div><p class="home-safety-note">主导边</p><ul class="plain-list"><li>Narrative Pressure → Attention · Δ -0.0118</li><li>Price Momentum → Attention · Δ -0.0089</li><li>Attention → Retail Flow · Δ -0.007</li><li>Retail Flow → Price Momentum · Δ -0.0059</li></ul></article>
+        <article class="expert-section"><span>A</span><h3>因果链</h3><div class="causal-chain"><span>叙事压力 → 市场注意力</span><span>价格动量 → 市场注意力</span><span>市场注意力 → 散户资金流</span><span>散户资金流 → 价格动量</span></div><p class="home-safety-note">主导边</p><ul class="plain-list"><li>叙事压力 → 市场注意力 · Δ -0.024</li><li>价格动量 → 市场注意力 · Δ -0.018</li><li>市场注意力 → 散户资金流 · Δ -0.0141</li><li>散户资金流 → 价格动量 · Δ -0.0119</li></ul></article>
         <article class="expert-section"><span>B</span><h3>假设状态</h3>
     <dl class="expert-dl">
-      <dt>主假设</dt><dd>H_ATTENTION_FLOW</dd>
+      <dt>主假设</dt><dd>Unknown</dd>
       <dt>置信度</dt><dd>35.0%</dd>
-      <dt>近期变化</dt><dd>No recent hypothesis change exposed.</dd>
+      <dt>近期变化</dt><dd>近期未暴露假设变化。</dd>
     </dl>
     <p><strong>竞争假设</strong></p>
-    <ul class="plain-list"><li>No competing hypothesis exposed by current state.</li></ul>
+    <ul class="plain-list"><li>当前状态未暴露竞争假设。</li></ul>
     </article>
         <article class="expert-section"><span>C</span><h3>市场状态</h3>
     <dl class="expert-dl">
-      <dt>当前系统状态</dt><dd>RISK_OFF</dd>
-      <dt>建议状态</dt><dd>NORMAL</dd>
-      <dt>波动率</dt><dd>Low</dd>
+      <dt>当前系统状态</dt><dd>高波动</dd>
+      <dt>建议状态</dt><dd>平稳</dd>
+      <dt>波动率</dt><dd>证据待补充</dd>
     </dl>
     </article>
-        <article class="expert-section"><span>D</span><h3>置信度构成</h3><div class="confidence-row"><span>证据质量</span><strong>100%</strong><i style="width:100%"></i><small>市场通道状态</small></div><div class="confidence-row"><span>市场数据完整度</span><strong>100%</strong><i style="width:100%"></i><small>市场情报通道</small></div><div class="confidence-row"><span>假设稳定性</span><strong>28%</strong><i style="width:28%"></i><small>系统信任状态</small></div><div class="confidence-row"><span>组合相关性</span><strong>0%</strong><i style="width:0%"></i><small>组合上下文</small></div><div class="confidence-row"><span>预测历史</span><strong>100%</strong><i style="width:100%"></i><small>预测账本</small></div></article>
+        <article class="expert-section"><span>D</span><h3>置信度构成</h3><div class="confidence-row"><span>证据质量</span><strong>100%</strong><i style="width:100%"></i><small>市场通道状态</small></div><div class="confidence-row"><span>市场数据完整度</span><strong>100%</strong><i style="width:100%"></i><small>市场情报通道</small></div><div class="confidence-row"><span>假设稳定性</span><strong>0%</strong><i style="width:0%"></i><small>系统信任状态</small></div><div class="confidence-row"><span>组合相关性</span><strong>1%</strong><i style="width:1%"></i><small>组合上下文</small></div><div class="confidence-row"><span>预测历史</span><strong>100%</strong><i style="width:100%"></i><small>预测账本</small></div></article>
         <article class="expert-section"><span>E</span><h3>数据质量</h3>
     <div class="forecast-status-strip expert-data-strip">
       <span><strong>3</strong>实时通道</span>
@@ -1019,32 +1070,32 @@
     <p>置信度受到缺失、过期或未配置市场通道的限制。</p>
     </article>
         <article class="expert-section"><span>F</span><h3>组合敏感性</h3>
-    <ul class="plain-list"><li>尚未配置组合百分比。</li></ul>
+    <ul class="plain-list"><li>688146.SH · 29.0%</li><li>00148.HK · 18.4%</li><li>000636.SZ · 12.5%</li></ul>
     <p>隐私：仅展示百分比，不展示账户金额。</p>
     </article>
         <article class="expert-section"><span>G</span><h3>预测证据</h3>
     <dl class="expert-dl">
-      <dt>ID</dt><dd>runtime-3eaf7fac-1052-4707-bc00-b8a652b9fde3</dd>
-      <dt>状态</dt><dd>INVALIDATED</dd>
-      <dt>观察周期</dt><dd>next_runtime_cycle</dd>
+      <dt>周期预测</dt><dd title="runtime-19712ad3-379e-4d9c-aafb-67521782c031">周期预测 1 条</dd>
+      <dt>状态</dt><dd>OPEN</dd>
+      <dt>复核周期</dt><dd>next_runtime_cycle</dd>
     </dl>
     <p>非约束性结构预测：当前因果结构仍保持一致，除非后续观测状态与之冲突。</p>
-    <ul class="plain-list"><li>Mixed / Low Signal</li><li>attention not dominant</li></ul>
+    <ul class="plain-list"></ul>
     </article>
         <article class="expert-section"><span>H</span><h3>失效条件</h3><ul class="plain-list"><li>后续运行状态与当前结构判断冲突</li><li>预测在支持的生命周期中被标记为失效</li></ul></article>
         <article class="expert-section"><span>I</span><h3>原始证据</h3>
     <details class="raw-evidence-details">
       <summary>原始证据</summary>
       <pre>{
-  &quot;regime_state&quot;: &quot;RISK_OFF&quot;,
+  &quot;regime_state&quot;: &quot;HIGH_VOLATILITY&quot;,
   &quot;last_decision_packet&quot;: {
-    &quot;attention_state&quot;: &quot;attention not dominant; attention and narrative intensity at zero&quot;,
-    &quot;causal_summary&quot;: &quot;Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.&quot;,
+    &quot;attention_state&quot;: &quot;Low attention pressure; fusion attention pressure is 0, but confidence is limited by missing/invalid research synthesis and data-insufficient regime probability.&quot;,
+    &quot;causal_summary&quot;: &quot;Primary driver is unknown. The controller remains in HIGH_VOLATILITY because transition to NORMAL is not allowed despite low fusion stress. Regime probabilities are dominated by data_insufficient at 55%, with distribution_risk at 25% and crash_stress at 20%. Portfolio context shows concentrated exposure to semiconductor materials and AI infrastructure-related themes, increasing relevance of anomaly and risk review under limited confidence.&quot;,
     &quot;confidence&quot;: 0.35,
-    &quot;liquidity_state&quot;: &quot;data missing with latent structural liquidity pressure and regional liquidity sensitivity&quot;,
-    &quot;reasoning_trace&quot;: &quot;Low-confidence event stream shows data_insufficient probability at 55%, distribution_risk at 25%, and crash_stress at 20%. Fusion stress is low, but liquidity condition is missing, structural liquidity pressure is elevated, and controller state blocks normalization. The action bias is defensive due to concentration, theme correlation, and unresolved event uncertainty; no execution or portfolio modification is authorized.&quot;,
+    &quot;liquidity_state&quot;: &quot;Data Missing; liquidity score is neutral at 50 but not evidence-backed, with regional liquidity sensitivity noted for the configured portfolio context.&quot;,
+    &quot;reasoning_trace&quot;: &quot;Inputs indicate HIGH_VOLATILITY runtime state, low-confidence event stream, unavailable research synthesis, missing liquidity condition, and no confirmed causal driver. Although fusion stress and attention pressure are low, the controller blocks normalization. Concentration and theme-cluster sensitivity elevate risk relevance, so the safest non-execution posture is risk-reduction bias without issuing any trading instruction.&quot;,
     &quot;recommended_action&quot;: &quot;reduce&quot;,
-    &quot;regime_state&quot;: &quot;RISK_OFF / liquidity_stress_basin&quot;,
+    &quot;regime_state&quot;: &quot;HIGH_VOLATILITY / Runtime State Context&quot;,
     &quot;risk_level&quot;: &quot;high&quot;
   },
   &quot;market_intelligence&quot;: {
@@ -1093,22 +1144,22 @@
         &quot;source&quot;: &quot;tencent_kline&quot;,
         &quot;source_type&quot;: &quot;market_data_provider&quot;,
         &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
-        &quot;theme&quot;: &quot;PCB / Materials / AI Infrastructure&quot;,
+        &quot;theme&quot;: &quot;AI 基础设施材料 / 制造&quot;,
         &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
         &quot;turnover&quot;: null,
         &quot;volume&quot;: 44089420.0
       },
       {
-        &quot;asset&quot;: &quot;002384.SZ&quot;,
-        &quot;change_20d_pct&quot;: -11.384615384615394,
-        &quot;change_5d_pct&quot;: -0.15683037556748491,
-        &quot;change_60d_pct&quot;: 54.08917197452227,
+        &quot;asset&quot;: &quot;301526.SZ&quot;,
+        &quot;change_20d_pct&quot;: -22.706141424027404,
+        &quot;change_5d_pct&quot;: -16.36219221604449,
+        &quot;change_60d_pct&quot;: 128.08664259927798,
         &quot;channel&quot;: &quot;price_volume&quot;,
         &quot;confidence&quot;: 0.75,
-        &quot;daily_change_pct&quot;: -10.000000000000009,
+        &quot;daily_change_pct&quot;: -9.22413793103447,
         &quot;data_quality_status&quot;: &quot;Available&quot;,
         &quot;freshness&quot;: &quot;CACHED&quot;,
-        &quot;latest_price&quot;: 241.92,
+        &quot;latest_price&quot;: 31.59,
         &quot;latest_price_available&quot;: true,
         &quot;market&quot;: &quot;A-share&quot;,
         &quot;market_session_status&quot;: &quot;LAST_MARKET_CLOSE&quot;,
@@ -1125,15 +1176,15 @@
             &quot;pb (optional)&quot;
           ],
           &quot;provider&quot;: &quot;tencent_kline&quot;,
-          &quot;ticker&quot;: &quot;002384.SZ&quot;
+          &quot;ticker&quot;: &quot;301526.SZ&quot;
         },
         &quot;source&quot;: &quot;tencent_kline&quot;,
         &quot;source_type&quot;: &quot;market_data_provider&quot;,
         &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
-        &quot;theme&quot;: &quot;PCB / AI Hardware Manufacturing&quot;,
+        &quot;theme&quot;: &quot;AI 基础设施材料 / 制造&quot;,
         &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
         &quot;turnover&quot;: null,
-        &quot;volume&quot;: 109049800.0
+        &quot;volume&quot;: 144988500.0
       },
       {
         &quot;asset&quot;: &quot;688019.SH&quot;,
@@ -1167,45 +1218,165 @@
         &quot;source&quot;: &quot;tencent_kline&quot;,
         &quot;source_type&quot;: &quot;market_data_provider&quot;,
         &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
-        &quot;theme&quot;: &quot;Semiconductor Materials&quot;,
+        &quot;theme&quot;: &quot;半导体材料&quot;,
         &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
         &quot;turnover&quot;: null,
         &quot;volume&quot;: 11036352.0
+      },
+      {
+        &quot;asset&quot;: &quot;688146.SH&quot;,
+        &quot;change_20d_pct&quot;: -21.09498780273118,
+        &quot;change_5d_pct&quot;: -14.622946358719691,
+        &quot;change_60d_pct&quot;: 318.72414253303083,
+        &quot;channel&quot;: &quot;price_volume&quot;,
+        &quot;confidence&quot;: 0.75,
+        &quot;daily_change_pct&quot;: -1.5686274509803977,
+        &quot;data_quality_status&quot;: &quot;Available&quot;,
+        &quot;freshness&quot;: &quot;CACHED&quot;,
+        &quot;latest_price&quot;: 251.0,
+        &quot;latest_price_available&quot;: true,
+        &quot;market&quot;: &quot;A-share&quot;,
+        &quot;market_session_status&quot;: &quot;LAST_MARKET_CLOSE&quot;,
+        &quot;market_session_timestamp&quot;: &quot;2026-07-17T00:00:00+00:00&quot;,
+        &quot;normalized_event_type&quot;: &quot;price_breakout&quot;,
+        &quot;portfolio_relevant&quot;: true,
+        &quot;price_currency&quot;: &quot;CNY&quot;,
+        &quot;raw_reference&quot;: {
+          &quot;errors&quot;: [],
+          &quot;missing_fields&quot;: [
+            &quot;turnover&quot;,
+            &quot;market_cap (optional)&quot;,
+            &quot;pe (optional)&quot;,
+            &quot;pb (optional)&quot;
+          ],
+          &quot;provider&quot;: &quot;tencent_kline&quot;,
+          &quot;ticker&quot;: &quot;688146.SH&quot;
+        },
+        &quot;source&quot;: &quot;tencent_kline&quot;,
+        &quot;source_type&quot;: &quot;market_data_provider&quot;,
+        &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
+        &quot;theme&quot;: &quot;半导体材料&quot;,
+        &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
+        &quot;turnover&quot;: null,
+        &quot;volume&quot;: 17382181.0
+      },
+      {
+        &quot;asset&quot;: &quot;000636.SZ&quot;,
+        &quot;change_20d_pct&quot;: -37.54446249043637,
+        &quot;change_5d_pct&quot;: -22.462922846192303,
+        &quot;change_60d_pct&quot;: 110.81962756558377,
+        &quot;channel&quot;: &quot;price_volume&quot;,
+        &quot;confidence&quot;: 0.75,
+        &quot;daily_change_pct&quot;: -9.999999999999998,
+        &quot;data_quality_status&quot;: &quot;Available&quot;,
+        &quot;freshness&quot;: &quot;CACHED&quot;,
+        &quot;latest_price&quot;: 46.53,
+        &quot;latest_price_available&quot;: true,
+        &quot;market&quot;: &quot;A-share&quot;,
+        &quot;market_session_status&quot;: &quot;LAST_MARKET_CLOSE&quot;,
+        &quot;market_session_timestamp&quot;: &quot;2026-07-17T00:00:00+00:00&quot;,
+        &quot;normalized_event_type&quot;: &quot;price_breakout&quot;,
+        &quot;portfolio_relevant&quot;: true,
+        &quot;price_currency&quot;: &quot;CNY&quot;,
+        &quot;raw_reference&quot;: {
+          &quot;errors&quot;: [],
+          &quot;missing_fields&quot;: [
+            &quot;turnover&quot;,
+            &quot;market_cap (optional)&quot;,
+            &quot;pe (optional)&quot;,
+            &quot;pb (optional)&quot;
+          ],
+          &quot;provider&quot;: &quot;tencent_kline&quot;,
+          &quot;ticker&quot;: &quot;000636.SZ&quot;
+        },
+        &quot;source&quot;: &quot;tencent_kline&quot;,
+        &quot;source_type&quot;: &quot;market_data_provider&quot;,
+        &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
+        &quot;theme&quot;: &quot;AI 基础设施元器件&quot;,
+        &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
+        &quot;turnover&quot;: null,
+        &quot;volume&quot;: 89449300.0
       }
     ]
   },
   &quot;portfolio_context&quot;: {
-    &quot;status&quot;: &quot;missing&quot;,
+    &quot;status&quot;: &quot;configured&quot;,
     &quot;privacy&quot;: &quot;percentage_only_no_account_amounts&quot;,
-    &quot;exposure_sum_pct&quot;: 0,
-    &quot;cash_or_unassigned_pct&quot;: null,
+    &quot;exposure_sum_pct&quot;: 79.3,
+    &quot;cash_or_unassigned_pct&quot;: 20.7,
     &quot;exposure_map&quot;: {
-      &quot;asset_concentration&quot;: [],
-      &quot;theme_concentration&quot;: {},
-      &quot;market_concentration&quot;: {},
-      &quot;role_concentration&quot;: {},
-      &quot;liquidity_sensitivity&quot;: &quot;diversified_or_unknown&quot;,
-      &quot;regime_sensitivity&quot;: &quot;broad_or_unclassified&quot;,
-      &quot;portfolio_relevance_score&quot;: 0.0,
-      &quot;correlated_risk_clusters&quot;: []
+      &quot;asset_concentration&quot;: [
+        {
+          &quot;asset&quot;: &quot;688146.SH&quot;,
+          &quot;exposure_pct&quot;: 29.0
+        },
+        {
+          &quot;asset&quot;: &quot;00148.HK&quot;,
+          &quot;exposure_pct&quot;: 18.4
+        },
+        {
+          &quot;asset&quot;: &quot;000636.SZ&quot;,
+          &quot;exposure_pct&quot;: 12.5
+        },
+        {
+          &quot;asset&quot;: &quot;688019.SH&quot;,
+          &quot;exposure_pct&quot;: 12.2
+        },
+        {
+          &quot;asset&quot;: &quot;301526.SZ&quot;,
+          &quot;exposure_pct&quot;: 7.2
+        }
+      ],
+      &quot;theme_concentration&quot;: {
+        &quot;半导体材料&quot;: 41.2,
+        &quot;AI 基础设施材料 / 制造&quot;: 25.6,
+        &quot;AI 基础设施元器件&quot;: 12.5
+      },
+      &quot;market_concentration&quot;: {
+        &quot;A-share&quot;: 60.9,
+        &quot;HK&quot;: 18.4
+      },
+      &quot;role_concentration&quot;: {
+        &quot;Hold&quot;: 79.3
+      },
+      &quot;liquidity_sensitivity&quot;: &quot;regional_liquidity_sensitive&quot;,
+      &quot;regime_sensitivity&quot;: &quot;theme_cluster_sensitive&quot;,
+      &quot;portfolio_relevance_score&quot;: 65.11,
+      &quot;correlated_risk_clusters&quot;: [
+        {
+          &quot;cluster&quot;: &quot;半导体材料&quot;,
+          &quot;exposure_pct&quot;: 41.2,
+          &quot;risk&quot;: &quot;moderate_concentration&quot;
+        },
+        {
+          &quot;cluster&quot;: &quot;AI 基础设施材料 / 制造&quot;,
+          &quot;exposure_pct&quot;: 25.6,
+          &quot;risk&quot;: &quot;moderate_concentration&quot;
+        },
+        {
+          &quot;cluster&quot;: &quot;AI 基础设施元器件&quot;,
+          &quot;exposure_pct&quot;: 12.5,
+          &quot;risk&quot;: &quot;low&quot;
+        }
+      ]
     }
   },
   &quot;forecast_ledger_summary&quot;: {
     &quot;metrics&quot;: {
-      &quot;total&quot;: 3975,
-      &quot;open&quot;: 1555,
+      &quot;total&quot;: 4060,
+      &quot;open&quot;: 1466,
       &quot;matured&quot;: 0,
-      &quot;evaluated&quot;: 2420,
-      &quot;verified&quot;: 596,
-      &quot;invalidated&quot;: 1824,
+      &quot;evaluated&quot;: 2594,
+      &quot;verified&quot;: 602,
+      &quot;invalidated&quot;: 1992,
       &quot;inconclusive&quot;: 0,
-      &quot;accuracy&quot;: 0.2463,
-      &quot;mean_forecast_error&quot;: 0.7537,
-      &quot;mean_calibration_error&quot;: 0.2926,
+      &quot;accuracy&quot;: 0.2321,
+      &quot;mean_forecast_error&quot;: 0.7679,
+      &quot;mean_calibration_error&quot;: 0.2942,
       &quot;minimum_sample_size_met&quot;: true
     },
     &quot;sample_warning&quot;: &quot;Minimum sample size met for basic calibration review.&quot;,
-    &quot;latest_forecast_id&quot;: &quot;runtime-3eaf7fac-1052-4707-bc00-b8a652b9fde3&quot;
+    &quot;latest_forecast_id&quot;: &quot;runtime-19712ad3-379e-4d9c-aafb-67521782c031&quot;
   },
   &quot;structural_coevolution_state&quot;: {
     &quot;status&quot;: &quot;applied&quot;,

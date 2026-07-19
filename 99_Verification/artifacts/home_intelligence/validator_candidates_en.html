@@ -7,25 +7,29 @@
     .decision-home-shell { display:grid; gap:18px; }
     .investor-home { gap:24px; }
     .portfolio-first-viewport { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
-    .portfolio-command-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
-    .holdings-primary-card { grid-column:span 8; grid-row:2; min-height:100%; }
+    .portfolio-overview-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
+    .portfolio-holdings-region { min-width:0; }
     .portfolio-first-viewport .action-today-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; grid-template-columns:1fr; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; align-content:start; }
-    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:2; min-height:100%; }
+    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; }
     .portfolio-first-viewport .conviction-hierarchy-card,
     .portfolio-first-viewport .predictions-card { grid-column:1 / -1; }
-    .portfolio-command-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
+    .portfolio-overview-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
     .portfolio-header-status { display:grid; justify-items:end; gap:5px; text-align:right; }
     .portfolio-header-status small { color:var(--muted); font-size:.72rem; }
     .portfolio-header-status strong { max-width:12ch; font-size:.92rem; line-height:1.25; }
     .portfolio-command-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0 14px; }
     .portfolio-command-metrics > div { min-height:84px; display:grid; align-content:center; gap:6px; padding:12px; border-top:1px solid rgba(219,234,254,.14); border-bottom:1px solid rgba(219,234,254,.08); }
-    .portfolio-command-metrics span,.portfolio-command-analysis span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
+    .portfolio-command-metrics span,.portfolio-side-panel span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
     .portfolio-command-metrics strong { font-size:1.34rem; }
-    .portfolio-command-analysis { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-    .portfolio-command-analysis > div,.portfolio-command-analysis ul { min-height:74px; margin:0; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
-    .portfolio-command-analysis > div { display:grid; gap:6px; align-content:center; }
-    .portfolio-command-analysis ul { list-style:none; display:grid; gap:4px; }
-    .portfolio-command-analysis li { display:flex; justify-content:space-between; gap:10px; color:var(--subtle); font-size:.78rem; }
+    .portfolio-overview-body { display:grid; grid-template-columns:minmax(0,1fr) minmax(230px,280px); gap:18px; margin-top:18px; align-items:start; }
+    .holdings-subheader { margin-bottom:12px; }
+    .holdings-subheader h2 { margin:0 0 4px; font-size:1.12rem; }
+    .portfolio-side-panel { display:grid; gap:10px; align-content:start; }
+    .portfolio-side-panel .side-metric { display:grid; gap:6px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
+    .portfolio-side-panel .largest-theme-metric { border-left:3px solid var(--theme-accent, var(--accent)); }
+    .portfolio-side-panel .exposure-donut { flex-wrap:wrap; }
+    .holding-theme-chip { display:inline-flex; align-items:center; gap:7px; margin:0; color:var(--subtle); font-size:.74rem; }
+    .holding-theme-chip::before { content:""; width:9px; height:9px; border-radius:3px; background:var(--theme-accent, var(--accent)); }
     .portfolio-risk-callout { margin-top:12px; padding:13px 14px; border-left:3px solid rgba(244,165,179,.72); background:rgba(244,165,179,.045); }
     .portfolio-risk-callout p { margin:6px 0 0; color:var(--text); }
     .investor-evidence-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(380px,.92fr); gap:16px; align-items:start; }
@@ -254,8 +258,8 @@
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
-    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-command-analysis,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
+    @media (max-width:1180px) { .portfolio-overview-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-overview-body,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .portfolio-side-panel { grid-template-columns:repeat(2,minmax(0,1fr)); } .portfolio-side-panel .exposure-donut { grid-column:1 / -1; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
     @media (max-width:640px) { .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:14px; } .portfolio-header-status { justify-items:start; text-align:left; } .valuation-visuals,.valuation-amount-grid { grid-template-columns:1fr; } .valuation-amount-grid { grid-column:auto; } .holding-title-row { align-items:flex-start; } }
     .predictions-card .prediction-stack { display:grid; gap:14px; }
     .prediction-item { padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--surface-muted); }
@@ -279,15 +283,14 @@
     .evidence-confidence-pill.is-limited { color:var(--warning); background:rgba(246,215,122,.12); border-color:rgba(246,215,122,.35); }
     .evidence-confidence-pill.is-calibrated { color:var(--positive); background:rgba(158,230,184,.12); border-color:rgba(158,230,184,.35); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
-    .portfolio-command-analysis { grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; }
     .exposure-donut { display:flex; align-items:center; gap:14px; min-height:74px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
     .exposure-donut .atlas-viz { width:90px; height:90px; flex-shrink:0; }
     .donut-legend { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
     .donut-legend li { display:flex; align-items:center; gap:8px; font-size:.78rem; color:var(--subtle); }
     .donut-legend strong { margin-left:auto; color:var(--text); font-size:.9rem; }
     .donut-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
-    @media (max-width:1180px) { .portfolio-command-analysis { grid-template-columns:repeat(2,minmax(0,1fr)); } .exposure-donut { grid-column:1 / -1; } .conviction-hierarchy-card { grid-column:1 / -1; } }
-    @media (max-width:640px) { .portfolio-command-analysis { grid-template-columns:1fr; } }
+    @media (max-width:1180px) { .conviction-hierarchy-card { grid-column:1 / -1; } }
+    @media (max-width:640px) { .portfolio-side-panel { grid-template-columns:1fr; } }
     .conviction-hierarchy-card .journey-step span { border-radius:50%; width:22px; height:22px; display:grid; place-items:center; font-size:.7rem; }
     .conviction-pyramid { display:grid; gap:10px; }
     .conviction-level { display:grid; justify-items:center; gap:6px; }
@@ -354,6 +357,33 @@
     .evidence-review-summary span { color:var(--muted); }
     .candidate-score-table td small, .decision-dl dd small { display:block; margin-top:4px; color:var(--muted); font-size:.7rem; }
     @media (max-width:720px) { .brief-runtime-strip { align-items:flex-start; flex-direction:column; gap:10px; } .brief-runtime-strip dl { width:100%; grid-template-columns:auto 1fr; } .evidence-review-summary { flex-direction:column; gap:4px; } }
+    .home-fold { border:1px solid rgba(219,234,254,.105); border-radius:20px; background:linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); }
+    .home-fold > summary { cursor:pointer; display:flex; align-items:center; gap:10px; padding:16px 20px; color:var(--subtle); font-weight:740; list-style:none; }
+    .home-fold > summary::-webkit-details-marker { display:none; }
+    .home-fold > summary::before { content:"+"; width:24px; height:24px; flex-shrink:0; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-size:.85rem; font-weight:780; }
+    .home-fold[open] > summary::before { content:"−"; }
+    .home-fold > summary .fold-hint { margin-left:auto; color:var(--muted); font-size:.78rem; font-weight:400; text-align:right; }
+    .home-fold > .home-fold-body { display:grid; gap:16px; padding:4px 16px 16px; }
+    .home-fold > .home-fold-body > .decision-support-card,
+    .home-fold > .home-fold-body > .forecast-compact-card { box-shadow:none; }
+    .holdings-compact-table { min-width:760px; }
+    .holding-name-cell strong { display:block; font-size:.95rem; }
+    .holding-name-cell small { display:block; margin-top:3px; color:var(--muted); font-size:.72rem; }
+    .holding-cost-latest { white-space:nowrap; font-size:.86rem; }
+    .holding-multiday { white-space:nowrap; font-size:.82rem; }
+    .pnl-value { font-weight:780; }
+    .pnl-pos { color:#9ee6b8; }
+    .pnl-neg { color:#f4a5b3; }
+    .valuation-note { color:var(--muted); font-size:.74rem; line-height:1.35; }
+    .risk-fact-list { margin:8px 0 0; padding-left:18px; display:grid; gap:5px; }
+    .risk-fact-list li { color:var(--text); font-size:.92rem; line-height:1.45; }
+    .scenario-compact-table { min-width:640px; }
+    .scenario-name { display:inline-flex; align-items:center; gap:9px; }
+    .scenario-name .scenario-icon { background:var(--scenario-accent, var(--accent)); }
+    .playbook-shared-notes { margin:0 0 4px; padding-left:18px; display:grid; gap:4px; color:var(--subtle); font-size:.88rem; }
+    .evidence-status-line { margin-top:12px; padding:9px 12px; border:1px solid rgba(219,234,254,.1); border-radius:10px; background:rgba(0,0,0,.1); color:var(--muted) !important; font-size:.8rem; }
+    .posture-derived-line { margin-top:12px; padding-top:12px; border-top:1px solid rgba(219,234,254,.12); color:var(--text) !important; font-size:.95rem; line-height:1.5; }
+    @media (max-width:640px) { .home-fold > summary { padding:14px 16px; } .home-fold > .home-fold-body { padding:2px 10px 12px; } }
     </style>
     
     <section class="hero-panel">
@@ -366,7 +396,7 @@
       </div>
     </section>
     <section class="focus-card">
-      <div class="candidate-filter-row"><button class="secondary-button candidate-filter active" type="button" data-candidate-filter="all">All <span>27</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="portfolio">Portfolio-related <span>6</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="high">High priority <span>20</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="new">New <span>0</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="changed">Changed recently <span>6</span></button></div>
+      <div class="candidate-filter-row"><button class="secondary-button candidate-filter active" type="button" data-candidate-filter="all">All <span>27</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="portfolio">Portfolio-related <span>7</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="high">High priority <span>20</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="new">New <span>0</span></button><button class="secondary-button candidate-filter" type="button" data-candidate-filter="changed">Changed recently <span>6</span></button></div>
       
     <div class="candidate-table" role="table" aria-label="Research Candidates">
       <div class="candidate-header" role="row">
@@ -612,13 +642,13 @@
               </details>
             </article>
             
-            <article class="candidate-row" data-candidate-row data-candidate-filters="all high">
+            <article class="candidate-row" data-candidate-row data-candidate-filters="all portfolio high">
               <div>
                 <strong>安集科技</strong>
                 <span>Materials</span>
               </div>
               <span>A</span>
-              <span>None</span>
+              <span>Direct</span>
               <span>Low</span>
               <span>Research</span>
               <details class="candidate-detail">

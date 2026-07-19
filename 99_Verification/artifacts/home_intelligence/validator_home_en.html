@@ -7,25 +7,29 @@
     .decision-home-shell { display:grid; gap:18px; }
     .investor-home { gap:24px; }
     .portfolio-first-viewport { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; align-items:start; }
-    .portfolio-command-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
-    .holdings-primary-card { grid-column:span 8; grid-row:2; min-height:100%; }
+    .portfolio-overview-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
+    .portfolio-holdings-region { min-width:0; }
     .portfolio-first-viewport .action-today-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; grid-template-columns:1fr; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; align-content:start; }
-    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:2; min-height:100%; }
+    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; }
     .portfolio-first-viewport .conviction-hierarchy-card,
     .portfolio-first-viewport .predictions-card { grid-column:1 / -1; }
-    .portfolio-command-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
+    .portfolio-overview-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
     .portfolio-header-status { display:grid; justify-items:end; gap:5px; text-align:right; }
     .portfolio-header-status small { color:var(--muted); font-size:.72rem; }
     .portfolio-header-status strong { max-width:12ch; font-size:.92rem; line-height:1.25; }
     .portfolio-command-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0 14px; }
     .portfolio-command-metrics > div { min-height:84px; display:grid; align-content:center; gap:6px; padding:12px; border-top:1px solid rgba(219,234,254,.14); border-bottom:1px solid rgba(219,234,254,.08); }
-    .portfolio-command-metrics span,.portfolio-command-analysis span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
+    .portfolio-command-metrics span,.portfolio-side-panel span,.portfolio-risk-callout span { color:var(--muted); font-size:.78rem; }
     .portfolio-command-metrics strong { font-size:1.34rem; }
-    .portfolio-command-analysis { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-    .portfolio-command-analysis > div,.portfolio-command-analysis ul { min-height:74px; margin:0; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
-    .portfolio-command-analysis > div { display:grid; gap:6px; align-content:center; }
-    .portfolio-command-analysis ul { list-style:none; display:grid; gap:4px; }
-    .portfolio-command-analysis li { display:flex; justify-content:space-between; gap:10px; color:var(--subtle); font-size:.78rem; }
+    .portfolio-overview-body { display:grid; grid-template-columns:minmax(0,1fr) minmax(230px,280px); gap:18px; margin-top:18px; align-items:start; }
+    .holdings-subheader { margin-bottom:12px; }
+    .holdings-subheader h2 { margin:0 0 4px; font-size:1.12rem; }
+    .portfolio-side-panel { display:grid; gap:10px; align-content:start; }
+    .portfolio-side-panel .side-metric { display:grid; gap:6px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
+    .portfolio-side-panel .largest-theme-metric { border-left:3px solid var(--theme-accent, var(--accent)); }
+    .portfolio-side-panel .exposure-donut { flex-wrap:wrap; }
+    .holding-theme-chip { display:inline-flex; align-items:center; gap:7px; margin:0; color:var(--subtle); font-size:.74rem; }
+    .holding-theme-chip::before { content:""; width:9px; height:9px; border-radius:3px; background:var(--theme-accent, var(--accent)); }
     .portfolio-risk-callout { margin-top:12px; padding:13px 14px; border-left:3px solid rgba(244,165,179,.72); background:rgba(244,165,179,.045); }
     .portfolio-risk-callout p { margin:6px 0 0; color:var(--text); }
     .investor-evidence-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(380px,.92fr); gap:16px; align-items:start; }
@@ -254,8 +258,8 @@
     .confidence-row small { grid-column:1 / -1; color:var(--muted); }
     .expert-data-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
     .raw-evidence-details pre { max-height:300px; overflow:auto; white-space:pre-wrap; color:var(--subtle); }
-    @media (max-width:1180px) { .portfolio-command-card,.holdings-primary-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
-    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-command-analysis,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
+    @media (max-width:1180px) { .portfolio-overview-card,.portfolio-first-viewport .action-today-card,.portfolio-first-viewport .core-judgment-card,.predictions-card { grid-column:1 / -1; grid-row:auto; } .investor-evidence-grid,.supporting-context-grid,.decision-first-viewport, .decision-support-grid, .home-outlook-layout, .expert-grid, .practical-secondary-grid,.practical-operational-grid,.practical-control-grid { grid-template-columns:1fr; } .scenario-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card:nth-child(4) { border-top:1px solid rgba(219,234,254,.1); } .practical-secondary-grid > *, .practical-operational-grid > *, .practical-operational-grid #home-intelligence-alerts { grid-column:auto !important; } .practical-first-viewport { grid-template-columns:1fr; grid-template-areas:"action" "core" "predictions"; } .action-today-card { min-height:0; } .decision-card-primary { grid-row:auto; } .research-priority-list { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .portfolio-command-metrics,.portfolio-overview-body,.scenario-grid,.material-evidence-item dl,.holding-brief-grid,.holding-brief-card,.valuation-summary-strip { grid-template-columns:1fr; } .portfolio-side-panel { grid-template-columns:repeat(2,minmax(0,1fr)); } .portfolio-side-panel .exposure-donut { grid-column:1 / -1; } .holding-decision-column { padding-left:0; padding-top:14px; border-left:0; border-top:1px solid rgba(219,234,254,.1); } .scenario-card,.scenario-card:nth-child(3) { border-left:0; border-top:1px solid rgba(219,234,254,.1); } .home-view-switch { position:static; } .candidate-header { display:none; } .candidate-row { min-width:0; grid-template-columns:1fr; } .forecast-status-strip, .expert-data-strip, .forecast-compact-strip, .forecast-learning-row, .trigger-columns, .conviction-grid, .funding-flow, .intelligence-alert-list li, .research-priority-card, .research-item-detail { grid-template-columns:1fr; } .action-today-card { grid-template-columns:1fr !important; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; } .action-answer { font-size:clamp(2.2rem, 10vw, 3.4rem) !important; white-space:normal; overflow-wrap:anywhere; } .decision-card h1 { max-width:none; } .practical-table { display:block; overflow-x:auto; } }
     @media (max-width:640px) { .atlas-shell[data-active-page="home"] .workspace.no-inspector { padding:14px; } .portfolio-header-status { justify-items:start; text-align:left; } .valuation-visuals,.valuation-amount-grid { grid-template-columns:1fr; } .valuation-amount-grid { grid-column:auto; } .holding-title-row { align-items:flex-start; } }
     .predictions-card .prediction-stack { display:grid; gap:14px; }
     .prediction-item { padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--surface-muted); }
@@ -279,15 +283,14 @@
     .evidence-confidence-pill.is-limited { color:var(--warning); background:rgba(246,215,122,.12); border-color:rgba(246,215,122,.35); }
     .evidence-confidence-pill.is-calibrated { color:var(--positive); background:rgba(158,230,184,.12); border-color:rgba(158,230,184,.35); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
-    .portfolio-command-analysis { grid-template-columns:repeat(4,minmax(0,1fr)); align-items:stretch; }
     .exposure-donut { display:flex; align-items:center; gap:14px; min-height:74px; padding:11px 12px; background:rgba(0,0,0,.11); border-radius:12px; }
     .exposure-donut .atlas-viz { width:90px; height:90px; flex-shrink:0; }
     .donut-legend { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
     .donut-legend li { display:flex; align-items:center; gap:8px; font-size:.78rem; color:var(--subtle); }
     .donut-legend strong { margin-left:auto; color:var(--text); font-size:.9rem; }
     .donut-dot { width:9px; height:9px; border-radius:3px; display:inline-block; }
-    @media (max-width:1180px) { .portfolio-command-analysis { grid-template-columns:repeat(2,minmax(0,1fr)); } .exposure-donut { grid-column:1 / -1; } .conviction-hierarchy-card { grid-column:1 / -1; } }
-    @media (max-width:640px) { .portfolio-command-analysis { grid-template-columns:1fr; } }
+    @media (max-width:1180px) { .conviction-hierarchy-card { grid-column:1 / -1; } }
+    @media (max-width:640px) { .portfolio-side-panel { grid-template-columns:1fr; } }
     .conviction-hierarchy-card .journey-step span { border-radius:50%; width:22px; height:22px; display:grid; place-items:center; font-size:.7rem; }
     .conviction-pyramid { display:grid; gap:10px; }
     .conviction-level { display:grid; justify-items:center; gap:6px; }
@@ -354,102 +357,257 @@
     .evidence-review-summary span { color:var(--muted); }
     .candidate-score-table td small, .decision-dl dd small { display:block; margin-top:4px; color:var(--muted); font-size:.7rem; }
     @media (max-width:720px) { .brief-runtime-strip { align-items:flex-start; flex-direction:column; gap:10px; } .brief-runtime-strip dl { width:100%; grid-template-columns:auto 1fr; } .evidence-review-summary { flex-direction:column; gap:4px; } }
+    .home-fold { border:1px solid rgba(219,234,254,.105); border-radius:20px; background:linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); }
+    .home-fold > summary { cursor:pointer; display:flex; align-items:center; gap:10px; padding:16px 20px; color:var(--subtle); font-weight:740; list-style:none; }
+    .home-fold > summary::-webkit-details-marker { display:none; }
+    .home-fold > summary::before { content:"+"; width:24px; height:24px; flex-shrink:0; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-size:.85rem; font-weight:780; }
+    .home-fold[open] > summary::before { content:"−"; }
+    .home-fold > summary .fold-hint { margin-left:auto; color:var(--muted); font-size:.78rem; font-weight:400; text-align:right; }
+    .home-fold > .home-fold-body { display:grid; gap:16px; padding:4px 16px 16px; }
+    .home-fold > .home-fold-body > .decision-support-card,
+    .home-fold > .home-fold-body > .forecast-compact-card { box-shadow:none; }
+    .holdings-compact-table { min-width:760px; }
+    .holding-name-cell strong { display:block; font-size:.95rem; }
+    .holding-name-cell small { display:block; margin-top:3px; color:var(--muted); font-size:.72rem; }
+    .holding-cost-latest { white-space:nowrap; font-size:.86rem; }
+    .holding-multiday { white-space:nowrap; font-size:.82rem; }
+    .pnl-value { font-weight:780; }
+    .pnl-pos { color:#9ee6b8; }
+    .pnl-neg { color:#f4a5b3; }
+    .valuation-note { color:var(--muted); font-size:.74rem; line-height:1.35; }
+    .risk-fact-list { margin:8px 0 0; padding-left:18px; display:grid; gap:5px; }
+    .risk-fact-list li { color:var(--text); font-size:.92rem; line-height:1.45; }
+    .scenario-compact-table { min-width:640px; }
+    .scenario-name { display:inline-flex; align-items:center; gap:9px; }
+    .scenario-name .scenario-icon { background:var(--scenario-accent, var(--accent)); }
+    .playbook-shared-notes { margin:0 0 4px; padding-left:18px; display:grid; gap:4px; color:var(--subtle); font-size:.88rem; }
+    .evidence-status-line { margin-top:12px; padding:9px 12px; border:1px solid rgba(219,234,254,.1); border-radius:10px; background:rgba(0,0,0,.1); color:var(--muted) !important; font-size:.8rem; }
+    .posture-derived-line { margin-top:12px; padding-top:12px; border-top:1px solid rgba(219,234,254,.12); color:var(--text) !important; font-size:.95rem; line-height:1.5; }
+    @media (max-width:640px) { .home-fold > summary { padding:14px 16px; } .home-fold > .home-fold-body { padding:2px 10px 12px; } }
     </style>
     
-    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief" data-brief-revision="31">
+    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief" data-brief-revision="209">
       
     <section class="brief-runtime-strip" id="home-brief-runtime" data-practical-section="brief_runtime">
-      <div><strong>Brief revision 31</strong><span>1 evidence item(s) changed the current view; review the updated sections below.</span></div>
-      <dl><dt>Updated</dt><dd>2026-07-19T04:49:41.908031+00:00</dd><dt>Reason</dt><dd>material_runtime_delta:brief</dd></dl>
+      <div><strong>Brief No. 209</strong><span>5 evidence item(s) changed the current view; review the updated sections below.</span></div>
+      <dl><dt>Updated</dt><dd>2026-07-19 21:40:54 CST</dd><dt>Reason</dt><dd title="material_runtime_delta:brief">Material market change</dd></dl>
     </section>
     
-      <div class="home-summary-banner">
-      <div class="home-summary-icon" aria-hidden="true">A</div>
-      <div class="home-summary-text">
-        <strong>Atlas summary</strong>
-        <p>Atlas sees 3 usable market signals today. Your portfolio is 0.0% exposed, mostly to Unknown (0.0%). The runtime state is RISK OFF. Atlas&#x27;s posture is Reduce: a portfolio risk review is required.</p>
-      </div>
-    </div>
-    <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="Portfolio Command View">
-        <article class="decision-card portfolio-command-card" id="home-portfolio-command" data-practical-section="portfolio_command">
-          <div class="journey-step"><span>01</span>Portfolio Command View</div>
+    <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="Portfolio Overview">
+        <article class="decision-card portfolio-overview-card" id="home-portfolio-command" data-practical-section="portfolio_command">
+          <div class="journey-step"><span>01</span>Portfolio Overview</div>
           <div class="home-section-header">
             <div>
               <span class="kicker">Your capital and positions come first</span>
               <h1>Current Portfolio State</h1>
             </div>
-            <div class="portfolio-header-status">
-              <div class="posture-pill">Reduce</div>
-              <small>Decision review today</small>
-              <strong>YES</strong>
-            </div>
           </div>
           
-    <div class="portfolio-command-metrics"><div><span>Configured exposure</span><strong>0.0%</strong></div><div><span>Unassigned capital</span><strong>0.0%</strong></div><div><span>Portfolio consistency</span><strong>PASS</strong></div><div><span>Usable market evidence</span><strong>3/3</strong></div></div>
+    <div class="portfolio-command-metrics"><div><span>Configured exposure</span><strong>79.3%</strong></div><div><span>Unassigned capital</span><strong>20.7%</strong></div><div><span>Portfolio consistency</span><strong>PASS</strong></div><div><span>Usable market evidence</span><strong>5/5</strong></div></div>
     
     <div class="cde-lifecycle-bar">
-      <div class="cde-steps"><div class="cde-step active" title="Observe"><span>Observe</span></div><div class="cde-step" title="Pilot Deployment"><span>Pilot</span></div><div class="cde-step" title="Initial Deployment"><span>Initial</span></div><div class="cde-step" title="Scaling"><span>Scaling</span></div><div class="cde-step" title="Maximum Opportunity"><span>Max</span></div><div class="cde-step" title="Capital Preservation"><span>Preserve</span></div></div>
-      <div class="cde-current">Status: <strong>Observe</strong></div>
+      <div class="cde-steps"><div class="cde-step" title="Observe"><span>Observe</span></div><div class="cde-step" title="Pilot Deployment"><span>Pilot</span></div><div class="cde-step" title="Initial Deployment"><span>Initial</span></div><div class="cde-step active" title="Scaling"><span>Scaling</span></div><div class="cde-step" title="Maximum Opportunity"><span>Max</span></div><div class="cde-step" title="Capital Preservation"><span>Preserve</span></div></div>
+      <div class="cde-current">Status: <strong>Scaling</strong></div>
     </div>
     
-    <div class="portfolio-command-analysis">
-      <div><span>Largest theme exposure</span><strong>Unknown · 0.0%</strong></div>
-      <div><span>Liquidity sensitivity</span><strong>diversified or unknown</strong></div>
-      <div><span>Regime sensitivity</span><strong>broad or unclassified</strong></div>
-      <div class="exposure-donut">
-      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="Configured exposure"><circle cx="60" cy="60" r="40" fill="none" stroke="#dbeafe" stroke-width="12" stroke-dasharray="251.33 0.00" stroke-dashoffset="0.00" transform="rotate(-90 60 60)"/></svg>
-      <ul class="donut-legend"><li><span class="donut-dot" style="background:#dbeafe"></span>Configured<strong>100.0%</strong></li></ul>
+    <div class="portfolio-overview-body">
+      <div class="portfolio-holdings-region" id="home-current-holdings" data-practical-section="current_holdings">
+        <div class="home-section-header holdings-subheader">
+          <div>
+            <h2>Current Holdings</h2>
+            <p class="home-safety-note">Private values follow local visibility settings and never enter Atlas reasoning or external LLMs.</p>
+          </div>
+        </div>
+        
+    <div class="table-scroll"><table class="practical-table holdings-compact-table">
+      <thead><tr><th>Holding</th><th>Weight</th><th>Cost → Latest</th><th>PnL</th><th>Theme</th><th>5d · 20d</th></tr></thead>
+      <tbody>
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>建滔集团</strong><small>00148.HK</small></td>
+              <td><strong>18.4%</strong></td>
+              <td><small class="valuation-note">Cost not configured</small></td>
+              <td><small class="valuation-note">Market data missing</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#9fd3ff">AI 基础设施材料 / 制造</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -30.1%</span> · <span class="pnl-neg">20d -55.9%</span></span></td>
+            </tr>
+            
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>国际复材</strong><small>301526.SZ</small></td>
+              <td><strong>7.2%</strong></td>
+              <td><small class="valuation-note">Cost not configured</small></td>
+              <td><small class="valuation-note">Market data missing</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#9fd3ff">AI 基础设施材料 / 制造</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -16.4%</span> · <span class="pnl-neg">20d -22.7%</span></span></td>
+            </tr>
+            
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>安集科技</strong><small>688019.SH</small></td>
+              <td><strong>12.2%</strong></td>
+              <td><small class="valuation-note">Cost not configured</small></td>
+              <td><small class="valuation-note">Market data missing</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#9ee6b8">半导体材料</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -23.6%</span> · <span class="pnl-neg">20d -2.8%</span></span></td>
+            </tr>
+            
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>中船特气</strong><small>688146.SH</small></td>
+              <td><strong>29.0%</strong></td>
+              <td><small class="valuation-note">Cost not configured</small></td>
+              <td><small class="valuation-note">Market data missing</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#9ee6b8">半导体材料</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -14.6%</span> · <span class="pnl-neg">20d -21.1%</span></span></td>
+            </tr>
+            
+            <tr data-valuation-status="limited">
+              <td class="holding-name-cell"><strong>风华高科</strong><small>000636.SZ</small></td>
+              <td><strong>12.5%</strong></td>
+              <td><small class="valuation-note">Cost not configured</small></td>
+              <td><small class="valuation-note">Market data missing</small></td>
+              <td><span class="holding-theme-chip" style="--theme-accent:#f6d77a">AI 基础设施元器件</span></td>
+              <td><span class="holding-multiday"><span class="pnl-neg">5d -22.5%</span> · <span class="pnl-neg">20d -37.5%</span></span></td>
+            </tr>
+            </tbody>
+    </table></div>
+    
+      </div>
+      <aside class="portfolio-side-panel">
+        <div class="side-metric largest-theme-metric" style="--theme-accent:#9ee6b8"><span>Largest theme exposure</span><strong>半导体材料 · 41.2%</strong></div>
+        <div class="side-metric"><span>Liquidity sensitivity</span><strong>regional liquidity sensitive</strong></div>
+        <div class="side-metric"><span>Regime sensitivity</span><strong>theme cluster sensitive</strong></div>
+        <div class="exposure-donut">
+      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="Current Holdings"><circle cx="60" cy="60" r="40" fill="none" stroke="#9ee6b8" stroke-width="12" stroke-dasharray="72.89 178.44" stroke-dashoffset="0.00" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#9fd3ff" stroke-width="12" stroke-dasharray="46.24 205.08" stroke-dashoffset="-72.89" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#f6d77a" stroke-width="12" stroke-dasharray="31.42 219.91" stroke-dashoffset="-119.13" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#f4a5b3" stroke-width="12" stroke-dasharray="30.66 220.67" stroke-dashoffset="-150.55" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#c5b8ff" stroke-width="12" stroke-dasharray="18.10 233.23" stroke-dashoffset="-181.21" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="12" stroke-dasharray="52.02 199.30" stroke-dashoffset="-199.30" transform="rotate(-90 60 60)"/></svg>
+      <ul class="donut-legend"><li><span class="donut-dot" style="background:#9ee6b8"></span>中船特气<strong>29.0%</strong></li><li><span class="donut-dot" style="background:#9fd3ff"></span>建滔集团<strong>18.4%</strong></li><li><span class="donut-dot" style="background:#f6d77a"></span>风华高科<strong>12.5%</strong></li><li><span class="donut-dot" style="background:#f4a5b3"></span>安集科技<strong>12.2%</strong></li><li><span class="donut-dot" style="background:#c5b8ff"></span>国际复材<strong>7.2%</strong></li><li><span class="donut-dot" style="background:rgba(255,255,255,.12)"></span>Unassigned capital<strong>20.7%</strong></li></ul>
     </div>
+      </aside>
     </div>
-    <div class="portfolio-risk-callout"><span>Primary portfolio risk</span><p>Largest theme exposure is Unknown at 0.0%; correlated evidence or liquidity shocks can affect several positions together.</p></div>
+    <div class="portfolio-risk-callout"><span>Primary portfolio risk</span><ul class="risk-fact-list"><li>Largest single position: 中船特气 at 29.0% — single-name concentration is elevated.</li><li>Theme concentration: 半导体材料 at 41.2% — one theme shock can hit several holdings together.</li><li>Holding PnL is currently unavailable.</li><li>Current posture: Reduce — Atlas generates no orders.</li></ul></div>
     <p class="decision-change">The validated DecisionPacket requires a risk review: Atlas posture is Reduce and risk is high. No order is generated.</p>
     
         </article>
 
-        <article class="decision-card holdings-primary-card" id="home-current-holdings" data-practical-section="current_holdings">
-          <div class="journey-step"><span>02</span>Current Holdings</div>
+        <article class="decision-card core-judgment-card" id="home-core-judgment" data-practical-section="core_judgment">
+          <div class="journey-step"><span>02</span>Core Judgment</div>
+          <span class="kicker">Action Today?</span>
+          <h2>Market state is High Volatility; the portfolio is 79.3% deployed, and the largest theme 半导体材料 (41.2%) makes the portfolio sensitive to this state. 5 usable portfolio-linked observations; evidence strength is limited.</h2>
+          <ul class="judgment-because"><li>DecisionPacket posture: Reduce; risk: high; confidence: 35%.</li><li>Evidence review: 22 reviewed, 5 changed, 17 unchanged, 0 pending review.</li><li>Portfolio-linked market observations: 5 usable; unassigned buffer: 20.7%.</li></ul>
+          <p class="evidence-status-line">Reviewed 22 · changed 5 · confidence 35% · risk high · updated 2026-07-19 21:40:54 CST</p>
+          <p class="posture-derived-line" id="home-action-today" data-practical-section="action_today">Current posture: Reduce · YES. This is not a trading instruction; Atlas generates no orders.</p>
+        </article>
+      </section>
+
+      <details class="home-fold" data-home-fold="material_changes">
+        <summary>What Materially Changed<span class="fold-hint">Reviewed 22 · changed 5</span></summary>
+        <div class="home-fold-body">
+        <article class="decision-support-card material-change-card" id="home-material-changes" data-practical-section="material_changes">
           <div class="home-section-header">
             <div>
-              <h2>Actual configured holdings only</h2>
-              <p class="home-safety-note">Private values follow local visibility settings and never enter Atlas reasoning or external LLMs.</p>
+              <h2>Latest Evidence That Matters</h2>
+              <p class="home-safety-note">News is Signal, not Action. Only thesis-relevant changes appear here.</p>
             </div>
+            <a class="secondary-button" href="/markets">View market evidence</a>
           </div>
-          <div class="empty-state">No portfolio percentages configured.</div>
+          <div class="evidence-review-summary has-change"><strong>Reviewed 22 · changed 5 · unchanged 17 · pending 0</strong><span>2026-07-19 21:40:54 CST</span></div><div class="material-evidence-list">
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>PUBLIC ATTENTION SAMPLE</span><em>DELAYED</em></div>
+              <h3>Public attention sample: 1 configured A-share asset(s) in the top 100</h3>
+              <dl>
+                <div><dt>Source</dt><dd><a href="https://emappdata.eastmoney.com/stockrank/getAllCurrentList" target="_blank" rel="noopener noreferrer" title="eastmoney_stock_rank">Eastmoney</a></dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-19 21:37:46 CST</dd></div>
+                <div><dt>Affected scope</dt><dd>301526.SZ, A-share public attention</dd></div>
+                <div><dt>Thesis change</dt><dd>Unchanged</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>LIVE OBSERVATION SAMPLE</span><em>DELAYED</em></div>
+              <h3>A-share breadth sample: 21 advancing, 77 declining, 2 unchanged</h3>
+              <dl>
+                <div><dt>Source</dt><dd><a href="https://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData" target="_blank" rel="noopener noreferrer" title="sina_market_center">Sina Finance</a></dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-19 21:37:43 CST</dd></div>
+                <div><dt>Affected scope</dt><dd>A-share market breadth</dd></div>
+                <div><dt>Thesis change</dt><dd>Unchanged</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>LIVE</em></div>
+              <h3>中国人民银行副行长宣昌能会见布基纳法索经济财政部部长阿布巴卡尔·纳卡纳...</h3>
+              <dl>
+                <div><dt>Source</dt><dd><a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026071814542725789/index.html" target="_blank" rel="noopener noreferrer" title="pbo_c_official">People&#x27;s Bank of China</a></dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-18 08:00:00 CST</dd></div>
+                <div><dt>Affected scope</dt><dd>Macro Policy</dd></div>
+                <div><dt>Thesis change</dt><dd>Unchanged</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>LIVE</em></div>
+              <h3>2026年第二次临时股东会会议资料</h3>
+              <dl>
+                <div><dt>Source</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688019_20260718_VCV1.pdf" target="_blank" rel="noopener noreferrer" title="sse_official">Shanghai Stock Exchange</a></dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-18 08:00:00 CST</dd></div>
+                <div><dt>Affected scope</dt><dd>688019.SH, 半导体材料</dd></div>
+                <div><dt>Thesis change</dt><dd>Changed</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>LIVE</em></div>
+              <h3>中船（邯郸）派瑞特种气体股份有限公司2026年度“提质增效重回报”行动方案的半年度评估报告</h3>
+              <dl>
+                <div><dt>Source</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688146_20260718_4FVV.pdf" target="_blank" rel="noopener noreferrer" title="sse_official">Shanghai Stock Exchange</a></dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-18 08:00:00 CST</dd></div>
+                <div><dt>Affected scope</dt><dd>688146.SH, 半导体材料</dd></div>
+                <div><dt>Thesis change</dt><dd>Unchanged</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>LIVE</em></div>
+              <h3>中船特气2026年半年度报告_摘要</h3>
+              <dl>
+                <div><dt>Source</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688146_20260718_LHXM.pdf" target="_blank" rel="noopener noreferrer" title="sse_official">Shanghai Stock Exchange</a></dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-18 08:00:00 CST</dd></div>
+                <div><dt>Affected scope</dt><dd>688146.SH, 半导体材料</dd></div>
+                <div><dt>Thesis change</dt><dd>Unchanged</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>LIVE</em></div>
+              <h3>中船特气2026年半年度募集资金存放、管理与实际使用情况的专项报告</h3>
+              <dl>
+                <div><dt>Source</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688146_20260718_M9MC.pdf" target="_blank" rel="noopener noreferrer" title="sse_official">Shanghai Stock Exchange</a></dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-18 08:00:00 CST</dd></div>
+                <div><dt>Affected scope</dt><dd>688146.SH, 半导体材料</dd></div>
+                <div><dt>Thesis change</dt><dd>Unchanged</dd></div>
+              </dl>
+            </article>
+            
+            <article class="material-evidence-item">
+              <div class="evidence-truth-row"><span>PROVIDER OBSERVATION</span><em>LAST MARKET CLOSE</em></div>
+              <h3>00148.HK: 51.4 (-9.59%)</h3>
+              <dl>
+                <div><dt>Source</dt><dd><a href="https://web.ifzq.gtimg.cn/appstock/app/fqkline/get" target="_blank" rel="noopener noreferrer" title="tencent_kline">Tencent Quotes</a></dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-17 08:00:00 CST</dd></div>
+                <div><dt>Affected scope</dt><dd>00148.HK, AI 基础设施材料 / 制造</dd></div>
+                <div><dt>Thesis change</dt><dd>Changed</dd></div>
+              </dl>
+            </article>
+            </div>
         </article>
+        </div>
+      </details>
 
-        <article class="decision-card action-today-card" id="home-action-today" data-practical-section="action_today">
-          <div class="journey-step"><span>03</span>Action Today?</div>
-          <span class="kicker">First answer</span>
-          <h1 class="action-answer">YES</h1>
-          <div class="posture-pill">Reduce</div>
-          <p class="decision-change">The validated DecisionPacket requires a risk review: Atlas posture is Reduce and risk is high. No order is generated.</p>
-          <p class="home-safety-note">YES / NO / CONDITIONAL means whether evidence justifies decision review today, not an order.</p>
-        </article>
-
-        <article class="decision-card core-judgment-card" id="home-core-judgment" data-practical-section="core_judgment">
-          <div class="journey-step"><span>04</span>Today&#x27;s Core Judgment</div>
-          <span class="kicker">One total judgment</span>
-          <h2>Risk is high; Atlas posture is Reduce and a portfolio risk review is required.</h2>
-          <ul class="judgment-because"><li>DecisionPacket posture: Reduce; risk: high; confidence: 35%.</li><li>Evidence review: 14 reviewed, 1 changed, 12 unchanged, 0 pending review.</li><li>Portfolio-linked market observations: 3 usable; unassigned buffer: 0.0%.</li></ul>
-          <p>Runtime is RISK_OFF with 3 usable portfolio-linked observations. Decision confidence is 35%; causal summary: Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.. Unassigned buffer is 0.0%.</p>
-        </article>
-        <article class="decision-support-card conviction-hierarchy-card" id="home-conviction-hierarchy" data-practical-section="conviction_hierarchy">
-      <div class="journey-step"><span>●</span>Conviction Hierarchy</div>
-      <div class="conviction-pyramid"><div class="conviction-level" style="--level-color:#9ee6b8;--level-width:100%">
-              <div class="conviction-bar"><span class="conviction-label">Level 1 · Core Judgment</span></div>
-              <ul><li>Portfolio-linked prices are moving, but Atlas still treats the setup as risk-constrained.</li></ul>
-            </div><div class="conviction-level" style="--level-color:#9fd3ff;--level-width:85%">
-              <div class="conviction-bar"><span class="conviction-label">Level 2 · Key Predictions</span></div>
-              <ul><li>NORMAL remains the working forward structure until contradicted by later observed state. · 35%</li><li>Confirmation improves if breadth/liquidity repair. · 35%</li><li>Risk worsens if liquidity, data freshness, or forecast outcomes deteriorate. · 35%</li></ul>
-            </div><div class="conviction-level" style="--level-color:#7d8aa0;--level-width:55%">
-              <div class="conviction-bar"><span class="conviction-label">Level 4 · Research Candidates</span></div>
-              <ul><li>Today&#x27;s Top 3 Research Priorities (3.0)</li></ul>
-            </div></div>
-    </article>
+      <details class="home-fold" data-home-fold="predictions">
+        <summary>Top Predictions &amp; Accountability<span class="fold-hint">4060 tracked · 602 verified</span></summary>
+        <div class="home-fold-body">
         <article class="decision-support-card predictions-card" id="home-predictions" data-practical-section="strongest_predictions">
-          <div class="journey-step"><span>05</span>Highest-Conviction Predictions</div>
           <div class="home-section-header">
-            <div><p class="home-safety-note">Maximum 3; evidence-labeled</p></div>
+            <div>
+              <h2>Highest-Conviction Predictions</h2>
+              <p class="home-safety-note">Maximum 3; evidence-labeled</p>
+            </div>
             <a class="secondary-button" href="/predictions">View all forecasts</a>
           </div>
           <div class="prediction-stack">
@@ -469,118 +627,49 @@
                 <div class="confidence-fill" style="width:35%"></div>
               </div>
               <dl class="decision-dl">
-                <dt>Evidence</dt><dd>Mixed / Low Signal / attention not dominant / usable portfolio market observations</dd>
+                <dt>Evidence</dt><dd>usable portfolio market observations</dd>
                 <dt>Invalidation</dt><dd>later runtime state conflicts with expected structure / forecast outcome marked invalidated through supported lifecycle</dd>
               </dl>
             </article>
             </div>
         </article>
 
-      </section>
-
-      <section class="investor-evidence-grid" aria-label="What materially changed">
-        <article class="decision-support-card material-change-card" id="home-material-changes" data-practical-section="material_changes">
-          <div class="journey-step"><span>06</span>What materially changed</div>
+        <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
           <div class="home-section-header">
             <div>
-              <h2>Latest Evidence That Matters</h2>
-              <p class="home-safety-note">News is Signal, not Action. Only thesis-relevant changes appear here.</p>
+              <h2>Recent forecast accountability</h2>
             </div>
-            <a class="secondary-button" href="/markets">View market evidence</a>
+            <div class="button-row">
+              <a class="secondary-button" href="/predictions">View all forecasts</a>
+              <a class="secondary-button" href="/learning">View learning record</a>
+            </div>
           </div>
-          <div class="evidence-review-summary has-change"><strong>Reviewed 14 · changed 1 · unchanged 12 · pending 0</strong><span>2026-07-19T04:49:41.906959+00:00</span></div><div class="material-evidence-list">
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>PUBLIC ATTENTION SAMPLE</span><em>DELAYED</em></div>
-              <h3>Public attention sample: 1 configured A-share asset(s) in the top 100</h3>
-              <dl>
-                <div><dt>Source</dt><dd><a href="https://emappdata.eastmoney.com/stockrank/getAllCurrentList" target="_blank" rel="noopener noreferrer">eastmoney_stock_rank</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-19T04:48:01.441330+00:00</dd></div>
-                <div><dt>Affected scope</dt><dd>002384.SZ, A-share public attention</dd></div>
-                <div><dt>Thesis change</dt><dd>NOT RELEVANT</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>LIVE OBSERVATION SAMPLE</span><em>DELAYED</em></div>
-              <h3>A-share breadth sample: 21 advancing, 77 declining, 2 unchanged</h3>
-              <dl>
-                <div><dt>Source</dt><dd><a href="https://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData" target="_blank" rel="noopener noreferrer">sina_market_center</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-19T04:48:00.132580+00:00</dd></div>
-                <div><dt>Affected scope</dt><dd>A-share market breadth</dd></div>
-                <div><dt>Thesis change</dt><dd>CHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>LIVE</em></div>
-              <h3>中国人民银行副行长宣昌能会见布基纳法索经济财政部部长阿布巴卡尔·纳卡纳...</h3>
-              <dl>
-                <div><dt>Source</dt><dd><a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026071814542725789/index.html" target="_blank" rel="noopener noreferrer">pbo_c_official</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-18</dd></div>
-                <div><dt>Affected scope</dt><dd>Macro Policy</dd></div>
-                <div><dt>Thesis change</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>LIVE</em></div>
-              <h3>2026年第二次临时股东会会议资料</h3>
-              <dl>
-                <div><dt>Source</dt><dd><a href="https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-07-18/688019_20260718_VCV1.pdf" target="_blank" rel="noopener noreferrer">sse_official</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-18</dd></div>
-                <div><dt>Affected scope</dt><dd>688019.SH, Semiconductor Materials</dd></div>
-                <div><dt>Thesis change</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>PROVIDER OBSERVATION</span><em>LAST MARKET CLOSE</em></div>
-              <h3>00148.HK: 51.4 (-9.59%)</h3>
-              <dl>
-                <div><dt>Source</dt><dd><a href="https://web.ifzq.gtimg.cn/appstock/app/fqkline/get" target="_blank" rel="noopener noreferrer">tencent_kline</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-17T00:00:00</dd></div>
-                <div><dt>Affected scope</dt><dd>00148.HK, PCB / Materials / AI Infrastructure</dd></div>
-                <div><dt>Thesis change</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>PROVIDER OBSERVATION</span><em>LAST MARKET CLOSE</em></div>
-              <h3>002384.SZ: 241.92 (-10.00%)</h3>
-              <dl>
-                <div><dt>Source</dt><dd><a href="https://web.ifzq.gtimg.cn/appstock/app/fqkline/get" target="_blank" rel="noopener noreferrer">tencent_kline</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-17T00:00:00</dd></div>
-                <div><dt>Affected scope</dt><dd>002384.SZ, PCB / AI Hardware Manufacturing</dd></div>
-                <div><dt>Thesis change</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>PROVIDER OBSERVATION</span><em>LAST MARKET CLOSE</em></div>
-              <h3>688019.SH: 239.06 (-6.81%)</h3>
-              <dl>
-                <div><dt>Source</dt><dd><a href="https://web.ifzq.gtimg.cn/appstock/app/fqkline/get" target="_blank" rel="noopener noreferrer">tencent_kline</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-17T00:00:00</dd></div>
-                <div><dt>Affected scope</dt><dd>688019.SH, Semiconductor Materials</dd></div>
-                <div><dt>Thesis change</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            
-            <article class="material-evidence-item">
-              <div class="evidence-truth-row"><span>VERIFIED EVIDENCE</span><em>DELAYED</em></div>
-              <h3>中国人民银行行长潘功胜会见利比亚央行行长纳吉·伊萨·贝尔卡西姆</h3>
-              <dl>
-                <div><dt>Source</dt><dd><a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026071714315618324/index.html" target="_blank" rel="noopener noreferrer">pbo_c_official</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-17</dd></div>
-                <div><dt>Affected scope</dt><dd>Macro Policy</dd></div>
-                <div><dt>Thesis change</dt><dd>UNCHANGED</dd></div>
-              </dl>
-            </article>
-            </div>
-        </article>
+          <div class="forecast-compact-strip"><span><strong>1466</strong>Current open</span><span><strong>0</strong>Legacy unclassified</span><span><strong>0</strong>Matured</span><span><strong>602</strong>VERIFIED</span><span><strong>1992</strong>INVALIDATED</span><span><strong>0</strong>INCONCLUSIVE</span></div><p class="home-safety-note">Legacy open forecasts without a material signature remain unclassified and are not bulk-evaluated from one observation.</p>
+          
+    <div class="forecast-track-record" aria-label="Forecast Track Record">
+      <div class="trk-bar"><span class="trk-seg" style="width:36.11%;background:#9fd3ff" title="Current open: 1466 (36%)" role="img" aria-label="Current open: 1466"></span><span class="trk-seg" style="width:0.00%;background:#7d8aa0" title="Matured: 0 (0%)" role="img" aria-label="Matured: 0"></span><span class="trk-seg" style="width:14.83%;background:#9ee6b8" title="VERIFIED: 602 (15%)" role="img" aria-label="VERIFIED: 602"></span><span class="trk-seg" style="width:49.06%;background:#f4a5b3" title="INVALIDATED: 1992 (49%)" role="img" aria-label="INVALIDATED: 1992"></span><span class="trk-seg" style="width:0.00%;background:#f6d77a" title="INCONCLUSIVE: 0 (0%)" role="img" aria-label="INCONCLUSIVE: 0"></span></div>
+      <div class="trk-body">
+        <div class="gauge trk-ring" style="--value:23;background:conic-gradient(#9ee6b8 calc(var(--value,0)*1%), rgba(255,255,255,0.08) 0), rgba(255,255,255,0.05);" title="Verification rate: 23%" role="img" aria-label="Verification rate: 23%"><span>23%</span></div>
+        <ul class="trk-legend"><li><span class="trk-dot" style="background:#9fd3ff"></span>Current open<strong>1466</strong></li><li><span class="trk-dot" style="background:#7d8aa0"></span>Matured<strong>0</strong></li><li><span class="trk-dot" style="background:#9ee6b8"></span>VERIFIED<strong>602</strong></li><li><span class="trk-dot" style="background:#f4a5b3"></span>INVALIDATED<strong>1992</strong></li><li><span class="trk-dot" style="background:#f6d77a"></span>INCONCLUSIVE<strong>0</strong></li></ul>
+      </div>
+      <p class="trk-meta"><strong>4060</strong> Total forecasts · <strong>2594</strong> Evaluated</p>
+      
+      <table class="sr-only"><caption>Forecast Track Record</caption><thead><tr><th>Status</th><th>Total forecasts</th><th>%</th></tr></thead><tbody><tr><td>Current open</td><td>1466</td><td>36%</td></tr><tr><td>Matured</td><td>0</td><td>0%</td></tr><tr><td>VERIFIED</td><td>602</td><td>15%</td></tr><tr><td>INVALIDATED</td><td>1992</td><td>49%</td></tr><tr><td>INCONCLUSIVE</td><td>0</td><td>0%</td></tr></tbody></table>
+    </div>
+    
+          
+          <div class="forecast-learning-row">
+            <p><strong>Recent miss:</strong> Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</p>
+            <p><strong>What Atlas changed afterward:</strong> Atlas exposes the miss through Forecast Ledger; later calibration effects must be verified through runtime behavior.</p>
+          </div>
+        </section>
+        </div>
+      </details>
 
+      <details class="home-fold" data-home-fold="reasoning_chain">
+        <summary>Atlas Reasoning Chain</summary>
+        <div class="home-fold-body">
         <article class="decision-support-card reasoning-chain-card" id="home-reasoning-chain" data-practical-section="reasoning_chain">
-          <div class="journey-step"><span>07</span>Atlas Reasoning Chain</div>
           <h2>From Signal to Conditional Conclusion</h2>
           <div class="thinking-timeline">
         <div class="thinking-phase">
@@ -603,7 +692,7 @@
           <div class="phase-marker" aria-hidden="true">🔗</div>
           <div class="phase-body">
             <strong>How Atlas reads the causality</strong>
-            <p>Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.</p>
+            <p>Primary driver is unknown. The controller remains in HIGH_VOLATILITY because transition to NORMAL is not allowed despite low fusion stress. Regime probabilities are dominated by data_insufficient at 55%, with distribution_risk at 25% and crash_stress at 20%. Portfolio context shows concentrated exposure to semiconductor materials and AI infrastructure-related themes, increasing relevance of anomaly and risk review under limited confidence.</p>
           </div>
         </div>
         
@@ -611,7 +700,7 @@
           <div class="phase-marker" aria-hidden="true">📌</div>
           <div class="phase-body">
             <strong>What it means for the thesis</strong>
-            <p>NOT_RELEVANT; affected holdings: 002384.SZ</p>
+            <p>UNCHANGED; affected holdings: 301526.SZ</p>
           </div>
         </div>
         
@@ -632,98 +721,62 @@
         </div>
         </div>
         </article>
-      </section>
+        </div>
+      </details>
 
-      <section class="scenario-section" aria-label="Scenario Outlook">
+      <details class="home-fold" data-home-fold="scenarios">
+        <summary>Scenarios &amp; Conditional Actions</summary>
+        <div class="home-fold-body">
         <article class="decision-support-card scenario-outlook-card" id="home-scenario-outlook" data-practical-section="scenario_outlook">
-          <div class="journey-step"><span>08</span>Scenario Outlook</div>
           <div class="home-section-header">
             <div><h2>Four Accountable Scenarios</h2><p class="home-safety-note">No precise probability is shown before forecast calibration is supported.</p></div>
           </div>
-          <div class="scenario-grid">
-        <article class="scenario-card scenario-base" style="--scenario-accent:#dbeafe">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">◎</span><span>Base</span></div>
-          <h3>Evidence remains mixed; preserve optionality while source freshness and thesis impact are verified.</h3>
-          <div><small>Supporting drivers</small><ul><li>Portfolio context</li><li>Available provider evidence</li><li>Framework snapshot</li></ul></div>
-          <div><small>Invalidation</small><ul><li>Verified evidence materially strengthens or weakens the portfolio thesis</li></ul></div>
-          <dl><dt>Horizon</dt><dd>Next review cycle</dd><dt>Evidence confidence</dt><dd><span class="evidence-confidence-pill is-calibrated" title="Calibrated">Calibrated</span></dd></dl>
-        </article>
+          
+    <div class="table-scroll"><table class="practical-table scenario-compact-table">
+      <thead><tr><th>Scenario</th><th>Trigger</th><th>Atlas posture</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:#dbeafe" aria-hidden="true">◎</span><strong>Base</strong></span></td>
+          <td>Fresh multi-channel confirmation</td>
+          <td><span class="trigger-status">Observe</span></td>
+        </tr>
         
-        <article class="scenario-card scenario-upside" style="--scenario-accent:#9ee6b8">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">↗</span><span>Upside continuation</span></div>
-          <h3>Upside continuation requires price participation, breadth, liquidity, and company evidence to improve together.</h3>
-          <div><small>Supporting drivers</small><ul><li>Market breadth improves</li><li>Holding prices confirm</li><li>Announcement evidence strengthens</li></ul></div>
-          <div><small>Invalidation</small><ul><li>Breadth weakens or company evidence contradicts the thesis</li></ul></div>
-          <dl><dt>Horizon</dt><dd>Next review cycle</dd><dt>Evidence confidence</dt><dd><span class="evidence-confidence-pill is-calibrated" title="Calibrated">Calibrated</span></dd></dl>
-        </article>
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:#9ee6b8" aria-hidden="true">↗</span><strong>Upside continuation</strong></span></td>
+          <td>Live breadth and fresh holding evidence</td>
+          <td><span class="trigger-status">Observe</span></td>
+        </tr>
         
-        <article class="scenario-card scenario-downside" style="--scenario-accent:#f4a5b3">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">↘</span><span>Downside acceleration</span></div>
-          <h3>Downside acceleration becomes relevant if liquidity weakens and portfolio-linked evidence invalidates existing theses.</h3>
-          <div><small>Supporting drivers</small><ul><li>Liquidity deterioration</li><li>Negative company evidence</li><li>Correlated theme pressure</li></ul></div>
-          <div><small>Invalidation</small><ul><li>Liquidity stabilizes and negative evidence does not persist</li></ul></div>
-          <dl><dt>Horizon</dt><dd>Next review cycle</dd><dt>Evidence confidence</dt><dd><span class="evidence-confidence-pill is-calibrated" title="Calibrated">Calibrated</span></dd></dl>
-        </article>
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:#f4a5b3" aria-hidden="true">↘</span><strong>Downside acceleration</strong></span></td>
+          <td>Verified thesis deterioration</td>
+          <td><span class="trigger-status">Hold</span></td>
+        </tr>
         
-        <article class="scenario-card scenario-range" style="--scenario-accent:#f6d77a">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">↔</span><span>Range / volatility</span></div>
-          <h3>A range-bound regime remains plausible while directional evidence is incomplete or conflicting.</h3>
-          <div><small>Supporting drivers</small><ul><li>Mixed channel freshness</li><li>Conflicting signals</li><li>Low forecast confidence</li></ul></div>
-          <div><small>Invalidation</small><ul><li>Participation and liquidity align directionally</li></ul></div>
-          <dl><dt>Horizon</dt><dd>Next review cycle</dd><dt>Evidence confidence</dt><dd><span class="evidence-confidence-pill is-calibrated" title="Calibrated">Calibrated</span></dd></dl>
-        </article>
-        </div>
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:#f6d77a" aria-hidden="true">↔</span><strong>Range / volatility</strong></span></td>
+          <td>Directional breadth and liquidity alignment</td>
+          <td><span class="trigger-status">Hold</span></td>
+        </tr>
+        </tbody>
+    </table></div>
+    
         </article>
 
         <article class="decision-support-card action-playbook-card" id="home-action-playbook" data-practical-section="action_playbook">
-          <div class="journey-step"><span>09</span>Conditional Actions</div>
           <h2>Portfolio Action Playbook</h2>
           
     <div class="playbook-warning">CDE authority is permission, not action. Runtime has not created deployment authority.</div>
-    <div class="table-scroll"><table class="practical-table action-playbook-table"><thead><tr><th>Scenario</th><th>Trigger</th><th>Atlas posture</th><th>Affected holdings</th><th>CDE</th><th>Limiting factor</th></tr></thead><tbody>
-        <tr>
-          <td><strong>Base</strong></td>
-          <td>Fresh multi-channel confirmation</td>
-          <td><span class="trigger-status">Observe</span></td>
-          <td>Configured portfolio</td>
-          <td>No available authority for this scenario</td>
-          <td>Evidence and CDE authority are incomplete</td>
-        </tr>
-        
-        <tr>
-          <td><strong>Upside</strong></td>
-          <td>Live breadth and fresh holding evidence</td>
-          <td><span class="trigger-status">Observe</span></td>
-          <td>Configured portfolio</td>
-          <td>No available authority for this scenario</td>
-          <td>Evidence and CDE authority are incomplete</td>
-        </tr>
-        
-        <tr>
-          <td><strong>Downside</strong></td>
-          <td>Verified thesis deterioration</td>
-          <td><span class="trigger-status">Hold</span></td>
-          <td>Configured portfolio</td>
-          <td>No available authority for this scenario</td>
-          <td>Evidence and CDE authority are incomplete</td>
-        </tr>
-        
-        <tr>
-          <td><strong>Range</strong></td>
-          <td>Directional breadth and liquidity alignment</td>
-          <td><span class="trigger-status">Hold</span></td>
-          <td>Configured portfolio</td>
-          <td>No available authority for this scenario</td>
-          <td>Evidence and CDE authority are incomplete</td>
-        </tr>
-        </tbody></table></div>
+    <ul class="plain-list playbook-shared-notes"><li>No available authority for this scenario</li><li>Evidence and CDE authority are incomplete</li></ul>
     
         </article>
-      </section>
+        </div>
+      </details>
 
-      <section class="candidate-score-section">
+      <details class="home-fold" data-home-fold="candidates">
+        <summary>Strategic Candidate Pool<span class="fold-hint">8 candidates</span></summary>
+        <div class="home-fold-body">
         <article class="decision-support-card" id="home-candidate-board" data-practical-section="candidate_board">
-          <div class="journey-step"><span>10</span>Strategic Candidate Pool</div>
           <div class="home-section-header">
             <div><h2>Candidate Priority and Score Basis</h2><p class="home-safety-note">Strategic Candidate Score ranks research priority; it is not CDE authority.</p></div>
             <a class="secondary-button" href="/candidates">View Full Candidate Pool</a>
@@ -745,7 +798,7 @@
           <td>Validated</td>
           <td>S</td>
           <td>Direct</td>
-          <td>Medium<small>UNCHANGED</small></td>
+          <td>Medium<small>NOT REVIEWED</small></td>
           <td class="candidate-score-cell"><div class="candidate-score-bar empty" title="Score not available"><div class="candidate-score-fill" style="width:0%"></div></div><div class="candidate-score-readout">N/A</div></td>
         </tr>
         </tbody></table></div>
@@ -756,38 +809,8 @@
     <details class="score-methodology"><summary>Scoring methodology and current limitation</summary><p>Thesis Fit /20 · Industry Cycle /15 · Evidence Quality /15 · Market Confirmation /15 · Valuation Risk /10 · Technical Structure /10 · Portfolio Fit /10 · Trigger Readiness /5</p><p>Repository priority is available, but an evidence-backed 0-100 score has not been assigned.</p></details>
     
         </article>
-      </section>
-
-      <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
-        <div class="home-section-header">
-          <div>
-            <span class="journey-step"><span>11</span>Forecast Accountability</span>
-            <h2>Recent forecast accountability</h2>
-          </div>
-          <div class="button-row">
-            <a class="secondary-button" href="/predictions">View all forecasts</a>
-            <a class="secondary-button" href="/learning">View learning record</a>
-          </div>
         </div>
-        <div class="forecast-compact-strip"><span><strong>1555</strong>Current open</span><span><strong>0</strong>Legacy unclassified</span><span><strong>0</strong>Matured</span><span><strong>596</strong>VERIFIED</span><span><strong>1824</strong>INVALIDATED</span><span><strong>0</strong>INCONCLUSIVE</span></div><p class="home-safety-note">Legacy open forecasts without a material signature remain unclassified and are not bulk-evaluated from one observation.</p>
-        
-    <div class="forecast-track-record" aria-label="Forecast Track Record">
-      <div class="trk-bar"><span class="trk-seg" style="width:39.12%;background:#9fd3ff" title="Current open: 1555.0 (39%)" role="img" aria-label="Current open: 1555.0"></span><span class="trk-seg" style="width:0.00%;background:#7d8aa0" title="Matured: 0.0 (0%)" role="img" aria-label="Matured: 0.0"></span><span class="trk-seg" style="width:14.99%;background:#9ee6b8" title="VERIFIED: 596.0 (15%)" role="img" aria-label="VERIFIED: 596.0"></span><span class="trk-seg" style="width:45.89%;background:#f4a5b3" title="INVALIDATED: 1824.0 (46%)" role="img" aria-label="INVALIDATED: 1824.0"></span><span class="trk-seg" style="width:0.00%;background:#f6d77a" title="INCONCLUSIVE: 0.0 (0%)" role="img" aria-label="INCONCLUSIVE: 0.0"></span></div>
-      <div class="trk-body">
-        <div class="gauge trk-ring" style="--value:25;background:conic-gradient(#9ee6b8 calc(var(--value,0)*1%), rgba(255,255,255,0.08) 0), rgba(255,255,255,0.05);" title="Verification rate: 25%" role="img" aria-label="Verification rate: 25%"><span>25%</span></div>
-        <ul class="trk-legend"><li><span class="trk-dot" style="background:#9fd3ff"></span>Current open<strong>1555.0</strong></li><li><span class="trk-dot" style="background:#7d8aa0"></span>Matured<strong>0.0</strong></li><li><span class="trk-dot" style="background:#9ee6b8"></span>VERIFIED<strong>596.0</strong></li><li><span class="trk-dot" style="background:#f4a5b3"></span>INVALIDATED<strong>1824.0</strong></li><li><span class="trk-dot" style="background:#f6d77a"></span>INCONCLUSIVE<strong>0.0</strong></li></ul>
-      </div>
-      <p class="trk-meta"><strong>3975</strong> Total forecasts · <strong>2420</strong> Evaluated</p>
-      
-      <table class="sr-only"><caption>Forecast Track Record</caption><thead><tr><th>Status</th><th>Total forecasts</th><th>%</th></tr></thead><tbody><tr><td>Current open</td><td>1555.0</td><td>39%</td></tr><tr><td>Matured</td><td>0.0</td><td>0%</td></tr><tr><td>VERIFIED</td><td>596.0</td><td>15%</td></tr><tr><td>INVALIDATED</td><td>1824.0</td><td>46%</td></tr><tr><td>INCONCLUSIVE</td><td>0.0</td><td>0%</td></tr></tbody></table>
-    </div>
-    
-        
-        <div class="forecast-learning-row">
-          <p><strong>Recent miss:</strong> Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</p>
-          <p><strong>What Atlas changed afterward:</strong> Atlas exposes the miss through Forecast Ledger; later calibration effects must be verified through runtime behavior.</p>
-        </div>
-      </section>
+      </details>
 
       <details class="supporting-context" id="home-supporting-context">
         <summary>Open supporting framework context</summary>
@@ -867,7 +890,7 @@
           <article class="decision-support-card" id="home-capital-allocation"><h2>Capital Allocation Board</h2>
     <dl class="decision-dl allocation-dl">
       <dt>Rebalance today?</dt><dd><strong>NO</strong></dd>
-      <dt>Funding source</dt><dd><ul class="plain-list"><li>Unassigned buffer (0.0% allocation)</li><li>Extended current holding review only if trigger evidence appears.</li></ul></dd>
+      <dt>Funding source</dt><dd><ul class="plain-list"><li>Unassigned buffer (20.7% allocation)</li><li>Extended current holding review only if trigger evidence appears.</li></ul></dd>
       <dt>Destination</dt><dd>Equipment / Materials observation pool</dd>
       <dt>Trigger Progress</dt><dd>3 / 6</dd>
       <dt>Execution style</dt><dd>Wait; do not front-run without trigger confirmation.</dd>
@@ -926,6 +949,34 @@
               <div class="research-item-main">
                 <span class="priority-index">1</span>
                 <div>
+                  <h3>Verify whether 688146.SH still has fresh order, margin, or qualification evidence.</h3>
+                  <p class="home-safety-note">688146.SH / 半导体材料</p>
+                </div>
+              </div>
+              <dl class="research-item-detail">
+                <div><dt>Why now</dt><dd>688146.SH is an actual configured holding and affects portfolio-level interpretation.</dd></div>
+                <div><dt>Evidence gap</dt><dd>晶圆厂资本开支放缓; 特气价格竞争; 单一产品集中度风险.</dd></div>
+              </dl>
+            </article>
+            
+            <article class="research-priority-card" data-research-task="2">
+              <div class="research-item-main">
+                <span class="priority-index">2</span>
+                <div>
+                  <h3>Verify whether 00148.HK still has fresh order, margin, or qualification evidence.</h3>
+                  <p class="home-safety-note">00148.HK / AI 基础设施材料 / 制造</p>
+                </div>
+              </div>
+              <dl class="research-item-detail">
+                <div><dt>Why now</dt><dd>00148.HK is an actual configured holding and affects portfolio-level interpretation.</dd></div>
+                <div><dt>Evidence gap</dt><dd>无 AI 基建订单证据; PCB/覆铜板毛利压缩; 港股流动性或板块估值压力.</dd></div>
+              </dl>
+            </article>
+            
+            <article class="research-priority-card" data-research-task="3">
+              <div class="research-item-main">
+                <span class="priority-index">3</span>
+                <div>
                   <h3>Verify whether Equipment relay evidence is improving through order/backlog signals.</h3>
                   <p class="home-safety-note">Equipment / Materials</p>
                 </div>
@@ -939,7 +990,7 @@
           <article class="decision-support-card" id="home-intelligence-alerts"><h2>Intelligence &amp; Alerts</h2><ul class="intelligence-alert-list">
         <li>
           <strong>Market sentiment</strong>
-          <span>Runtime state is RISK_OFF; attention is low-to-moderate and breadth is not configured.</span>
+          <span>Runtime state is HIGH_VOLATILITY; attention is low-to-moderate and breadth is not configured.</span>
         </li>
         
         <li>
@@ -949,7 +1000,7 @@
         
         <li>
           <strong>Holding-related signals</strong>
-          <span>3 configured-holding market observations are usable.</span>
+          <span>5 configured-holding market observations are usable.</span>
         </li>
         
         <li>
@@ -973,7 +1024,7 @@
     <dl class="decision-dl">
       <dt>Next review</dt><dd>next scheduled proactive update (~7200s cadence)</dd>
       <dt>Re-check</dt><dd><ul class="plain-list"><li>Capital relay confirmation</li><li>Forecast deviation or maturity</li><li>Waiting trigger count and status</li><li>Holding-specific evidence refresh</li></ul></dd>
-      <dt>Forecast due</dt><dd>runtime-3eaf7fac-1052-4707-bc00-b8a652b9fde3</dd>
+      <dt>Forecast due</dt><dd>1 runtime-cycle forecast(s) tracked; latest pending review (ID hidden).</dd>
       <dt>Waiting Triggers</dt><dd><ul class="plain-list"><li>Equipment / Materials remain confirmed in Bottleneck Map. · MET</li><li>Portfolio-linked price/volume observations are fresh. · UNKNOWN</li><li>Market breadth channel confirms participation. · NOT MET</li></ul></dd>
     </dl>
     </article>
@@ -991,10 +1042,10 @@
     <details class="expert-details home-expert-panel" id="expert-analysis-panel">
       <summary><span>Expert Analysis</span><strong>9</strong></summary>
       <div class="expert-grid">
-        <article class="expert-section"><span>A</span><h3>Causal Chain</h3><div class="causal-chain"><span>Narrative Pressure -&gt; Attention</span><span>Price Momentum -&gt; Attention</span><span>Attention -&gt; Retail Flow</span><span>Retail Flow -&gt; Price Momentum</span></div><p class="home-safety-note">Dominant edges</p><ul class="plain-list"><li>Narrative Pressure → Attention · Δ -0.0118</li><li>Price Momentum → Attention · Δ -0.0089</li><li>Attention → Retail Flow · Δ -0.007</li><li>Retail Flow → Price Momentum · Δ -0.0059</li></ul></article>
+        <article class="expert-section"><span>A</span><h3>Causal Chain</h3><div class="causal-chain"><span>Narrative Pressure → Attention</span><span>Price Momentum → Attention</span><span>Attention → Retail Flow</span><span>Retail Flow → Price Momentum</span></div><p class="home-safety-note">Dominant edges</p><ul class="plain-list"><li>Narrative Pressure → Attention · Δ -0.024</li><li>Price Momentum → Attention · Δ -0.018</li><li>Attention → Retail Flow · Δ -0.0141</li><li>Retail Flow → Price Momentum · Δ -0.0119</li></ul></article>
         <article class="expert-section"><span>B</span><h3>Hypothesis State</h3>
     <dl class="expert-dl">
-      <dt>Active hypothesis</dt><dd>H_ATTENTION_FLOW</dd>
+      <dt>Active hypothesis</dt><dd>Unknown</dd>
       <dt>Confidence</dt><dd>35.0%</dd>
       <dt>Recent change</dt><dd>No recent hypothesis change exposed.</dd>
     </dl>
@@ -1003,12 +1054,12 @@
     </article>
         <article class="expert-section"><span>C</span><h3>Regime State</h3>
     <dl class="expert-dl">
-      <dt>Current System State</dt><dd>RISK_OFF</dd>
-      <dt>Proposed</dt><dd>NORMAL</dd>
-      <dt>Volatility</dt><dd>Low</dd>
+      <dt>Current System State</dt><dd>High Volatility</dd>
+      <dt>Proposed</dt><dd>Normal</dd>
+      <dt>Volatility</dt><dd>Data Missing</dd>
     </dl>
     </article>
-        <article class="expert-section"><span>D</span><h3>Confidence Composition</h3><div class="confidence-row"><span>evidence quality</span><strong>100%</strong><i style="width:100%"></i><small>market channel status</small></div><div class="confidence-row"><span>market data completeness</span><strong>100%</strong><i style="width:100%"></i><small>market_intelligence.channels</small></div><div class="confidence-row"><span>hypothesis stability</span><strong>28%</strong><i style="width:28%"></i><small>system_trust_state</small></div><div class="confidence-row"><span>portfolio relevance</span><strong>0%</strong><i style="width:0%"></i><small>portfolio_context</small></div><div class="confidence-row"><span>forecast history</span><strong>100%</strong><i style="width:100%"></i><small>forecast_ledger</small></div></article>
+        <article class="expert-section"><span>D</span><h3>Confidence Composition</h3><div class="confidence-row"><span>evidence quality</span><strong>100%</strong><i style="width:100%"></i><small>market channel status</small></div><div class="confidence-row"><span>market data completeness</span><strong>100%</strong><i style="width:100%"></i><small>market_intelligence.channels</small></div><div class="confidence-row"><span>hypothesis stability</span><strong>0%</strong><i style="width:0%"></i><small>system_trust_state</small></div><div class="confidence-row"><span>portfolio relevance</span><strong>1%</strong><i style="width:1%"></i><small>portfolio_context</small></div><div class="confidence-row"><span>forecast history</span><strong>100%</strong><i style="width:100%"></i><small>forecast_ledger</small></div></article>
         <article class="expert-section"><span>E</span><h3>Data Quality</h3>
     <div class="forecast-status-strip expert-data-strip">
       <span><strong>3</strong>Live channels</span>
@@ -1019,32 +1070,32 @@
     <p>Confidence is limited by missing, stale, or unconfigured market channels.</p>
     </article>
         <article class="expert-section"><span>F</span><h3>Portfolio Sensitivity</h3>
-    <ul class="plain-list"><li>No portfolio percentages configured.</li></ul>
+    <ul class="plain-list"><li>688146.SH · 29.0%</li><li>00148.HK · 18.4%</li><li>000636.SZ · 12.5%</li></ul>
     <p>Privacy: percentage-only; no account value is exposed.</p>
     </article>
         <article class="expert-section"><span>G</span><h3>Forecast Evidence</h3>
     <dl class="expert-dl">
-      <dt>ID</dt><dd>runtime-3eaf7fac-1052-4707-bc00-b8a652b9fde3</dd>
-      <dt>Status</dt><dd>INVALIDATED</dd>
+      <dt>Forecast</dt><dd title="runtime-19712ad3-379e-4d9c-aafb-67521782c031">1 runtime-cycle forecast</dd>
+      <dt>Status</dt><dd>OPEN</dd>
       <dt>Horizon</dt><dd>next_runtime_cycle</dd>
     </dl>
     <p>Non-binding structural runtime forecast: current causal structure remains coherent until contradicted by later observed state.</p>
-    <ul class="plain-list"><li>Mixed / Low Signal</li><li>attention not dominant</li></ul>
+    <ul class="plain-list"></ul>
     </article>
         <article class="expert-section"><span>H</span><h3>Invalidation Conditions</h3><ul class="plain-list"><li>later runtime state conflicts with expected structure</li><li>forecast outcome marked invalidated through supported lifecycle</li></ul></article>
         <article class="expert-section"><span>I</span><h3>Raw Evidence</h3>
     <details class="raw-evidence-details">
       <summary>Raw Evidence</summary>
       <pre>{
-  &quot;regime_state&quot;: &quot;RISK_OFF&quot;,
+  &quot;regime_state&quot;: &quot;HIGH_VOLATILITY&quot;,
   &quot;last_decision_packet&quot;: {
-    &quot;attention_state&quot;: &quot;attention not dominant; attention and narrative intensity at zero&quot;,
-    &quot;causal_summary&quot;: &quot;Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.&quot;,
+    &quot;attention_state&quot;: &quot;Low attention pressure; fusion attention pressure is 0, but confidence is limited by missing/invalid research synthesis and data-insufficient regime probability.&quot;,
+    &quot;causal_summary&quot;: &quot;Primary driver is unknown. The controller remains in HIGH_VOLATILITY because transition to NORMAL is not allowed despite low fusion stress. Regime probabilities are dominated by data_insufficient at 55%, with distribution_risk at 25% and crash_stress at 20%. Portfolio context shows concentrated exposure to semiconductor materials and AI infrastructure-related themes, increasing relevance of anomaly and risk review under limited confidence.&quot;,
     &quot;confidence&quot;: 0.35,
-    &quot;liquidity_state&quot;: &quot;data missing with latent structural liquidity pressure and regional liquidity sensitivity&quot;,
-    &quot;reasoning_trace&quot;: &quot;Low-confidence event stream shows data_insufficient probability at 55%, distribution_risk at 25%, and crash_stress at 20%. Fusion stress is low, but liquidity condition is missing, structural liquidity pressure is elevated, and controller state blocks normalization. The action bias is defensive due to concentration, theme correlation, and unresolved event uncertainty; no execution or portfolio modification is authorized.&quot;,
+    &quot;liquidity_state&quot;: &quot;Data Missing; liquidity score is neutral at 50 but not evidence-backed, with regional liquidity sensitivity noted for the configured portfolio context.&quot;,
+    &quot;reasoning_trace&quot;: &quot;Inputs indicate HIGH_VOLATILITY runtime state, low-confidence event stream, unavailable research synthesis, missing liquidity condition, and no confirmed causal driver. Although fusion stress and attention pressure are low, the controller blocks normalization. Concentration and theme-cluster sensitivity elevate risk relevance, so the safest non-execution posture is risk-reduction bias without issuing any trading instruction.&quot;,
     &quot;recommended_action&quot;: &quot;reduce&quot;,
-    &quot;regime_state&quot;: &quot;RISK_OFF / liquidity_stress_basin&quot;,
+    &quot;regime_state&quot;: &quot;HIGH_VOLATILITY / Runtime State Context&quot;,
     &quot;risk_level&quot;: &quot;high&quot;
   },
   &quot;market_intelligence&quot;: {
@@ -1093,22 +1144,22 @@
         &quot;source&quot;: &quot;tencent_kline&quot;,
         &quot;source_type&quot;: &quot;market_data_provider&quot;,
         &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
-        &quot;theme&quot;: &quot;PCB / Materials / AI Infrastructure&quot;,
+        &quot;theme&quot;: &quot;AI 基础设施材料 / 制造&quot;,
         &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
         &quot;turnover&quot;: null,
         &quot;volume&quot;: 44089420.0
       },
       {
-        &quot;asset&quot;: &quot;002384.SZ&quot;,
-        &quot;change_20d_pct&quot;: -11.384615384615394,
-        &quot;change_5d_pct&quot;: -0.15683037556748491,
-        &quot;change_60d_pct&quot;: 54.08917197452227,
+        &quot;asset&quot;: &quot;301526.SZ&quot;,
+        &quot;change_20d_pct&quot;: -22.706141424027404,
+        &quot;change_5d_pct&quot;: -16.36219221604449,
+        &quot;change_60d_pct&quot;: 128.08664259927798,
         &quot;channel&quot;: &quot;price_volume&quot;,
         &quot;confidence&quot;: 0.75,
-        &quot;daily_change_pct&quot;: -10.000000000000009,
+        &quot;daily_change_pct&quot;: -9.22413793103447,
         &quot;data_quality_status&quot;: &quot;Available&quot;,
         &quot;freshness&quot;: &quot;CACHED&quot;,
-        &quot;latest_price&quot;: 241.92,
+        &quot;latest_price&quot;: 31.59,
         &quot;latest_price_available&quot;: true,
         &quot;market&quot;: &quot;A-share&quot;,
         &quot;market_session_status&quot;: &quot;LAST_MARKET_CLOSE&quot;,
@@ -1125,15 +1176,15 @@
             &quot;pb (optional)&quot;
           ],
           &quot;provider&quot;: &quot;tencent_kline&quot;,
-          &quot;ticker&quot;: &quot;002384.SZ&quot;
+          &quot;ticker&quot;: &quot;301526.SZ&quot;
         },
         &quot;source&quot;: &quot;tencent_kline&quot;,
         &quot;source_type&quot;: &quot;market_data_provider&quot;,
         &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
-        &quot;theme&quot;: &quot;PCB / AI Hardware Manufacturing&quot;,
+        &quot;theme&quot;: &quot;AI 基础设施材料 / 制造&quot;,
         &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
         &quot;turnover&quot;: null,
-        &quot;volume&quot;: 109049800.0
+        &quot;volume&quot;: 144988500.0
       },
       {
         &quot;asset&quot;: &quot;688019.SH&quot;,
@@ -1167,45 +1218,165 @@
         &quot;source&quot;: &quot;tencent_kline&quot;,
         &quot;source_type&quot;: &quot;market_data_provider&quot;,
         &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
-        &quot;theme&quot;: &quot;Semiconductor Materials&quot;,
+        &quot;theme&quot;: &quot;半导体材料&quot;,
         &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
         &quot;turnover&quot;: null,
         &quot;volume&quot;: 11036352.0
+      },
+      {
+        &quot;asset&quot;: &quot;688146.SH&quot;,
+        &quot;change_20d_pct&quot;: -21.09498780273118,
+        &quot;change_5d_pct&quot;: -14.622946358719691,
+        &quot;change_60d_pct&quot;: 318.72414253303083,
+        &quot;channel&quot;: &quot;price_volume&quot;,
+        &quot;confidence&quot;: 0.75,
+        &quot;daily_change_pct&quot;: -1.5686274509803977,
+        &quot;data_quality_status&quot;: &quot;Available&quot;,
+        &quot;freshness&quot;: &quot;CACHED&quot;,
+        &quot;latest_price&quot;: 251.0,
+        &quot;latest_price_available&quot;: true,
+        &quot;market&quot;: &quot;A-share&quot;,
+        &quot;market_session_status&quot;: &quot;LAST_MARKET_CLOSE&quot;,
+        &quot;market_session_timestamp&quot;: &quot;2026-07-17T00:00:00+00:00&quot;,
+        &quot;normalized_event_type&quot;: &quot;price_breakout&quot;,
+        &quot;portfolio_relevant&quot;: true,
+        &quot;price_currency&quot;: &quot;CNY&quot;,
+        &quot;raw_reference&quot;: {
+          &quot;errors&quot;: [],
+          &quot;missing_fields&quot;: [
+            &quot;turnover&quot;,
+            &quot;market_cap (optional)&quot;,
+            &quot;pe (optional)&quot;,
+            &quot;pb (optional)&quot;
+          ],
+          &quot;provider&quot;: &quot;tencent_kline&quot;,
+          &quot;ticker&quot;: &quot;688146.SH&quot;
+        },
+        &quot;source&quot;: &quot;tencent_kline&quot;,
+        &quot;source_type&quot;: &quot;market_data_provider&quot;,
+        &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
+        &quot;theme&quot;: &quot;半导体材料&quot;,
+        &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
+        &quot;turnover&quot;: null,
+        &quot;volume&quot;: 17382181.0
+      },
+      {
+        &quot;asset&quot;: &quot;000636.SZ&quot;,
+        &quot;change_20d_pct&quot;: -37.54446249043637,
+        &quot;change_5d_pct&quot;: -22.462922846192303,
+        &quot;change_60d_pct&quot;: 110.81962756558377,
+        &quot;channel&quot;: &quot;price_volume&quot;,
+        &quot;confidence&quot;: 0.75,
+        &quot;daily_change_pct&quot;: -9.999999999999998,
+        &quot;data_quality_status&quot;: &quot;Available&quot;,
+        &quot;freshness&quot;: &quot;CACHED&quot;,
+        &quot;latest_price&quot;: 46.53,
+        &quot;latest_price_available&quot;: true,
+        &quot;market&quot;: &quot;A-share&quot;,
+        &quot;market_session_status&quot;: &quot;LAST_MARKET_CLOSE&quot;,
+        &quot;market_session_timestamp&quot;: &quot;2026-07-17T00:00:00+00:00&quot;,
+        &quot;normalized_event_type&quot;: &quot;price_breakout&quot;,
+        &quot;portfolio_relevant&quot;: true,
+        &quot;price_currency&quot;: &quot;CNY&quot;,
+        &quot;raw_reference&quot;: {
+          &quot;errors&quot;: [],
+          &quot;missing_fields&quot;: [
+            &quot;turnover&quot;,
+            &quot;market_cap (optional)&quot;,
+            &quot;pe (optional)&quot;,
+            &quot;pb (optional)&quot;
+          ],
+          &quot;provider&quot;: &quot;tencent_kline&quot;,
+          &quot;ticker&quot;: &quot;000636.SZ&quot;
+        },
+        &quot;source&quot;: &quot;tencent_kline&quot;,
+        &quot;source_type&quot;: &quot;market_data_provider&quot;,
+        &quot;source_url&quot;: &quot;https://web.ifzq.gtimg.cn/appstock/app/fqkline/get&quot;,
+        &quot;theme&quot;: &quot;AI 基础设施元器件&quot;,
+        &quot;timestamp&quot;: &quot;2026-07-17T00:00:00&quot;,
+        &quot;turnover&quot;: null,
+        &quot;volume&quot;: 89449300.0
       }
     ]
   },
   &quot;portfolio_context&quot;: {
-    &quot;status&quot;: &quot;missing&quot;,
+    &quot;status&quot;: &quot;configured&quot;,
     &quot;privacy&quot;: &quot;percentage_only_no_account_amounts&quot;,
-    &quot;exposure_sum_pct&quot;: 0,
-    &quot;cash_or_unassigned_pct&quot;: null,
+    &quot;exposure_sum_pct&quot;: 79.3,
+    &quot;cash_or_unassigned_pct&quot;: 20.7,
     &quot;exposure_map&quot;: {
-      &quot;asset_concentration&quot;: [],
-      &quot;theme_concentration&quot;: {},
-      &quot;market_concentration&quot;: {},
-      &quot;role_concentration&quot;: {},
-      &quot;liquidity_sensitivity&quot;: &quot;diversified_or_unknown&quot;,
-      &quot;regime_sensitivity&quot;: &quot;broad_or_unclassified&quot;,
-      &quot;portfolio_relevance_score&quot;: 0.0,
-      &quot;correlated_risk_clusters&quot;: []
+      &quot;asset_concentration&quot;: [
+        {
+          &quot;asset&quot;: &quot;688146.SH&quot;,
+          &quot;exposure_pct&quot;: 29.0
+        },
+        {
+          &quot;asset&quot;: &quot;00148.HK&quot;,
+          &quot;exposure_pct&quot;: 18.4
+        },
+        {
+          &quot;asset&quot;: &quot;000636.SZ&quot;,
+          &quot;exposure_pct&quot;: 12.5
+        },
+        {
+          &quot;asset&quot;: &quot;688019.SH&quot;,
+          &quot;exposure_pct&quot;: 12.2
+        },
+        {
+          &quot;asset&quot;: &quot;301526.SZ&quot;,
+          &quot;exposure_pct&quot;: 7.2
+        }
+      ],
+      &quot;theme_concentration&quot;: {
+        &quot;半导体材料&quot;: 41.2,
+        &quot;AI 基础设施材料 / 制造&quot;: 25.6,
+        &quot;AI 基础设施元器件&quot;: 12.5
+      },
+      &quot;market_concentration&quot;: {
+        &quot;A-share&quot;: 60.9,
+        &quot;HK&quot;: 18.4
+      },
+      &quot;role_concentration&quot;: {
+        &quot;Hold&quot;: 79.3
+      },
+      &quot;liquidity_sensitivity&quot;: &quot;regional_liquidity_sensitive&quot;,
+      &quot;regime_sensitivity&quot;: &quot;theme_cluster_sensitive&quot;,
+      &quot;portfolio_relevance_score&quot;: 65.11,
+      &quot;correlated_risk_clusters&quot;: [
+        {
+          &quot;cluster&quot;: &quot;半导体材料&quot;,
+          &quot;exposure_pct&quot;: 41.2,
+          &quot;risk&quot;: &quot;moderate_concentration&quot;
+        },
+        {
+          &quot;cluster&quot;: &quot;AI 基础设施材料 / 制造&quot;,
+          &quot;exposure_pct&quot;: 25.6,
+          &quot;risk&quot;: &quot;moderate_concentration&quot;
+        },
+        {
+          &quot;cluster&quot;: &quot;AI 基础设施元器件&quot;,
+          &quot;exposure_pct&quot;: 12.5,
+          &quot;risk&quot;: &quot;low&quot;
+        }
+      ]
     }
   },
   &quot;forecast_ledger_summary&quot;: {
     &quot;metrics&quot;: {
-      &quot;total&quot;: 3975,
-      &quot;open&quot;: 1555,
+      &quot;total&quot;: 4060,
+      &quot;open&quot;: 1466,
       &quot;matured&quot;: 0,
-      &quot;evaluated&quot;: 2420,
-      &quot;verified&quot;: 596,
-      &quot;invalidated&quot;: 1824,
+      &quot;evaluated&quot;: 2594,
+      &quot;verified&quot;: 602,
+      &quot;invalidated&quot;: 1992,
       &quot;inconclusive&quot;: 0,
-      &quot;accuracy&quot;: 0.2463,
-      &quot;mean_forecast_error&quot;: 0.7537,
-      &quot;mean_calibration_error&quot;: 0.2926,
+      &quot;accuracy&quot;: 0.2321,
+      &quot;mean_forecast_error&quot;: 0.7679,
+      &quot;mean_calibration_error&quot;: 0.2942,
       &quot;minimum_sample_size_met&quot;: true
     },
     &quot;sample_warning&quot;: &quot;Minimum sample size met for basic calibration review.&quot;,
-    &quot;latest_forecast_id&quot;: &quot;runtime-3eaf7fac-1052-4707-bc00-b8a652b9fde3&quot;
+    &quot;latest_forecast_id&quot;: &quot;runtime-19712ad3-379e-4d9c-aafb-67521782c031&quot;
   },
   &quot;structural_coevolution_state&quot;: {
     &quot;status&quot;: &quot;applied&quot;,

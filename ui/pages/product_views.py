@@ -131,7 +131,7 @@ HOME_INTELLIGENCE_TEXT = {
         "base_case": "基准情景",
         "upside_scenario": "上行情景",
         "downside_scenario": "下行情景",
-        "horizon": "观察周期",
+        "horizon": "复核周期",
         "source": "来源",
         "invalidation_conditions": "失效条件",
         "insufficient_evidence": "证据不足",
@@ -215,19 +215,39 @@ def home_content(state: Mapping[str, Any]) -> str:
     playbook = _mapping(practical.get("action_playbook"))
     candidate_board = _mapping(practical.get("candidate_board"))
     brief_runtime = _mapping(practical.get("brief_runtime"))
-    decision_home = _mapping(intelligence.get("decision_home"))
     brief_revision = int(_num(brief_runtime.get("brief_revision"), 0) or 0)
+    review_summary = _mapping(material_changes.get("review_summary"))
+    fold_hint_changes = _v2_copy("hint_reviewed", lang).format(
+        reviewed=int(_num(review_summary.get("reviewed_count"), 0) or 0),
+        changed=int(_num(review_summary.get("CHANGED"), 0) or 0),
+    )
+    forecast_counts = _mapping(forecast.get("counts"))
+    forecast_total = sum(
+        int(_num(forecast_counts.get(key), 0) or 0)
+        for key in ("open", "matured", "verified", "invalidated", "inconclusive")
+    )
+    fold_hint_forecasts = _v2_copy("hint_forecasts", lang).format(
+        total=forecast_total,
+        verified=int(_num(forecast_counts.get("verified"), 0) or 0),
+    )
+    candidate_count = len(_list(candidate_board.get("validated_items"))) + len(_list(candidate_board.get("pending_items")))
+    fold_hint_candidates = _v2_copy("hint_candidates", lang).format(count=candidate_count)
+    evidence_status = _mapping(core.get("evidence_status"))
+    evidence_status_line = _v2_copy("evidence_status_line", lang).format(
+        reviewed=int(_num(evidence_status.get("reviewed"), 0) or 0),
+        changed=int(_num(evidence_status.get("changed"), 0) or 0),
+        confidence=f"{_num(evidence_status.get('confidence'), 0.0):.0%}",
+        risk=_runtime_label(evidence_status.get("risk_level") or "Unknown", lang),
+        updated=_fmt_ts(evidence_status.get("updated_at"), lang, "等待信号" if lang == "zh" else "Waiting for signal"),
+    )
+    posture_line = _v2_copy("posture_line", lang).format(
+        posture=_localized(action.get("posture_label"), lang),
+        status=_runtime_label(action.get("status") or "NO", lang),
+    )
     return f"""
     {_home_intelligence_style()}
     <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief" data-brief-revision="{brief_revision}">
       {_brief_runtime_strip(brief_runtime, lang)}
-      <div class="home-summary-banner">
-      <div class="home-summary-icon" aria-hidden="true">A</div>
-      <div class="home-summary-text">
-        <strong>{escape(_brief_copy("atlas_summary", lang))}</strong>
-        <p>{escape(_localized(portfolio_command.get("human_summary"), lang))}</p>
-      </div>
-    </div>
     <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="{escape(_brief_copy("portfolio_overview_title", lang))}">
         <article class="decision-card portfolio-overview-card" id="home-portfolio-command" data-practical-section="portfolio_command">
           <div class="journey-step"><span>01</span>{escape(_brief_copy("portfolio_overview_title", lang))}</div>
@@ -236,46 +256,24 @@ def home_content(state: Mapping[str, Any]) -> str:
               <span class="kicker">{escape(_brief_copy("portfolio_state_first", lang))}</span>
               <h1>{escape(_brief_copy("portfolio_overview", lang))}</h1>
             </div>
-            <div class="portfolio-header-status">
-              <div class="posture-pill">{escape(_localized(portfolio_command.get("posture"), lang))}</div>
-              <small>{escape(_brief_copy("action_review_today", lang))}</small>
-              <strong>{escape(_review_status_label(portfolio_command.get("action_status") or "NO", lang))}</strong>
-            </div>
           </div>
           {_portfolio_overview_view(portfolio_command, holdings, lang)}
         </article>
 
-        <article class="decision-card action-today-card" id="home-action-today" data-practical-section="action_today">
-          <div class="journey-step"><span>02</span>{escape(_brief_copy("action_today", lang))}</div>
-          <span class="kicker">{escape(_brief_copy("first_answer", lang))}</span>
-          <h1 class="action-answer">{escape(_runtime_label(action.get("status") or "NO", lang))}</h1>
-          <div class="posture-pill">{escape(_localized(action.get("posture_label"), lang))}</div>
-          <p class="decision-change">{escape(_localized(action.get("reason"), lang))}</p>
-          <p class="home-safety-note">{escape(_localized(action.get("helper"), lang))}</p>
-        </article>
-
         <article class="decision-card core-judgment-card" id="home-core-judgment" data-practical-section="core_judgment">
-          <div class="journey-step"><span>03</span>{escape(_brief_copy("core_judgment", lang))}</div>
-          <span class="kicker">{escape(_brief_copy("one_total_judgment", lang))}</span>
-          <h2>{escape(_localized(core.get("headline"), lang))}</h2>
+          <div class="journey-step"><span>02</span>{escape(_v2_copy("core_judgment_title", lang))}</div>
+          <span class="kicker">{escape(_brief_copy("action_today", lang))}</span>
+          <h2>{escape(_localized(core.get("merged_headline") or core.get("headline"), lang))}</h2>
           <ul class="judgment-because">{''.join(f'<li>{escape(_localized(b, lang))}</li>' for b in _list(core.get("because_bullets")))}</ul>
-          <p>{escape(_localized(core.get("supporting_sentence"), lang))}</p>
+          <p class="evidence-status-line">{escape(evidence_status_line)}</p>
+          <p class="posture-derived-line" id="home-action-today" data-practical-section="action_today">{escape(posture_line)}</p>
         </article>
-        {_conviction_hierarchy_view(decision_home.get("conviction_hierarchy"), lang)}
-        <article class="decision-support-card predictions-card" id="home-predictions" data-practical-section="strongest_predictions">
-          <div class="journey-step"><span>04</span>{escape(_brief_copy("strongest_predictions", lang))}</div>
-          <div class="home-section-header">
-            <div><p class="home-safety-note">{escape(_brief_copy("max_three", lang))}</p></div>
-            <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
-          </div>
-          {_prediction_cards(predictions, lang)}
-        </article>
-
       </section>
 
-      <section class="investor-evidence-grid" aria-label="{escape(_brief_copy("what_changed", lang))}">
+      <details class="home-fold" data-home-fold="material_changes">
+        <summary>{escape(_v2_copy("fold_material_changes", lang))}<span class="fold-hint">{escape(fold_hint_changes)}</span></summary>
+        <div class="home-fold-body">
         <article class="decision-support-card material-change-card" id="home-material-changes" data-practical-section="material_changes">
-          <div class="journey-step"><span>05</span>{escape(_brief_copy("what_changed", lang))}</div>
           <div class="home-section-header">
             <div>
               <h2>{escape(_brief_copy("material_evidence", lang))}</h2>
@@ -285,60 +283,83 @@ def home_content(state: Mapping[str, Any]) -> str:
           </div>
           {_material_changes_view(material_changes, lang)}
         </article>
+        </div>
+      </details>
 
+      <details class="home-fold" data-home-fold="predictions">
+        <summary>{escape(_v2_copy("fold_predictions", lang))}<span class="fold-hint">{escape(fold_hint_forecasts)}</span></summary>
+        <div class="home-fold-body">
+        <article class="decision-support-card predictions-card" id="home-predictions" data-practical-section="strongest_predictions">
+          <div class="home-section-header">
+            <div>
+              <h2>{escape(_brief_copy("strongest_predictions", lang))}</h2>
+              <p class="home-safety-note">{escape(_brief_copy("max_three", lang))}</p>
+            </div>
+            <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
+          </div>
+          {_prediction_cards(predictions, lang)}
+        </article>
+
+        <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
+          <div class="home-section-header">
+            <div>
+              <h2>{escape(_brief_copy("forecast_compact", lang))}</h2>
+            </div>
+            <div class="button-row">
+              <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
+              <a class="secondary-button" href="/learning">{escape(_brief_copy("view_learning", lang))}</a>
+            </div>
+          </div>
+          {_forecast_compact_strip(forecast, lang)}
+          {_forecast_track_record(forecast, lang)}
+          {_learning_log(forecast, lang)}
+          <div class="forecast-learning-row">
+            <p><strong>{escape(_brief_copy("recent_miss", lang))}:</strong> {escape(_localized_outlook_text(_localized(forecast.get("recent_miss"), lang), lang))}</p>
+            <p><strong>{escape(_brief_copy("changed_afterward", lang))}:</strong> {escape(_localized(forecast.get("what_changed_afterward"), lang))}</p>
+          </div>
+        </section>
+        </div>
+      </details>
+
+      <details class="home-fold" data-home-fold="reasoning_chain">
+        <summary>{escape(_v2_copy("fold_reasoning", lang))}</summary>
+        <div class="home-fold-body">
         <article class="decision-support-card reasoning-chain-card" id="home-reasoning-chain" data-practical-section="reasoning_chain">
-          <div class="journey-step"><span>06</span>{escape(_brief_copy("reasoning_chain", lang))}</div>
           <h2>{escape(_brief_copy("from_signal_to_decision", lang))}</h2>
           {_reasoning_chain_view(reasoning_chain, lang)}
         </article>
-      </section>
+        </div>
+      </details>
 
-      <section class="scenario-section" aria-label="{escape(_brief_copy("scenario_outlook", lang))}">
+      <details class="home-fold" data-home-fold="scenarios">
+        <summary>{escape(_v2_copy("fold_scenarios", lang))}</summary>
+        <div class="home-fold-body">
         <article class="decision-support-card scenario-outlook-card" id="home-scenario-outlook" data-practical-section="scenario_outlook">
-          <div class="journey-step"><span>07</span>{escape(_brief_copy("scenario_outlook", lang))}</div>
           <div class="home-section-header">
             <div><h2>{escape(_brief_copy("four_scenarios", lang))}</h2><p class="home-safety-note">{escape(_brief_copy("no_uncalibrated_probability", lang))}</p></div>
           </div>
-          {_scenario_outlook_view(scenarios, lang)}
+          {_scenario_outlook_view(scenarios, lang, playbook)}
         </article>
 
         <article class="decision-support-card action-playbook-card" id="home-action-playbook" data-practical-section="action_playbook">
-          <div class="journey-step"><span>08</span>{escape(_brief_copy("conditional_actions", lang))}</div>
           <h2>{escape(_brief_copy("scenario_action_playbook", lang))}</h2>
           {_action_playbook_view(playbook, lang)}
         </article>
-      </section>
+        </div>
+      </details>
 
-      <section class="candidate-score-section">
+      <details class="home-fold" data-home-fold="candidates">
+        <summary>{escape(_v2_copy("fold_candidates", lang))}<span class="fold-hint">{escape(fold_hint_candidates)}</span></summary>
+        <div class="home-fold-body">
         <article class="decision-support-card" id="home-candidate-board" data-practical-section="candidate_board">
-          <div class="journey-step"><span>09</span>{escape(_brief_copy("candidate_board", lang))}</div>
           <div class="home-section-header">
             <div><h2>{escape(_brief_copy("candidate_score_basis", lang))}</h2><p class="home-safety-note">{escape(_brief_copy("candidate_not_authority", lang))}</p></div>
             <a class="secondary-button" href="/candidates">{escape(_home_label("view_full_candidate_pool", lang))}</a>
           </div>
           {_candidate_score_board_view(candidate_board, lang)}
         </article>
-      </section>
-
-      <section class="forecast-compact-card" id="home-forecast-accountability" data-accountability-block="forecast">
-        <div class="home-section-header">
-          <div>
-            <span class="journey-step"><span>10</span>{escape(_home_label("forecast_accountability", lang))}</span>
-            <h2>{escape(_brief_copy("forecast_compact", lang))}</h2>
-          </div>
-          <div class="button-row">
-            <a class="secondary-button" href="/predictions">{escape(_home_label("view_all_forecasts", lang))}</a>
-            <a class="secondary-button" href="/learning">{escape(_brief_copy("view_learning", lang))}</a>
-          </div>
         </div>
-        {_forecast_compact_strip(forecast, lang)}
-        {_forecast_track_record(forecast, lang)}
-        {_learning_log(forecast, lang)}
-        <div class="forecast-learning-row">
-          <p><strong>{escape(_brief_copy("recent_miss", lang))}:</strong> {escape(_localized_outlook_text(_localized(forecast.get("recent_miss"), lang), lang))}</p>
-          <p><strong>{escape(_brief_copy("changed_afterward", lang))}:</strong> {escape(_localized(forecast.get("what_changed_afterward"), lang))}</p>
-        </div>
-      </section>
+      </details>
 
       <details class="supporting-context" id="home-supporting-context">
         <summary>{escape(_brief_copy("supporting_context", lang))}</summary>
@@ -402,9 +423,45 @@ def _portfolio_overview_view(command: Mapping[str, Any], holdings: Mapping[str, 
         {_portfolio_exposure_donut(command, lang)}
       </aside>
     </div>
-    <div class="portfolio-risk-callout"><span>{escape(_brief_copy("primary_portfolio_risk", lang))}</span><p>{escape(_localized(command.get("primary_risk"), lang))}</p></div>
+    {_risk_callout(command, lang)}
     <p class="decision-change">{escape(_localized(command.get("action_reason"), lang))}</p>
     """
+
+
+def _risk_callout(command: Mapping[str, Any], lang: str) -> str:
+    """Plain-language risk callout computed from risk_facts: largest single
+    position, theme concentration, PnL facts, and current posture."""
+    facts = _mapping(command.get("risk_facts"))
+    largest_asset = _mapping(facts.get("largest_asset"))
+    largest_theme = _mapping(facts.get("largest_theme"))
+    pnl = _mapping(facts.get("pnl"))
+    asset_label = str(largest_asset.get("name") or largest_asset.get("asset") or ("未知" if lang == "zh" else "Unknown"))
+    theme_label = _theme_label(largest_theme.get("theme"), lang) or str(largest_theme.get("theme") or "Unknown")
+    items = [
+        _v2_copy("risk_largest_position", lang).format(
+            asset=asset_label,
+            weight=f"{_num(largest_asset.get('weight_pct'), 0.0):.1f}",
+        ),
+        _v2_copy("risk_theme_concentration", lang).format(
+            theme=theme_label,
+            weight=f"{_num(largest_theme.get('exposure_pct'), 0.0):.1f}",
+        ),
+    ]
+    if pnl.get("available"):
+        evaluated = int(_num(pnl.get("evaluated"), 0) or 0)
+        losers = int(_num(pnl.get("losers"), 0) or 0)
+        deepest = _num(pnl.get("deepest_loss_pct"), 0.0)
+        if losers >= evaluated and evaluated:
+            items.append(_v2_copy("risk_pnl_all_losing", lang).format(count=evaluated, pct=f"{deepest:.0f}"))
+        else:
+            items.append(_v2_copy("risk_pnl_mixed", lang).format(count=evaluated, losers=losers, pct=f"{deepest:.0f}"))
+    else:
+        items.append(_v2_copy("risk_pnl_unavailable", lang))
+    posture = _localized(facts.get("posture"), lang)
+    if posture:
+        items.append(_v2_copy("risk_posture", lang).format(posture=posture))
+    rows = "".join(f"<li>{escape(item)}</li>" for item in items)
+    return f'<div class="portfolio-risk-callout"><span>{escape(_brief_copy("primary_portfolio_risk", lang))}</span><ul class="risk-fact-list">{rows}</ul></div>'
 
 
 _THEME_ACCENT_PALETTE = ("#9fd3ff", "#9ee6b8", "#f6d77a", "#f4a5b3", "#c5b8ff", "#8ad8d0")
@@ -421,6 +478,51 @@ def _theme_accent_map(holdings: Mapping[str, Any], lang: str) -> dict[str, str]:
         if label and label not in accents:
             accents[label] = _THEME_ACCENT_PALETTE[len(accents) % len(_THEME_ACCENT_PALETTE)]
     return accents
+
+
+_SOURCE_NAME_MAP: dict[str, dict[str, str]] = {
+    "tencent_kline": {"zh": "腾讯行情", "en": "Tencent Quotes"},
+    "eastmoney_stock_rank": {"zh": "东方财富", "en": "Eastmoney"},
+    "sina_market_center": {"zh": "新浪财经", "en": "Sina Finance"},
+    "sse_official": {"zh": "上交所", "en": "Shanghai Stock Exchange"},
+    "pbo_c_official": {"zh": "人民银行", "en": "People's Bank of China"},
+}
+
+
+def _source_display(value: Any, lang: str) -> tuple[str, str]:
+    """Map a raw source id to an investor-friendly name. Unknown raw ids are
+    hidden behind a title attribute; readable names render as-is."""
+    raw = str(value or "").strip()
+    if not raw:
+        return escape(_runtime_label("DATA MISSING", lang)), ""
+    mapped = _SOURCE_NAME_MAP.get(raw)
+    if mapped:
+        return escape(mapped.get(lang, mapped["en"])), raw
+    if " " not in raw and raw.replace("_", "").replace("-", "").isalnum() and raw.lower() == raw:
+        label = "其他数据源" if lang == "zh" else "Data source"
+        return escape(label), raw
+    return escape(raw), ""
+
+
+_ASSESSMENT_LABELS: dict[str, dict[str, str]] = {
+    "CHANGED": {"zh": "已改变", "en": "Changed"},
+    "UNCHANGED": {"zh": "结论不变", "en": "Unchanged"},
+    "UNCERTAIN": {"zh": "不确定", "en": "Uncertain"},
+    "NEEDS_REVIEW": {"zh": "待复核", "en": "Needs review"},
+    "NOT_RELEVANT": {"zh": "不相关", "en": "Not relevant"},
+    "UNASSESSED": {"zh": "尚未评估", "en": "Not assessed"},
+}
+
+
+def _assessment_label(value: Any, lang: str) -> str:
+    key = str(value or "").strip().upper() or "UNASSESSED"
+    override = _i18n_override(f"assessment.{key.lower()}", lang)
+    if override is not None:
+        return override
+    labels = _ASSESSMENT_LABELS.get(key)
+    if labels:
+        return labels.get(lang, labels["en"])
+    return _runtime_label(value, lang)
 
 
 def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
@@ -444,8 +546,9 @@ def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
     cards = []
     for item in items[:8]:
         url = str(item.get("source_url") or "")
-        source = escape(str(item.get("source") or _runtime_label("DATA MISSING", lang)))
-        source_html = f'<a href="{escape(url)}" target="_blank" rel="noopener noreferrer">{source}</a>' if url.startswith("http") else source
+        source_text, source_raw = _source_display(item.get("source"), lang)
+        source_title = f' title="{escape(source_raw)}"' if source_raw else ""
+        source_html = f'<a href="{escape(url)}" target="_blank" rel="noopener noreferrer"{source_title}>{source_text}</a>' if url.startswith("http") else f'<span{source_title}>{source_text}</span>'
         affected = ", ".join(str(value) for value in _list(item.get("affected_assets")) + _list(item.get("affected_themes")) if value)
         cards.append(
             f"""
@@ -456,7 +559,7 @@ def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
                 <div><dt>{escape(_brief_copy("source", lang))}</dt><dd>{source_html}</dd></div>
                 <div><dt>{escape(_brief_copy("published_at", lang))}</dt><dd>{escape(_fmt_ts(item.get("timestamp"), lang, "Unknown"))}</dd></div>
                 <div><dt>{escape(_brief_copy("affected_scope", lang))}</dt><dd>{escape(_theme_label(affected or str(item.get("world_model_node") or "Unknown"), lang))}</dd></div>
-                <div><dt>{escape(_brief_copy("thesis_change", lang))}</dt><dd>{escape(_runtime_label(item.get("thesis_changed") or "UNASSESSED", lang))}</dd></div>
+                <div><dt>{escape(_brief_copy("thesis_change", lang))}</dt><dd>{escape(_assessment_label(item.get("thesis_changed") or "UNASSESSED", lang))}</dd></div>
               </dl>
             </article>
             """
@@ -587,75 +690,41 @@ def _thinking_timeline(steps: list[Any], lang: str) -> list[str]:
     return phases
 
 
-def _scenario_outlook_view(scenarios: Mapping[str, Any], lang: str) -> str:
+def _scenario_outlook_view(scenarios: Mapping[str, Any], lang: str, playbook: Mapping[str, Any] | None = None) -> str:
     names = {
         "en": {"base": "Base", "upside": "Upside continuation", "downside": "Downside acceleration", "range": "Range / volatility"},
         "zh": {"base": "基准情景", "upside": "上行延续", "downside": "下行加速", "range": "震荡 / 波动"},
     }[lang]
     icons = {"base": "◎", "upside": "↗", "downside": "↘", "range": "↔"}
     colors = {"base": "#dbeafe", "upside": "#9ee6b8", "downside": "#f4a5b3", "range": "#f6d77a"}
-    cards = []
+    playbook_rows = {
+        str(item.get("scenario") or ""): item
+        for item in _list(_mapping(playbook).get("items"))
+        if isinstance(item, Mapping)
+    }
+    rows = []
     for item in _list(scenarios.get("items")):
         if not isinstance(item, Mapping):
             continue
         key = str(item.get("key") or "base")
-        drivers = "".join(f"<li>{escape(_localized(value, lang))}</li>" for value in _list(item.get("drivers")))
-        invalidation = "".join(f"<li>{escape(_localized(value, lang))}</li>" for value in _list(item.get("invalidation")))
+        action = _mapping(playbook_rows.get(key))
+        trigger = action.get("trigger") or item.get("next_trigger")
+        posture = action.get("posture") or "Observe"
         icon = icons.get(key, "◎")
         color = colors.get(key, "#dbeafe")
-        cards.append(f"""
-        <article class="scenario-card scenario-{escape(key)}" style="--scenario-accent:{color}">
-          <div class="scenario-header"><span class="scenario-icon" aria-hidden="true">{icon}</span><span>{escape(names.get(key, key))}</span></div>
-          <h3>{escape(_localized(item.get("statement"), lang))}</h3>
-          <div><small>{escape(_brief_copy("supporting_drivers", lang))}</small><ul>{drivers}</ul></div>
-          <div><small>{escape(_brief_copy("invalidation", lang))}</small><ul>{invalidation}</ul></div>
-          <dl><dt>{escape(_brief_copy("horizon", lang))}</dt><dd>{escape(_localized(item.get("horizon") or "Unknown", lang))}</dd><dt>{escape(_brief_copy("evidence_confidence", lang))}</dt><dd>{_scenario_conf_pill(item.get("evidence_confidence"), lang)}</dd></dl>
-        </article>
+        rows.append(f"""
+        <tr>
+          <td><span class="scenario-name"><span class="scenario-icon" style="--scenario-accent:{color}" aria-hidden="true">{icon}</span><strong>{escape(names.get(key, key))}</strong></span></td>
+          <td>{escape(_localized(trigger or "Unknown", lang))}</td>
+          <td><span class="trigger-status">{escape(_runtime_label(posture, lang))}</span></td>
+        </tr>
         """)
-    return '<div class="scenario-grid">' + "".join(cards) + "</div>"
-
-
-def _conviction_hierarchy_view(hierarchy: Mapping[str, Any], lang: str) -> str:
-    """Pyramid/funnel visualization of conviction hierarchy (L1 core → L4 research)."""
-    hierarchy = _mapping(hierarchy)
-    levels = [
-        ("level_1", _journey_copy("level_1", lang), "#9ee6b8", 100),
-        ("level_2", _journey_copy("level_2", lang), "#9fd3ff", 85),
-        ("level_3", _journey_copy("level_3", lang), "#f6d77a", 70),
-        ("level_4", _journey_copy("level_4", lang), "#7d8aa0", 55),
-    ]
-    rows = []
-    for key, label, color, width in levels:
-        items = _list(hierarchy.get(key))
-        if not items and key == "level_4":
-            count = int(_num(_mapping(hierarchy.get("level_4")).get("count_on_home"), 0))
-            text = f"{_journey_copy('top_three_research', lang)} ({count})" if count else _journey_copy("top_three_research", lang)
-            items = [{"statement": {"en": text, "zh": text}}]
-        texts = []
-        for item in items[:3]:
-            item_map = _mapping(item)
-            stmt = item_map.get("statement") or item_map.get("item") or item_map.get("label")
-            if isinstance(stmt, Mapping):
-                texts.append(escape(_localized(stmt, lang)))
-            elif stmt:
-                texts.append(escape(str(stmt)))
-            if key == "level_2" and item_map.get("confidence") is not None:
-                conf = _num(item_map.get("confidence"), 0)
-                texts[-1] += f" · {int(round(conf * 100))}%"
-        if not texts:
-            continue
-        rows.append(
-            f'''<div class="conviction-level" style="--level-color:{color};--level-width:{width}%">
-              <div class="conviction-bar"><span class="conviction-label">{escape(label)}</span></div>
-              <ul>{''.join(f'<li>{text}</li>' for text in texts)}</ul>
-            </div>'''
-        )
-    if not rows:
-        return ""
-    return f'''<article class="decision-support-card conviction-hierarchy-card" id="home-conviction-hierarchy" data-practical-section="conviction_hierarchy">
-      <div class="journey-step"><span>●</span>{escape(_journey_copy("conviction_hierarchy", lang))}</div>
-      <div class="conviction-pyramid">{''.join(rows)}</div>
-    </article>'''
+    return f"""
+    <div class="table-scroll"><table class="practical-table scenario-compact-table">
+      <thead><tr><th>{escape(_brief_copy("scenario", lang))}</th><th>{escape(_brief_copy("trigger", lang))}</th><th>{escape(_brief_copy("posture", lang))}</th></tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table></div>
+    """
 
 
 def _scenario_conf_pill(value: Any, lang: str) -> str:
@@ -666,25 +735,23 @@ def _scenario_conf_pill(value: Any, lang: str) -> str:
 
 
 def _action_playbook_view(playbook: Mapping[str, Any], lang: str) -> str:
-    scenario_names = {"base": "基准" if lang == "zh" else "Base", "upside": "上行" if lang == "zh" else "Upside", "downside": "下行" if lang == "zh" else "Downside", "range": "震荡" if lang == "zh" else "Range"}
-    rows = []
-    for item in _list(playbook.get("items")):
-        if not isinstance(item, Mapping):
-            continue
-        scenario = str(item.get("scenario") or "base")
-        rows.append(f"""
-        <tr>
-          <td><strong>{escape(scenario_names.get(scenario, scenario))}</strong></td>
-          <td>{escape(_localized(item.get("trigger") or "Unknown", lang))}</td>
-          <td><span class="trigger-status">{escape(_runtime_label(item.get("posture") or "Observe", lang))}</span></td>
-          <td>{escape(str(item.get("affected_holdings") or "Configured portfolio"))}</td>
-          <td>{escape(_localized(item.get("cde_authority") or "Not created by runtime", lang))}</td>
-          <td>{escape(_localized(item.get("limiting_factor") or "Unknown", lang))}</td>
-        </tr>
-        """)
+    items = [item for item in _list(playbook.get("items")) if isinstance(item, Mapping)]
+    authority_texts = list(dict.fromkeys(_localized(item.get("cde_authority"), lang) for item in items if _localized(item.get("cde_authority"), lang)))
+    limiting_texts = list(dict.fromkeys(_localized(item.get("limiting_factor"), lang) for item in items if _localized(item.get("limiting_factor"), lang)))
+    notes = []
+    if len(authority_texts) == 1:
+        notes.append(authority_texts[0])
+    elif authority_texts:
+        notes.extend(authority_texts)
+    if len(limiting_texts) == 1:
+        notes.append(limiting_texts[0])
+    elif limiting_texts:
+        notes.extend(limiting_texts)
+    note_html = "".join(f"<li>{escape(note)}</li>" for note in notes)
+    shared = f'<ul class="plain-list playbook-shared-notes">{note_html}</ul>' if note_html else ""
     return f"""
     <div class="playbook-warning">{escape(_brief_copy("authority_warning", lang))}</div>
-    <div class="table-scroll"><table class="practical-table action-playbook-table"><thead><tr><th>{escape(_brief_copy("scenario", lang))}</th><th>{escape(_brief_copy("trigger", lang))}</th><th>{escape(_brief_copy("posture", lang))}</th><th>{escape(_brief_copy("affected_holdings", lang))}</th><th>CDE</th><th>{escape(_brief_copy("limiting_factor", lang))}</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+    {shared}
     """
 
 
@@ -730,6 +797,77 @@ def _candidate_score_bar(score: float | None) -> str:
     pct = max(0, min(100, score * 100 if score <= 1 else score))
     color = "#9ee6b8" if pct >= 70 else "#f6d77a" if pct >= 40 else "#f4a5b3"
     return f'<div class="candidate-score-bar" title="Score: {pct:.0f}"><div class="candidate-score-fill" style="width:{pct:.0f}%;background:{color}"></div></div>'
+
+
+_HOME_V2_TEXT = {
+    "en": {
+        "fold_material_changes": "What Materially Changed",
+        "fold_predictions": "Top Predictions & Accountability",
+        "fold_reasoning": "Atlas Reasoning Chain",
+        "fold_scenarios": "Scenarios & Conditional Actions",
+        "fold_candidates": "Strategic Candidate Pool",
+        "hint_reviewed": "Reviewed {reviewed} · changed {changed}",
+        "hint_forecasts": "{total} tracked · {verified} verified",
+        "hint_candidates": "{count} candidates",
+        "core_judgment_title": "Core Judgment",
+        "evidence_status_line": "Reviewed {reviewed} · changed {changed} · confidence {confidence} · risk {risk} · updated {updated}",
+        "posture_line": "Current posture: {posture} · {status}. This is not a trading instruction; Atlas generates no orders.",
+        "risk_largest_position": "Largest single position: {asset} at {weight}% — single-name concentration is elevated.",
+        "risk_theme_concentration": "Theme concentration: {theme} at {weight}% — one theme shock can hit several holdings together.",
+        "risk_pnl_all_losing": "All {count} valued holdings are underwater; deepest is about {pct}%.",
+        "risk_pnl_mixed": "{losers} of {count} valued holdings are underwater; deepest is about {pct}%.",
+        "risk_pnl_unavailable": "Holding PnL is currently unavailable.",
+        "risk_posture": "Current posture: {posture} — Atlas generates no orders.",
+        "col_holding": "Holding",
+        "col_weight": "Weight",
+        "col_cost_latest": "Cost → Latest",
+        "col_pnl": "PnL",
+        "col_theme": "Theme",
+        "col_multiday": "5d · 20d",
+        "pnl_blocked_currency": "Currency mismatch - PnL blocked",
+        "pnl_missing_market": "Market data missing",
+        "pnl_missing_cost": "Cost not configured",
+        "pnl_unavailable": "PnL unavailable",
+        "multiday_missing": "Multi-day data missing",
+    },
+    "zh": {
+        "fold_material_changes": "重要变化",
+        "fold_predictions": "最强预测与兑现",
+        "fold_reasoning": "推理链",
+        "fold_scenarios": "情景推演与条件行动",
+        "fold_candidates": "重点候选池",
+        "hint_reviewed": "已复核 {reviewed} 条 · 改变 {changed} 条",
+        "hint_forecasts": "账本 {total} 条 · 已验证 {verified} 条",
+        "hint_candidates": "{count} 个候选",
+        "core_judgment_title": "核心判断",
+        "evidence_status_line": "已复核 {reviewed} 条 · 改变判断 {changed} 条 · 置信度 {confidence} · 风险等级{risk} · 更新于 {updated}（北京时间）",
+        "posture_line": "因此当前姿态：{posture} · {status}。这不代表交易指令，系统不会生成订单。",
+        "risk_largest_position": "最大单票 {asset} {weight}%，单一持仓集中度过高",
+        "risk_theme_concentration": "主题集中度 {theme} {weight}%，同主题波动会同时影响多只持仓",
+        "risk_pnl_all_losing": "{count} 只有估值数据的持仓全部浮亏，最深约 {pct}%",
+        "risk_pnl_mixed": "{count} 只有估值数据的持仓中 {losers} 只浮亏，最深约 {pct}%",
+        "risk_pnl_unavailable": "持仓盈亏数据暂不可用",
+        "risk_posture": "当前姿态 {posture}，系统不生成订单",
+        "col_holding": "持仓",
+        "col_weight": "权重",
+        "col_cost_latest": "成本 → 最新",
+        "col_pnl": "盈亏",
+        "col_theme": "主题",
+        "col_multiday": "5日 · 20日",
+        "pnl_blocked_currency": "币种不一致，盈亏暂不可比",
+        "pnl_missing_market": "行情缺失",
+        "pnl_missing_cost": "未配置成本",
+        "pnl_unavailable": "盈亏不可用",
+        "multiday_missing": "多周期数据缺失",
+    },
+}
+
+
+def _v2_copy(key: str, lang: str) -> str:
+    override = _i18n_override(f"home.v2.{key}", lang)
+    if override is not None:
+        return override
+    return _HOME_V2_TEXT.get(lang, _HOME_V2_TEXT["en"]).get(key, key)
 
 
 def _i18n_override(key: str, lang: str) -> str | None:
@@ -1163,149 +1301,87 @@ def _holding_action_board(holdings: Mapping[str, Any], lang: str, accents: Mappi
         theme_label = _theme_label(item.get("theme"), lang).strip()
         theme_accent = accents.get(theme_label, "")
         chip_style = f' style="--theme-accent:{theme_accent}"' if theme_accent else ""
-        theme_chip = f'<p class="holding-theme-chip"{chip_style}>{escape(theme_label)}</p>' if theme_label else ""
+        theme_chip = f'<span class="holding-theme-chip"{chip_style}>{escape(theme_label)}</span>' if theme_label else "—"
+        asset = str(item.get("asset") or "")
+        name = str(item.get("name") or "")
+        name_html = f'<strong>{escape(name or asset)}</strong>' + (f'<small>{escape(asset)}</small>' if name and name != asset else "")
         rows.append(
             f"""
-            <article class="holding-brief-card" data-valuation-status="{escape(str(valuation.get('valuation_status') or 'LIMITED').lower())}">
-              <div class="holding-valuation-column">
-                <div class="holding-title-row">
-                  <div><h3>{escape(str(item.get("asset") or ""))}</h3>{theme_chip}</div>
-                  <div class="allocation-badge"><small>{escape(_valuation_copy('configured_allocation', lang))}</small><strong>{escape(_pct_text(item.get("exposure_pct")))}</strong></div>
-                </div>
-                {_holding_valuation_view(valuation, lang)}
-              </div>
-              <div class="holding-decision-column">
-                <span class="kicker">{escape(_valuation_copy('decision_context', lang))}</span>
-                <dl class="decision-dl">
-                  <dt>{escape("组合级姿态" if lang == "zh" else "Portfolio posture")}</dt><dd>{escape(_localized(item.get("posture_label"), lang))}<small>{escape("不代表该持仓已有独立执行权限" if lang == "zh" else "No holding-specific execution authority")}</small></dd>
-                  <dt>{escape(_brief_copy("why", lang))}</dt><dd>{escape(_localized(item.get("why"), lang))}</dd>
-                  <dt>{escape(_brief_copy("key_trigger", lang))}</dt><dd>{escape(_localized(item.get("key_trigger"), lang))}</dd>
-                  <dt>{escape(_brief_copy("review_priority", lang))}</dt><dd>{escape(_runtime_label(item.get("review_priority") or "", lang))}</dd>
-                </dl>
-              </div>
-            </article>
+            <tr data-valuation-status="{escape(str(valuation.get('valuation_status') or 'LIMITED').lower())}">
+              <td class="holding-name-cell">{name_html}</td>
+              <td><strong>{escape(_pct_text(item.get("exposure_pct")))}</strong></td>
+              <td>{_holding_cost_price_cell(valuation, lang)}</td>
+              <td>{_holding_pnl_cell(valuation, lang)}</td>
+              <td>{theme_chip}</td>
+              <td>{_holding_multiday_cell(item, lang)}</td>
+            </tr>
             """
         )
-    return _valuation_summary(_mapping(holdings.get("valuation_summary")), lang) + '<div class="holding-brief-grid">' + "".join(rows) + "</div>"
+    header = "".join(
+        f"<th>{escape(label)}</th>"
+        for label in (
+            _v2_copy("col_holding", lang),
+            _v2_copy("col_weight", lang),
+            _v2_copy("col_cost_latest", lang),
+            _v2_copy("col_pnl", lang),
+            _v2_copy("col_theme", lang),
+            _v2_copy("col_multiday", lang),
+        )
+    )
+    table = f"""
+    <div class="table-scroll"><table class="practical-table holdings-compact-table">
+      <thead><tr>{header}</tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table></div>
+    """
+    return _valuation_summary(_mapping(holdings.get("valuation_summary")), lang) + table
 
 
-def _holding_valuation_view(valuation: Mapping[str, Any], lang: str) -> str:
-    if not valuation:
-        return f'<div class="valuation-empty">{escape(_valuation_copy("market_missing", lang))}</div>'
-    currency = str(valuation.get("position_currency") or valuation.get("price_currency") or "")
-    latest = valuation.get("latest_price")
+def _holding_cost_price_cell(valuation: Mapping[str, Any], lang: str) -> str:
     cost = valuation.get("average_cost_price")
+    latest = valuation.get("latest_price")
+    currency = str(valuation.get("position_currency") or valuation.get("price_currency") or "")
+    if cost is None and latest is None:
+        return f'<small class="valuation-note">{escape(_v2_copy("pnl_missing_cost", lang))}</small>'
+    cost_text = f"{_num(cost, 0):,.2f}" if cost is not None else "—"
+    latest_text = f"{_num(latest, 0):,.2f}" if latest is not None else "—"
+    suffix = f" {escape(currency)}" if currency else ""
+    return f'<span class="holding-cost-latest">{cost_text} → {latest_text}{suffix}</span>'
+
+
+def _holding_pnl_cell(valuation: Mapping[str, Any], lang: str) -> str:
     return_pct = valuation.get("unrealized_return_pct")
-    price_comparison = _cost_price_comparison(cost, latest, currency, lang)
-    pnl_bar = _pnl_diverging_bar(return_pct, lang)
-    amounts = _amount_metrics(valuation, currency, lang)
-    limitations = _valuation_limitations(_list(valuation.get("limitations")), lang)
-    observed = _fmt_ts(valuation.get("observed_at"), lang, _valuation_copy("time_missing", lang))
-    source = str(valuation.get("source") or _valuation_copy("source_missing", lang))
-    freshness = str(valuation.get("provider_status") or valuation.get("freshness") or "NOT_CONFIGURED")
-    return f"""
-    <div class="valuation-visuals">
-      {price_comparison}
-      {pnl_bar}
-      {amounts}
-    </div>
-    <div class="valuation-provenance">
-      <span class="freshness-badge freshness-{escape(freshness.lower())}">{escape(_runtime_label(freshness, lang))}</span>
-      <span>{escape(source)}</span>
-      <time>{escape(observed)}</time>
-    </div>
-    {limitations}
-    """
+    if return_pct is not None:
+        number = _num(return_pct, 0)
+        css = "pnl-pos" if number >= 0 else "pnl-neg"
+        return f'<span class="pnl-value {css}">{number:+.1f}%</span>'
+    limitations = {str(value) for value in _list(valuation.get("limitations"))}
+    if "PRICE_COST_CURRENCY_MISMATCH" in limitations:
+        note = _v2_copy("pnl_blocked_currency", lang)
+    elif "MARKET_DATA_MISSING" in limitations or "MARKET_DATA_UNAVAILABLE" in limitations:
+        note = _v2_copy("pnl_missing_market", lang)
+    elif "AVERAGE_COST_NOT_CONFIGURED" in limitations:
+        note = _v2_copy("pnl_missing_cost", lang)
+    elif not valuation:
+        note = _v2_copy("pnl_missing_market", lang)
+    else:
+        note = _v2_copy("pnl_unavailable", lang)
+    return f'<small class="valuation-note">{escape(note)}</small>'
 
 
-def _cost_price_comparison(cost: Any, latest: Any, currency: str, lang: str) -> str:
-    if cost is None:
-        return f'<div class="valuation-empty">{escape(_valuation_copy("cost_missing", lang))}</div>'
-    if latest is None:
-        return f'<div class="valuation-empty">{escape(_valuation_copy("market_missing", lang))}</div>'
-    cost_num = _num(cost, 0)
-    latest_num = _num(latest, 0)
-    low = min(cost_num, latest_num)
-    high = max(cost_num, latest_num)
-    span = max(high - low, high * .08, .000001)
-    floor = max(0, low - span * .45)
-    ceiling = high + span * .45
-    cost_left = max(3, min(97, (cost_num - floor) / max(ceiling - floor, .000001) * 100))
-    latest_left = max(3, min(97, (latest_num - floor) / max(ceiling - floor, .000001) * 100))
-    return f"""
-    <div class="cost-price-chart" role="img" aria-label="{escape(_valuation_copy('cost_vs_price', lang))}">
-      <div class="valuation-chart-head"><span>{escape(_valuation_copy('cost_vs_price', lang))}</span><small>{escape(currency)}</small></div>
-      <div class="cost-price-values">
-        <span><small>{escape(_valuation_copy('cost', lang))}</small><strong>{cost_num:,.2f}</strong></span>
-        <span><small>{escape(_valuation_copy('latest', lang))}</small><strong>{latest_num:,.2f}</strong></span>
-      </div>
-      <div class="cost-price-track">
-        <i class="cost-marker" style="left:{cost_left:.2f}%"><b></b></i>
-        <i class="price-marker" style="left:{latest_left:.2f}%"><b></b></i>
-      </div>
-    </div>
-    """
-
-
-def _pnl_diverging_bar(value: Any, lang: str) -> str:
-    if value is None:
-        return f'<div class="valuation-empty">{escape(_valuation_copy("return_unavailable", lang))}</div>'
-    number = _num(value, 0)
-    width = min(50, abs(number) / 100 * 50)
-    css = "gain" if number >= 0 else "loss"
-    left = 50 if number >= 0 else 50 - width
-    return f"""
-    <div class="pnl-chart {css}" role="img" aria-label="{escape(_valuation_copy('unrealized_return', lang))} {number:+.2f}%">
-      <div class="valuation-chart-head"><span>{escape(_valuation_copy('unrealized_return', lang))}</span><strong>{number:+.2f}%</strong></div>
-      <div class="pnl-track"><i style="left:{left:.2f}%;width:{width:.2f}%"></i><b></b></div>
-      <div class="pnl-axis"><span>-100%</span><span>0</span><span>+100%</span></div>
-    </div>
-    """
-
-
-def _amount_metrics(valuation: Mapping[str, Any], currency: str, lang: str) -> str:
-    quantity = valuation.get("quantity")
-    market_value = valuation.get("current_market_value")
-    pnl = valuation.get("unrealized_pnl_amount")
-    if quantity is None and market_value is None and pnl is None:
-        return ""
-    metrics = []
-    if quantity is not None:
-        metrics.append((_valuation_copy("quantity", lang), f"{_num(quantity, 0):,.4f}".rstrip("0").rstrip(".")))
-    if market_value is not None:
-        metrics.append((f'{_valuation_copy("market_value", lang)} ({currency})', f'{_num(market_value, 0):,.2f}'))
-    if pnl is not None:
-        pnl_value = _num(pnl, 0)
-        metrics.append((f'{_valuation_copy("pnl_amount", lang)} ({currency})', f'{"+" if pnl_value > 0 else ""}{pnl_value:,.2f}'))
-    return '<div class="valuation-amount-grid">' + "".join(
-        f'<span><small>{escape(label)}</small><strong>{escape(value)}</strong></span>' for label, value in metrics
-    ) + '</div>'
-
-
-def _valuation_limitations(limitations: list[Any], lang: str) -> str:
-    visible = []
-    for value in limitations:
-        key = str(value or "")
-        if key == "PRICE_NOT_LIVE":
-            visible.append(_valuation_copy("price_delayed", lang))
-        elif key == "AVERAGE_COST_NOT_CONFIGURED":
-            visible.append(_valuation_copy("cost_missing", lang))
-        elif key == "QUANTITY_NOT_CONFIGURED":
-            visible.append(_valuation_copy("quantity_missing", lang))
-        elif key == "MARKET_DATA_MISSING" or key == "MARKET_DATA_UNAVAILABLE":
-            visible.append(_valuation_copy("market_missing", lang))
-        elif key == "PRICE_COST_CURRENCY_MISMATCH":
-            visible.append(_valuation_copy("currency_mismatch", lang))
-        elif key == "IDENTITY_MISMATCH":
-            visible.append(_valuation_copy("identity_mismatch", lang))
-        elif key == "SIMULATED_PRICE_BLOCKED":
-            visible.append(_valuation_copy("simulated_blocked", lang))
-        elif key == "INVALID_PRIVATE_INPUT":
-            visible.append(_valuation_copy("invalid_input", lang))
-    unique = list(dict.fromkeys(visible))
-    if not unique:
-        return ""
-    return '<ul class="valuation-limitations">' + "".join(f'<li>{escape(item)}</li>' for item in unique) + '</ul>'
+def _holding_multiday_cell(item: Mapping[str, Any], lang: str) -> str:
+    change_5d = item.get("change_5d_pct")
+    change_20d = item.get("change_20d_pct")
+    if change_5d is None and change_20d is None:
+        return f'<small class="valuation-note">{escape(_v2_copy("multiday_missing", lang))}</small>'
+    parts = []
+    if change_5d is not None:
+        value = _num(change_5d, 0)
+        parts.append(f'<span class="{"pnl-pos" if value >= 0 else "pnl-neg"}">5d {value:+.1f}%</span>')
+    if change_20d is not None:
+        value = _num(change_20d, 0)
+        parts.append(f'<span class="{"pnl-pos" if value >= 0 else "pnl-neg"}">20d {value:+.1f}%</span>')
+    return '<span class="holding-multiday">' + " · ".join(parts) + "</span>"
 
 
 def _valuation_summary(summary: Mapping[str, Any], lang: str) -> str:
@@ -1475,7 +1551,7 @@ def _review_plan_view(review: Mapping[str, Any], lang: str) -> str:
     <dl class="decision-dl">
       <dt>{escape(_brief_copy("next_review", lang))}</dt><dd>{escape(_localized(review.get("next_review_time"), lang))}</dd>
       <dt>{escape(_brief_copy("recheck", lang))}</dt><dd><ul class="plain-list">{recheck}</ul></dd>
-      <dt>{escape(_brief_copy("forecast_due", lang))}</dt><dd>{escape(str(review.get("forecast_due") or ""))}</dd>
+      <dt>{escape(_brief_copy("forecast_due", lang))}</dt><dd>{escape(_localized(review.get("forecast_due"), lang))}</dd>
       <dt>{escape(_brief_copy("waiting_triggers", lang))}</dt><dd><ul class="plain-list">{trigger_rows}</ul></dd>
     </dl>
     """
@@ -1741,7 +1817,7 @@ def _forecast_compact_strip(forecast: Mapping[str, Any], lang: str) -> str:
     counts = forecast.get("counts") if isinstance(forecast.get("counts"), Mapping) else {}
     keys = ("current_open", "legacy_open", "matured", "verified", "invalidated", "inconclusive")
     strip = '<div class="forecast-compact-strip">' + "".join(
-        f'<span><strong>{escape(str(counts.get(key, 0)))}</strong>{escape(_journey_copy(key, lang))}</span>'
+        f'<span><strong>{int(_num(counts.get(key), 0) or 0)}</strong>{escape(_journey_copy(key, lang))}</span>'
         for key in keys
     ) + "</div>"
     return strip + f'<p class="home-safety-note">{escape(_localized(forecast.get("legacy_policy"), lang))}</p>'
@@ -1783,14 +1859,15 @@ def _forecast_track_record(forecast: Mapping[str, Any], lang: str) -> str:
     legend_rows = []
     table_rows = []
     for _key, val, color, label in segments:
+        val = int(val)
         pct = (val / total * 100) if total else 0.0
         bars.append(
             f'<span class="trk-seg" style="width:{pct:.2f}%;background:{color}" title="{escape(label)}: {val} ({pct:.0f}%)" role="img" aria-label="{escape(label)}: {val}"></span>'
         )
         legend_rows.append(f'<li><span class="trk-dot" style="background:{color}"></span>{escape(label)}<strong>{val}</strong></li>')
         table_rows.append(f"<tr><td>{escape(label)}</td><td>{val}</td><td>{pct:.0f}%</td></tr>")
-    evaluated = _num(metrics.get("evaluated"), 0)
-    verified = _num(metrics.get("verified"), counts.get("verified", 0))
+    evaluated = int(_num(metrics.get("evaluated"), 0))
+    verified = int(_num(metrics.get("verified"), counts.get("verified", 0)))
     accuracy = verified / evaluated if evaluated > 0 else None
     acc_pct = round(accuracy * 100) if accuracy is not None else None
     ring_value = acc_pct if acc_pct is not None else 0
@@ -2231,9 +2308,12 @@ def _expert_portfolio(expert: Mapping[str, Any], lang: str) -> str:
 def _expert_forecast(expert: Mapping[str, Any], lang: str) -> str:
     forecast = expert.get("forecast_evidence") if isinstance(expert.get("forecast_evidence"), Mapping) else {}
     drivers = forecast.get("drivers") if isinstance(forecast.get("drivers"), list) else []
+    raw_id = str(forecast.get("latest_forecast_id") or "")
+    id_title = f' title="{escape(raw_id)}"' if raw_id else ""
+    id_label = ("周期预测 1 条" if lang == "zh" else "1 runtime-cycle forecast") if raw_id else t("empty.context", lang)
     return f"""
     <dl class="expert-dl">
-      <dt>ID</dt><dd>{escape(str(forecast.get("latest_forecast_id") or t("empty.context", lang)))}</dd>
+      <dt>{escape("周期预测" if lang == "zh" else "Forecast")}</dt><dd{id_title}>{escape(id_label)}</dd>
       <dt>{escape(_home_label("status", lang))}</dt><dd>{escape(str(forecast.get("status") or t("empty.context", lang)))}</dd>
       <dt>{escape(_home_label("horizon", lang))}</dt><dd>{escape(str(forecast.get("horizon") or t("empty.context", lang)))}</dd>
     </dl>
@@ -2264,7 +2344,7 @@ def _home_intelligence_style() -> str:
     .portfolio-overview-card { grid-column:span 8; grid-row:1; min-height:100%; background:radial-gradient(circle at 12% 8%,rgba(158,230,184,.1),transparent 34%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028)); }
     .portfolio-holdings-region { min-width:0; }
     .portfolio-first-viewport .action-today-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; grid-template-columns:1fr; grid-template-areas:"step" "kicker" "answer" "posture" "reason" "helper"; align-content:start; }
-    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:2; min-height:100%; }
+    .portfolio-first-viewport .core-judgment-card { grid-area:auto; grid-column:span 4; grid-row:1; min-height:100%; }
     .portfolio-first-viewport .conviction-hierarchy-card,
     .portfolio-first-viewport .predictions-card { grid-column:1 / -1; }
     .portfolio-overview-card h1 { margin:8px 0 0; font-size:2rem; line-height:1.05; }
@@ -2611,6 +2691,33 @@ def _home_intelligence_style() -> str:
     .evidence-review-summary span { color:var(--muted); }
     .candidate-score-table td small, .decision-dl dd small { display:block; margin-top:4px; color:var(--muted); font-size:.7rem; }
     @media (max-width:720px) { .brief-runtime-strip { align-items:flex-start; flex-direction:column; gap:10px; } .brief-runtime-strip dl { width:100%; grid-template-columns:auto 1fr; } .evidence-review-summary { flex-direction:column; gap:4px; } }
+    .home-fold { border:1px solid rgba(219,234,254,.105); border-radius:20px; background:linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); }
+    .home-fold > summary { cursor:pointer; display:flex; align-items:center; gap:10px; padding:16px 20px; color:var(--subtle); font-weight:740; list-style:none; }
+    .home-fold > summary::-webkit-details-marker { display:none; }
+    .home-fold > summary::before { content:"+"; width:24px; height:24px; flex-shrink:0; display:grid; place-items:center; border-radius:999px; background:rgba(219,234,254,.12); color:var(--accent); font-size:.85rem; font-weight:780; }
+    .home-fold[open] > summary::before { content:"−"; }
+    .home-fold > summary .fold-hint { margin-left:auto; color:var(--muted); font-size:.78rem; font-weight:400; text-align:right; }
+    .home-fold > .home-fold-body { display:grid; gap:16px; padding:4px 16px 16px; }
+    .home-fold > .home-fold-body > .decision-support-card,
+    .home-fold > .home-fold-body > .forecast-compact-card { box-shadow:none; }
+    .holdings-compact-table { min-width:760px; }
+    .holding-name-cell strong { display:block; font-size:.95rem; }
+    .holding-name-cell small { display:block; margin-top:3px; color:var(--muted); font-size:.72rem; }
+    .holding-cost-latest { white-space:nowrap; font-size:.86rem; }
+    .holding-multiday { white-space:nowrap; font-size:.82rem; }
+    .pnl-value { font-weight:780; }
+    .pnl-pos { color:#9ee6b8; }
+    .pnl-neg { color:#f4a5b3; }
+    .valuation-note { color:var(--muted); font-size:.74rem; line-height:1.35; }
+    .risk-fact-list { margin:8px 0 0; padding-left:18px; display:grid; gap:5px; }
+    .risk-fact-list li { color:var(--text); font-size:.92rem; line-height:1.45; }
+    .scenario-compact-table { min-width:640px; }
+    .scenario-name { display:inline-flex; align-items:center; gap:9px; }
+    .scenario-name .scenario-icon { background:var(--scenario-accent, var(--accent)); }
+    .playbook-shared-notes { margin:0 0 4px; padding-left:18px; display:grid; gap:4px; color:var(--subtle); font-size:.88rem; }
+    .evidence-status-line { margin-top:12px; padding:9px 12px; border:1px solid rgba(219,234,254,.1); border-radius:10px; background:rgba(0,0,0,.1); color:var(--muted) !important; font-size:.8rem; }
+    .posture-derived-line { margin-top:12px; padding-top:12px; border-top:1px solid rgba(219,234,254,.12); color:var(--text) !important; font-size:.95rem; line-height:1.5; }
+    @media (max-width:640px) { .home-fold > summary { padding:14px 16px; } .home-fold > .home-fold-body { padding:2px 10px 12px; } }
     </style>
     """
 

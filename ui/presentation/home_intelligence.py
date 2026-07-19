@@ -101,7 +101,7 @@ def build_practical_decision_brief(
     predictions = _strongest_predictions(ledger, packet, market)
     holdings = _current_holdings_board(portfolio, market, local_valuation, packet)
     action = _action_today(packet, market, portfolio)
-    portfolio_command = _portfolio_command(portfolio, market, action)
+    portfolio_command = _portfolio_command(portfolio, market, action, local_valuation)
     material_changes = _material_changes(market, evidence_assessment)
     reasoning_chain = _investor_reasoning_chain(material_changes, portfolio, packet)
     scenarios = _scenario_outlook(state, market, portfolio, forecast_accountability)
@@ -168,6 +168,7 @@ def _portfolio_command(
     portfolio: Mapping[str, Any],
     market: Mapping[str, Any],
     action: Mapping[str, Any],
+    local_valuation: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     exposure = _mapping(portfolio.get("exposure_map"))
     asset_concentration = [_mapping(item) for item in _list(exposure.get("asset_concentration")) if isinstance(item, Mapping)]
@@ -178,6 +179,11 @@ def _portfolio_command(
     buffer_pct = _safe_number(portfolio.get("cash_or_unassigned_pct"), 0.0)
     consistency = _text(portfolio.get("portfolio_consistency"), "Unknown")
     usable = _usable_market_observations(market)
+    names = {
+        str(item.get("asset") or ""): str(item.get("name") or "")
+        for item in _list(portfolio.get("positions"))
+        if isinstance(item, Mapping)
+    }
     return {
         "status": portfolio.get("status", "missing"),
         "source": portfolio.get("source"),
@@ -215,6 +221,47 @@ def _portfolio_command(
         "privacy": portfolio.get("privacy", "percentage_only_no_account_amounts"),
         "human_summary": _human_summary(portfolio, market, action, largest_theme, usable),
         "because_bullets": _because_bullets(portfolio, market, action, largest_theme, usable),
+        "risk_facts": _risk_facts(action, largest_asset, largest_theme, names, local_valuation),
+    }
+
+
+def _risk_facts(
+    action: Mapping[str, Any],
+    largest_asset: Mapping[str, Any],
+    largest_theme: tuple[str, float],
+    names: Mapping[str, str],
+    local_valuation: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Assemble data-driven risk callout facts: largest single position, theme
+    concentration, and PnL facts from the local valuation block when available."""
+    asset_key = _text(largest_asset.get("asset"), "")
+    returns: list[float] = []
+    for item in _list(_mapping(local_valuation).get("positions")):
+        if not isinstance(item, Mapping):
+            continue
+        pct = item.get("unrealized_return_pct")
+        if pct is None:
+            continue
+        returns.append(_safe_float(pct, 0.0))
+    losers = [pct for pct in returns if pct < 0]
+    return {
+        "largest_asset": {
+            "asset": asset_key,
+            "name": names.get(asset_key, ""),
+            "weight_pct": _safe_number(largest_asset.get("exposure_pct"), 0.0),
+        },
+        "largest_theme": {
+            "theme": largest_theme[0],
+            "exposure_pct": _safe_number(largest_theme[1], 0.0),
+        },
+        "pnl": {
+            "available": bool(returns),
+            "evaluated": len(returns),
+            "losers": len(losers),
+            "gainers": len(returns) - len(losers),
+            "deepest_loss_pct": min(returns) if returns else None,
+        },
+        "posture": action.get("posture_label"),
     }
 
 
@@ -1275,18 +1322,62 @@ def _practical_core_judgment(
             "No validated thesis change is available; keep the current posture until material evidence arrives.",
             "当前没有已验证的论点变化；在重要证据出现前保持现有姿态。",
         )
-    support = _bilingual(
-        f"Market state is {localize_regime(regime, 'en') if regime else 'Unknown'} with {len(observations)} usable portfolio-linked observations. Decision confidence is {confidence:.0%}; causal summary: {_text(packet.get('causal_summary'), 'Unknown')}. Unassigned buffer is {buffer_pct:.1f}%.",
-        f"当前市场状态为「{localize_regime(regime, 'zh') if regime else '未知'}」，有 {len(observations)} 个可用的组合相关观测。决策置信度为 {confidence:.0%}；因果摘要：{localize_inline_tokens(_text(packet.get('causal_summary'), '未知'), 'zh')}。未部署资金为 {buffer_pct:.1f}%。",
-    )
+    regime_label_en = localize_regime(regime, "en") if regime else "Unknown"
+    regime_label_zh = localize_regime(regime, "zh") if regime else "未知"
+    fallback = _decision_packet_is_fallback(packet)
+    causal = _text(packet.get("causal_summary"), "")
+    if fallback or not causal:
+        driver_en = "Atlas has not identified a dominant driver yet."
+        driver_zh = "系统暂未识别出主导驱动因素。"
+    else:
+        driver_en = "Driver details are kept in the folded reasoning chain."
+        driver_zh = "主导驱动细节见折叠的推理链。"
     if not observations:
-        support = _bilingual(
-            f"Portfolio market observations are unavailable. The {localize_regime(regime, 'en') if regime else 'Unknown'} market state and Capital Relay are inference/framework context only, so today's judgment remains observation-first; unassigned buffer is {buffer_pct:.1f}%.",
-            f"组合相关市场观测当前不可用。「{localize_regime(regime, 'zh') if regime else '未知'}」市场状态与资本接力仅属于推断/框架上下文，因此今日判断保持观察优先；未部署资金为 {buffer_pct:.1f}%。",
-        )
+        limit_en = "Portfolio-linked market observations are unavailable; insufficient data is the main limitation of today's view."
+        limit_zh = "组合相关市场观测不可用，数据不足是当前判断的主要限制。"
+    elif confidence < 0.5:
+        limit_en = "Low decision confidence is the main limitation of today's view."
+        limit_zh = "决策置信度偏低是当前判断的主要限制。"
+    else:
+        limit_en = "Evidence is still accumulating; the view needs continued review."
+        limit_zh = "证据仍在积累，判断需要持续复核。"
+    support = _bilingual(
+        f"Market state is {regime_label_en} with {len(observations)} usable portfolio-linked observations. {driver_en} {limit_en} Decision confidence is {confidence:.0%}; unassigned buffer is {buffer_pct:.1f}%.",
+        f"当前市场状态为「{regime_label_zh}」，有 {len(observations)} 个可用的组合相关观测。{driver_zh}{limit_zh}决策置信度 {confidence:.0%}；未部署资金 {buffer_pct:.1f}%。",
+    )
+    exposure = _mapping(portfolio.get("exposure_map"))
+    theme_concentration = _mapping(exposure.get("theme_concentration"))
+    largest_theme = max(theme_concentration.items(), key=lambda item: _safe_number(item[1], 0.0)) if theme_concentration else ("Unknown", 0.0)
+    exposure_pct = _safe_number(portfolio.get("exposure_sum_pct"), 0.0)
+    if confidence < 0.5:
+        strength_en, strength_zh = "limited", "偏低"
+    elif confidence < 0.75:
+        strength_en, strength_zh = "moderate", "中等"
+    else:
+        strength_en, strength_zh = "relatively solid", "较强"
+    merged_headline = _bilingual(
+        (
+            f"Market state is {regime_label_en}; the portfolio is {exposure_pct:.1f}% deployed, "
+            f"and the largest theme {largest_theme[0]} ({_safe_number(largest_theme[1], 0.0):.1f}%) makes the portfolio sensitive to this state. "
+            f"{len(observations)} usable portfolio-linked observations; evidence strength is {strength_en}."
+        ),
+        (
+            f"市场处于「{regime_label_zh}」状态；组合已配置 {exposure_pct:.1f}%，"
+            f"最大主题 {largest_theme[0]}（{_safe_number(largest_theme[1], 0.0):.1f}%）的集中暴露使组合对该状态敏感；"
+            f"{len(observations)} 个组合相关观测可用，证据强度{strength_zh}。"
+        ),
+    )
     return {
         "headline": headline,
+        "merged_headline": merged_headline,
         "supporting_sentence": support,
+        "evidence_status": {
+            "reviewed": reviewed,
+            "changed": changed,
+            "confidence": confidence,
+            "risk_level": risk,
+            "updated_at": assessment.get("assessed_at"),
+        },
         "source": "DecisionPacket + market_intelligence + portfolio_context + Capital Relay snapshot",
         "relay_stage": capital_relay.get("current_stage"),
         "because_bullets": [
@@ -1464,8 +1555,11 @@ def _current_holdings_board(
         holdings.append(
             {
                 "asset": asset,
+                "name": _text(item.get("name"), ""),
                 "theme": _text(item.get("theme"), "Unknown"),
                 "exposure_pct": item.get("portfolio_percentage"),
+                "change_5d_pct": observation.get("change_5d_pct"),
+                "change_20d_pct": observation.get("change_20d_pct"),
                 "posture": global_posture,
                 "posture_label": _action_label(global_posture),
                 "posture_scope": "portfolio_level_decision_packet",
@@ -1747,6 +1841,15 @@ def _review_plan(state: Mapping[str, Any], ledger: Mapping[str, Any], triggers: 
     next_review = "next scheduled proactive update"
     if cadence:
         next_review = f"next scheduled proactive update (~{cadence}s cadence)"
+    open_forecasts = [item for item in forecasts if _text(item.get("status"), "").upper() in {"OPEN", "CURRENT_OPEN"}]
+    due_count = len(open_forecasts) or (1 if latest.get("forecast_id") else 0)
+    if due_count:
+        forecast_due = _bilingual(
+            f"{due_count} runtime-cycle forecast(s) tracked; latest pending review (ID hidden).",
+            f"周期预测 {due_count} 条在跟踪，最近一条待复核（ID 已隐藏）。",
+        )
+    else:
+        forecast_due = _bilingual("No open forecast exposed.", "当前没有待复核的周期预测。")
     return {
         "next_review_time": _bilingual(next_review, f"下一次计划主动更新（约 {cadence or '默认'} 秒周期）"),
         "recheck": [
@@ -1755,7 +1858,7 @@ def _review_plan(state: Mapping[str, Any], ledger: Mapping[str, Any], triggers: 
             _bilingual("Waiting trigger count and status", "等待触发条件数量与状态"),
             _bilingual("Holding-specific evidence refresh", "持仓个别证据刷新"),
         ],
-        "forecast_due": latest.get("forecast_id") or "No open forecast exposed",
+        "forecast_due": forecast_due,
         "triggers_may_change": _list(triggers.get("items"))[:3],
     }
 

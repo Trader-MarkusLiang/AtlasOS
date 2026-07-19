@@ -50,16 +50,22 @@ def main() -> int:
     checks["latest_inference_succeeded"] = str(trace.get("latest_inference_status")).lower() == "succeeded"
 
     html = home_content(state)
+    # Investor Home v2.1 (2026-07-19): the portfolio overview leads the first screen (it contains
+    # current-holdings), followed by the merged Core Judgment section; the old answer card survives
+    # only as the derived posture line (home-action-today) inside that section. Remaining sections
+    # keep their relative order inside folded details blocks.
     order = [
         "home-portfolio-command",
         "home-current-holdings",
+        "home-core-judgment",
         "home-action-today",
         "home-material-changes",
+        "home-predictions",
+        "home-forecast-accountability",
         "home-reasoning-chain",
         "home-scenario-outlook",
         "home-action-playbook",
         "home-candidate-board",
-        "home-forecast-accountability",
     ]
     offsets = [html.find(f'id="{item}"') for item in order]
     checks["portfolio_first_chain_order"] = all(value >= 0 for value in offsets) and offsets == sorted(offsets)

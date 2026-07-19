@@ -36,6 +36,7 @@ def render_global_topbar(active: str, state: Mapping[str, Any], lang: str) -> st
     inference = _inference_label(str(llm_summary.get("latest_inference_status") or "not_run"), lang)
     freshness = _freshness_label(market, lang)
     last_tick = _compact_value(state.get("tick_counter"), t("empty.signal", lang))
+    tick_pill = "" if active == "home" else f'<span class="mini-pill">{escape(t("state.tick", lang))}: <strong data-tick-counter>{escape(last_tick)}</strong></span>'
     return f"""
     <header class="global-topbar">
       <div class="page-title-block">
@@ -46,7 +47,7 @@ def render_global_topbar(active: str, state: Mapping[str, Any], lang: str) -> st
         {render_runtime_status_indicator(state, lang)}
         <span class="mini-pill">{escape(t("model.active_provider", lang))}: <strong data-provider-name>{escape(provider)}</strong> · <em data-inference-status>{escape(inference)}</em></span>
         <span class="mini-pill">{escape(t("status.freshness", lang))}: <strong data-freshness>{escape(freshness)}</strong></span>
-        <span class="mini-pill">{escape(t("state.tick", lang))}: <strong data-tick-counter>{escape(last_tick)}</strong></span>
+        {tick_pill}
         <a class="mini-pill topbar-link" href="/settings">{escape(t("nav.settings", lang))}</a>
         {render_language_toggle(lang)}
       </div>
