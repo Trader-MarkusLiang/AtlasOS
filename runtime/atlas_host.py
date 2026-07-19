@@ -1,5 +1,9 @@
 """macOS-friendly lightweight runtime host for Atlas OS.
 
+DEPRECATED (Runtime v1.6, 2026-07-19): the single supported daemon entry is
+`runtime.atlas_runtime_daemon`. This module remains only so historical
+validation scripts keep importing; new work must not use it.
+
 Start with:
 
     python3 -m runtime.atlas_host --interval 60

@@ -329,7 +329,7 @@
     .learning-log-icon { width:30px; height:30px; flex-shrink:0; display:grid; place-items:center; border-radius:50%; background:rgba(159,211,255,.15); color:var(--accent); font-weight:780; }
     .learning-log-text strong { display:block; margin-bottom:4px; font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
     .thinking-timeline { display:grid; gap:10px; margin-top:12px; }
-    .thinking-phase { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border:1px solid rgba(255,255,255,.06); border-radius:14px; background:rgba(0,0,0,.08); }
+    .thinking-phase { width:100%; min-width:0; max-width:100%; display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border:1px solid rgba(255,255,255,.06); border-radius:14px; background:rgba(0,0,0,.08); }
     .thinking-phase:nth-child(1) { border-left:3px solid #9fd3ff; }
     .thinking-phase:nth-child(2) { border-left:3px solid #9ee6b8; }
     .thinking-phase:nth-child(3) { border-left:3px solid #f6d77a; }
@@ -339,24 +339,35 @@
     .phase-marker { width:30px; height:30px; flex-shrink:0; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.08); font-size:1rem; }
     .phase-body { min-width:0; }
     .phase-body strong { display:block; margin-bottom:4px; font-size:.86rem; color:var(--text); }
-    .phase-body p { margin:0; font-size:.9rem; line-height:1.45; color:var(--subtle); }
+    .phase-body p { margin:0; font-size:.9rem; line-height:1.45; color:var(--subtle); overflow-wrap:anywhere; }
     .tooltip { position:relative; cursor:help; border-bottom:1px dotted var(--muted); }
     .tooltip::after { content:attr(data-tip); position:absolute; bottom:120%; left:50%; transform:translateX(-50%); width:max-content; max-width:240px; padding:8px 10px; border-radius:8px; background:rgba(11,15,20,.95); border:1px solid var(--line); color:var(--text); font-size:.78rem; line-height:1.35; opacity:0; pointer-events:none; transition:opacity .15s; z-index:20; }
     .tooltip:hover::after { opacity:1; }
+    .brief-runtime-strip { display:flex; justify-content:space-between; align-items:center; gap:24px; padding:14px 18px; border:1px solid rgba(125,211,252,.18); border-radius:12px; background:rgba(125,211,252,.055); }
+    .brief-runtime-strip > div { display:grid; gap:4px; }
+    .brief-runtime-strip > div span { color:var(--muted); font-size:.86rem; }
+    .brief-runtime-strip dl { display:grid; grid-template-columns:auto minmax(120px,auto); gap:3px 10px; margin:0; font-size:.76rem; }
+    .brief-runtime-strip dt { color:var(--muted); }
+    .brief-runtime-strip dd { margin:0; text-align:right; overflow-wrap:anywhere; }
+    .evidence-review-summary { display:flex; justify-content:space-between; gap:16px; margin-bottom:14px; padding:11px 13px; border-left:3px solid #7dd3fc; background:rgba(125,211,252,.055); font-size:.82rem; }
+    .evidence-review-summary.no-change { border-left-color:#9ee6b8; background:rgba(158,230,184,.05); }
+    .evidence-review-summary span { color:var(--muted); }
+    .candidate-score-table td small, .decision-dl dd small { display:block; margin-top:4px; color:var(--muted); font-size:.7rem; }
+    @media (max-width:720px) { .brief-runtime-strip { align-items:flex-start; flex-direction:column; gap:10px; } .brief-runtime-strip dl { width:100%; grid-template-columns:auto 1fr; } .evidence-review-summary { flex-direction:column; gap:4px; } }
     </style>
     
-    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief" data-brief-revision="2">
+    <main class="decision-home-shell practical-brief-shell investor-home" data-home-layout="portfolio-first-investor-brief" data-brief-revision="31">
       
     <section class="brief-runtime-strip" id="home-brief-runtime" data-practical-section="brief_runtime">
-      <div><strong>Brief revision 2</strong><span>Reviewed 14 new/updated item(s); the current thesis is unchanged.</span></div>
-      <dl><dt>Updated</dt><dd>2026-07-19T03:07:41.684199+00:00</dd><dt>Reason</dt><dd>material_runtime_delta:brief</dd></dl>
+      <div><strong>Brief revision 31</strong><span>1 evidence item(s) changed the current view; review the updated sections below.</span></div>
+      <dl><dt>Updated</dt><dd>2026-07-19T04:49:41.908031+00:00</dd><dt>Reason</dt><dd>material_runtime_delta:brief</dd></dl>
     </section>
     
       <div class="home-summary-banner">
       <div class="home-summary-icon" aria-hidden="true">A</div>
       <div class="home-summary-text">
         <strong>Atlas summary</strong>
-        <p>Atlas sees 3 usable market signals today. Your portfolio is 80.0% exposed, mostly to Semiconductor Materials (34.0%). The runtime state is Unknown. Atlas&#x27;s posture is Reduce: a portfolio risk review is required.</p>
+        <p>Atlas sees 3 usable market signals today. Your portfolio is 0.0% exposed, mostly to Unknown (0.0%). The runtime state is RISK OFF. Atlas&#x27;s posture is Reduce: a portfolio risk review is required.</p>
       </div>
     </div>
     <section class="portfolio-first-viewport" id="home-first-viewport" aria-label="Portfolio Command View">
@@ -374,23 +385,23 @@
             </div>
           </div>
           
-    <div class="portfolio-command-metrics"><div><span>Configured exposure</span><strong>80.0%</strong></div><div><span>Unassigned capital</span><strong>20.0%</strong></div><div><span>Portfolio consistency</span><strong>PASS</strong></div><div><span>Usable market evidence</span><strong>3/3</strong></div></div>
+    <div class="portfolio-command-metrics"><div><span>Configured exposure</span><strong>0.0%</strong></div><div><span>Unassigned capital</span><strong>0.0%</strong></div><div><span>Portfolio consistency</span><strong>PASS</strong></div><div><span>Usable market evidence</span><strong>3/3</strong></div></div>
     
     <div class="cde-lifecycle-bar">
-      <div class="cde-steps"><div class="cde-step" title="Observe"><span>Observe</span></div><div class="cde-step" title="Pilot Deployment"><span>Pilot</span></div><div class="cde-step" title="Initial Deployment"><span>Initial</span></div><div class="cde-step active" title="Scaling"><span>Scaling</span></div><div class="cde-step" title="Maximum Opportunity"><span>Max</span></div><div class="cde-step" title="Capital Preservation"><span>Preserve</span></div></div>
-      <div class="cde-current">Status: <strong>Scaling</strong></div>
+      <div class="cde-steps"><div class="cde-step active" title="Observe"><span>Observe</span></div><div class="cde-step" title="Pilot Deployment"><span>Pilot</span></div><div class="cde-step" title="Initial Deployment"><span>Initial</span></div><div class="cde-step" title="Scaling"><span>Scaling</span></div><div class="cde-step" title="Maximum Opportunity"><span>Max</span></div><div class="cde-step" title="Capital Preservation"><span>Preserve</span></div></div>
+      <div class="cde-current">Status: <strong>Observe</strong></div>
     </div>
     
     <div class="portfolio-command-analysis">
-      <div><span>Largest theme exposure</span><strong>Semiconductor Materials · 34.0%</strong></div>
-      <div><span>Liquidity sensitivity</span><strong>regional liquidity sensitive</strong></div>
-      <div><span>Regime sensitivity</span><strong>theme cluster sensitive</strong></div>
+      <div><span>Largest theme exposure</span><strong>Unknown · 0.0%</strong></div>
+      <div><span>Liquidity sensitivity</span><strong>diversified or unknown</strong></div>
+      <div><span>Regime sensitivity</span><strong>broad or unclassified</strong></div>
       <div class="exposure-donut">
-      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="Configured exposure"><circle cx="60" cy="60" r="40" fill="none" stroke="#9ee6b8" stroke-width="12" stroke-dasharray="135.72 115.61" stroke-dashoffset="0.00" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="#9fd3ff" stroke-width="12" stroke-dasharray="65.35 185.98" stroke-dashoffset="-135.72" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="12" stroke-dasharray="50.27 201.06" stroke-dashoffset="-201.06" transform="rotate(-90 60 60)"/></svg>
-      <ul class="donut-legend"><li><span class="donut-dot" style="background:#9ee6b8"></span>A-share<strong>54.0%</strong></li><li><span class="donut-dot" style="background:#9fd3ff"></span>HK<strong>26.0%</strong></li><li><span class="donut-dot" style="background:rgba(255,255,255,.12)"></span>Unassigned capital<strong>20.0%</strong></li></ul>
+      <svg class="atlas-viz" viewBox="0 0 120 120" role="img" aria-label="Configured exposure"><circle cx="60" cy="60" r="40" fill="none" stroke="#dbeafe" stroke-width="12" stroke-dasharray="251.33 0.00" stroke-dashoffset="0.00" transform="rotate(-90 60 60)"/></svg>
+      <ul class="donut-legend"><li><span class="donut-dot" style="background:#dbeafe"></span>Configured<strong>100.0%</strong></li></ul>
     </div>
     </div>
-    <div class="portfolio-risk-callout"><span>Primary portfolio risk</span><p>Largest theme exposure is Semiconductor Materials at 34.0%; correlated evidence or liquidity shocks can affect several positions together.</p></div>
+    <div class="portfolio-risk-callout"><span>Primary portfolio risk</span><p>Largest theme exposure is Unknown at 0.0%; correlated evidence or liquidity shocks can affect several positions together.</p></div>
     <p class="decision-change">The validated DecisionPacket requires a risk review: Atlas posture is Reduce and risk is high. No order is generated.</p>
     
         </article>
@@ -403,64 +414,7 @@
               <p class="home-safety-note">Private values follow local visibility settings and never enter Atlas reasoning or external LLMs.</p>
             </div>
           </div>
-          <div class="holding-brief-grid">
-            <article class="holding-brief-card" data-valuation-status="limited">
-              <div class="holding-valuation-column">
-                <div class="holding-title-row">
-                  <div><h3>00148.HK</h3><p class="home-safety-note">PCB / Materials / AI Infrastructure</p></div>
-                  <div class="allocation-badge"><small>Configured allocation</small><strong>26.0%</strong></div>
-                </div>
-                <div class="valuation-empty">Market Data Missing or Unavailable - Valuation Limited</div>
-              </div>
-              <div class="holding-decision-column">
-                <span class="kicker">Atlas decision context</span>
-                <dl class="decision-dl">
-                  <dt>Portfolio posture</dt><dd>Reduce<small>No holding-specific execution authority</small></dd>
-                  <dt>Why</dt><dd>Configured holding requires evidence refresh.</dd>
-                  <dt>Key trigger</dt><dd>5d -30.1%; 20d -55.9%; refresh thesis evidence before changing posture</dd>
-                  <dt>Review priority</dt><dd>High</dd>
-                </dl>
-              </div>
-            </article>
-            
-            <article class="holding-brief-card" data-valuation-status="limited">
-              <div class="holding-valuation-column">
-                <div class="holding-title-row">
-                  <div><h3>002384.SZ</h3><p class="home-safety-note">PCB / AI Hardware Manufacturing</p></div>
-                  <div class="allocation-badge"><small>Configured allocation</small><strong>20.0%</strong></div>
-                </div>
-                <div class="valuation-empty">Market Data Missing or Unavailable - Valuation Limited</div>
-              </div>
-              <div class="holding-decision-column">
-                <span class="kicker">Atlas decision context</span>
-                <dl class="decision-dl">
-                  <dt>Portfolio posture</dt><dd>Reduce<small>No holding-specific execution authority</small></dd>
-                  <dt>Why</dt><dd>Configured holding requires evidence refresh.</dd>
-                  <dt>Key trigger</dt><dd>5d -0.2%; 20d -11.4%; refresh thesis evidence before changing posture</dd>
-                  <dt>Review priority</dt><dd>Medium</dd>
-                </dl>
-              </div>
-            </article>
-            
-            <article class="holding-brief-card" data-valuation-status="limited">
-              <div class="holding-valuation-column">
-                <div class="holding-title-row">
-                  <div><h3>688019.SH</h3><p class="home-safety-note">Semiconductor Materials</p></div>
-                  <div class="allocation-badge"><small>Configured allocation</small><strong>34.0%</strong></div>
-                </div>
-                <div class="valuation-empty">Market Data Missing or Unavailable - Valuation Limited</div>
-              </div>
-              <div class="holding-decision-column">
-                <span class="kicker">Atlas decision context</span>
-                <dl class="decision-dl">
-                  <dt>Portfolio posture</dt><dd>Reduce<small>No holding-specific execution authority</small></dd>
-                  <dt>Why</dt><dd>Configured holding requires evidence refresh.</dd>
-                  <dt>Key trigger</dt><dd>5d -23.6%; 20d -2.8%; refresh thesis evidence before changing posture</dd>
-                  <dt>Review priority</dt><dd>High</dd>
-                </dl>
-              </div>
-            </article>
-            </div>
+          <div class="empty-state">No portfolio percentages configured.</div>
         </article>
 
         <article class="decision-card action-today-card" id="home-action-today" data-practical-section="action_today">
@@ -476,8 +430,8 @@
           <div class="journey-step"><span>04</span>Today&#x27;s Core Judgment</div>
           <span class="kicker">One total judgment</span>
           <h2>Risk is high; Atlas posture is Reduce and a portfolio risk review is required.</h2>
-          <ul class="judgment-because"><li>DecisionPacket posture: Reduce; risk: high; confidence: 38%.</li><li>Evidence review: 14 reviewed, 0 changed, 14 unchanged, 0 pending review.</li><li>Portfolio-linked market observations: 3 usable; unassigned buffer: 20.0%.</li></ul>
-          <p>Runtime is RISK_OFF with blocked transition to NORMAL with 3 usable portfolio-linked observations. Decision confidence is 38%; causal summary: The runtime remains in RISK_OFF because the proposed transition to NORMAL was not allowed. Signals are mixed and confidence-limited: stress score is low, attention pressure is weak, and liquidity condition is neutral, but portfolio-relevant A-share holdings show sharp negative momentum with elevated volume, breadth is weak in the sampled universe, and correlated theme concentration keeps risk elevated. Counter-evidence includes strong physics stability, low fragility, and some institutional absorption capacity.. Unassigned buffer is 20.0%.</p>
+          <ul class="judgment-because"><li>DecisionPacket posture: Reduce; risk: high; confidence: 35%.</li><li>Evidence review: 14 reviewed, 1 changed, 12 unchanged, 0 pending review.</li><li>Portfolio-linked market observations: 3 usable; unassigned buffer: 0.0%.</li></ul>
+          <p>Runtime is RISK_OFF with 3 usable portfolio-linked observations. Decision confidence is 35%; causal summary: Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.. Unassigned buffer is 0.0%.</p>
         </article>
         <article class="decision-support-card conviction-hierarchy-card" id="home-conviction-hierarchy" data-practical-section="conviction_hierarchy">
       <div class="journey-step"><span>●</span>Conviction Hierarchy</div>
@@ -534,15 +488,15 @@
             </div>
             <a class="secondary-button" href="/markets">View market evidence</a>
           </div>
-          <div class="evidence-review-summary no-change"><strong>Reviewed 14 · changed 0 · unchanged 14 · pending 0</strong><span>2026-07-19T03:07:41.683179+00:00</span></div><div class="material-evidence-list">
+          <div class="evidence-review-summary has-change"><strong>Reviewed 14 · changed 1 · unchanged 12 · pending 0</strong><span>2026-07-19T04:49:41.906959+00:00</span></div><div class="material-evidence-list">
             <article class="material-evidence-item">
               <div class="evidence-truth-row"><span>PUBLIC ATTENTION SAMPLE</span><em>DELAYED</em></div>
               <h3>Public attention sample: 1 configured A-share asset(s) in the top 100</h3>
               <dl>
                 <div><dt>Source</dt><dd><a href="https://emappdata.eastmoney.com/stockrank/getAllCurrentList" target="_blank" rel="noopener noreferrer">eastmoney_stock_rank</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-19T03:04:52.602904+00:00</dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-19T04:48:01.441330+00:00</dd></div>
                 <div><dt>Affected scope</dt><dd>002384.SZ, A-share public attention</dd></div>
-                <div><dt>Thesis change</dt><dd>UNCHANGED</dd></div>
+                <div><dt>Thesis change</dt><dd>NOT RELEVANT</dd></div>
               </dl>
             </article>
             
@@ -551,9 +505,9 @@
               <h3>A-share breadth sample: 21 advancing, 77 declining, 2 unchanged</h3>
               <dl>
                 <div><dt>Source</dt><dd><a href="https://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData" target="_blank" rel="noopener noreferrer">sina_market_center</a></dd></div>
-                <div><dt>Published / observed</dt><dd>2026-07-19T03:04:51.114851+00:00</dd></div>
+                <div><dt>Published / observed</dt><dd>2026-07-19T04:48:00.132580+00:00</dd></div>
                 <div><dt>Affected scope</dt><dd>A-share market breadth</dd></div>
-                <div><dt>Thesis change</dt><dd>UNCHANGED</dd></div>
+                <div><dt>Thesis change</dt><dd>CHANGED</dd></div>
               </dl>
             </article>
             
@@ -649,7 +603,7 @@
           <div class="phase-marker" aria-hidden="true">🔗</div>
           <div class="phase-body">
             <strong>How Atlas reads the causality</strong>
-            <p>The runtime remains in RISK_OFF because the proposed transition to NORMAL was not allowed. Signals are mixed and confidence-limited: stress score is low, attention pressure is weak, and liquidity condition is neutral, but portfolio-relevant A-share holdings show sharp negative momentum with elevated volume, breadth is weak in the sampled universe, and correlated theme concentration keeps risk elevated. Counter-evidence includes strong physics stability, low fragility, and some institutional absorption capacity.</p>
+            <p>Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.</p>
           </div>
         </div>
         
@@ -657,7 +611,7 @@
           <div class="phase-marker" aria-hidden="true">📌</div>
           <div class="phase-body">
             <strong>What it means for the thesis</strong>
-            <p>UNCHANGED; affected holdings: 002384.SZ</p>
+            <p>NOT_RELEVANT; affected holdings: 002384.SZ</p>
           </div>
         </div>
         
@@ -731,7 +685,7 @@
           <td><strong>Base</strong></td>
           <td>Fresh multi-channel confirmation</td>
           <td><span class="trigger-status">Observe</span></td>
-          <td>688019.SH, 00148.HK, 002384.SZ</td>
+          <td>Configured portfolio</td>
           <td>No available authority for this scenario</td>
           <td>Evidence and CDE authority are incomplete</td>
         </tr>
@@ -740,7 +694,7 @@
           <td><strong>Upside</strong></td>
           <td>Live breadth and fresh holding evidence</td>
           <td><span class="trigger-status">Observe</span></td>
-          <td>688019.SH, 00148.HK, 002384.SZ</td>
+          <td>Configured portfolio</td>
           <td>No available authority for this scenario</td>
           <td>Evidence and CDE authority are incomplete</td>
         </tr>
@@ -749,7 +703,7 @@
           <td><strong>Downside</strong></td>
           <td>Verified thesis deterioration</td>
           <td><span class="trigger-status">Hold</span></td>
-          <td>688019.SH, 00148.HK, 002384.SZ</td>
+          <td>Configured portfolio</td>
           <td>No available authority for this scenario</td>
           <td>Evidence and CDE authority are incomplete</td>
         </tr>
@@ -758,7 +712,7 @@
           <td><strong>Range</strong></td>
           <td>Directional breadth and liquidity alignment</td>
           <td><span class="trigger-status">Hold</span></td>
-          <td>688019.SH, 00148.HK, 002384.SZ</td>
+          <td>Configured portfolio</td>
           <td>No available authority for this scenario</td>
           <td>Evidence and CDE authority are incomplete</td>
         </tr>
@@ -815,17 +769,17 @@
             <a class="secondary-button" href="/learning">View learning record</a>
           </div>
         </div>
-        <div class="forecast-compact-strip"><span><strong>1584</strong>Current open</span><span><strong>0</strong>Legacy unclassified</span><span><strong>0</strong>Matured</span><span><strong>589</strong>VERIFIED</span><span><strong>1802</strong>INVALIDATED</span><span><strong>0</strong>INCONCLUSIVE</span></div><p class="home-safety-note">Legacy open forecasts without a material signature remain unclassified and are not bulk-evaluated from one observation.</p>
+        <div class="forecast-compact-strip"><span><strong>1555</strong>Current open</span><span><strong>0</strong>Legacy unclassified</span><span><strong>0</strong>Matured</span><span><strong>596</strong>VERIFIED</span><span><strong>1824</strong>INVALIDATED</span><span><strong>0</strong>INCONCLUSIVE</span></div><p class="home-safety-note">Legacy open forecasts without a material signature remain unclassified and are not bulk-evaluated from one observation.</p>
         
     <div class="forecast-track-record" aria-label="Forecast Track Record">
-      <div class="trk-bar"><span class="trk-seg" style="width:39.85%;background:#9fd3ff" title="Current open: 1584.0 (40%)" role="img" aria-label="Current open: 1584.0"></span><span class="trk-seg" style="width:0.00%;background:#7d8aa0" title="Matured: 0.0 (0%)" role="img" aria-label="Matured: 0.0"></span><span class="trk-seg" style="width:14.82%;background:#9ee6b8" title="VERIFIED: 589.0 (15%)" role="img" aria-label="VERIFIED: 589.0"></span><span class="trk-seg" style="width:45.33%;background:#f4a5b3" title="INVALIDATED: 1802.0 (45%)" role="img" aria-label="INVALIDATED: 1802.0"></span><span class="trk-seg" style="width:0.00%;background:#f6d77a" title="INCONCLUSIVE: 0.0 (0%)" role="img" aria-label="INCONCLUSIVE: 0.0"></span></div>
+      <div class="trk-bar"><span class="trk-seg" style="width:39.12%;background:#9fd3ff" title="Current open: 1555.0 (39%)" role="img" aria-label="Current open: 1555.0"></span><span class="trk-seg" style="width:0.00%;background:#7d8aa0" title="Matured: 0.0 (0%)" role="img" aria-label="Matured: 0.0"></span><span class="trk-seg" style="width:14.99%;background:#9ee6b8" title="VERIFIED: 596.0 (15%)" role="img" aria-label="VERIFIED: 596.0"></span><span class="trk-seg" style="width:45.89%;background:#f4a5b3" title="INVALIDATED: 1824.0 (46%)" role="img" aria-label="INVALIDATED: 1824.0"></span><span class="trk-seg" style="width:0.00%;background:#f6d77a" title="INCONCLUSIVE: 0.0 (0%)" role="img" aria-label="INCONCLUSIVE: 0.0"></span></div>
       <div class="trk-body">
         <div class="gauge trk-ring" style="--value:25;background:conic-gradient(#9ee6b8 calc(var(--value,0)*1%), rgba(255,255,255,0.08) 0), rgba(255,255,255,0.05);" title="Verification rate: 25%" role="img" aria-label="Verification rate: 25%"><span>25%</span></div>
-        <ul class="trk-legend"><li><span class="trk-dot" style="background:#9fd3ff"></span>Current open<strong>1584.0</strong></li><li><span class="trk-dot" style="background:#7d8aa0"></span>Matured<strong>0.0</strong></li><li><span class="trk-dot" style="background:#9ee6b8"></span>VERIFIED<strong>589.0</strong></li><li><span class="trk-dot" style="background:#f4a5b3"></span>INVALIDATED<strong>1802.0</strong></li><li><span class="trk-dot" style="background:#f6d77a"></span>INCONCLUSIVE<strong>0.0</strong></li></ul>
+        <ul class="trk-legend"><li><span class="trk-dot" style="background:#9fd3ff"></span>Current open<strong>1555.0</strong></li><li><span class="trk-dot" style="background:#7d8aa0"></span>Matured<strong>0.0</strong></li><li><span class="trk-dot" style="background:#9ee6b8"></span>VERIFIED<strong>596.0</strong></li><li><span class="trk-dot" style="background:#f4a5b3"></span>INVALIDATED<strong>1824.0</strong></li><li><span class="trk-dot" style="background:#f6d77a"></span>INCONCLUSIVE<strong>0.0</strong></li></ul>
       </div>
-      <p class="trk-meta"><strong>3975</strong> Total forecasts · <strong>2391</strong> Evaluated</p>
+      <p class="trk-meta"><strong>3975</strong> Total forecasts · <strong>2420</strong> Evaluated</p>
       
-      <table class="sr-only"><caption>Forecast Track Record</caption><thead><tr><th>Status</th><th>Total forecasts</th><th>%</th></tr></thead><tbody><tr><td>Current open</td><td>1584.0</td><td>40%</td></tr><tr><td>Matured</td><td>0.0</td><td>0%</td></tr><tr><td>VERIFIED</td><td>589.0</td><td>15%</td></tr><tr><td>INVALIDATED</td><td>1802.0</td><td>45%</td></tr><tr><td>INCONCLUSIVE</td><td>0.0</td><td>0%</td></tr></tbody></table>
+      <table class="sr-only"><caption>Forecast Track Record</caption><thead><tr><th>Status</th><th>Total forecasts</th><th>%</th></tr></thead><tbody><tr><td>Current open</td><td>1555.0</td><td>39%</td></tr><tr><td>Matured</td><td>0.0</td><td>0%</td></tr><tr><td>VERIFIED</td><td>596.0</td><td>15%</td></tr><tr><td>INVALIDATED</td><td>1824.0</td><td>46%</td></tr><tr><td>INCONCLUSIVE</td><td>0.0</td><td>0%</td></tr></tbody></table>
     </div>
     
         
@@ -913,7 +867,7 @@
           <article class="decision-support-card" id="home-capital-allocation"><h2>Capital Allocation Board</h2>
     <dl class="decision-dl allocation-dl">
       <dt>Rebalance today?</dt><dd><strong>NO</strong></dd>
-      <dt>Funding source</dt><dd><ul class="plain-list"><li>Unassigned buffer (20.0% allocation)</li><li>Extended current holding review only if trigger evidence appears.</li></ul></dd>
+      <dt>Funding source</dt><dd><ul class="plain-list"><li>Unassigned buffer (0.0% allocation)</li><li>Extended current holding review only if trigger evidence appears.</li></ul></dd>
       <dt>Destination</dt><dd>Equipment / Materials observation pool</dd>
       <dt>Trigger Progress</dt><dd>3 / 6</dd>
       <dt>Execution style</dt><dd>Wait; do not front-run without trigger confirmation.</dd>
@@ -971,34 +925,6 @@
             <article class="research-priority-card" data-research-task="1">
               <div class="research-item-main">
                 <span class="priority-index">1</span>
-                <div>
-                  <h3>Verify whether 688019.SH still has fresh order, margin, or qualification evidence.</h3>
-                  <p class="home-safety-note">688019.SH / Semiconductor Materials</p>
-                </div>
-              </div>
-              <dl class="research-item-detail">
-                <div><dt>Why now</dt><dd>688019.SH is an actual configured holding and affects portfolio-level interpretation.</dd></div>
-                <div><dt>Evidence gap</dt><dd>Holding-specific evidence needs refresh.</dd></div>
-              </dl>
-            </article>
-            
-            <article class="research-priority-card" data-research-task="2">
-              <div class="research-item-main">
-                <span class="priority-index">2</span>
-                <div>
-                  <h3>Verify whether 00148.HK still has fresh order, margin, or qualification evidence.</h3>
-                  <p class="home-safety-note">00148.HK / PCB / Materials / AI Infrastructure</p>
-                </div>
-              </div>
-              <dl class="research-item-detail">
-                <div><dt>Why now</dt><dd>00148.HK is an actual configured holding and affects portfolio-level interpretation.</dd></div>
-                <div><dt>Evidence gap</dt><dd>Holding-specific evidence needs refresh.</dd></div>
-              </dl>
-            </article>
-            
-            <article class="research-priority-card" data-research-task="3">
-              <div class="research-item-main">
-                <span class="priority-index">3</span>
                 <div>
                   <h3>Verify whether Equipment relay evidence is improving through order/backlog signals.</h3>
                   <p class="home-safety-note">Equipment / Materials</p>
@@ -1065,7 +991,7 @@
     <details class="expert-details home-expert-panel" id="expert-analysis-panel">
       <summary><span>Expert Analysis</span><strong>9</strong></summary>
       <div class="expert-grid">
-        <article class="expert-section"><span>A</span><h3>Causal Chain</h3><div class="causal-chain"><span>Narrative Pressure -&gt; Attention</span><span>Price Momentum -&gt; Attention</span><span>Attention -&gt; Retail Flow</span><span>Retail Flow -&gt; Price Momentum</span></div><p class="home-safety-note">Dominant edges</p><ul class="plain-list"><li>Narrative Pressure → Attention · Δ -0.0117</li><li>Price Momentum → Attention · Δ -0.0087</li><li>Attention → Retail Flow · Δ -0.007</li><li>Retail Flow → Price Momentum · Δ -0.0058</li></ul></article>
+        <article class="expert-section"><span>A</span><h3>Causal Chain</h3><div class="causal-chain"><span>Narrative Pressure -&gt; Attention</span><span>Price Momentum -&gt; Attention</span><span>Attention -&gt; Retail Flow</span><span>Retail Flow -&gt; Price Momentum</span></div><p class="home-safety-note">Dominant edges</p><ul class="plain-list"><li>Narrative Pressure → Attention · Δ -0.0118</li><li>Price Momentum → Attention · Δ -0.0089</li><li>Attention → Retail Flow · Δ -0.007</li><li>Retail Flow → Price Momentum · Δ -0.0059</li></ul></article>
         <article class="expert-section"><span>B</span><h3>Hypothesis State</h3>
     <dl class="expert-dl">
       <dt>Active hypothesis</dt><dd>H_ATTENTION_FLOW</dd>
@@ -1082,7 +1008,7 @@
       <dt>Volatility</dt><dd>Low</dd>
     </dl>
     </article>
-        <article class="expert-section"><span>D</span><h3>Confidence Composition</h3><div class="confidence-row"><span>evidence quality</span><strong>100%</strong><i style="width:100%"></i><small>market channel status</small></div><div class="confidence-row"><span>market data completeness</span><strong>100%</strong><i style="width:100%"></i><small>market_intelligence.channels</small></div><div class="confidence-row"><span>hypothesis stability</span><strong>16%</strong><i style="width:16%"></i><small>system_trust_state</small></div><div class="confidence-row"><span>portfolio relevance</span><strong>1%</strong><i style="width:1%"></i><small>portfolio_context</small></div><div class="confidence-row"><span>forecast history</span><strong>100%</strong><i style="width:100%"></i><small>forecast_ledger</small></div></article>
+        <article class="expert-section"><span>D</span><h3>Confidence Composition</h3><div class="confidence-row"><span>evidence quality</span><strong>100%</strong><i style="width:100%"></i><small>market channel status</small></div><div class="confidence-row"><span>market data completeness</span><strong>100%</strong><i style="width:100%"></i><small>market_intelligence.channels</small></div><div class="confidence-row"><span>hypothesis stability</span><strong>28%</strong><i style="width:28%"></i><small>system_trust_state</small></div><div class="confidence-row"><span>portfolio relevance</span><strong>0%</strong><i style="width:0%"></i><small>portfolio_context</small></div><div class="confidence-row"><span>forecast history</span><strong>100%</strong><i style="width:100%"></i><small>forecast_ledger</small></div></article>
         <article class="expert-section"><span>E</span><h3>Data Quality</h3>
     <div class="forecast-status-strip expert-data-strip">
       <span><strong>3</strong>Live channels</span>
@@ -1093,7 +1019,7 @@
     <p>Confidence is limited by missing, stale, or unconfigured market channels.</p>
     </article>
         <article class="expert-section"><span>F</span><h3>Portfolio Sensitivity</h3>
-    <ul class="plain-list"><li>688019.SH · 34.0%</li><li>00148.HK · 26.0%</li><li>002384.SZ · 20.0%</li></ul>
+    <ul class="plain-list"><li>No portfolio percentages configured.</li></ul>
     <p>Privacy: percentage-only; no account value is exposed.</p>
     </article>
         <article class="expert-section"><span>G</span><h3>Forecast Evidence</h3>
@@ -1112,13 +1038,13 @@
       <pre>{
   &quot;regime_state&quot;: &quot;RISK_OFF&quot;,
   &quot;last_decision_packet&quot;: {
-    &quot;attention_state&quot;: &quot;attention not dominant; pressure low at 6 with minimal persistence&quot;,
-    &quot;causal_summary&quot;: &quot;The runtime remains in RISK_OFF because the proposed transition to NORMAL was not allowed. Signals are mixed and confidence-limited: stress score is low, attention pressure is weak, and liquidity condition is neutral, but portfolio-relevant A-share holdings show sharp negative momentum with elevated volume, breadth is weak in the sampled universe, and correlated theme concentration keeps risk elevated. Counter-evidence includes strong physics stability, low fragility, and some institutional absorption capacity.&quot;,
-    &quot;confidence&quot;: 0.38,
-    &quot;liquidity_state&quot;: &quot;neutral headline liquidity condition, but latent liquidity_stress_basin remains dominant&quot;,
-    &quot;reasoning_trace&quot;: &quot;Action bias is defensive under RISK_OFF. Data insufficiency is the largest probability component, while distribution risk and crash-stress components remain non-trivial. The portfolio is theme-cluster sensitive with concentrated exposure to semiconductor and PCB/AI hardware-related assets, and current data gaps limit conviction. Recommended action reflects risk review posture only, not execution or portfolio modification.&quot;,
+    &quot;attention_state&quot;: &quot;attention not dominant; attention and narrative intensity at zero&quot;,
+    &quot;causal_summary&quot;: &quot;Runtime remains in RISK_OFF because transition to NORMAL is blocked despite low observed fusion stress. Primary driver is mixed and low-signal with data insufficiency dominant. Portfolio relevance is moderate, but correlated exposure to semiconductor materials, PCB materials, AI hardware supply chain, A-share, and HK liquidity conditions keeps defensive review active. Severe recent weakness in a relevant HK materials exposure, uncertain sector event details, and incomplete policy/liquidity evidence elevate caution.&quot;,
+    &quot;confidence&quot;: 0.35,
+    &quot;liquidity_state&quot;: &quot;data missing with latent structural liquidity pressure and regional liquidity sensitivity&quot;,
+    &quot;reasoning_trace&quot;: &quot;Low-confidence event stream shows data_insufficient probability at 55%, distribution_risk at 25%, and crash_stress at 20%. Fusion stress is low, but liquidity condition is missing, structural liquidity pressure is elevated, and controller state blocks normalization. The action bias is defensive due to concentration, theme correlation, and unresolved event uncertainty; no execution or portfolio modification is authorized.&quot;,
     &quot;recommended_action&quot;: &quot;reduce&quot;,
-    &quot;regime_state&quot;: &quot;RISK_OFF with blocked transition to NORMAL&quot;,
+    &quot;regime_state&quot;: &quot;RISK_OFF / liquidity_stress_basin&quot;,
     &quot;risk_level&quot;: &quot;high&quot;
   },
   &quot;market_intelligence&quot;: {
@@ -1249,73 +1175,33 @@
     ]
   },
   &quot;portfolio_context&quot;: {
-    &quot;status&quot;: &quot;configured&quot;,
+    &quot;status&quot;: &quot;missing&quot;,
     &quot;privacy&quot;: &quot;percentage_only_no_account_amounts&quot;,
-    &quot;exposure_sum_pct&quot;: 80.0,
-    &quot;cash_or_unassigned_pct&quot;: 20.0,
+    &quot;exposure_sum_pct&quot;: 0,
+    &quot;cash_or_unassigned_pct&quot;: null,
     &quot;exposure_map&quot;: {
-      &quot;asset_concentration&quot;: [
-        {
-          &quot;asset&quot;: &quot;688019.SH&quot;,
-          &quot;exposure_pct&quot;: 34.0
-        },
-        {
-          &quot;asset&quot;: &quot;00148.HK&quot;,
-          &quot;exposure_pct&quot;: 26.0
-        },
-        {
-          &quot;asset&quot;: &quot;002384.SZ&quot;,
-          &quot;exposure_pct&quot;: 20.0
-        }
-      ],
-      &quot;theme_concentration&quot;: {
-        &quot;Semiconductor Materials&quot;: 34.0,
-        &quot;PCB / Materials / AI Infrastructure&quot;: 26.0,
-        &quot;PCB / AI Hardware Manufacturing&quot;: 20.0
-      },
-      &quot;market_concentration&quot;: {
-        &quot;A-share&quot;: 54.0,
-        &quot;HK&quot;: 26.0
-      },
-      &quot;role_concentration&quot;: {
-        &quot;Core semiconductor-materials exposure&quot;: 34.0,
-        &quot;HK materials exposure&quot;: 26.0,
-        &quot;A-share AI hardware supply-chain exposure&quot;: 20.0
-      },
-      &quot;liquidity_sensitivity&quot;: &quot;regional_liquidity_sensitive&quot;,
-      &quot;regime_sensitivity&quot;: &quot;theme_cluster_sensitive&quot;,
-      &quot;portfolio_relevance_score&quot;: 62.3,
-      &quot;correlated_risk_clusters&quot;: [
-        {
-          &quot;cluster&quot;: &quot;Semiconductor Materials&quot;,
-          &quot;exposure_pct&quot;: 34.0,
-          &quot;risk&quot;: &quot;moderate_concentration&quot;
-        },
-        {
-          &quot;cluster&quot;: &quot;PCB / Materials / AI Infrastructure&quot;,
-          &quot;exposure_pct&quot;: 26.0,
-          &quot;risk&quot;: &quot;moderate_concentration&quot;
-        },
-        {
-          &quot;cluster&quot;: &quot;PCB / AI Hardware Manufacturing&quot;,
-          &quot;exposure_pct&quot;: 20.0,
-          &quot;risk&quot;: &quot;low&quot;
-        }
-      ]
+      &quot;asset_concentration&quot;: [],
+      &quot;theme_concentration&quot;: {},
+      &quot;market_concentration&quot;: {},
+      &quot;role_concentration&quot;: {},
+      &quot;liquidity_sensitivity&quot;: &quot;diversified_or_unknown&quot;,
+      &quot;regime_sensitivity&quot;: &quot;broad_or_unclassified&quot;,
+      &quot;portfolio_relevance_score&quot;: 0.0,
+      &quot;correlated_risk_clusters&quot;: []
     }
   },
   &quot;forecast_ledger_summary&quot;: {
     &quot;metrics&quot;: {
       &quot;total&quot;: 3975,
-      &quot;open&quot;: 1584,
+      &quot;open&quot;: 1555,
       &quot;matured&quot;: 0,
-      &quot;evaluated&quot;: 2391,
-      &quot;verified&quot;: 589,
-      &quot;invalidated&quot;: 1802,
+      &quot;evaluated&quot;: 2420,
+      &quot;verified&quot;: 596,
+      &quot;invalidated&quot;: 1824,
       &quot;inconclusive&quot;: 0,
       &quot;accuracy&quot;: 0.2463,
       &quot;mean_forecast_error&quot;: 0.7537,
-      &quot;mean_calibration_error&quot;: 0.2912,
+      &quot;mean_calibration_error&quot;: 0.2926,
       &quot;minimum_sample_size_met&quot;: true
     },
     &quot;sample_warning&quot;: &quot;Minimum sample size met for basic calibration review.&quot;,

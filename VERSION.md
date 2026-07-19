@@ -6,11 +6,11 @@ Release candidate: v2.1 RC
 
 Portfolio layer version: Portfolio OS v1.3
 
-Runtime infrastructure version: v1.5
+Runtime infrastructure version: v1.6
 
 Provider configuration UI version: v1.5
 
-Date: 2026-07-14
+Date: 2026-07-19
 
 Stage: Run First + Capital Deployment Engine
 
@@ -21,10 +21,10 @@ Productization track: Clean-room verification complete; production trial candida
 Parallel version model:
 
 - Atlas Core / Knowledge OS: v2.1 RC
-- Atlas Runtime: v1.5 task-aware Workhorse / Research / Decision routing over the real daemon / EventStream / DecisionLoop path; no 24h proof
-- Atlas Cognitive Overlay: symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence
-- Atlas UI / Product: UI v2.1 local portfolio valuation + task-aware provider configuration v1.5 + Decision Brief-first Home; valuation and task-route zh/en browser parity proven, exhaustive product-wide bilingual parity remains partial
-- Atlas Data / Market Intelligence: live market fetch attempted; daemon path currently degraded by provider/rate-limit failures
+- Atlas Runtime: v1.6 lean pipeline (`cognition_mode="lean"` default; full symbolic chain preserved behind `cognition_mode="full"`) with task-aware Workhorse / Research / Decision routing, material-delta gating, and atomic Brief revisions over the real daemon / EventStream / DecisionLoop path; no 24h proof
+- Atlas Cognitive Overlay: symbolic cognition overlays archived behind the full-mode flag; most layer validations remain controlled-fixture evidence
+- Atlas UI / Product: UI v2.1 local portfolio valuation + task-aware provider configuration v1.5 + Decision Brief-first Home + real-time section-level Brief revisions; valuation and task-route zh/en browser parity proven, exhaustive product-wide bilingual parity remains partial
+- Atlas Data / Market Intelligence: live market fetch with persistent cache, stale `CACHED` fallback, and rate-limit backoff across providers
 
 Current evidence classification:
 
@@ -32,7 +32,7 @@ Current evidence classification:
 - Portfolio context runtime path: `REAL_RUNTIME_PROVEN`
 - Forecast lineage and self-iteration: `REAL_RUNTIME_PROVEN`
 - Daily-cycle dispatch: `REAL_RUNTIME_PROVEN`
-- Live market observation: `PARTIAL` / `EXTERNAL_BLOCKER`
+- Live market observation: `PARTIAL` — persistent cache / stale fallback / backoff mitigate provider failures; channel breadth still limited
 - Release readiness: `PRODUCTION_TRIAL_CANDIDATE`; not RC
 - Real-duration stability: `REAL_RUNTIME_PROVEN` for 2h+ GOAL 07 / clean-room CR08 soaks; 24h still not proven
 
@@ -94,6 +94,15 @@ Scope:
 - Add Atlas Issue System v1.0 for Production Trial issue recording before future iteration.
 - Require every future iteration to reference at least one Issue.
 - Keep Atlas Engineering System and future engines Planned until validated by Issues.
+- Reduce default runtime cognition to a lean pipeline (fusion + state controller + regime memory +
+  LLM decision + forecast ledger) behind `cognition_mode`, archiving symbolic engine trials
+  (v0.5-v1.2) behind `cognition_mode="full"` without deleting them.
+- Consolidate runtime entry points to a single daemon (`runtime.atlas_runtime_daemon`) and deprecate
+  `atlas_daemon.py`, `atlas_host.py`, and the `web/` dashboard in place.
+- Add market data resilience: persistent quote cache, labeled stale fallback, and rate-limit
+  backoff with cross-provider failover.
+- Suspend formal IP numbering and release-gate ceremony during the single-user stage while keeping
+  Issue-first recording mandatory (restore on multi-user or external release).
 
 ## Version Semantics
 

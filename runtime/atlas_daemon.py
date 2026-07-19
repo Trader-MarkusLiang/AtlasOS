@@ -1,5 +1,9 @@
 """Atlas OS v0.2 autonomous runtime daemon.
 
+DEPRECATED (Runtime v1.6, 2026-07-19): the single supported daemon entry is
+`runtime.atlas_runtime_daemon`. This thin wrapper remains only so historical
+validation scripts keep importing; new work must not use it.
+
 This module is launchd-compatible and keeps the event-driven decision loop
 running in the background. It does not trade, modify portfolio files, or bypass
 CDE.

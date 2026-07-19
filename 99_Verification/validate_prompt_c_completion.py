@@ -210,6 +210,7 @@ def _portfolio_cognition(root: Path) -> dict[str, Any]:
                 log_path=str(log_path),
                 market_config_path=str(config_path),
                 market_refresh_every_cycles=1,
+                cognition_mode="full",
             )
         )
         entry = daemon.run_tick(0)
@@ -400,6 +401,7 @@ def _soak(root: Path) -> dict[str, Any]:
             market_max_assets=1,
             proactive_update_enabled=False,
             runtime_mode="live",
+            cognition_mode="full",
         )
     )
     daemon.run_forever()
@@ -544,7 +546,7 @@ def _write_fixture_config(path: Path, *, exposure: float, theme: str = "AI Hardw
 
 
 def _run_equivalent_input(db_path: Path) -> dict[str, Any]:
-    loop = DecisionLoop(DecisionLoopConfig(db_path=str(db_path), heartbeat_interval_seconds=10_000_000))
+    loop = DecisionLoop(DecisionLoopConfig(db_path=str(db_path), heartbeat_interval_seconds=10_000_000, cognition_mode="full"))
     loop._last_heartbeat = time.time()
     loop.event_stream.enqueue_event(
         "volume_price_breakout",

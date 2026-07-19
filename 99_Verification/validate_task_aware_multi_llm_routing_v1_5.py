@@ -400,6 +400,7 @@ def _assert_ui_to_runtime_roles(
             market_config_path=str(config_path),
             proactive_update_enabled=False,
             runtime_mode="live",
+            cognition_mode="full",
         )
     )
     entry = daemon.run_tick(0)
@@ -442,6 +443,7 @@ def _assert_proactive_cycle(config_path: Path, trace_path: Path, root: Path) -> 
             proactive_update_every_seconds=7200,
             proactive_update_run_on_start=True,
             runtime_mode="live",
+            cognition_mode="full",
         )
     )
     entry = daemon.run_tick(0)
@@ -478,6 +480,7 @@ def _assert_failed_decision_isolation(config_path: Path, trace_path: Path, root:
             market_config_path=str(config_path),
             proactive_update_enabled=False,
             runtime_mode="live",
+            cognition_mode="full",
         )
     )
     entry = daemon.run_tick(0)

@@ -57,8 +57,8 @@
       "no_trading_execution": true
     },
     "polling_memory": {
-      "growth_bytes": 420693,
-      "peak_bytes": 527665,
+      "growth_bytes": 372931,
+      "peak_bytes": 479531,
       "poll_count": 3600
     },
     "portfolio_change": {
@@ -77,9 +77,9 @@
         "workhorse": "ok"
       },
       "role_timestamps": {
-        "decision": "2026-07-19T03:10:43.268184+00:00",
-        "research": "2026-07-19T03:10:43.268184+00:00",
-        "workhorse": "2026-07-19T03:10:43.268184+00:00"
+        "decision": "2026-07-19T04:19:05.850181+00:00",
+        "research": "2026-07-19T04:19:05.850181+00:00",
+        "workhorse": "2026-07-19T04:19:05.850181+00:00"
       },
       "status": "COMPLETED"
     },

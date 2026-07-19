@@ -65,7 +65,8 @@ unless the user explicitly changes the project scope.
 - Atlas evolves from real investment decisions, not imagined features.
 - Improvement Proposal IDs must use `IP-YYYY-NNN` and remain globally unique. Use `Category` for
   Knowledge, World Model, Decision Engine, Portfolio, Capital Deployment, User Experience, or
-  Engineering.
+  Engineering. (Numbering enforcement suspended during the single-user stage; see the Production
+  Trial Issue Rule.)
 - Roadmap stages are Released, Current, Planned, Ideas, and Deprecated. Deprecated items remain for
   traceability and must not disappear silently.
 - Research Priority Is Not Trading Authority. Strategic Candidate Dashboard ranks research
@@ -79,6 +80,9 @@ unless the user explicitly changes the project scope.
 - Only after discussion, priority review, and user approval may an Issue become an Improvement
   Proposal.
 - No Issue, No Iteration.
+- Single-user stage simplification (Runtime v1.6, 2026-07-19): recording the Issue remains
+  mandatory; formal IP numbering and release-gate ceremony are suspended until a second user or
+  an external release exists. Restoration trigger: multi-user usage or external release.
 
 ## Portfolio Context Injection Rule
 

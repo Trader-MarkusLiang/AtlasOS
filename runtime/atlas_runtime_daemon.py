@@ -85,6 +85,7 @@ class AtlasRuntimeDaemonConfig:
     proactive_update_every_seconds: int = DEFAULT_PROACTIVE_UPDATE_SECONDS
     proactive_update_run_on_start: bool = True
     runtime_mode: str = "auto"
+    cognition_mode: str = "auto"
 
 
 class AtlasRuntimeDaemon:
@@ -98,6 +99,7 @@ class AtlasRuntimeDaemon:
         self.config = config or AtlasRuntimeDaemonConfig()
         self.schedule = RuntimeScheduleConfig(interval_seconds=self.config.interval_seconds)
         self.runtime_mode = _resolve_runtime_mode(self.config.runtime_mode, self.config.market_config_path)
+        self.cognition_mode = _resolve_cognition_mode(self.config.cognition_mode, self.config.market_config_path)
         self.event_source = event_source if event_source is not None else (SimulatedMarketEventSource() if self.runtime_mode == "simulation" else None)
         self.output_logger = RuntimeOutputLogger(log_path=self.config.log_path)
         self.store = StateStore(db_path=self.config.db_path)
@@ -111,6 +113,7 @@ class AtlasRuntimeDaemon:
                 db_path=self.config.db_path,
                 inbox_dir=self.config.inbox_dir,
                 llm_model=self.config.llm_model,
+                cognition_mode=self.cognition_mode,
             )
         )
         self._running = False
@@ -928,6 +931,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--proactive-update-every-seconds", type=int, default=DEFAULT_PROACTIVE_UPDATE_SECONDS)
     parser.add_argument("--no-proactive-update-on-start", action="store_true")
     parser.add_argument("--runtime-mode", choices=["auto", "simulation", "live"], default="auto")
+    parser.add_argument(
+        "--cognition-mode",
+        choices=["lean", "full"],
+        default=None,
+        help="lean (default): fusion + controller + LLM only; full: legacy symbolic cognition chain",
+    )
     return parser
 
 
@@ -952,6 +961,7 @@ def main() -> None:
             proactive_update_every_seconds=args.proactive_update_every_seconds,
             proactive_update_run_on_start=not args.no_proactive_update_on_start,
             runtime_mode=args.runtime_mode,
+            cognition_mode=args.cognition_mode if args.cognition_mode else "auto",
         )
     )
     signal.signal(signal.SIGINT, daemon.stop)
@@ -980,6 +990,30 @@ def _resolve_runtime_mode(configured: str, config_path: Optional[str]) -> str:
         except (OSError, json.JSONDecodeError):
             pass
     return "simulation"
+
+
+def _resolve_cognition_mode(configured: Optional[str], config_path: Optional[str]) -> str:
+    """Resolve cognition mode: explicit lean/full wins, else user config, else lean."""
+
+    mode = str(configured or "").strip().lower()
+    if mode in {"lean", "full"}:
+        return mode
+    candidates = []
+    if config_path:
+        candidates.append(Path(config_path))
+    candidates.append(Path("runtime/config/user_config.json"))
+    for path in candidates:
+        if not path.exists():
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        system = data.get("system", {}) if isinstance(data, dict) else {}
+        selected = str(system.get("cognition_mode") or "").strip().lower()
+        if selected in {"lean", "full"}:
+            return selected
+    return "lean"
 
 
 def _parse_datetime(value: Optional[str]) -> Optional[datetime]:

@@ -150,6 +150,7 @@ def _daily_cycles(root: Path) -> dict[str, Any]:
                 market_refresh_every_cycles=1,
                 market_max_assets=1,
                 daily_cycle_now=timestamp,
+                cognition_mode="full",
             )
         )
         entry = daemon.run_tick(0)
@@ -190,6 +191,7 @@ def _accelerated_soak(root: Path) -> dict[str, Any]:
             market_config_path=str(config_path),
             market_refresh_every_cycles=1,
             market_max_assets=1,
+            cognition_mode="full",
         )
     )
     daemon.run_forever()
@@ -240,6 +242,7 @@ def _real_duration_soak(root: Path) -> dict[str, Any]:
             market_config_path=str(config_path),
             market_refresh_every_cycles=1,
             market_max_assets=1,
+            cognition_mode="full",
         )
     )
     daemon.run_forever()
@@ -273,14 +276,17 @@ def _recovery_daemon_restart(root: Path) -> dict[str, Any]:
     db_path = root / "restart.sqlite"
     _write_fixture_config(config_path)
     first = AtlasRuntimeDaemon(
-        AtlasRuntimeDaemonConfig(max_cycles=1, no_sleep=True, db_path=str(db_path), market_config_path=str(config_path))
+        AtlasRuntimeDaemonConfig(max_cycles=1, no_sleep=True, db_path=str(db_path), market_config_path=str(config_path), cognition_mode="full")
     ).run_tick(0)
     second = AtlasRuntimeDaemon(
-        AtlasRuntimeDaemonConfig(max_cycles=1, no_sleep=True, db_path=str(db_path), market_config_path=str(config_path))
+        AtlasRuntimeDaemonConfig(max_cycles=1, no_sleep=True, db_path=str(db_path), market_config_path=str(config_path), cognition_mode="full")
     ).run_tick(1)
     counts = _sqlite_counts(db_path)
     passed = first.get("system_metrics", {}).get("status") == "success" and second.get("system_metrics", {}).get("status") == "success"
-    return {"status": "passed" if passed and counts.get("decision_briefs", 0) >= 2 else "failed", "db_counts": counts}
+    # Since the material-delta gate (real-time brief closure), an identical second tick is
+    # deduplicated and legitimately publishes no new Brief. Recovery means: restart succeeds and
+    # the last valid Brief is preserved (>= 1), not that a duplicate Brief is created.
+    return {"status": "passed" if passed and counts.get("decision_briefs", 0) >= 1 else "failed", "db_counts": counts}
 
 
 def _recovery_ui_restart(root: Path) -> dict[str, Any]:

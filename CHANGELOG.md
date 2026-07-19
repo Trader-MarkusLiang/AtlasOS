@@ -1,5 +1,49 @@
 # Changelog
 
+## Runtime v1.6 Lean Runtime Reduction - 2026-07-19
+
+- Added `ISSUE-2026-063` for runtime complexity exceeding evidence; executed under the approved
+  lean-runtime plan after the real-time brief closure repair.
+- Added `cognition_mode` gate (`lean` default / `full` legacy) to `DecisionLoop`: the lean pipeline
+  keeps event fusion, state controller, regime memory, LLM decision, and forecast ledger, and skips
+  the symbolic cognition chain (CIL, world model, LMSE, MPCE, MLE, UMIC, LLM feedback, structural
+  co-evolution, self-organization). Engines remain in `runtime/cognition/` and run unchanged under
+  `cognition_mode="full"`; rollback is a single config value.
+- Added `--cognition-mode` CLI flag and `system.cognition_mode` user-config override (CLI > config >
+  lean default), with Settings schema validation.
+- Added market data resilience: persistent JSON quote cache (`runtime/state/market_cache.json`,
+  atomic writes, 500-entry cap), stale fallback labeled `CACHED` with `stale_age_seconds`
+  (2-day cutoff), and rate-limit backoff (60s/300s/900s) with cross-provider failover.
+- Consolidated runtime entry points: `deployment/atlas_os.plist` now starts the single supported
+  daemon `runtime.atlas_runtime_daemon`; `runtime/atlas_daemon.py`, `runtime/atlas_host.py`,
+  `web/app.py`, and `web/dashboard_observability.py` are deprecated in place (kept for historical
+  validation-script imports).
+- Removed local soak-test residue (`prompt_d_*` logs, stale sqlite, old config backup).
+- Lightened single-user governance wording in `AGENTS.md`: Issue-first recording remains mandatory;
+  formal IP numbering and release-gate ceremony are suspended until a second user or external
+  release exists.
+- Atlas Core remains v2.1 RC; no CDE, Decision Contract, portfolio, or trading semantics changed.
+
+## Real-Time Brief Closure Runtime/UI - 2026-07-19
+
+- Added `ISSUE-2026-062` and `IP-2026-062` for real-time Brief closure and runtime efficiency.
+- Converted Daily Cycle into idempotent maintenance; morning/intraday/post-market/overnight labels
+  remain audit metadata and no longer gate Brief publication.
+- Kept the 60-second tick as a lightweight scheduler that dispatches analysis only when the
+  deterministic material-delta gate opens; heartbeat-only ticks make zero LLM calls and zero Brief
+  revisions.
+- Enabled Workhorse, Research, and Decision role routing with bounded fallback behavior and
+  role-level input caches; proactive updates now end in terminal `COMPLETED` / `DEGRADED` /
+  `FAILED` states.
+- Added atomic current/previous Brief state with overall and section-level revisions, runtime
+  evidence assessments, and candidate overlays without mutating governed Markdown knowledge.
+- Added bounded JSONL reads, 64 MB rotation with bounded backups, SQLite aggregate queries, pruning,
+  checkpointing, and lightweight Home endpoints; aligned Home posture/risk/confidence with the
+  latest validated DecisionPacket and added `LAST_MARKET_CLOSE` closed-market semantics.
+- Proved all 13 acceptance criteria in `99_Verification/artifacts/realtime_brief_closure/
+  validation_result.json` plus regression suites and browser checks. Atlas Core remains v2.1 RC;
+  no cognition semantics, CDE, Decision Contract, broker, or trading behavior changed.
+
 ## Portfolio OS v1.3 / Decision Experience v1.2 - 2026-07-14
 
 - Added `ISSUE-2026-061` and `IP-2026-061` for local Home position-cost and PnL intelligence.

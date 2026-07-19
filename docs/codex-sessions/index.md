@@ -8,6 +8,7 @@ Project-local index for resumable Codex work on Atlas OS.
 
 ## Completed Sessions
 
+- `docs/codex-sessions/completed/2026-07-19_1900_lean-runtime-reduction.md`
 - `docs/codex-sessions/completed/2026-07-19_1005_realtime-brief-closure-implementation.md`
 - `docs/codex-sessions/completed/2026-07-19_0950_realtime-brief-repair-plan.md`
 - `docs/codex-sessions/completed/2026-07-19_0940_overnight-runtime-effect-audit.md`

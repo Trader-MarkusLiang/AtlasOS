@@ -10,11 +10,23 @@
   <array>
     <string>/usr/bin/python3</string>
     <string>-m</string>
-    <string>runtime.atlas_daemon</string>
+    <string>runtime.atlas_runtime_daemon</string>
     <string>--interval</string>
     <string>60</string>
-    <string>--heartbeat-interval</string>
-    <string>300</string>
+    <string>--llm-model</string>
+    <string>gpt5.5</string>
+    <string>--db-path</string>
+    <string>runtime/state/atlas_runtime.sqlite</string>
+    <string>--log-path</string>
+    <string>runtime/logs/atlas_runtime.log</string>
+    <string>--inbox-dir</string>
+    <string>runtime/events/inbox</string>
+    <string>--ui-inbox-path</string>
+    <string>runtime/inbox/user_event.jsonl</string>
+    <string>--market-config-path</string>
+    <string>runtime/config/user_config.json</string>
+    <string>--proactive-update-every-seconds</string>
+    <string>7200</string>
   </array>
 
   <key>WorkingDirectory</key>

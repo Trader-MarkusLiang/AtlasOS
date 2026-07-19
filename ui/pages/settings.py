@@ -96,6 +96,10 @@ def validate_system_config(config: Mapping[str, Any]) -> dict[str, Any]:
     if mode is not None and str(mode).strip().lower() not in {"auto", "simulation", "live"}:
         errors.append({"field": "system.runtime_mode", "error": "must_be_auto_simulation_or_live", "received": mode})
 
+    cognition = system.get("cognition_mode")
+    if cognition is not None and str(cognition).strip().lower() not in {"lean", "full"}:
+        errors.append({"field": "system.cognition_mode", "error": "must_be_lean_or_full", "received": cognition})
+
     proactive = system.get("proactive_update_interval_seconds")
     if proactive is not None:
         try:

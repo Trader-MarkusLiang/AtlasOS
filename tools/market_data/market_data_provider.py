@@ -38,6 +38,136 @@ _PROVIDER_HEALTH: dict[str, tuple[int, int, float, float]] = {}
 _PROVIDER_HEALTH_LOCK = threading.Lock()
 _PROVIDER_HEALTH_WINDOW_SECONDS = 300.0  # weight decays beyond 5 minutes
 
+# Rate-limit backoff tracker: provider_name -> (consecutive_failures, not_before_epoch).
+# In-memory only; backoff schedule 60s -> 300s -> 900s (cap). Success resets the counter.
+_PROVIDER_BACKOFF: dict[str, tuple[int, float]] = {}
+_PROVIDER_BACKOFF_LOCK = threading.Lock()
+_BACKOFF_SCHEDULE_SECONDS = (60.0, 300.0, 900.0)
+
+# Persistent cross-process snapshot cache (JSON file). Key: "<ticker>:<market>".
+# Missing or corrupt cache files are treated as empty. Failures are never cached.
+_PERSISTENT_CACHE_LOCK = threading.Lock()
+_PERSISTENT_CACHE_PATH_OVERRIDE: Optional[str] = None
+_PERSISTENT_CACHE_MAX_ENTRIES = 500
+# Approximate 2 trading days with 2 calendar days; stale entries older than this
+# are not served as fallback (kept simple on purpose).
+_STALE_CACHE_MAX_AGE_SECONDS = 2 * 24 * 3600
+
+
+def set_persistent_cache_path(path: Optional[str]) -> None:
+    """Override the persistent cache file path. Pass None to restore the default."""
+    global _PERSISTENT_CACHE_PATH_OVERRIDE
+    _PERSISTENT_CACHE_PATH_OVERRIDE = str(path) if path else None
+
+
+def _persistent_cache_path() -> str:
+    # Lock-free: called while _PERSISTENT_CACHE_LOCK may already be held.
+    if _PERSISTENT_CACHE_PATH_OVERRIDE:
+        return _PERSISTENT_CACHE_PATH_OVERRIDE
+    repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.join(repo_root, "runtime", "state", "market_cache.json")
+
+
+def _persistent_cache_key(ticker: str, market: str) -> str:
+    return f"{str(ticker).upper().strip()}:{str(market).upper().strip()}"
+
+
+def _persistent_cache_read(path: str) -> Dict[str, Any]:
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            data = json.load(handle)
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _persistent_cache_set(ticker: str, market: str, snapshot: Dict[str, Any]) -> None:
+    """Persist a successful snapshot. Read-modify-write is atomic (temp + os.replace)."""
+    key = _persistent_cache_key(ticker, market)
+    payload = dict(snapshot)
+    # Never persist stale-fallback markers; the cache stores live results only.
+    for marker in ("data_freshness", "stale_age_seconds", "cache_source"):
+        payload.pop(marker, None)
+    try:
+        json.dumps(payload)
+    except (TypeError, ValueError):
+        return
+    with _PERSISTENT_CACHE_LOCK:
+        path = _persistent_cache_path()
+        data = _persistent_cache_read(path)
+        data[key] = {"payload": payload, "fetched_at": time.time()}
+        while len(data) > _PERSISTENT_CACHE_MAX_ENTRIES:
+            oldest = min(data, key=lambda k: data[k].get("fetched_at", 0.0))
+            del data[oldest]
+        try:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            temp_path = path + ".tmp"
+            with open(temp_path, "w", encoding="utf-8") as handle:
+                json.dump(data, handle, ensure_ascii=False)
+            os.replace(temp_path, path)
+        except OSError:
+            pass  # cache writes are best-effort; never break a successful fetch
+
+
+def _persistent_cache_get(ticker: str, market: str) -> Optional[Dict[str, Any]]:
+    with _PERSISTENT_CACHE_LOCK:
+        entry = _persistent_cache_read(_persistent_cache_path()).get(
+            _persistent_cache_key(ticker, market)
+        )
+    if not isinstance(entry, dict) or not isinstance(entry.get("payload"), dict):
+        return None
+    try:
+        fetched_at = float(entry.get("fetched_at", 0.0))
+    except (TypeError, ValueError):
+        return None
+    return {"payload": entry["payload"], "fetched_at": fetched_at}
+
+
+def _is_rate_limit_error(exc: BaseException) -> bool:
+    """Conservative classification: HTTP 429/503, connection and timeout errors."""
+    if isinstance(exc, urllib.error.HTTPError):
+        return exc.code in (429, 503)
+    if isinstance(exc, (TimeoutError, ConnectionError, urllib.error.URLError)):
+        return True
+    message = str(exc).lower()
+    return any(
+        token in message
+        for token in (
+            "429",
+            "rate limit",
+            "too many requests",
+            "timed out",
+            "timeout",
+            "connection reset",
+            "connection error",
+            "remote disconnected",
+        )
+    )
+
+
+def _provider_in_backoff(provider: str) -> bool:
+    with _PROVIDER_BACKOFF_LOCK:
+        entry = _PROVIDER_BACKOFF.get(provider)
+        if entry is None:
+            return False
+        _, not_before = entry
+        return time.time() < not_before
+
+
+def _record_backoff_success(provider: str) -> None:
+    with _PROVIDER_BACKOFF_LOCK:
+        _PROVIDER_BACKOFF.pop(provider, None)
+
+
+def _record_backoff_failure(provider: str, exc: BaseException) -> None:
+    if not _is_rate_limit_error(exc):
+        return
+    with _PROVIDER_BACKOFF_LOCK:
+        failures, _ = _PROVIDER_BACKOFF.get(provider, (0, 0.0))
+        failures += 1
+        delay = _BACKOFF_SCHEDULE_SECONDS[min(failures, len(_BACKOFF_SCHEDULE_SECONDS)) - 1]
+        _PROVIDER_BACKOFF[provider] = (failures, time.time() + delay)
+
 
 def _cache_get(ticker: str, market: str) -> dict[str, Any] | None:
     """Return cached snapshot if fresh, else None."""
@@ -405,17 +535,22 @@ def get_history(ticker: str, market: str, period: str = "60d") -> pd.DataFrame:
 
     errors: List[str] = []
     for source in attempts:
+        if _provider_in_backoff(source):
+            errors.append(f"{source}: skipped (rate-limit backoff)")
+            continue
         try:
             df = _load_history_with_deadline(source, ticker, market, period)
             if df is not None and not df.empty:
                 df.attrs["source"] = source
                 _record_provider_success(source)
+                _record_backoff_success(source)
                 return df
             errors.append(f"{source}: empty")
             _record_provider_failure(source)
         except Exception as exc:
             errors.append(f"{source}: {type(exc).__name__}: {exc}")
             _record_provider_failure(source)
+            _record_backoff_failure(source, exc)
 
     df = pd.DataFrame()
     df.attrs["errors"] = errors
@@ -569,6 +704,9 @@ def get_latest_quote(ticker: str, market: str) -> Dict[str, Any]:
             "turnover",
             "data_status",
             "missing_fields",
+            "data_freshness",
+            "stale_age_seconds",
+            "cache_source",
         ]
     }
 
@@ -622,7 +760,11 @@ def get_market_snapshot(ticker: str, market: str) -> Dict[str, Any]:
             result.update(fallback)
             result["missing_fields"] = _missing_fields(result)
             result["data_status"] = _data_status(result)
+            _persistent_cache_set(ticker, market, result)
             return result
+        stale = _persistent_stale_fallback(ticker, market, result["errors"])
+        if stale is not None:
+            return stale
         result["missing_fields"] = _missing_fields(result)
         return result
 
@@ -644,7 +786,30 @@ def get_market_snapshot(ticker: str, market: str) -> Dict[str, Any]:
     result["data_status"] = _data_status(result)
 
     _cache_set(ticker, market, result)
+    _persistent_cache_set(ticker, market, result)
     return result
+
+
+def _persistent_stale_fallback(
+    ticker: str, market: str, errors: List[str]
+) -> Optional[Dict[str, Any]]:
+    """Serve the most recent persisted snapshot when all live fetches failed.
+
+    The result is always explicitly labeled as stale cached data; entries older
+    than _STALE_CACHE_MAX_AGE_SECONDS are not served.
+    """
+    entry = _persistent_cache_get(ticker, market)
+    if entry is None:
+        return None
+    age_seconds = time.time() - entry["fetched_at"]
+    if age_seconds > _STALE_CACHE_MAX_AGE_SECONDS:
+        return None
+    payload = dict(entry["payload"])
+    payload["errors"] = list(errors) + ["live fetch failed; served from persistent cache"]
+    payload["data_freshness"] = "CACHED"
+    payload["stale_age_seconds"] = int(max(0.0, age_seconds))
+    payload["cache_source"] = "persistent"
+    return payload
 
 
 def _quote_fallback_snapshot(ticker: str, market: str, errors: List[str]) -> Optional[Dict[str, Any]]:
@@ -653,12 +818,17 @@ def _quote_fallback_snapshot(ticker: str, market: str, errors: List[str]) -> Opt
         ("eastmoney_quote", _eastmoney_quote_snapshot),
         ("tencent_quote", _tencent_quote_snapshot),
     ):
+        if _provider_in_backoff(source):
+            quote_errors.append(f"{source}: skipped (rate-limit backoff)")
+            continue
         try:
             snapshot = loader(ticker, market)
         except Exception as exc:
             quote_errors.append(f"{source}: {type(exc).__name__}: {exc}")
+            _record_backoff_failure(source, exc)
             continue
         if snapshot and snapshot.get("latest_price") is not None:
+            _record_backoff_success(source)
             snapshot["errors"] = quote_errors
             return snapshot
         quote_errors.append(f"{source}: empty")

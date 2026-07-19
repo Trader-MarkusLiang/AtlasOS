@@ -41,10 +41,10 @@ Runtime, UI, and Data tracks use separate version labels because they mature ind
 | Track | Current State |
 |---|---|
 | Atlas Core / Knowledge OS | v2.1 RC Production Trial |
-| Atlas Runtime | real daemon / EventStream / DecisionLoop path proven through GOAL 07 and clean-room CR08 real-duration soaks; no 24h proof |
-| Atlas Cognitive Overlay | symbolic cognition overlays implemented; most layer validations remain controlled-fixture evidence |
-| Atlas UI / Product | first-user setup/start/ask/stop and local position-valuation paths proven; exhaustive bilingual parity and stale-server guard remain partial |
-| Atlas Data / Market Intelligence | live market fetch attempted; daemon path currently degraded by provider/rate-limit failures; breadth/news/macro/narrative channels explicitly not configured |
+| Atlas Runtime | v1.6 lean pipeline (fusion + state controller + regime memory + LLM decision + forecast ledger) over the real daemon / EventStream / DecisionLoop path; single daemon entry `runtime.atlas_runtime_daemon`; no 24h proof |
+| Atlas Cognitive Overlay | symbolic cognition overlays archived behind `cognition_mode="full"` (not in the default pipeline); most layer validations remain controlled-fixture evidence |
+| Atlas UI / Product | first-user setup/start/ask/stop and local position-valuation paths proven; real-time Brief revision polling added; exhaustive bilingual parity and stale-server guard remain partial |
+| Atlas Data / Market Intelligence | live market fetch with persistent cache, stale `CACHED` fallback, and rate-limit backoff; breadth/news/macro/narrative channels explicitly not configured |
 
 Current evidence levels:
 
@@ -54,7 +54,7 @@ Current evidence levels:
 | Portfolio context runtime path | `REAL_RUNTIME_PROVEN` through UI config -> daemon -> Decision Brief |
 | Forecast lineage and self-iteration | `REAL_RUNTIME_PROVEN` / `LIVE_PROVEN` for treatment-control behavioral delta |
 | Daily cycle dispatch | `REAL_RUNTIME_PROVEN` through daemon phase dispatch |
-| Live market observation | `PARTIAL` / `EXTERNAL_BLOCKER` due provider disconnects and rate limits |
+| Live market observation | `PARTIAL` — persistent cache / stale fallback / backoff mitigate provider disconnects and rate limits; channel breadth still limited |
 | Release readiness | `PRODUCTION_TRIAL_CANDIDATE`; not RC |
 | Real-duration stability | `REAL_RUNTIME_PROVEN` for 2h+ GOAL 07 / clean-room CR08 soaks; 24h still not proven |
 

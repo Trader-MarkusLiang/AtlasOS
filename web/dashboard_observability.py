@@ -1,5 +1,9 @@
 """Minimal JSON observability dashboard for Atlas runtime telemetry.
 
+DEPRECATED (Runtime v1.6, 2026-07-19): the product UI is `ui/app_server.py`.
+This module remains only so historical validation scripts keep importing;
+do not run it as a server.
+
 Run with standard library only:
 
     python3 web/dashboard_observability.py

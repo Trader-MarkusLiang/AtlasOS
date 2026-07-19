@@ -1,42 +1,42 @@
 {
   "accelerated_soak": {
     "accelerated": true,
-    "cpu_seconds": 12.8027,
+    "cpu_seconds": 75.0047,
     "cycles": 500,
     "db_counts": {
       "attention_history": 0,
-      "decision_briefs": 500,
-      "events": 1001,
-      "forecast_ledger": 500,
-      "kv_state": 14,
+      "decision_briefs": 1,
+      "events": 3503,
+      "forecast_ledger": 376,
+      "kv_state": 23,
       "state_transitions": 500,
-      "system_logs": 1500
+      "system_logs": 1001
     },
-    "db_growth_bytes": 8556544,
-    "db_size_after_bytes": 8556544,
+    "db_growth_bytes": 16220160,
+    "db_size_after_bytes": 16220160,
     "db_size_before_bytes": 0,
-    "elapsed_seconds": 13.7801,
+    "elapsed_seconds": 361.9234,
     "hypothesis_switches": 0,
-    "max_rss_after": 40468480,
-    "max_rss_before": 28835840,
+    "max_rss_after": 43401216,
+    "max_rss_before": 31588352,
     "no_trading_execution": true,
     "pending_queue_depth": 0,
     "provider_failures": 500,
-    "rss_growth": 11632640,
+    "rss_growth": 11812864,
     "runtime_log_lines": 500,
     "tick_errors": 0,
     "trust_drift": {
       "available": true,
-      "delta": -0.0281,
-      "first": 0.7138,
-      "last": 0.6857,
-      "max": 0.7138,
-      "min": 0.5489
+      "delta": -0.1477,
+      "first": 0.75,
+      "last": 0.6023,
+      "max": 0.75,
+      "min": 0.4614
     }
   },
   "checks": {
     "accelerated_500_cycles": true,
-    "accelerated_decision_briefs": true,
+    "accelerated_decision_briefs_bounded": true,
     "accelerated_queue_bounded": true,
     "accelerated_zero_tick_errors": true,
     "daily_all_phases_completed": true,
@@ -55,14 +55,12 @@
   "classification": "PROVEN_PARTIAL",
   "daily_cycles": {
     "intraday": {
-      "next_run_time": "2026-07-08T09:30:50.745108+00:00",
+      "next_run_time": "2026-07-19T05:17:46.468918+00:00",
       "no_trading_execution": true,
       "output_keys": [
-        "anomaly_check",
-        "attention_regime_update",
-        "portfolio_relevance_triggers",
-        "produced_brief_id",
-        "refresh_status"
+        "brief_publication_requested",
+        "forecast_due_scan",
+        "market_state_status"
       ],
       "persisted": true,
       "required_outputs_present": true,
@@ -70,14 +68,14 @@
       "status": "completed"
     },
     "morning": {
-      "next_run_time": "2026-07-08T09:30:50.724376+00:00",
+      "next_run_time": "2026-07-19T05:17:45.835319+00:00",
       "no_trading_execution": true,
       "output_keys": [
+        "brief_publication_requested",
         "freshness_check",
+        "market_state_snapshot",
         "open_forecast_count",
-        "overnight_signal_synthesis",
-        "portfolio_relevance",
-        "produced_brief_id"
+        "portfolio_relevance"
       ],
       "persisted": true,
       "required_outputs_present": true,
@@ -85,12 +83,12 @@
       "status": "completed"
     },
     "overnight": {
-      "next_run_time": "2026-07-08T09:30:50.788600+00:00",
+      "next_run_time": "2026-07-19T05:17:47.773418+00:00",
       "no_trading_execution": true,
       "output_keys": [
+        "brief_publication_requested",
         "hypothesis_review",
         "next_day_watch_conditions",
-        "produced_brief_id",
         "world_model_delta"
       ],
       "persisted": true,
@@ -99,13 +97,13 @@
       "status": "completed"
     },
     "post_market": {
-      "next_run_time": "2026-07-08T09:30:50.765680+00:00",
+      "next_run_time": "2026-07-19T05:17:47.120615+00:00",
       "no_trading_execution": true,
       "output_keys": [
+        "brief_publication_requested",
         "closing_state_synthesis",
         "forecast_maturity_check",
-        "outcome_evaluation_queue",
-        "produced_brief_id"
+        "outcome_evaluation_queue"
       ],
       "persisted": true,
       "required_outputs_present": true,
@@ -125,14 +123,14 @@
     "cycles": 2,
     "db_counts": {
       "attention_history": 0,
-      "decision_briefs": 2,
-      "events": 5,
+      "decision_briefs": 1,
+      "events": 16,
       "forecast_ledger": 2,
-      "kv_state": 14,
+      "kv_state": 23,
       "state_transitions": 2,
-      "system_logs": 6
+      "system_logs": 5
     },
-    "elapsed_seconds": 10.0664,
+    "elapsed_seconds": 11.7281,
     "no_sleep": false,
     "no_trading_execution": true,
     "tick_errors": 0
@@ -141,12 +139,12 @@
     "daemon_restart": {
       "db_counts": {
         "attention_history": 0,
-        "decision_briefs": 2,
-        "events": 5,
-        "forecast_ledger": 2,
-        "kv_state": 14,
+        "decision_briefs": 1,
+        "events": 11,
+        "forecast_ledger": 1,
+        "kv_state": 21,
         "state_transitions": 2,
-        "system_logs": 6
+        "system_logs": 5
       },
       "status": "passed"
     },
@@ -160,17 +158,17 @@
     },
     "market_outage": {
       "channels": {
-        "liquidity_proxy": "NOT_CONFIGURED",
-        "macro_policy": "NOT_CONFIGURED",
-        "market_breadth": "NOT_CONFIGURED",
-        "narrative_attention": "NOT_CONFIGURED",
+        "liquidity_proxy": "SIMULATED",
+        "macro_policy": "LIVE",
+        "market_breadth": "DELAYED",
+        "narrative_attention": "DELAYED",
         "news_announcement": "NOT_CONFIGURED",
         "portfolio_relevance": "SIMULATED",
         "price_volume": "FAILED",
-        "volatility": "NOT_CONFIGURED"
+        "volatility": "SIMULATED"
       },
       "degraded": true,
-      "events_enqueued": 1,
+      "events_enqueued": 6,
       "market_status": "ok",
       "proof_mode": "CONTROLLED_FIXTURE_PROOF",
       "status": "passed"
@@ -179,7 +177,7 @@
       "error": "all_providers_failed",
       "fallback_attempts": [
         {
-          "error": "timed out",
+          "error": "http_502",
           "provider": "down"
         }
       ],
@@ -191,7 +189,7 @@
       "runtime_status": {
         "feedback_stability_index": null,
         "pid": 99999999,
-        "pid_file": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-9nbj61x7/recovery/stale_pid/stale.pid",
+        "pid_file": "/var/folders/jg/xdrb36rj63jctt_15_0fpvww0000gn/T/atlas-goal07-nwg02a9f/recovery/stale_pid/stale.pid",
         "rolling_trust_index": null,
         "running": false
       },

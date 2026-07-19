@@ -91,6 +91,7 @@ class DecisionLoopConfig:
     db_path: Optional[str] = None
     inbox_dir: Optional[str] = None
     llm_model: str = "gpt5.5"
+    cognition_mode: str = "lean"
 
 
 class DecisionLoop:
@@ -132,7 +133,10 @@ class DecisionLoop:
             }
         events = material_events
 
-        if events:
+        if events and self.config.cognition_mode == "lean":
+            fusion = self.fusion_engine.fuse(events)
+            results.append(self._run_lean_cycle(events, fusion))
+        elif events:
             fusion = self.fusion_engine.fuse(events)
             previous_llm_feedback = self.store.get_state("llm_feedback_state")
             previous_structural_state = self.store.get_state("structural_coevolution_state")
@@ -577,6 +581,110 @@ class DecisionLoop:
             log_execution(cycle_record, log_path=self.config.log_path)
             self.store.append_system_log(cycle_record)
         return cycle_record
+
+    def _run_lean_cycle(
+        self, events: List[Dict[str, object]], fusion: Dict[str, Any]
+    ) -> Dict[str, object]:
+        """Lean cognition cycle: fusion -> state controller -> regime memory -> LLM -> forecast ledger.
+
+        Skips the archived symbolic cognition engines (causal / world model /
+        latent structure / physics constraints / market laws / unified
+        intelligence / LLM feedback-trust-hypothesis chain). Those engines run
+        only under cognition_mode="full".
+        """
+
+        memory_before = self.regime_memory.summary()
+        previous_state = self.state_machine.current_state()
+        transition = self.state_controller.decide(
+            previous_state=previous_state,
+            fusion=fusion,
+            memory_summary=memory_before,
+            causal={},
+        )
+        memory_after = self.regime_memory.record(
+            transition["current_state"],
+            fusion=fusion,
+            causal={},
+        )
+        transition["memory_after"] = memory_after
+        self.store.save_system_state(transition)
+        self.store.append_state_transition(transition)
+        self.store.set_state(
+            "cognition_state",
+            {
+                "fusion": fusion,
+                "controller": transition,
+                "memory": memory_after,
+                "mode": "lean",
+            },
+        )
+        fused_event = {
+            "event_id": "fusion:" + ",".join(event["event_id"] for event in events),
+            "event_type": "fused_market_reality",
+            "priority": max(int(event.get("priority", 0)) for event in events),
+            "payload": {
+                "cognition": {
+                    "fusion": fusion,
+                    "controller": transition,
+                    "memory": memory_after,
+                },
+                "task_context": _build_llm_task_context(events),
+            },
+            "source": "event_fusion_engine",
+            "created_at": utc_now_iso(),
+        }
+        result = run_state_runtime(
+            system_state=transition["current_state"],
+            event=fused_event,
+            log_path=self.config.log_path,
+            db_path=self.config.db_path,
+            llm_model=self.config.llm_model,
+        )
+        for event in events:
+            self.event_stream.acknowledge(event["event_id"], "handled")
+        decision_packet = result.get("decision_packet", {})
+        material_runtime_events = [event for event in events if _is_material_forecast_event(event)]
+        runtime_forecast_outcome = (
+            process_due_runtime_forecast(
+                current_state=str(transition.get("current_state") or "Unknown"),
+                current_cycle_id=str(result.get("run_id") or ""),
+                event_ids=[str(event.get("event_id")) for event in material_runtime_events],
+                db_path=self.config.db_path,
+            )
+            if material_runtime_events
+            else {"status": "not_due", "reason": "no_real_material_observation"}
+        )
+        runtime_forecast = _register_runtime_forecast(
+            db_path=self.config.db_path,
+            result=result,
+            events=events,
+            transition=transition,
+            causal={},
+            active_causal_structure={},
+            decision_packet=decision_packet if isinstance(decision_packet, dict) else {},
+        )
+        return {
+            "event_ids": [event["event_id"] for event in events],
+            "event_types": [event["event_type"] for event in events],
+            "state": transition["current_state"],
+            "proposed_state": transition["proposed_state"],
+            "transition_allowed": transition["transition_allowed"],
+            "result_status": result["status"],
+            "decision_brief_id": result.get("decision_brief_id") or result["run_id"],
+            "brief_published": bool(result.get("brief_published", True)),
+            "forecast_id": runtime_forecast.get("forecast_id"),
+            "forecast_status": runtime_forecast.get("status"),
+            "forecast_registration_reason": runtime_forecast.get("reason"),
+            "forecast_outcome_id": runtime_forecast_outcome.get("forecast_id"),
+            "forecast_outcome_status": runtime_forecast_outcome.get("status"),
+            "forecast_outcome_error": runtime_forecast_outcome.get("prediction_error"),
+            "decision_packet_action": result.get("decision_packet", {}).get("recommended_action"),
+            "decision_packet_risk": result.get("decision_packet", {}).get("risk_level"),
+            "decision_packet_confidence": result.get("decision_packet", {}).get("confidence"),
+            "decision_packet_fresh": bool(result.get("decision_packet_fresh", True)),
+            "llm_tasks": result.get("llm_tasks", {}),
+            "cognition_mode": "lean",
+        }
 
     def run_forever(self, max_cycles: Optional[int] = None) -> None:
         """Run until stopped or max_cycles is reached."""

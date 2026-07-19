@@ -1,5 +1,9 @@
 """Minimal Atlas Runtime dashboard.
 
+DEPRECATED (Runtime v1.6, 2026-07-19): the product UI is `ui/app_server.py`
+(port 8765). This module remains only so historical validation scripts keep
+importing `dashboard_payload`; do not run it as a server.
+
 FastAPI is optional. If it is not installed, run:
 
     python3 web/app.py
