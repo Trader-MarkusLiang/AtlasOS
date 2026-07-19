@@ -12,6 +12,13 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Mapping
 
+from ui.presentation.cognitive_localization import (
+    localize_evidence_headline,
+    localize_inline_tokens,
+    localize_regime,
+    localized_risk,
+)
+
 
 CANDIDATE_SOURCE_PATH = Path("02_Databases/AI_Shovel_100.md")
 TICKER_REGISTRY_PATH = Path("tools/market_data/ticker_registry.yaml")
@@ -219,13 +226,13 @@ def _human_summary(
     en = (
         f"Atlas sees {len(usable)} usable market signals today. "
         f"Your portfolio is {exposure_pct:.1f}% exposed, mostly to {largest_theme[0]} ({largest_theme[1]:.1f}%). "
-        f"The runtime state is {regime.replace('_', ' ')}. "
+        f"The market state is {localize_regime(regime, 'en')}. "
         f"Atlas's posture is {posture}: {review}."
     )
     zh = (
         f"Atlas 今天看到 {len(usable)} 个可用市场信号。"
         f"你的组合已配置 {exposure_pct:.1f}%，最大暴露主题是 {largest_theme[0]}（{largest_theme[1]:.1f}%）。"
-        f"当前运行状态为 {regime.replace('_', ' ')}。"
+        f"当前市场状态为「{localize_regime(regime, 'zh')}」。"
         f"Atlas 的姿态是「{_action_label(posture_key).get('zh', '观察')}」：{review_zh}。"
     )
     return _bilingual(en, zh)
@@ -252,8 +259,8 @@ def _because_bullets(
             f"最大主题是 {largest_theme[0]}（{largest_theme[1]:.1f}%），流动性和主题确认比单纯指数方向更重要。",
         ),
         _bilingual(
-            f"Runtime is {regime.replace('_', ' ')} with {buffer_pct:.1f}% unassigned buffer, so Atlas keeps observing before raising risk.",
-            f"运行状态为 {regime.replace('_', ' ')}，未部署缓冲 {buffer_pct:.1f}%，因此 Atlas 选择先观察再考虑提高风险。",
+            f"Market state is {localize_regime(regime, 'en')} with {buffer_pct:.1f}% unassigned buffer, so Atlas keeps observing before raising risk.",
+            f"市场状态为「{localize_regime(regime, 'zh')}」，未部署资金 {buffer_pct:.1f}%，因此 Atlas 选择先观察再考虑提高风险。",
         ),
     ]
     return bullets
@@ -333,23 +340,51 @@ def _investor_reasoning_chain(
     raw_action = _text(packet.get("recommended_action"), "neutral").lower()
     risk = _text(packet.get("risk_level"), "unknown").lower()
     if fallback:
-        conclusion = "Preserve the previous valid posture; latest reasoning is unavailable and no execution authority is created."
+        conclusion = _bilingual(
+            "Preserve the previous valid posture; latest reasoning is unavailable and no execution authority is created.",
+            "保留上一有效姿态；最新推理不可用，不创建任何执行权限。",
+        )
     elif raw_action == "reduce" or risk in {"high", "severe"}:
-        conclusion = "Reduce is the current portfolio-level review posture; no order or holding-specific execution authority is generated."
+        conclusion = _bilingual(
+            "Reduce is the current portfolio-level review posture; no order or holding-specific execution authority is generated.",
+            "当前组合级复核姿态为降低暴露；不生成订单或单持仓执行权限。",
+        )
     else:
-        conclusion = "Observe is the current portfolio-level posture; no thesis or capital-authority change is claimed."
+        conclusion = _bilingual(
+            "Observe is the current portfolio-level posture; no thesis or capital-authority change is claimed.",
+            "当前组合级姿态为观察；不主张论点或资本权限变化。",
+        )
     thesis_status = primary.get("thesis_changed", "UNASSESSED")
+    thesis_zh = {
+        "UNCHANGED": "结论不变",
+        "CHANGED": "判断已改变",
+        "NEEDS_REVIEW": "待复核",
+        "UNCERTAIN": "不确定",
+        "UNASSESSED": "尚未评估",
+    }.get(str(thesis_status).upper(), str(thesis_status))
+    verification = str(primary.get("verification_status", "UNVERIFIED"))
+    verification_zh = {
+        "VERIFIED_PROVIDER_RESPONSE": "数据源响应已验证",
+        "UNVERIFIED": "尚未验证",
+    }.get(verification.upper(), verification)
+    node = str(primary.get("world_model_node", "Unknown"))
+    node_zh = {"Price / Volume": "价格 / 成交量"}.get(node, node)
+    causal_text = (
+        _bilingual("Not evaluated: latest LLM reasoning failed", "未评估：最新推理失败")
+        if fallback
+        else _bilingual(_text(packet.get("causal_summary"), "Unknown"), localize_inline_tokens(_text(packet.get("causal_summary"), "未知"), "zh"))
+    )
     return {
         "status": "evidence_available" if primary else "data_missing",
         "steps": [
-            {"key": "signal", "value": primary.get("headline") or "Data Missing", "truth": "SIGNAL" if primary else "DATA MISSING"},
-            {"key": "evidence", "value": f"{primary.get('source', 'Data Missing')} · {primary.get('verification_status', 'UNVERIFIED')}", "truth": primary.get("classification", "DATA MISSING")},
-            {"key": "structure", "value": primary.get("world_model_node", "Unknown"), "truth": "STRUCTURAL INTERPRETATION" if primary else "DATA MISSING"},
-            {"key": "causal", "value": "Not evaluated: latest LLM reasoning failed" if fallback else _text(packet.get("causal_summary"), "Unknown"), "truth": "UNVERIFIED" if fallback else "INFERENCE"},
-            {"key": "thesis", "value": thesis_status, "truth": str(thesis_status)},
+            {"key": "signal", "value": primary.get("headline") and _bilingual(str(primary.get("headline")), localize_evidence_headline(primary.get("headline"), "zh")) or _bilingual("Data Missing", "数据缺失"), "truth": "SIGNAL" if primary else "DATA MISSING"},
+            {"key": "evidence", "value": _bilingual(f"{primary.get('source', 'Data Missing')} · {verification}", f"{primary.get('source', '数据缺失')} · {verification_zh}"), "truth": primary.get("classification", "DATA MISSING")},
+            {"key": "structure", "value": _bilingual(node, node_zh), "truth": "STRUCTURAL INTERPRETATION" if primary else "DATA MISSING"},
+            {"key": "causal", "value": causal_text, "truth": "UNVERIFIED" if fallback else "INFERENCE"},
+            {"key": "thesis", "value": _bilingual(str(thesis_status), thesis_zh), "truth": str(thesis_status)},
             {"key": "portfolio", "value": ", ".join(str(item) for item in affected) if affected else f"Broad portfolio exposure {_safe_number(portfolio.get('exposure_sum_pct'), 0.0):.1f}%", "truth": "PORTFOLIO MAPPING"},
-            {"key": "counter", "value": "No conclusion until counter-evidence and invalidation conditions are reviewed.", "truth": "FRAMEWORK SNAPSHOT"},
-            {"key": "missing", "value": "Narrative/attention and evaluated forecast evidence remain incomplete.", "truth": "DATA MISSING"},
+            {"key": "counter", "value": _bilingual("No conclusion until counter-evidence and invalidation conditions are reviewed.", "复核反证与失效条件前不下结论。"), "truth": "FRAMEWORK SNAPSHOT"},
+            {"key": "missing", "value": _bilingual("Narrative/attention and evaluated forecast evidence remain incomplete.", "叙事/关注度与已评估预测证据仍不完整。"), "truth": "DATA MISSING"},
             {"key": "conclusion", "value": conclusion, "truth": "CONDITIONAL CONCLUSION"},
         ],
     }
@@ -508,14 +543,14 @@ def _candidate_score_board(
         "validated_items": [item for item in output if item.get("identity_status") == "Validated"],
         "pending_items": [item for item in output if item.get("identity_status") != "Validated"],
         "score_dimensions": [
-            "Thesis Fit /20",
-            "Industry Cycle /15",
-            "Evidence Quality /15",
-            "Market Confirmation /15",
-            "Valuation Risk /10",
-            "Technical Structure /10",
-            "Portfolio Fit /10",
-            "Trigger Readiness /5",
+            _bilingual("Thesis Fit /20", "论点匹配 /20"),
+            _bilingual("Industry Cycle /15", "行业周期 /15"),
+            _bilingual("Evidence Quality /15", "证据质量 /15"),
+            _bilingual("Market Confirmation /15", "市场确认 /15"),
+            _bilingual("Valuation Risk /10", "估值风险 /10"),
+            _bilingual("Technical Structure /10", "技术结构 /10"),
+            _bilingual("Portfolio Fit /10", "组合匹配 /10"),
+            _bilingual("Trigger Readiness /5", "触发就绪 /5"),
         ],
         "research_priority_is_not_trading_authority": True,
         "source": candidate_pool.get("source"),
@@ -776,7 +811,7 @@ def _decision_core_judgment(
         )
         changed = _bilingual(
             f"Runtime state refreshed into {regime.replace('_', ' ')}.",
-            f"运行状态刷新为 {regime.replace('_', ' ')}。",
+            f"市场状态刷新为「{localize_regime(regime, 'zh')}」。",
         )
     else:
         title = _bilingual(
@@ -794,7 +829,7 @@ def _decision_core_judgment(
     if decision_fallback:
         explanation = _bilingual(
             "The DecisionPacket fell back to neutral/observe because LLM reasoning was unavailable or invalid; Atlas should rely on evidence checks before changing posture.",
-            "由于 LLM 推理不可用或无效，DecisionPacket 回退到中性/观察；Atlas 需要先依赖证据校验，再考虑改变姿态。",
+            "由于 LLM 推理不可用或无效，决策结论回退到中性/观察；Atlas 需要先依赖证据校验，再考虑改变姿态。",
         )
     return {
         "question": "what_changed",
@@ -844,7 +879,7 @@ def _decision_forward_view(
     else:
         statement = _bilingual(
             f"{regime.replace('_', ' ')} remains the working forward structure until contradicted by later observed state.",
-            f"{regime.replace('_', ' ')} 仍是当前前瞻工作结构，除非后续观测状态与之冲突。",
+            f"「{localize_regime(regime, 'zh')}」仍是当前前瞻工作结构，除非后续观测状态与之冲突。",
         )
         falsification = _bilingual(
             "Later runtime state conflicts with the expected structure or a supported forecast lifecycle invalidates it.",
@@ -1131,7 +1166,7 @@ def _action_today(packet: Mapping[str, Any], market: Mapping[str, Any], portfoli
         status = "YES"
         reason = _bilingual(
             f"The validated DecisionPacket requires a risk review: Atlas posture is Reduce and risk is {risk_level}. No order is generated.",
-            f"最新有效 DecisionPacket 要求进行风险复核：Atlas 姿态为降低暴露，风险等级为 {risk_level}。系统不会生成订单。",
+            f"最新有效决策结论要求进行风险复核：Atlas 姿态为降低暴露，风险等级为{localized_risk(risk_level, 'zh')['primary']}。系统不会生成订单。",
         )
     elif fallback:
         status = "CONDITIONAL"
@@ -1209,7 +1244,7 @@ def _practical_core_judgment(
     elif action == "reduce" or risk in {"high", "severe"}:
         headline = _bilingual(
             f"Risk is {risk}; Atlas posture is Reduce and a portfolio risk review is required.",
-            f"当前风险等级为 {risk}；Atlas 姿态为降低暴露，需要进行组合风险复核。",
+            f"当前风险等级为{localized_risk(risk, 'zh')['primary']}；Atlas 姿态为降低暴露，需要进行组合风险复核。",
         )
     elif changed:
         headline = _bilingual(
@@ -1232,13 +1267,13 @@ def _practical_core_judgment(
             "当前没有已验证的论点变化；在重要证据出现前保持现有姿态。",
         )
     support = _bilingual(
-        f"Runtime is {regime or 'Unknown'} with {len(observations)} usable portfolio-linked observations. Decision confidence is {confidence:.0%}; causal summary: {_text(packet.get('causal_summary'), 'Unknown')}. Unassigned buffer is {buffer_pct:.1f}%.",
-        f"运行态为 {regime or 'Unknown'}，有 {len(observations)} 个可用的组合相关观测。决策置信度为 {confidence:.0%}；因果摘要：{_text(packet.get('causal_summary'), '未知')}。未部署缓冲为 {buffer_pct:.1f}%。",
+        f"Market state is {localize_regime(regime, 'en') if regime else 'Unknown'} with {len(observations)} usable portfolio-linked observations. Decision confidence is {confidence:.0%}; causal summary: {_text(packet.get('causal_summary'), 'Unknown')}. Unassigned buffer is {buffer_pct:.1f}%.",
+        f"当前市场状态为「{localize_regime(regime, 'zh') if regime else '未知'}」，有 {len(observations)} 个可用的组合相关观测。决策置信度为 {confidence:.0%}；因果摘要：{localize_inline_tokens(_text(packet.get('causal_summary'), '未知'), 'zh')}。未部署资金为 {buffer_pct:.1f}%。",
     )
     if not observations:
         support = _bilingual(
-            f"Portfolio market observations are unavailable. The {regime or 'Unknown'} runtime state and Capital Relay are inference/framework context only, so today's judgment remains observation-first; unassigned buffer is {buffer_pct:.1f}%.",
-            f"组合相关市场观测当前不可用。{regime or 'Unknown'} 运行态与资本接力仅属于推断/框架上下文，因此今日判断保持观察优先；未部署缓冲为 {buffer_pct:.1f}%。",
+            f"Portfolio market observations are unavailable. The {localize_regime(regime, 'en') if regime else 'Unknown'} market state and Capital Relay are inference/framework context only, so today's judgment remains observation-first; unassigned buffer is {buffer_pct:.1f}%.",
+            f"组合相关市场观测当前不可用。「{localize_regime(regime, 'zh') if regime else '未知'}」市场状态与资本接力仅属于推断/框架上下文，因此今日判断保持观察优先；未部署资金为 {buffer_pct:.1f}%。",
         )
     return {
         "headline": headline,
@@ -1248,7 +1283,7 @@ def _practical_core_judgment(
         "because_bullets": [
             _bilingual(
                 f"DecisionPacket posture: {_action_label(action if action in {'observe', 'reduce'} else 'observe')['en']}; risk: {risk}; confidence: {confidence:.0%}.",
-                f"DecisionPacket 姿态：{_action_label(action if action in {'observe', 'reduce'} else 'observe')['zh']}；风险：{risk}；置信度：{confidence:.0%}。",
+                f"决策结论姿态：{_action_label(action if action in {'observe', 'reduce'} else 'observe')['zh']}；风险：{localized_risk(risk, 'zh')['primary']}；置信度：{confidence:.0%}。",
             ),
             _bilingual(
                 f"Evidence review: {reviewed} reviewed, {changed} changed, {unchanged} unchanged, {needs_review} pending review.",
@@ -1633,7 +1668,7 @@ def _intelligence_alerts(state: Mapping[str, Any], market: Mapping[str, Any], po
             "category": _bilingual("Market sentiment", "市场情绪"),
             "message": _bilingual(
                 f"Runtime state is {_text(state.get('regime_state'), 'Unknown')}; attention is low-to-moderate and breadth is not configured.",
-                f"运行态为 {_text(state.get('regime_state'), 'Unknown')}；注意力偏低到中等，市场广度尚未配置。",
+                f"市场状态为「{localize_regime(_text(state.get('regime_state'), ''), 'zh') or '未知'}」；注意力偏低到中等，市场广度尚未配置。",
             ),
         },
         {
@@ -2155,7 +2190,7 @@ def _causal_chain(edges: list[Mapping[str, Any]], packet: Mapping[str, Any]) -> 
     summary = _text(packet.get("causal_summary"), "")
     if summary and "unavailable" not in summary.lower():
         return [summary]
-    return ["Insufficient causal-chain evidence in current state."]
+    return [_bilingual("Insufficient causal-chain evidence in current state.", "当前状态缺乏足够的因果链证据。")]
 
 
 def _competing_hypotheses(state: Mapping[str, Any], latest_forecast: Mapping[str, Any]) -> list[str]:
@@ -2166,16 +2201,16 @@ def _competing_hypotheses(state: Mapping[str, Any], latest_forecast: Mapping[str
         return [str(key) for key, _ in sorted(distribution.items(), key=lambda pair: pair[1], reverse=True)[:3]]
     active = _text(latest_forecast.get("active_hypothesis"), "")
     if active:
-        return ["No competing hypothesis exposed by current state."]
-    return ["Insufficient hypothesis evidence."]
+        return [_bilingual("No competing hypothesis exposed by current state.", "当前状态未暴露竞争假设。")]
+    return [_bilingual("Insufficient hypothesis evidence.", "假设证据不足。")]
 
 
-def _recent_hypothesis_change(state: Mapping[str, Any]) -> str:
+def _recent_hypothesis_change(state: Mapping[str, Any]) -> Any:
     self_org = _mapping(state.get("self_organization_state"))
     shift = self_org.get("structural_shift_index") or _mapping(state.get("structural_coevolution_state")).get("structural_shift_index")
     if shift is None:
-        return "No recent hypothesis change exposed."
-    return f"Structural shift index {shift}"
+        return _bilingual("No recent hypothesis change exposed.", "近期未暴露假设变化。")
+    return _bilingual(f"Structural shift index {shift}", f"结构位移指数 {shift}")
 
 
 def _confidence_components(state: Mapping[str, Any], ledger: Mapping[str, Any]) -> list[dict[str, Any]]:

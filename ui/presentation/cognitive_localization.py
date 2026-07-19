@@ -9,9 +9,8 @@ under expert details.
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Mapping
-from zoneinfo import ZoneInfo
 
 
 ConceptLabel = dict[str, str]
@@ -74,6 +73,7 @@ ACTION_LABELS: dict[str, ConceptLabel] = {
 
 RISK_LABELS: dict[str, ConceptLabel] = {
     "high": {"zh": "高", "en": "High"},
+    "severe": {"zh": "严重", "en": "Severe"},
     "medium": {"zh": "中", "en": "Medium"},
     "moderate": {"zh": "中", "en": "Moderate"},
     "low": {"zh": "低", "en": "Low"},
@@ -119,6 +119,25 @@ MARKET_LABELS: dict[str, ConceptLabel] = {
 }
 
 
+REGIME_LABELS: dict[str, ConceptLabel] = {
+    "NORMAL": {"zh": "平稳", "en": "Normal"},
+    "ATTENTION_EXPANSION": {"zh": "关注扩张", "en": "Attention Expansion"},
+    "RISK_OFF": {"zh": "风险防御", "en": "Risk-Off"},
+    "BREAKOUT": {"zh": "突破", "en": "Breakout"},
+    "HIGH_VOLATILITY": {"zh": "高波动", "en": "High Volatility"},
+}
+
+
+SENSITIVITY_LABELS: dict[str, ConceptLabel] = {
+    "REGIONAL_LIQUIDITY_SENSITIVE": {"zh": "区域流动性敏感", "en": "Regional liquidity sensitive"},
+    "UNKNOWN_LIQUIDITY_PROFILE": {"zh": "流动性画像未知", "en": "Unknown liquidity profile"},
+    "DIVERSIFIED_OR_UNKNOWN": {"zh": "分散或未明确", "en": "Diversified or unknown"},
+    "SINGLE_THEME_REGIME_SENSITIVE": {"zh": "单一主题敏感", "en": "Single theme sensitive"},
+    "THEME_CLUSTER_SENSITIVE": {"zh": "主题集群敏感", "en": "Theme cluster sensitive"},
+    "BROAD_OR_UNCLASSIFIED": {"zh": "分布较广或未分类", "en": "Broad or unclassified"},
+}
+
+
 THEME_LABELS: dict[str, ConceptLabel] = {
     "Semiconductor Materials": {"zh": "半导体材料", "en": "Semiconductor Materials"},
     "PCB / Materials / AI Infrastructure": {"zh": "PCB / 材料 / AI 基础设施", "en": "PCB / Materials / AI Infrastructure"},
@@ -136,9 +155,6 @@ FACTOR_LABELS: dict[str, ConceptLabel] = {
     "Retail Flow": {"zh": "散户资金流", "en": "Retail Flow"},
     "Price Momentum": {"zh": "价格动量", "en": "Price Momentum"},
 }
-
-
-MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
 
 def build_cognitive_presentation(state: Mapping[str, Any], lang: str = "en") -> dict[str, Any]:
@@ -368,6 +384,55 @@ def localize_research_focus(text: str, lang: str = "en") -> str:
     return text
 
 
+def localize_regime(value: Any, lang: str = "en") -> str:
+    """Map a runtime regime state code to a user-facing label."""
+    raw = str(value or "").strip()
+    key = raw.upper().replace(" ", "_")
+    labels = REGIME_LABELS.get(key)
+    if labels:
+        return labels.get(_safe_lang(lang), labels["en"])
+    if _safe_lang(lang) == "zh":
+        return raw or "未知"
+    return _humanize(raw) if raw else "Unknown"
+
+
+def localize_inline_tokens(text: Any, lang: str = "en") -> str:
+    """Replace known runtime codes inside free text (e.g. LLM summaries)."""
+    result = str(text or "")
+    if not result:
+        return result
+    for key, labels in REGIME_LABELS.items():
+        label = labels.get(_safe_lang(lang), labels["en"])
+        result = result.replace(key, label).replace(key.replace("_", " "), label)
+    return result
+
+
+def localize_evidence_headline(text: Any, lang: str = "en") -> str:
+    """Translate known runtime-generated evidence headline templates."""
+    raw = str(text or "")
+    if _safe_lang(lang) != "zh":
+        return raw
+    match = re.match(r"^A-share breadth sample: (\d+) advancing, (\d+) declining, (\d+) unchanged$", raw)
+    if match:
+        return f"A股涨跌家数样本：上涨 {match.group(1)}，下跌 {match.group(2)}，平盘 {match.group(3)}"
+    match = re.match(r"^Public attention sample: (\d+) configured A-share asset\(s\) in the top (\d+)$", raw)
+    if match:
+        return f"公开关注度样本：前 {match.group(2)} 名中包含 {match.group(1)} 只已配置 A 股"
+    return raw
+
+
+def localize_sensitivity(value: Any, lang: str = "en") -> str:
+    """Map a portfolio sensitivity code to a user-facing label."""
+    raw = str(value or "").strip()
+    key = raw.upper().replace(" ", "_")
+    labels = SENSITIVITY_LABELS.get(key)
+    if labels:
+        return labels.get(_safe_lang(lang), labels["en"])
+    if _safe_lang(lang) == "zh":
+        return raw or "未知"
+    return _humanize(raw) if raw else "Unknown"
+
+
 def format_timestamp(value: Any, lang: str = "en", prefix: str | None = None) -> str:
     dt = _parse_datetime(value)
     if dt is None:
@@ -375,9 +440,9 @@ def format_timestamp(value: Any, lang: str = "en", prefix: str | None = None) ->
     else:
         local = dt.astimezone(_local_timezone())
         if lang == "zh":
-            text = f"{local.year}年{local.month}月{local.day}日 {local.hour:02d}:{local.minute:02d}"
+            text = f"{local.year}年{local.month}月{local.day}日 {local.hour:02d}:{local.minute:02d}:{local.second:02d}"
         else:
-            text = f"{MONTHS[local.month - 1]} {local.day}, {local.year} {local.hour:02d}:{local.minute:02d}"
+            text = local.strftime("%Y-%m-%d %H:%M:%S CST")
     return f"{prefix}：{text}" if prefix and lang == "zh" else f"{prefix}: {text}" if prefix else text
 
 
@@ -688,10 +753,8 @@ def _parse_datetime(value: Any) -> datetime | None:
 
 
 def _local_timezone() -> timezone:
-    try:
-        return ZoneInfo("Asia/Shanghai")
-    except Exception:
-        return datetime.now().astimezone().tzinfo or timezone.utc
+    # Fixed Beijing offset; avoids relying on system tzdata (zoneinfo).
+    return timezone(timedelta(hours=8))
 
 
 def _safe_lang(lang: str) -> str:

@@ -22,8 +22,13 @@ from ui.components.templates import (
 from ui.i18n.i18n import current_language, t
 from ui.presentation.cognitive_localization import (
     build_cognitive_presentation,
+    format_timestamp,
+    localize_channel_name,
+    localize_evidence_headline,
     localize_market_freshness,
     localize_proactive_update,
+    localize_regime,
+    localized_factor,
 )
 from ui.presentation.home_intelligence import build_home_intelligence, _bilingual
 
@@ -234,7 +239,7 @@ def home_content(state: Mapping[str, Any]) -> str:
             <div class="portfolio-header-status">
               <div class="posture-pill">{escape(_localized(portfolio_command.get("posture"), lang))}</div>
               <small>{escape(_brief_copy("action_review_today", lang))}</small>
-              <strong>{escape(_runtime_label(portfolio_command.get("action_status") or "NO", lang))}</strong>
+              <strong>{escape(_review_status_label(portfolio_command.get("action_status") or "NO", lang))}</strong>
             </div>
           </div>
           {_portfolio_command_view(portfolio_command, lang)}
@@ -341,7 +346,7 @@ def home_content(state: Mapping[str, Any]) -> str:
         {_forecast_track_record(forecast, lang)}
         {_learning_log(forecast, lang)}
         <div class="forecast-learning-row">
-          <p><strong>{escape(_brief_copy("recent_miss", lang))}:</strong> {escape(_localized(forecast.get("recent_miss"), lang))}</p>
+          <p><strong>{escape(_brief_copy("recent_miss", lang))}:</strong> {escape(_localized_outlook_text(_localized(forecast.get("recent_miss"), lang), lang))}</p>
           <p><strong>{escape(_brief_copy("changed_afterward", lang))}:</strong> {escape(_localized(forecast.get("what_changed_afterward"), lang))}</p>
         </div>
       </section>
@@ -378,7 +383,7 @@ def _portfolio_command_view(command: Mapping[str, Any], lang: str) -> str:
     metrics = [
         (_brief_copy("configured_exposure", lang), _pct_text(command.get("exposure_pct"))),
         (_brief_copy("unassigned_capital", lang), _pct_text(command.get("unassigned_pct"))),
-        (_brief_copy("portfolio_consistency", lang), _runtime_label(command.get("portfolio_consistency") or "Unknown", lang)),
+        (_brief_copy("portfolio_consistency", lang), _consistency_label(command.get("portfolio_consistency"), lang)),
         (_brief_copy("usable_market_evidence", lang), f"{_mapping(command.get('market_evidence')).get('usable', 0)}/{_mapping(command.get('market_evidence')).get('total', 0)}"),
     ]
     metric_html = "".join(f'<div><span>{escape(label)}</span><strong>{escape(value)}</strong></div>' for label, value in metrics)
@@ -412,24 +417,24 @@ def _material_changes_view(changes: Mapping[str, Any], lang: str) -> str:
             else f"Reviewed {reviewed} · changed {changed} · unchanged {unchanged} · pending {pending}"
         )
         review_class = "has-change" if changed else "no-change"
-        review_html = f'<div class="evidence-review-summary {review_class}"><strong>{escape(review_text)}</strong><span>{escape(str(changes.get("reviewed_at") or ""))}</span></div>'
+        review_html = f'<div class="evidence-review-summary {review_class}"><strong>{escape(review_text)}</strong><span>{escape(_fmt_ts(changes.get("reviewed_at"), lang))}</span></div>'
     if not items:
         return review_html + f'<div class="empty-state">{escape(_localized(changes.get("empty_message"), lang))}</div>'
     cards = []
     for item in items[:8]:
         url = str(item.get("source_url") or "")
-        source = escape(str(item.get("source") or "Data Missing"))
+        source = escape(str(item.get("source") or _runtime_label("DATA MISSING", lang)))
         source_html = f'<a href="{escape(url)}" target="_blank" rel="noopener noreferrer">{source}</a>' if url.startswith("http") else source
         affected = ", ".join(str(value) for value in _list(item.get("affected_assets")) + _list(item.get("affected_themes")) if value)
         cards.append(
             f"""
             <article class="material-evidence-item">
               <div class="evidence-truth-row"><span>{escape(_runtime_label(item.get("classification") or "UNVERIFIED", lang))}</span><em>{escape(_runtime_label(item.get("market_session_status") or item.get("freshness") or "Unknown", lang))}</em></div>
-              <h3>{escape(str(item.get("headline") or "Data Missing"))}</h3>
+              <h3>{escape(_localize_headline(str(item.get("headline") or _runtime_label("DATA MISSING", lang)), lang))}</h3>
               <dl>
                 <div><dt>{escape(_brief_copy("source", lang))}</dt><dd>{source_html}</dd></div>
-                <div><dt>{escape(_brief_copy("published_at", lang))}</dt><dd>{escape(str(item.get("timestamp") or "Unknown"))}</dd></div>
-                <div><dt>{escape(_brief_copy("affected_scope", lang))}</dt><dd>{escape(affected or str(item.get("world_model_node") or "Unknown"))}</dd></div>
+                <div><dt>{escape(_brief_copy("published_at", lang))}</dt><dd>{escape(_fmt_ts(item.get("timestamp"), lang, "Unknown"))}</dd></div>
+                <div><dt>{escape(_brief_copy("affected_scope", lang))}</dt><dd>{escape(_theme_label(affected or str(item.get("world_model_node") or "Unknown"), lang))}</dd></div>
                 <div><dt>{escape(_brief_copy("thesis_change", lang))}</dt><dd>{escape(_runtime_label(item.get("thesis_changed") or "UNASSESSED", lang))}</dd></div>
               </dl>
             </article>
@@ -459,13 +464,48 @@ def _brief_runtime_strip(brief: Mapping[str, Any], lang: str) -> str:
         )
     else:
         message = "简报已同步到最新重要事件。" if lang == "zh" else "Brief is synchronized to the latest material event."
-    label = f"简报版本 {revision}" if lang == "zh" else f"Brief revision {revision}"
+    label = f"第 {revision} 期简报" if lang == "zh" else f"Brief No. {revision}"
+    published = _fmt_ts(brief.get("published_at"), lang, "等待信号" if lang == "zh" else "Waiting for signal")
+    reason_label, reason_raw = _trigger_reason_label(brief.get("trigger_reason"), lang)
+    reason_title = f' title="{escape(reason_raw)}"' if reason_raw else ""
     return f'''
     <section class="brief-runtime-strip" id="home-brief-runtime" data-practical-section="brief_runtime">
       <div><strong>{escape(label)}</strong><span>{escape(message)}</span></div>
-      <dl><dt>{escape("更新时间" if lang == "zh" else "Updated")}</dt><dd>{escape(str(brief.get("published_at") or "Waiting for signal"))}</dd><dt>{escape("触发原因" if lang == "zh" else "Reason")}</dt><dd>{escape(str(brief.get("trigger_reason") or "material-event gate"))}</dd></dl>
+      <dl><dt>{escape("更新时间" if lang == "zh" else "Updated")}</dt><dd>{escape(published)}</dd><dt>{escape("更新原因" if lang == "zh" else "Reason")}</dt><dd{reason_title}>{escape(reason_label)}</dd></dl>
     </section>
     '''
+
+
+_TRIGGER_REASON_TEXT: dict[str, dict[str, str]] = {
+    "material_runtime_delta": {"zh": "市场出现实质性变化", "en": "Material market change"},
+    "proactive_completed": {"zh": "定期组合复核", "en": "Scheduled portfolio review"},
+    "proactive_degraded": {"zh": "定期组合复核（部分数据降级）", "en": "Scheduled review (partial data degraded)"},
+    "proactive_failed": {"zh": "定期组合复核（本次未完成）", "en": "Scheduled review (run incomplete)"},
+    "ui_event": {"zh": "手动操作触发更新", "en": "Manual update"},
+}
+
+
+def _trigger_reason_label(value: Any, lang: str) -> tuple[str, str]:
+    """Map a brief trigger-reason code to a plain-language label plus raw code."""
+    raw = str(value or "").strip()
+    if not raw:
+        return ("等待重要信号" if lang == "zh" else "Waiting for a material event"), ""
+    prefix = raw.split(":", 1)[0].strip().lower()
+    labels = _TRIGGER_REASON_TEXT.get(prefix)
+    if labels:
+        return labels.get(lang, labels["en"]), raw
+    return ("系统更新" if lang == "zh" else "System update"), raw
+
+
+def _fmt_ts(value: Any, lang: str, fallback: str = "") -> str:
+    """Format an ISO timestamp for display; keep fallback when missing, raw text when unparseable."""
+    text = str(value or "").strip()
+    if not text:
+        return fallback
+    formatted = format_timestamp(text, lang)
+    if formatted in {"等待信号", "Waiting for signal"}:
+        return text
+    return formatted
 
 
 def _reasoning_chain_view(reasoning: Mapping[str, Any], lang: str) -> str:
@@ -484,7 +524,7 @@ def _thinking_timeline(steps: list[Any], lang: str) -> list[str]:
         if not isinstance(step, Mapping):
             continue
         key = str(step.get("key") or "")
-        value = str(step.get("value") or "")
+        value = _localized(step.get("value"), lang)
         mapped[key] = value
 
     signal = mapped.get("signal", "")
@@ -651,7 +691,7 @@ def _candidate_score_board_view(board: Mapping[str, Any], lang: str) -> str:
         f'<li><strong>{escape(str(item.get("candidate") or "Unknown"))}</strong><span>{escape(_runtime_label(item.get("identity_status") or "Needs Validation", lang))} · {escape(str(item.get("tier") or "N/A"))}</span></li>'
         for item in pending
     )
-    dimensions = " · ".join(str(item) for item in _list(board.get("score_dimensions")))
+    dimensions = " · ".join(_localized(item, lang) for item in _list(board.get("score_dimensions")))
     return f"""
     <p class="candidate-coverage-note">{escape(_localized(board.get("coverage_note"), lang))}</p>
     <div class="table-scroll"><table class="practical-table candidate-score-table"><thead><tr><th>{escape(_brief_copy("candidate", lang))}</th><th>{escape(_brief_copy("identity", lang))}</th><th>{escape(_brief_copy("tier", lang))}</th><th>{escape(_brief_copy("portfolio_overlap", lang))}</th><th>{escape(_brief_copy("evidence", lang))}</th><th>{escape(_brief_copy("strategic_score", lang))}</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
@@ -884,11 +924,11 @@ def _brief_copy(key: str, lang: str) -> str:
             "portfolio_command": "组合指挥视图",
             "portfolio_state_first": "先看你的资本与持仓",
             "portfolio_overview": "当前组合状态",
-            "action_review_today": "今日决策复核",
+            "action_review_today": "今日",
             "configured_exposure": "已配置暴露",
             "unassigned_capital": "未部署资金",
-            "portfolio_consistency": "组合一致性",
-            "usable_market_evidence": "可用市场证据",
+            "portfolio_consistency": "配置校验",
+            "usable_market_evidence": "市场信号",
             "largest_theme": "最大主题暴露",
             "liquidity_sensitivity": "流动性敏感度",
             "regime_sensitivity": "市场状态敏感度",
@@ -1113,7 +1153,7 @@ def _holding_valuation_view(valuation: Mapping[str, Any], lang: str) -> str:
     pnl_bar = _pnl_diverging_bar(return_pct, lang)
     amounts = _amount_metrics(valuation, currency, lang)
     limitations = _valuation_limitations(_list(valuation.get("limitations")), lang)
-    observed = str(valuation.get("observed_at") or _valuation_copy("time_missing", lang))
+    observed = _fmt_ts(valuation.get("observed_at"), lang, _valuation_copy("time_missing", lang))
     source = str(valuation.get("source") or _valuation_copy("source_missing", lang))
     freshness = str(valuation.get("provider_status") or valuation.get("freshness") or "NOT_CONFIGURED")
     return f"""
@@ -1123,7 +1163,7 @@ def _holding_valuation_view(valuation: Mapping[str, Any], lang: str) -> str:
       {amounts}
     </div>
     <div class="valuation-provenance">
-      <span class="freshness-badge freshness-{escape(freshness.lower())}">{escape(freshness.replace('_', ' '))}</span>
+      <span class="freshness-badge freshness-{escape(freshness.lower())}">{escape(_runtime_label(freshness, lang))}</span>
       <span>{escape(source)}</span>
       <time>{escape(observed)}</time>
     </div>
@@ -1392,7 +1432,7 @@ def _review_plan_view(review: Mapping[str, Any], lang: str) -> str:
 
 
 def _join_evidence(items: Any, lang: str) -> str:
-    values = [str(item).replace("_", " ") for item in _list(items) if str(item).strip()]
+    values = [_runtime_label(str(item).replace("_", " "), lang) for item in _list(items) if str(item).strip()]
     if not values:
         return _home_label("insufficient_evidence", lang)
     return " / ".join(values[:4])
@@ -1425,6 +1465,11 @@ def _localized(value: Any, lang: str) -> str:
         text = value.get(lang) or value.get("en") or value.get("zh")
         return str(text or "")
     return str(value or "")
+
+
+def _localize_headline(text: str, lang: str) -> str:
+    """Translate known runtime-generated evidence headline templates."""
+    return localize_evidence_headline(text, lang)
 
 
 def _runtime_label(value: Any, lang: str) -> str:
@@ -1469,9 +1514,50 @@ def _runtime_label(value: Any, lang: str) -> str:
         "CURRENT HOLDING": "当前持仓",
         "RESEARCH POOL": "研究池",
         "NONE": "无直接重合",
+        "HIGH VOLATILITY": "高波动",
+        "RISK OFF": "风险防御",
+        "NORMAL": "平稳",
+        "BREAKOUT": "突破",
+        "ATTENTION EXPANSION": "关注扩张",
+        "REGIONAL LIQUIDITY SENSITIVE": "区域流动性敏感",
+        "UNKNOWN LIQUIDITY PROFILE": "流动性画像未知",
+        "DIVERSIFIED OR UNKNOWN": "分散或未明确",
+        "SINGLE THEME REGIME SENSITIVE": "单一主题敏感",
+        "THEME CLUSTER SENSITIVE": "主题集群敏感",
+        "BROAD OR UNCLASSIFIED": "分布较广或未分类",
+        "LAST MARKET CLOSE": "上一收盘",
+        "MARKET OPEN": "盘中",
+        "PRE MARKET": "盘前",
+        "POST MARKET": "盘后",
+        "LIVE OBSERVATION SAMPLE": "实时观测样本",
+        "PUBLIC ATTENTION SAMPLE": "公开关注度样本",
+        "VERIFIED EVIDENCE": "已验证证据",
+        "NOT REVIEWED": "未复核",
+        "NO RUNTIME OVERLAY": "暂无运行态覆盖",
+        "USABLE PORTFOLIO MARKET OBSERVATIONS": "可用的组合市场观测",
+        "LATER RUNTIME STATE CONFLICTS WITH EXPECTED STRUCTURE / FORECAST OUTCOME MARKED INVALIDATED THROUGH SUPPORTED LIFECYCLE": "后续运行状态与预期结构冲突 / 预测在支持的生命周期中被标记为失效",
+        "LATER RUNTIME STATE CONFLICTS WITH EXPECTED STRUCTURE": "后续运行状态与预期结构冲突",
+        "FORECAST OUTCOME MARKED INVALIDATED THROUGH SUPPORTED LIFECYCLE": "预测在支持的生命周期中被标记为失效",
+        "OK": "正常",
     }
     normalized = text.replace("_", " ").upper()
     return labels.get(normalized, text.replace("_", " "))
+
+
+def _review_status_label(value: Any, lang: str) -> str:
+    """Plain-language label for the daily decision-review status."""
+    key = str(value or "NO").strip().upper()
+    if lang == "zh":
+        return {"YES": "需要复核", "NO": "暂不需要", "CONDITIONAL": "待确认"}.get(key, _runtime_label(value, lang))
+    return _runtime_label(value, lang)
+
+
+def _consistency_label(value: Any, lang: str) -> str:
+    """Plain-language label for the portfolio consistency check."""
+    key = str(value or "").strip().upper()
+    if lang == "zh" and key in {"PASS", "FAIL"}:
+        return "正常" if key == "PASS" else "异常"
+    return _runtime_label(value or "Unknown", lang)
 
 
 def _theme_label(value: Any, lang: str) -> str:
@@ -1483,6 +1569,10 @@ def _theme_label(value: Any, lang: str) -> str:
         "AI Hardware Manufacturing": "AI 硬件制造",
         "AI Infrastructure": "AI 基础设施",
         "Materials": "材料",
+        "Macro Policy": "宏观政策",
+        "Price / Volume": "价格 / 成交量",
+        "A-share public attention": "A股公开关注度",
+        "A-share market breadth": "A股市场广度",
     }
     for source, target in replacements.items():
         text = text.replace(source, target)
@@ -1686,10 +1776,11 @@ def _home_outlook_title(outlook: Mapping[str, Any], lang: str) -> str:
         mapping = {
             "RISK OFF": "基准：风险防御仍需观察",
             "NORMAL": "基准：中性状态延续",
-            "ATTENTION EXPANSION": "基准：注意力扩张待确认",
+            "ATTENTION EXPANSION": "基准：关注扩张待确认",
             "BREAKOUT": "基准：突破信号待验证",
+            "HIGH VOLATILITY": "基准：高波动，优先控制回撤",
         }
-        return mapping.get(base_state.upper(), f"基准：{base_state}")
+        return mapping.get(base_state.upper(), f"基准：{localize_regime(base_state, 'zh')}")
     return f"Base case: {base_state.title()}"
 
 
@@ -1756,6 +1847,7 @@ def _localized_invalidations(items: Any, lang: str) -> list[str]:
         "portfolio_exposure_changes_materially": "组合暴露发生明显变化",
         "later_runtime_state_conflicts_with_expected_structure": "后续运行状态与当前结构判断冲突",
         "forecast_outcome_marked_invalidated_through_supported_lifecycle": "预测在支持的生命周期中被标记为失效",
+        "later runtime state conflicts with expected structure / forecast outcome marked invalidated through supported lifecycle": "后续运行状态与预期结构冲突 / 预测在支持的生命周期中被标记为失效",
     }
     return [mapping.get(str(item), str(item).replace("_", " ")) for item in raw[:5]]
 
@@ -1961,12 +2053,23 @@ def _expert_section(letter: str, title: str, body: str) -> str:
     return f'<article class="expert-section"><span>{escape(letter)}</span><h3>{escape(title)}</h3>{body}</article>'
 
 
+def _localize_chain_item(value: Any, lang: str) -> str:
+    """Localize a causal-chain item like 'Attention -> Retail Flow'."""
+    if isinstance(value, Mapping):
+        return _localized(value, lang)
+    text = str(value or "")
+    if "->" not in text:
+        return localized_factor(text, lang)["primary"]
+    parts = [localized_factor(part.strip(), lang)["primary"] for part in text.split("->")]
+    return " → ".join(parts)
+
+
 def _expert_causal_chain(expert: Mapping[str, Any], lang: str) -> str:
     chain = expert.get("causal_chain") if isinstance(expert.get("causal_chain"), list) else []
     edges = expert.get("causal_edges") if isinstance(expert.get("causal_edges"), list) else []
-    chain_html = '<div class="causal-chain">' + "".join(f'<span>{escape(str(item))}</span>' for item in chain[:5]) + "</div>"
+    chain_html = '<div class="causal-chain">' + "".join(f'<span>{escape(_localize_chain_item(item, lang))}</span>' for item in chain[:5]) + "</div>"
     edge_html = "".join(
-        f'<li>{escape(str(edge.get("from")))} → {escape(str(edge.get("to")))} · Δ {escape(str(edge.get("weight_delta")))}</li>'
+        f'<li>{escape(localized_factor(edge.get("from"), lang)["primary"])} → {escape(localized_factor(edge.get("to"), lang)["primary"])} · Δ {escape(str(edge.get("weight_delta")))}</li>'
         for edge in edges[:4]
         if isinstance(edge, Mapping)
     )
@@ -1977,14 +2080,15 @@ def _expert_causal_chain(expert: Mapping[str, Any], lang: str) -> str:
 def _expert_hypothesis(expert: Mapping[str, Any], lang: str) -> str:
     hypo = expert.get("hypothesis_state") if isinstance(expert.get("hypothesis_state"), Mapping) else {}
     competitors = hypo.get("competing") if isinstance(hypo.get("competing"), list) else []
+    competitor_items = "".join(f"<li>{escape(_localized(item, lang))}</li>" for item in competitors[:3])
     return f"""
     <dl class="expert-dl">
-      <dt>{escape(_home_label("active_hypothesis", lang))}</dt><dd>{escape(str(hypo.get("active") or t("empty.context", lang)))}</dd>
+      <dt>{escape(_home_label("active_hypothesis", lang))}</dt><dd>{escape(_localized(hypo.get("active"), lang) or t("empty.context", lang))}</dd>
       <dt>{escape(t("state.confidence", lang))}</dt><dd>{escape(_pct_text(float(hypo.get("confidence") or 0) * 100))}</dd>
-      <dt>{escape(_home_label("recent_change", lang))}</dt><dd>{escape(str(hypo.get("recent_change") or ""))}</dd>
+      <dt>{escape(_home_label("recent_change", lang))}</dt><dd>{escape(_localized(hypo.get("recent_change"), lang))}</dd>
     </dl>
     <p><strong>{escape(_home_label("competing_hypotheses", lang))}</strong></p>
-    <ul class="plain-list">{_list_items(competitors[:3])}</ul>
+    <ul class="plain-list">{competitor_items}</ul>
     """
 
 
@@ -1992,9 +2096,9 @@ def _expert_regime(expert: Mapping[str, Any], lang: str) -> str:
     regime = expert.get("regime_state") if isinstance(expert.get("regime_state"), Mapping) else {}
     return f"""
     <dl class="expert-dl">
-      <dt>{escape(t("state.current_regime", lang))}</dt><dd>{escape(str(regime.get("current") or t("empty.signal", lang)))}</dd>
-      <dt>{escape("Proposed" if lang == "en" else "建议状态")}</dt><dd>{escape(str(regime.get("proposed") or t("empty.signal", lang)))}</dd>
-      <dt>{escape(t("state.volatility", lang))}</dt><dd>{escape(str(regime.get("volatility") or t("empty.signal", lang)))}</dd>
+      <dt>{escape(t("state.current_regime", lang))}</dt><dd>{escape(localize_regime(regime.get("current"), lang) if regime.get("current") else t("empty.signal", lang))}</dd>
+      <dt>{escape("Proposed" if lang == "en" else "建议状态")}</dt><dd>{escape(localize_regime(regime.get("proposed"), lang) if regime.get("proposed") else t("empty.signal", lang))}</dd>
+      <dt>{escape(t("state.volatility", lang))}</dt><dd>{escape(_runtime_label(regime.get("volatility"), lang) if regime.get("volatility") else t("empty.signal", lang))}</dd>
     </dl>
     """
 
@@ -2774,7 +2878,7 @@ def portfolio_content(state: Mapping[str, Any]) -> str:
         <ul class="plain-list">{_position_rows(positions, lang)}</ul>
       </article>
     </section>
-    {_execution_log_section()}
+    {_execution_log_section(lang)}
     <section class="focus-card">
       <span class="kicker">{escape(t("portfolio.edit", lang))}</span>
       <p>{escape(t("setup.assets_note", lang))}</p>
@@ -2799,7 +2903,7 @@ def markets_content(state: Mapping[str, Any]) -> str:
         card(t("markets.channel_status", lang), _freshness_map(market), kicker=t("markets.data_health", lang)),
         cols=2,
     )}
-    {card(t("markets.channel_status", lang), '<div class="pill-row">' + _channel_pills(channels) + '</div>', kicker=t("markets.latest_observations", lang))}
+    {card(t("markets.channel_status", lang), '<div class="pill-row">' + _channel_pills(channels, lang) + '</div>', kicker=t("markets.latest_observations", lang))}
     {card(t("markets.asset_sources", lang), '<p>' + escape(t("markets.asset_sources_note", lang)) + '</p>' + _asset_source_table(market, lang), kicker=t("markets.asset_sources", lang))}
     """
     return page_shell(title=t("markets.title", lang), lang=lang, content=content, extra_style=_markets_style())
@@ -3727,7 +3831,8 @@ def _main_change(market: Mapping[str, Any], packet: Mapping[str, Any], lang: str
     summary = str(packet.get("causal_summary") or "").strip()
     if "llm reasoning unavailable" in summary.lower():
         summary = ""
-    if summary and summary.lower() not in {"unknown", "none", "null"}:
+    # English LLM summaries would read as jargon on the zh page; use the regime headline instead.
+    if lang != "zh" and summary and summary.lower() not in {"unknown", "none", "null"}:
         headline = _headline_from_summary(summary)
         if headline:
             return headline
@@ -3788,20 +3893,17 @@ def _headline_text(value: str) -> str:
 
 def _regime_headline(regime: str, lang: str) -> str:
     key = regime.strip().upper().replace(" ", "_")
-    zh = {
-        "RISK_OFF": "风险防御",
-        "ATTENTION_EXPANSION": "注意力扩张",
-        "BREAKOUT": "突破观察",
-        "NORMAL": "中性观察",
-    }
+    if key in {"RISK_OFF", "ATTENTION_EXPANSION", "BREAKOUT", "NORMAL", "HIGH_VOLATILITY"}:
+        return localize_regime(regime, lang)
     en = {
         "RISK_OFF": "Risk-off Review",
         "ATTENTION_EXPANSION": "Attention Expansion",
         "BREAKOUT": "Breakout Watch",
         "NORMAL": "Neutral Market State",
     }
-    mapping = zh if lang == "zh" else en
-    return mapping.get(key, regime.replace("_", " ").title())
+    if lang == "en":
+        return en.get(key, regime.replace("_", " ").title())
+    return regime.replace("_", " ").title()
 
 
 def _cde_lifecycle_section(portfolio: Mapping[str, Any], lang: str) -> str:
@@ -3810,14 +3912,23 @@ def _cde_lifecycle_section(portfolio: Mapping[str, Any], lang: str) -> str:
     CDE runtime state is not yet implemented; this section shows the framework
     lifecycle stages with current portfolio data overlaid where available.
     """
+    zh = lang == "zh"
     stages = [
-        ("Observe", "1", "Monitor; no deployment authority established yet."),
-        ("Pilot Deployment", "2", "Small test allocation before thesis is confirmed."),
-        ("Initial Deployment", "3", "First capital tranche deployed; limited repeat authority."),
-        ("Scaling", "4", "Repeat deployment authority; gradual position building."),
-        ("Maximum Opportunity", "5", "Highest deployment authority; full thesis commitment."),
-        ("Capital Preservation", "6", "Defensive; deployment is restricted or paused."),
+        ("Observe", "1", "观察等待，尚未建立部署权限。" if zh else "Monitor; no deployment authority established yet."),
+        ("Pilot Deployment", "2", "论点确认前的小额试探配置。" if zh else "Small test allocation before thesis is confirmed."),
+        ("Initial Deployment", "3", "首笔资金已部署，重复部署权限有限。" if zh else "First capital tranche deployed; limited repeat authority."),
+        ("Scaling", "4", "具备重复部署权限，逐步加仓。" if zh else "Repeat deployment authority; gradual position building."),
+        ("Maximum Opportunity", "5", "最高部署权限，充分兑现论点。" if zh else "Highest deployment authority; full thesis commitment."),
+        ("Capital Preservation", "6", "防御阶段，部署受限或暂停。" if zh else "Defensive; deployment is restricted or paused."),
     ]
+    stage_names = {
+        "Observe": "观察",
+        "Pilot Deployment": "试点部署",
+        "Initial Deployment": "初始部署",
+        "Scaling": "加仓",
+        "Maximum Opportunity": "重仓机会",
+        "Capital Preservation": "资本防御",
+    }
     exposure_pct = portfolio.get("exposure_sum_pct")
     unallocated = portfolio.get("cash_or_unassigned_pct")
     current_stage = (
@@ -3829,43 +3940,55 @@ def _cde_lifecycle_section(portfolio: Mapping[str, Any], lang: str) -> str:
     stage_rows = ""
     for name, num, desc in stages:
         active = " active" if name == current_stage else ""
+        display = stage_names.get(name, name) if zh else name
         stage_rows += f"""<div class="cde-stage{active}">
 <span class="cde-stage-num">{num}</span>
-<div><strong>{escape(name)}</strong><small>{escape(desc)}</small></div>
+<div><strong>{escape(display)}</strong><small>{escape(desc)}</small></div>
 </div>"""
-    dry_powder = _pct_text(unallocated) if unallocated is not None else "N/A (unconfigured)"
+    if unallocated is not None:
+        dry_powder = _pct_text(unallocated)
+    else:
+        dry_powder = "未配置" if zh else "N/A (unconfigured)"
+    current_display = stage_names.get(current_stage, current_stage) if zh else current_stage
     return f"""<section class="cde-section">
 <div class="cde-header">
-<span class="kicker">Capital Deployment Engine</span>
-<h2>Deployment Lifecycle</h2>
-<span class="home-safety-note">Framework reference · runtime CDE state not yet implemented</span>
+<span class="kicker">{escape("资本部署引擎" if zh else "Capital Deployment Engine")}</span>
+<h2>{escape("部署生命周期" if zh else "Deployment Lifecycle")}</h2>
+<span class="home-safety-note">{escape("框架参考 · 当前非实时部署权限" if zh else "Framework reference · runtime CDE state not yet implemented")}</span>
 </div>
 <div class="cde-layout">
   <div class="cde-stages">{stage_rows}</div>
   <div class="cde-metrics">
     <div class="cde-metric">
-      <span class="metric-label">Current Stage</span>
-      <strong>{escape(current_stage)}</strong>
+      <span class="metric-label">{escape("当前阶段" if zh else "Current Stage")}</span>
+      <strong>{escape(current_display)}</strong>
     </div>
     <div class="cde-metric">
-      <span class="metric-label">Deployment Authority</span>
-      <strong>{escape("Framework reference (not runtime)")}</strong>
+      <span class="metric-label">{escape("部署权限" if zh else "Deployment Authority")}</span>
+      <strong>{escape("框架参考（非实时权限）" if zh else "Framework reference (not runtime)")}</strong>
     </div>
     <div class="cde-metric">
-      <span class="metric-label">Dry Powder (unallocated)</span>
+      <span class="metric-label">{escape("备用资金（未部署）" if zh else "Dry Powder (unallocated)")}</span>
       <strong>{escape(str(dry_powder))}</strong>
     </div>
     <div class="cde-metric">
-      <span class="metric-label">Lifecycle Unlock</span>
-      <strong>{escape("Evidence quality + world model stability + portfolio fit")}</strong>
+      <span class="metric-label">{escape("阶段解锁条件" if zh else "Lifecycle Unlock")}</span>
+      <strong>{escape("证据质量 + 判断稳定性 + 组合匹配度" if zh else "Evidence quality + world model stability + portfolio fit")}</strong>
     </div>
   </div>
 </div>
 </section>"""
 
 
-def _execution_log_section() -> str:
+def _execution_log_section(lang: str = "en") -> str:
     """Execution log placeholder — runtime execution history TBD."""
+    if lang == "zh":
+        return """<section class="focus-card">
+<span class="kicker">执行记录</span>
+<h2>组合动作</h2>
+<p class="empty-state">暂无执行记录。首个 CDE 授权部署周期完成后，组合动作会显示在这里。</p>
+<div class="pill-row"><span class="pill pill-gray">待运行时接入</span></div>
+</section>"""
     return """<section class="focus-card">
 <span class="kicker">Execution Log</span>
 <h2>Portfolio Actions</h2>
@@ -3885,7 +4008,7 @@ def _market_impact_summary(state: Mapping[str, Any], lang: str) -> str:
     market = _market(state)
     status = str(market.get("status") or "")
     if status and status != "not_run":
-        return status.replace("_", " ")
+        return _runtime_label(status, lang)
     return t("home.default_meaning", lang)
 
 
@@ -4022,15 +4145,25 @@ def _cde_lifecycle_bar(command: Mapping[str, Any], lang: str) -> str:
         "Observe"
     )
     step_blocks = []
+    full_names = {
+        "Observe": _bilingual("Observe", "观察"),
+        "Pilot Deployment": _bilingual("Pilot Deployment", "试点部署"),
+        "Initial Deployment": _bilingual("Initial Deployment", "初始部署"),
+        "Scaling": _bilingual("Scaling", "加仓"),
+        "Maximum Opportunity": _bilingual("Maximum Opportunity", "重仓机会"),
+        "Capital Preservation": _bilingual("Capital Preservation", "资本防御"),
+    }
     for name, labels in stages:
         active = name == current_stage
         label = _localized(labels, lang)
         cls = "cde-step active" if active else "cde-step"
-        step_blocks.append(f'<div class="{cls}" title="{escape(name)}"><span>{escape(label)}</span></div>')
+        step_blocks.append(f'<div class="{cls}" title="{escape(_localized(full_names.get(name, labels), lang))}"><span>{escape(label)}</span></div>')
+    stage_labels = dict(stages)
+    current_label = _localized(stage_labels.get(current_stage, _bilingual(current_stage, current_stage)), lang)
     return f'''
     <div class="cde-lifecycle-bar">
       <div class="cde-steps">{''.join(step_blocks)}</div>
-      <div class="cde-current">{escape(_brief_copy("status", lang))}: <strong>{escape(current_stage)}</strong></div>
+      <div class="cde-current">{escape(_brief_copy("status", lang))}: <strong>{escape(current_label)}</strong></div>
     </div>
     '''
 
@@ -4209,12 +4342,12 @@ def _localized_channel_pills(channels: list[Any]) -> str:
     return "".join(parts)
 
 
-def _channel_pills(channels: Mapping[str, Any]) -> str:
+def _channel_pills(channels: Mapping[str, Any], lang: str = "en") -> str:
     parts = []
     for key, value in channels.items():
         status = str(value)
         css = "signal-live" if status == "LIVE" else "signal-failed" if status in {"FAILED", "RATE_LIMITED"} else "signal-simulated" if status in {"SIMULATED", "CACHED", "DELAYED"} else ""
-        parts.append(f'<span class="signal-pill {css}">{escape(str(key).replace("_", " "))}: {escape(status.replace("_", " ").title())}</span>')
+        parts.append(f'<span class="signal-pill {css}">{escape(localize_channel_name(str(key), lang))}: {escape(_runtime_label(status, lang))}</span>')
     return "".join(parts)
 
 
